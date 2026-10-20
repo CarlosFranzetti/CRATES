@@ -17,23 +17,23 @@ Crates maps your record collection to the furniture it actually lives in. Photog
 
 ## Screenshots
 
-The app opens in the dark **Booth** look. The switch at the top (◐) changes it to the light **Shop floor** look or to match your device.
+The app opens in the dark **Booth** look; the ◐ button switches to the light **Shop floor** look or follows your device. Room has two layouts, **Map** and **Columns**, switched next to the title.
 
-| Your room: every rack, bag and crate on one screen | Zoomed into Kallax 1: shelves, sleeve stack and details |
+| Map: the room on a pannable, zoomable canvas, a spot's records beside it | Columns: spots → records → record |
 |---|---|
-| ![Room view in the dark Booth look with Kallax 1, the Crater bag and a milk crate](docs/screenshots/readme-booth-room-desktop.png) | ![Kallax 1 open on shelf A2 in the Booth look](docs/screenshots/readme-room-desktop.png) |
-| **Shop floor look (light)** | **Collection spreadsheet** |
-| ![Kallax 1 in the light Shop floor look](docs/screenshots/readme-shop-unit-desktop.png) | ![Collection table with Bag and Home spot columns](docs/screenshots/readme-collection-desktop.png) |
-| **Player** | **Gig packing list** |
-| ![Two-column player with spinning record and queue](docs/screenshots/readme-player-desktop.png) | ![Gig load-out checklist](docs/screenshots/readme-gigs-desktop.png) |
+| ![Map view with Kallax 1, the Crater bag and a milk crate, K1·A1 open in the side panel](docs/screenshots/readme-map-desktop.png) | ![Columns view with the spots list, A1's records and the chosen record](docs/screenshots/readme-columns-desktop.png) |
+| **Collection: full height, with every container along the top** | **Shop floor look (light)** |
+| ![Collection table with the container bar and Bag and Home spot columns](docs/screenshots/readme-collection-desktop.png) | ![Map view in the light Shop floor look](docs/screenshots/readme-shop-map-desktop.png) |
+| **Player: pinch the record to grow the label, drag to seek** | **Gig packing list** |
+| ![Now playing with the spinning record and queue](docs/screenshots/readme-player-desktop.png) | ![Gig load-out checklist](docs/screenshots/readme-gigs-desktop.png) |
 | **Add a record: barcode and duplicate warning** | **QR stickers** |
 | ![Add record with barcode candidates and a duplicate warning](docs/screenshots/readme-add-record-dupe-desktop.png) | ![QR sticker sheet per unit and cubby](docs/screenshots/readme-stickers-desktop.png) |
 
 <details><summary>Phone screenshots</summary>
 
-| Room | Kallax 1 | Collection | Player | Gigs | Add record |
+| Map | Tap a cubby: its records as an overlay | Columns | Collection | Player | Add record |
 |---|---|---|---|---|---|
-| ![](docs/screenshots/readme-booth-room-mobile.png) | ![](docs/screenshots/readme-room-mobile.png) | ![](docs/screenshots/readme-collection-mobile.png) | ![](docs/screenshots/readme-player-mobile.png) | ![](docs/screenshots/readme-gigs-mobile.png) | ![](docs/screenshots/readme-add-record-dupe-mobile.png) |
+| ![](docs/screenshots/readme-map-mobile.png) | ![](docs/screenshots/readme-overlay-mobile.png) | ![](docs/screenshots/readme-columns-mobile.png) | ![](docs/screenshots/readme-collection-mobile.png) | ![](docs/screenshots/readme-player-mobile.png) | ![](docs/screenshots/readme-add-record-dupe-mobile.png) |
 
 </details>
 
@@ -41,8 +41,9 @@ The app opens in the dark **Booth** look. The switch at the top (◐) changes it
 
 **Where things are**
 - **Spots, not folders.** Each unit has an ID (K1, B1, C1). Cubbies are rows A, B, C… by columns 1, 2, 3…, so `K1·B2` is Kallax 1, second row, second cubby. Any cubby can have a subtitle such as "A2 (Acid)".
-- **Your room on one screen.** Every rack, bag and crate fits on screen. Click one and it zooms in.
-- **Cue bar.** A row along the top lists every cubby and bag. Tap one to open it, or drop a record on it.
+- **Map.** Your furniture on a canvas: drag to pan, pinch or scroll to zoom, double-tap a unit. Tap a cubby, bag or crate for its records in a side panel, or an overlay on phones. Nothing on the page scrolls.
+- **Columns.** Spots, records and the record, side by side on desktop and one at a time on phones with push/pop and ‹ › stepping between spots.
+- **Container bar.** Above the Collection table every spot is a pad: tap to filter, drop a row to move. Pads size to their text.
 - **Search to shelf.** Search by artist, title, label, cat no., BPM, key, tags, notes or cubby name, then jump straight to the spot.
 - **64 furniture presets and 41 record bags.** Every Kallax/Expedit size, other IKEA, Glorious, Zomo, Pro-Ject, Wax Stacks, crates and boxes, plus UDG, Magma, Zomo, Odyssey, Reloop, Gator and more. Each comes in its real finishes or colors, or a custom color. New bags start as "Bag 1", "Bag 2".
 
@@ -54,12 +55,15 @@ The app opens in the dark **Booth** look. The switch at the top (◐) changes it
 - **Bags remember where records came from.** Scan the whole bag to reconcile it, and Put back sends everything home.
 
 **Playing and gigs**
-- **Player.** Spinning vinyl, a large-font queue, YouTube links and a redundant timeout/fallback chain. It slides up from the bottom the first time something plays.
+- **Player.** Spinning vinyl, a large-font queue, YouTube links and discogs-stream's timeout/fallback chain. It slides up when something plays and slides out from its tab. Drag the bar to seek, pinch the record to grow the label. The next record's link is cued in a standby player, and links that play are saved back to the record.
 - **30-second previews.** Audio only, no video, like discogs-stream.
 - **Gigs.** Plan, load out, log what you played at the gig, and check in back home (anything missing gets flagged).
 - **Set history.** Last played, play counts, and a "Not played in a year" dig list.
 
 **Your data**
+- **Backups, save and load.** Four rolling backups, made before every import, restore and reset, with a picker. Save the collection to a file and load it back.
+- **Discogs import and upload.** Load your Discogs CSV export (duplicates skipped, new records land as Unplaced) and queue uploads to your Discogs collection.
+- **Density.** Regular or compact rows, bars and buttons.
 - **Collection spreadsheet.** Edit details in place, use the Bag and Home spot columns for the post-gig put-back, and export to CSV. Laid out for landscape.
 - **Adding records.** By photo, typing or barcode, with a duplicate warning ("You already own this. It's in K1·A1").
 - **Discogs.** Your edits never overwrite the original, and locations can be saved to a Discogs "Location" field.
@@ -78,8 +82,8 @@ Barcode lookups and Discogs sync are simulated in the prototype and say so in th
 | [BUGS.md](BUGS.md) | Known bugs and what's been fixed |
 | [QA.md](QA.md) | Test catalog, error-handling audit, code review, swarm work packages |
 | [CLAUDE.md](CLAUDE.md) | Rules for Claude and agent swarms working in this repo |
-| [docs/](docs/) | Architecture, data model, player port spec, roadmap, infrastructure |
-| [research/](research/) | Furniture, bag and feature research behind the presets |
+| [docs/](docs/) | Architecture, data model, player port spec, interaction spec, review-swarm report, roadmap, infrastructure |
+| [research/](research/) | Furniture, bag, feature, competitor and Discogs API research |
 | [logos/](logos/) | The logo (concept 3, "Half-pulled") and the other directions |
 
 ## Quick start
@@ -89,10 +93,10 @@ node scripts/build.mjs        # wraps crates.html into dist/index.html
 npx serve dist                # open http://localhost:3000
 
 pip install --break-system-packages playwright
-CRATES_NO_PATCH=1 python3 tests/test_crates.py   # 53 Playwright tests
+CRATES_NO_PATCH=1 python3 tests/test_crates.py   # 65 Playwright tests
 ```
 
-The prototype keeps its data in your browser (localStorage), so each browser has its own collection. The database schema lives in `app/db/` (Neon Postgres; run 001–004 in order).
+The prototype keeps its data in your browser (localStorage), so each browser has its own collection. The database schema lives in `app/db/` (Neon Postgres; run 001–005 in order; 005 mirrors discogs-stream's tables and adds backups).
 
 ## Deploy
 

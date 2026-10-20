@@ -745,7 +745,9 @@ function drawUnit(u, big=false, opts={}){
 /* ---------- state ---------- */
 const KEY='crates-demo-v3';
 let S; try{ S = JSON.parse(localStorage.getItem(KEY)) }catch(e){}
-if(!S || S.v!==2 || !S.units.every(u=>u.kind==='bag'?bpreset(u.preset):fpreset(u.preset))) S = seedExtras(seed());
+if(!S || S.v!==2 || !Array.isArray(S.units) || !Array.isArray(S.records)) S = seedExtras(seed());
+// Never throw away a saved collection because a preset key changed: point unknown presets at a close match instead.
+S.units.forEach(u=>{ if(u.kind==='bag' ? !bpreset(u.preset) : !fpreset(u.preset)) u.preset = u.kind==='bag' ? BAGS[0].key : (u.kind==='shelf' ? (FURNITURE.find(x=>x.kind==='shelf'&&x.custom)||FURNITURE.find(x=>x.kind==='shelf')).key : (FURNITURE.find(x=>x.kind==='crate')||FURNITURE[0]).key); });
 S = migrate(S);
 const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(S)) }catch(e){} };
 const V = {view:'unit', unit:'K1', cell:'0-0', dig:0, focus:null, flash:null, pl:null, gig:null, stale:false, sel:null};
@@ -979,7 +981,7 @@ function openAdd(){
   const demoBag = {id:'X',name:'Bag',kind:'bag',preset:'udg-ultimate-60',finish:BAGS[0].colors[0]};
   openSheet(`<div class="sheet-head"><h2>Add</h2><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
     <div class="choice">
-      <button data-act="add-record"><span class="ico">${thumb(S.records[0])}</span><b>Record</b><span>Photograph a shelf or type it in, then file it to a slot.</span></button>
+      <button data-act="add-record"><span class="ico">${S.records[0]?thumb(S.records[0]):'<span class="thumb" style="background:var(--surface-2)"></span>'}</span><b>Record</b><span>Photograph a shelf or type it in, then file it to a slot.</span></button>
       <button data-act="add-furniture"><span class="ico" style="width:90px">${drawShelf(demoShelf,false,{empty:true})}</span><b>Furniture</b><span>Kallax and other shelving, crates and record boxes.</span></button>
       <button data-act="add-bag"><span class="ico" style="width:120px;transform:scale(.5);transform-origin:bottom left">${drawBag(demoBag,{empty:true,noTag:true})}</span><b>Record bag</b><span>UDG, Magma and more. Pick its color and give it a name.</span></button>
     </div>`);
@@ -1082,6 +1084,7 @@ function customSwatch(px, fin){
 document.addEventListener('change', e=>{
   const px = e.target.dataset?.custom; if(!px) return;
   const fin = {name:'Custom', hex:e.target.value};
+  if(px==='af'||px==='ab') draft.finish = fin;   // state first, so it's correct immediately; redraw after the event
   setTimeout(()=>applyCustom(px, fin), 0);
 });
 function applyCustom(px, fin){
@@ -2049,7 +2052,7 @@ document.addEventListener('keydown', e=>{ if(e.key==='Enter' && e.target.dataset
 let tQT;
 document.addEventListener('input', e=>{ if(e.target.id==='t-q'){ T.q = e.target.value; clearTimeout(tQT); tQT = setTimeout(()=>{ const pos = e.target.selectionStart; render(); const q = $('#t-q'); if(q){ q.focus(); q.setSelectionRange(pos,pos); } }, 160); } });
 function putBack(recs){ const list = recs.filter(r=>hasHome(r) && !same(r.loc,r.home)); lastUndo = snap(list); list.forEach(r=>place(r,{...r.home},{setHome:false})); return list.length; }
-function csvCell(v){ v = String(v??''); return /[",\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }
+function csvCell(v){ v = String(v??''); if(/^[=+\-@\t\r]/.test(v)) v = "'"+v; return /[",\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }
 async function exportCSV(){
   const head = ['Artist','Title','Label','Cat no.','Year','Style','BPM','Key','Rating','Tags','Notes','Now','Home spot','Bag','Last played','Plays'];
   const lines = [head.join(',')].concat(tRows().map(r=>[r.artist,r.title,r.label,r.catno,r.year,r.style,r.bpm,r.key,r.rating||'',r.tags.join('; '),r.notes,addrLong(r.loc),hasHome(r)?addrLong(r.home):'',inBagNow(r)?unit(r.loc.u).name:'',lastPlayed(r),(r.plays||[]).length].map(csvCell).join(',')));

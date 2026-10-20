@@ -109,7 +109,7 @@ a{color:inherit}
 .kallax.big{--g:10px}
 .kallax.big .cube{cursor:pointer;--sw:9px}
 .kallax.big .cube .lbl,.kallax.big .cube .cnt{font-size:12.5px;top:8px}
-.kallax.big .cube .lbl{left:9px}.kallax.big .cube .cnt{right:9px}
+.kallax.big .cube .lbl{left:9px;right:30px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kallax.big .cube .cnt{right:9px}
 .kallax.big .cube[aria-pressed="true"]{outline:3px solid var(--accent);outline-offset:-3px}
 .cube.flash{animation:flash 1.1s ease 2}
 @keyframes flash{50%{box-shadow:inset 0 0 0 5px var(--accent)}}
@@ -446,7 +446,7 @@ label.li input{width:18px;height:18px;margin:0 11px;accent-color:var(--accent)}
 .ctable td.stick,.ctable td.stick2{box-shadow:1px 0 0 var(--line)}
 .ctable .cb{width:36px;text-align:center}
 .ctable .cb input{width:16px;height:16px;accent-color:var(--accent)}
-.ctable .thumb{width:32px;height:32px}
+.ctable .thumb{width:32px;height:32px}.ctable .mini-btn .thumb svg{width:100%;height:100%}
 .ce{border:1px solid transparent;background:none;border-radius:6px;padding:5px 6px;font:inherit;color:inherit;width:100%;min-width:0}
 .ce:hover{border-color:var(--line)}
 .ce:focus{border-color:var(--accent);background:var(--surface);outline:none}
@@ -1052,9 +1052,9 @@ function bindDraftForm(px){
     if(!id){ toast('Give it a short ID, like K2'); return; }
     if(unit(id)){ toast(`ID ${id} is taken. Pick another.`); return; }
     let u;
-    if(px==='ab'){ u = {id,name:draft.name.trim()||id,preset:draft.preset,kind:'bag',rows:1,cols:1,finish:draft.finish,photo:draft.photo}; }
+    if(px==='ab'){ u = {id,name:draft.name.trim()||id,preset:draft.preset,kind:'bag',rows:1,cols:1,finish:draft.finish,photo:draft.photo,labels:{}}; }
     else { const p = fpreset(draft.preset);
-      u = {id,name:draft.name.trim()||id,preset:p.key,kind:p.kind,rows:p.kind==='shelf'?draft.rows:1,cols:p.kind==='shelf'?draft.cols:1,finish:draft.finish,photo:draft.photo}; }
+      u = {id,name:draft.name.trim()||id,preset:p.key,kind:p.kind,rows:p.kind==='shelf'?draft.rows:1,cols:p.kind==='shelf'?draft.cols:1,finish:draft.finish,photo:draft.photo,labels:{}}; }
     S.units.push(u); closeSheet(); V.view='unit'; V.unit=u.id; V.cell='all'; render(); toast(`${u.name} added to your room`);
   };
 }
@@ -1343,7 +1343,7 @@ function lookupBarcode(raw){
 let zxingLoading = null;
 function loadZXing(){
   if(window.ZXing) return Promise.resolve(window.ZXing);
-  return zxingLoading ||= new Promise((res,rej)=>{ const s = document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js'; s.onload=()=>res(window.ZXing); s.onerror=()=>{ zxingLoading=null; rej('blocked'); }; document.head.appendChild(s); setTimeout(()=>rej('timeout'), 12000); });
+  return zxingLoading ||= new Promise((res,rej)=>{ const s = document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js'; s.onload=()=>res(window.ZXing); s.onerror=()=>{ zxingLoading=null; rej('blocked'); }; document.head.appendChild(s); setTimeout(()=>{ zxingLoading=null; rej('timeout'); }, 12000); });
 }
 async function scanBarcodePhoto(file){
   if(!file) return;
@@ -1411,8 +1411,8 @@ function openStale(){
 
 /* ---- cubby subtitle, whole-cubby move, swap, multi-select ---- */
 document.addEventListener('change', e=>{
-  if(e.target.id==='cell-name'){ const u = unit(V.unit); const v = e.target.value.trim(); if(v) u.labels[V.cell]=v; else delete u.labels[V.cell];
-    inCell(u.id,V.cell).forEach(enqueueSync); setTimeout(()=>{ render(); toast(v?`${cellLabel(u,V.cell)} is now “${v}”`:`Subtitle removed from ${cellLabel(u,V.cell)}`); },0); }
+  if(e.target.id==='cell-name'){ const u = unit(V.unit), k = V.cell; const v = e.target.value.trim(); u.labels ||= {}; if(v) u.labels[k]=v; else delete u.labels[k];
+    inCell(u.id,k).forEach(enqueueSync); setTimeout(()=>{ render(); toast(v?`${cellLabel(u,k)} is now “${v}”`:`Subtitle removed from ${cellLabel(u,k)}`); },0); }
   if(e.target.dataset?.sel){ const id = e.target.dataset.sel; e.target.checked ? V.sel.add(id) : V.sel.delete(id); setTimeout(render,0); }
 });
 document.addEventListener('keydown', e=>{ if(e.key==='Enter' && e.target.id==='cell-name'){ e.preventDefault(); e.target.blur(); } });
@@ -1428,7 +1428,7 @@ function openCubbyMove(mode){
 function cubbyMove(to){
   const u = unit(V.unit), from = V.cell, recs = inCell(u.id, from);
   const keepLabel = $('#cm-label')?.checked !== false;
-  const tu = unit(to.u), lab0 = JSON.stringify(u.labels), lab1 = JSON.stringify(tu.labels||{});
+  u.labels ||= {}; const tu = unit(to.u); tu.labels ||= {}; const lab0 = JSON.stringify(u.labels), lab1 = JSON.stringify(tu.labels);
   lastUndo = snap(recs, ()=>{ u.labels = JSON.parse(lab0); tu.labels = JSON.parse(lab1); });
   recs.forEach(r=>place(r,to));
   if(tu.kind==='shelf' && keepLabel && u.labels[from]){ tu.labels[to.c] = u.labels[from]; if(!(tu===u && to.c===from)) delete u.labels[from]; }
@@ -1441,7 +1441,7 @@ function cubbySwap(to){
   const u = unit(V.unit), a = {u:u.id,c:V.cell}, tu = unit(to.u);
   const A1 = inCell(a.u,a.c), B1 = inCell(to.u,to.c);
   const keepLabel = $('#cm-label')?.checked !== false;
-  const lab0 = JSON.stringify(u.labels), lab1 = JSON.stringify(tu.labels);
+  u.labels ||= {}; tu.labels ||= {}; const lab0 = JSON.stringify(u.labels), lab1 = JSON.stringify(tu.labels);
   lastUndo = snap([...A1,...B1], ()=>{ u.labels = JSON.parse(lab0); tu.labels = JSON.parse(lab1); });
   A1.forEach(r=>place(r,to)); B1.forEach(r=>place(r,a));
   if(keepLabel){ const la = u.labels[a.c], lb = tu.labels[to.c]; if(lb) u.labels[a.c]=lb; else delete u.labels[a.c]; if(la) tu.labels[to.c]=la; else delete tu.labels[to.c]; }
@@ -1573,7 +1573,7 @@ function renderStickers(){
     <div class="row" style="margin-top:10px"><button class="chip" data-act="stk-cub" aria-pressed="${stk.cubbies}">One per cubby too</button>
       <span class="muted" style="font-size:13px;margin-left:6px">Size</span>${[1,1.5,2].map(z=>`<button class="chip code" data-act="stk-size" data-z="${z}" aria-pressed="${stk.size===z}">${z}″</button>`).join('')}</div>
     ${ok?`<div class="stickers" style="--sz:${stk.size*70}px">${items.map(it=>`<div class="sticker" title="${esc(BASE_URL+'#'+it.token)}">${stickerSVG(it, stk.size)}</div>`).join('')}</div>
-    <p class="muted" style="font-size:12.5px;margin:12px 0 0">${items.length} sticker${items.length===1?'':'s'} on ${pages} letter page${pages===1?'':'s'}, printed at actual size. Each code opens a link like <span class="code">${esc(BASE_URL)}#K1-A2</span>${IN_ARTIFACT?'. Once Crates has its own site, the codes point there.':'.'}</p>
+    <p class="muted" style="font-size:12.5px;margin:12px 0 0">${items.length} sticker${items.length===1?'':'s'} on ${pages} letter page${pages===1?'':'s'}, printed at actual size. Each code opens a link like <span class="code" style="overflow-wrap:anywhere">${esc(BASE_URL)}#K1-A2</span>${IN_ARTIFACT?'. Once Crates has its own site, the codes point there.':'.'}</p>
     <div class="row" style="margin-top:12px">${IN_ARTIFACT?'':`<button class="btn primary" data-act="stk-print">Print</button>`}<button class="btn ${IN_ARTIFACT?'primary':''}" data-act="stk-save" data-f="html">Save print-ready page</button><button class="btn" data-act="stk-save" data-f="svg">Save SVG</button><button class="btn" data-act="stk-save" data-f="png">Save PNG</button></div>
     <div id="stk-msg"></div>`:`<div class="notice">The QR generator didn't load, so stickers can't be drawn right now.</div>`}`);
 }
@@ -1612,13 +1612,14 @@ function printStickers(){ $('#print-sheet').innerHTML = sheetPages(stickerItems(
 
 /* ---- deep links: #K1 or #K1-A2 ---- */
 function routeHash(){
-  const m = decodeURIComponent(location.hash.slice(1)).match(/^([A-Za-z0-9]+?)(?:-([A-Za-z]{1,2})(\d{1,2}))?$/);
+  let h=''; try{ h = decodeURIComponent(location.hash.slice(1)); }catch(e){ return; } const m = h.match(/^([A-Za-z0-9]+?)(?:-([A-Za-z]{1,2})(\d{1,2}))?$/);
   if(!m) return;
   const u = unit(m[1].toUpperCase()); if(!u) return;
   V.view='unit'; V.unit=u.id; V.cell='all'; V.dig=0; V.sel=null; V.stale=false;
   if(m[2] && u.kind==='shelf'){ const L = m[2].toUpperCase(); const row = L.length===1 ? L.charCodeAt(0)-65 : 26+L.charCodeAt(1)-65; const col = +m[3]-1;
     if(row>=0 && row<u.rows && col>=0 && col<u.cols){ V.cell = row+'-'+col; V.flash = V.cell; } }
   closeSheet(); render(); setTimeout(()=>{ V.flash=null; }, 2600);
+  try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){}
 }
 window.addEventListener('hashchange', routeHash);
 
@@ -1895,8 +1896,8 @@ const A = {
       <p class="muted" style="margin-top:0">Every record in this playlist moves into the bag you pick. Their home slots stay the same, so unpacking puts them back.</p>
       <div class="targets">${bags.map(b=>`<div class="target"><div class="name">${esc(b.name)} <span class="idtag">${b.id}</span></div><button class="tbag" style="background:${esc(b.finish?.hex)}" data-act="pack-to" data-u="${b.id}">${esc(b.name)}</button></div>`).join('')}</div>`); },
   'pack-to':d=>{ const p=curPl(); const moves = p.items.map(rec).filter(r=>r && r.loc.u!==d.u); lastUndo = snap(moves); moves.forEach(r=>place(r,{u:d.u,c:'0-0'})); closeSheet(); render(); toast(`${moves.length} packed into ${unit(d.u).name}`, true); },
-  'play-rec':d=>{ const list = inCell(V.unit, V.cell); const i = list.findIndex(r=>r.id===d.r); const u=unit(V.unit); setQueue(list, Math.max(0,i), u.kind==='shelf'&&V.cell!=='all'?u.id+'·'+cellLabel(u,V.cell):u.name); },
-  'play-unit':()=>{ const u=unit(V.unit); setQueue(inCell(V.unit,V.cell),0,u.kind==='shelf'&&V.cell!=='all'?u.id+'·'+cellLabel(u,V.cell):u.name); },
+  'play-rec':d=>{ const list = inCell(V.unit, V.cell).filter(r=>!V.stale||isStale(r)); const i = list.findIndex(r=>r.id===d.r); const u=unit(V.unit); setQueue(list, Math.max(0,i), u.kind==='shelf'&&V.cell!=='all'?u.id+'·'+cellLabel(u,V.cell):u.name); },
+  'play-unit':()=>{ const u=unit(V.unit); setQueue(inCell(V.unit,V.cell).filter(r=>!V.stale||isStale(r)),0,u.kind==='shelf'&&V.cell!=='all'?u.id+'·'+cellLabel(u,V.cell):u.name); },
   'play-all':()=>setQueue(S.records,0,'Whole collection'),
   'p-toggle':()=>toggle(), 'p-next':()=>next(), 'p-prev':()=>prev(),
   'p-at':d=>playAt(+d.i),

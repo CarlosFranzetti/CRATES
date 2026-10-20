@@ -900,7 +900,80 @@ def n13_mobile_no_errors(browser, url):
         a.close()
 
 
-def n14_readme_shots(browser, url):
+def n14_collection(a):
+    a.click("#tab-table")
+    check(a.ev("V.view") == "table", "Collection tab did not open")
+    rows = lambda: a.page.locator(".ctable tbody tr:has(input[data-tsel])")
+    check(rows().count() == 10, f"rows={rows().count()}")
+    check(a.page.locator("[data-act=t-back-all]").inner_text().strip() == "Put 3 back home", "Put N back home label")
+    a.click("[data-act=t-filt][data-f=bag]")
+    check(rows().count() == 3, f"In a bag shows {rows().count()}")
+    a.click("[data-act=t-filt][data-f=all]")
+    # inline edit + Enter
+    t = a.page.locator("input[data-tedit=title][data-r=r9]")
+    t.fill("No UFOs (Vocal)"); t.press("Enter")
+    check(a.ev("rec('r9').title") == "No UFOs (Vocal)", "title not saved")
+    check("edited" in (t.get_attribute("class") or ""), "edited class missing")
+    check(a.ev("rec('r9').orig.title") == "No UFO's", "Discogs original overwritten")
+    a.page.locator("[data-tedit=rating][data-r=r9]").select_option("4")
+    check(a.ev("rec('r9').rating") == 4, "rating select")
+    # bag select -> Crater, Put back -> home
+    a.page.locator("select[data-tbag=r2]").select_option("B1"); _settle(a)
+    check(a.loc("r2") == "B1:0-0" and a.ev("rec('r2').from.c") == "0-0", f"bag select: {a.loc('r2')}")
+    check("Strings Of Life is in Crater" == a.toast(), a.toast())
+    a.click("[data-act=t-back][data-r=r2]")
+    check(a.loc("r2") == "K1:0-0", f"Put back: {a.loc('r2')}")
+    check(a.toast() == "Back in K1·A1", a.toast())
+    a.page.locator("select[data-tbag=r4]").select_option(""); _settle(a)  # "Take out"
+    check(a.loc("r4") == "K1:0-1", f"Take out: {a.loc('r4')}")
+    # home spot select
+    a.page.locator("select[data-thome=r6]").select_option("K1|1-3"); _settle(a)
+    check(a.ev("rec('r6').home.c") == "1-3", "home not changed")
+    check(a.toast() == "Home spot is now K1·B4", a.toast())
+    a.page.locator("select[data-thome=r5]").select_option("K1|1-0"); _settle(a)  # bagged record: home only
+    check(a.ev("rec('r5').home.c") == "1-0" and a.loc("r5") == "B1:0-0", "bagged record home change moved it")
+    # sort by year desc
+    a.click("[data-act=t-sort][data-k=year]"); a.click("[data-act=t-sort][data-k=year]")
+    yrs = [int(v) for v in a.page.locator("input[data-tedit=year]").evaluate_all("els=>els.map(e=>e.value)")]
+    check(yrs == sorted(yrs, reverse=True), f"year desc {yrs}")
+    check(a.page.locator("[data-act=t-sort][data-k=year]").get_attribute("aria-sort") == "descending", "aria-sort")
+    # bulk select 2 -> put back home (r5 and r10 are in Crater)
+    a.page.locator("input[data-tsel=r5]").click(); _settle(a)
+    a.page.locator("input[data-tsel=r10]").click(); _settle(a)
+    check(a.ev("T.sel.size") == 2 and "2 selected" in _txt(a.page.locator(".selbar")), "selbar")
+    a.click(".selbar [data-act=t-sel-back]")
+    check(a.loc("r5") == "K1:1-0" and a.loc("r10") == "K1:0-1", f"bulk put back {a.loc('r5')} {a.loc('r10')}")
+    check(a.toast() == "2 put back home", a.toast())
+    a.undo(); check(a.loc("r5") == "B1:0-0", "undo bulk put back")
+    # search filter (debounced)
+    a.page.locator("#t-q").fill("crater"); a.page.wait_for_timeout(400)
+    check(rows().count() == 2, f"filter 'crater' rows={rows().count()}")
+    check(a.ev("document.activeElement.id") == "t-q", "filter input lost focus after re-render")
+    a.page.locator("#t-q").fill(""); a.page.wait_for_timeout(400)
+    with a.page.expect_download(timeout=6000) as d:
+        a.click("[data-act=t-csv]")
+    check(d.value.suggested_filename == "crates-collection.csv", "csv name")
+    return f"years desc {yrs[:4]}…"
+
+
+def n14b_collection_layout(browser, url):
+    out = {}
+    for w, h in ((390, 844), (844, 390)):
+        a = App(browser, url, w, h)
+        try:
+            a.click("#tab-table"); _settle(a)
+            out[f"{w}x{h}"] = a.ev("document.documentElement.scrollWidth")
+            a.page.locator("input[data-tsel=r1]").click(); _settle(a)
+            out[f"{w}x{h}-selbar"] = a.ev("document.documentElement.scrollWidth")
+            check(not a.js_errors(), f"errors {a.js_errors()[:2]}")
+        finally:
+            a.close()
+    bad = {k: v for k, v in out.items() if v > int(k.split("x")[0])}
+    check(not bad, f"horizontal page overflow: {bad}")
+    return str(out)
+
+
+def n15_readme_shots(browser, url):
     made = []
     for label, (w, h) in (("desktop", (1280, 900)), ("mobile", (390, 844))):
         a = App(browser, url, w, h, "light")
@@ -928,10 +1001,24 @@ def n14_readme_shots(browser, url):
             a.click("#player .pinfo"); a.page.wait_for_selector("#np-sheet"); _settle(a, 450); shot("player")
             a.page.keyboard.press("Escape")
             a.click("#tab-pl"); top(); shot("playlists", True)
+            if label == "mobile":
+                a.click("#tab-table"); top(); shot("collection", True)
             check(not a.js_errors(), f"errors: {a.js_errors()[:2]}")
         finally:
             a.close()
-    return f"{len(made)} files"
+    a = App(browser, url, 1440, 900, "light")  # wide desktop: collection + two-column player
+    try:
+        a.wait_link_mode()
+        a.click("#tab-table"); a.ev("document.querySelector('.toast')?.remove()"); a.page.mouse.move(0, 0); _settle(a, 150)
+        a.page.screenshot(animations="disabled", path=str(SHOTS / "readme-collection-desktop.png")); made.append("readme-collection-desktop.png")
+        a.click("#player .pinfo"); a.page.wait_for_selector("#np-sheet"); _settle(a, 450)
+        L = a.page.locator(".np-left").bounding_box(); R = a.page.locator(".np-right").bounding_box()
+        check(L and R and L["x"] + L["width"] <= R["x"] + 1, f"player not two-column at 1440x900: left={L} right={R}")
+        a.page.screenshot(animations="disabled", path=str(SHOTS / "readme-player-desktop.png"))
+        check(not a.js_errors(), f"errors: {a.js_errors()[:2]}")
+    finally:
+        a.close()
+    return f"{len(made)} files (player-desktop at 1440x900)"
 
 
 # ---- probes for bugs found while writing the N-series
@@ -989,6 +1076,12 @@ def x13_cube_label_overlap(browser, url):
     check(not bad, f"cubby subtitle overlaps the record count on the big shelf: {bad}")
 
 
+def x14_table_thumbs(a):
+    a.click("#tab-table")
+    w = a.ev("(()=>{const t=document.querySelector('.ctable .thumb');return [t.getBoundingClientRect().width,t.querySelector('svg').getBoundingClientRect().width]})()")
+    check(w[1] >= w[0] - 1, f"collection cover art draws at {w[1]}px inside a {w[0]}px thumb (.mini-btn svg rule shrinks it)")
+
+
 TESTS += [
     ("N01 Duplicate warning", n01_dupes), ("N02 Barcode lookup", n02_barcode),
     ("N03 Discogs Location sync", n03_discogs_sync), ("N04 Cubby subtitle", n04_cubby_subtitle),
@@ -996,14 +1089,17 @@ TESTS += [
     ("N07 Multi-select move", n07_multi_select), ("N08 Came-from", n08_came_from),
     ("N09 Set history + stale", n09_set_history), ("N10 Gigs", n10_gigs),
     ("N11 QR stickers", n11_stickers), ("N12 Deep links", n12_deep_links),
-    ("N13 390px + no errors on new flows", n13_mobile_no_errors), ("N14 README screenshots", n14_readme_shots),
+    ("N13 390px + no errors on new flows", n13_mobile_no_errors),
+    ("N14 Collection table", n14_collection), ("N14b Collection 390px + 844x390", n14b_collection_layout),
+    ("N15 README screenshots", n15_readme_shots),
     ("X9 Subtitle on a just-added shelf", x09_subtitle_on_new_shelf),
     ("X10 Named cubby into a just-added shelf", x10_cubby_move_into_new_shelf),
     ("X11 Subtitle toast after blur-by-click", x11_subtitle_toast_names_right_cubby),
     ("X12 Same sticker link twice", x12_hash_cleared_after_nav),
     ("X13 Cube subtitle vs count overlap", x13_cube_label_overlap),
+    ("X14 Collection thumbnails full size", x14_table_thumbs),
 ]
-BROWSER_LEVEL |= {n13_mobile_no_errors, n14_readme_shots, x13_cube_label_overlap}
+BROWSER_LEVEL |= {n13_mobile_no_errors, n14b_collection_layout, n15_readme_shots, x13_cube_label_overlap}
 
 
 def main():

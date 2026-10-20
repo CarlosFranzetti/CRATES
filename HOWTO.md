@@ -20,8 +20,11 @@ This guide describes the prototype as it exists today. Where something is a demo
 
 ## Find your way around
 
-- Top bar: the tabs **Room**, **Playlists** and **Gigs**; the **Add** button; the **Settings** gear.
-- Search box under the bar.
+- Top bar on a desktop: the tabs **Room**, **Collection**, **Playlists** and **Gigs**; the search box; the **Add** button; the look switch, **Undo** and the **Settings** gear. On a phone the tabs move to a bar at the bottom with **Add** in the middle.
+- Nothing on the page scrolls. Each view scrolls inside itself, so the tabs and the player never move.
+- **Room** has two layouts, picked with the Map / Columns switch next to the title (remembered in Settings):
+  - **Map:** your furniture drawn on a canvas. Drag to pan, pinch or scroll to zoom, double-tap a unit to zoom to it, **Fit room** to see everything. Tap a cubby, bag or crate and its records appear in the panel on the right (desktop) or in a sheet that slides up from the bottom (phone). Drag the sheet's handle to peek, half or full.
+  - **Columns:** spots on the left, the records in the chosen spot in the middle, the chosen record on the right. On a phone you see one column at a time; the back button pops, and ‹ › next to the spot name step to the neighbouring spot.
 - Once something is queued, a mini player sits at the bottom. Tap it to open the full player.
 - Codes look like `K1·B2`: unit `K1`, cubby `B2`. The unit ID is always there so the code never looks like a side-B track.
 
@@ -86,7 +89,7 @@ Open a unit, tap a cubby chip (for example `A2`), and type in "Name A2, e.g. Hou
 
 ## Flip through a place
 
-1. In **Room**, tap a unit.
+1. In a spot's panel, tap **More… → Flip through** (or search for a unit).
 2. Tap **All** to see everything in it, or a cubby chip (`A1`, `B3`) to see one cubby. The number on each chip is its record count.
 3. Swipe the sleeves left or right, tap the arrows, tap a neighbor sleeve, or press the left and right arrow keys on a keyboard.
 4. Below the sleeves you see the record's details, where it is, where it came from if it is in a bag, and its home slot if it is away.
@@ -200,10 +203,20 @@ Printing tips:
 
 ## Settings
 
+- **Look:** Booth (dark, the default), Shop floor (light) or match your device. The ◐ button in the top bar cycles the same three.
+- **Room layout:** Map or Columns.
+- **Density:** Regular or Compact. Compact tightens rows, chips, the container bar and the tab bar, which helps on a phone.
 - **Accent color:** Signal red, Brass or Booth cyan.
 - **Save locations to Discogs:** see above.
-- **Reset demo collection.**
-- The page follows your phone's light or dark mode, and reduced-motion setting.
+- **Your collection:** Backups, Save to file, Import from Discogs, Reset demo collection (see the next section).
+- The page follows your reduced-motion setting.
+
+## Back up, save, load and import
+
+- **Backups** (Settings → Backups) keeps the four most recent snapshots in this browser. One is made automatically before every import, restore and reset; **Back up now** adds one by hand. The oldest is dropped when all four slots are used. **Restore** swaps a backup in (after backing up the current collection first), ✕ deletes one.
+- **Save to file** downloads `crates-YYYY-MM-DD.json`, the whole collection. **Load from file** reads one back (with a backup first). Keep a saved file somewhere safe; backups live only in this browser.
+- **Import from Discogs:** on discogs.com go to your Collection → Export and download the CSV, then load it here. Records you already own (same artist and title) are skipped, and new ones land as **Unplaced**, which you file from the Collection tab (Home spot column) or by dragging. A demo import of 6 records shows the flow. Importing straight from the Discogs API needs the server (research/discogs-api.md), so the prototype reads the export instead.
+- **Upload to your Discogs collection** queues every record for the Discogs sync; the full app sends the adds and the Location field from the server within the 60-requests-a-minute limit. In the prototype, Settings → **Sync now (demo)** marks them done.
 
 ## When something does not look right
 

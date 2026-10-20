@@ -1350,6 +1350,226 @@ TESTS += [
 ]
 BROWSER_LEVEL |= {r01_room_fits, r03_drag, r06_player_slides_in, r10_density_and_sheet}
 
+# ---------------------------------------------------------------- review swarm (docs/REVIEW-SWARM.md)
+_GEN = """(([nu, nr]) => {
+  const U=[]; for(let i=0;i<nu;i++){ const k=i%3; U.push(k===0?{id:'K'+(i+1),name:'Kallax '+(i+1),preset:S.units[0].preset,kind:'shelf',rows:2+(i%3),cols:4,finish:S.units[0].finish,photo:null,labels:{}}:k===1?{id:'B'+(i+1),name:'Bag '+(i+1),preset:S.units[1].preset,kind:'bag',rows:1,cols:1,finish:S.units[1].finish,photo:null,labels:{}}:{id:'C'+(i+1),name:'Crate '+(i+1),preset:S.units[2].preset,kind:'crate',rows:1,cols:1,finish:S.units[2].finish,photo:null,labels:{}}); }
+  const base=S.records, recs=[]; for(let i=0;i<nr;i++){ const b=base[i%base.length], u=U[i%U.length], c=u.kind==='shelf'?((i%u.rows)+'-'+(i%u.cols)):'0-0'; recs.push({...JSON.parse(JSON.stringify(b)), id:'g'+i, title:b.title+' '+i, loc:{u:u.id,c}, home:u.kind==='shelf'?{u:u.id,c}:null}); }
+  S.units=U; S.records=recs; V.unit=U[0].id; V.cell='0-0'; V.dig=0; M.fitted=false; M.moved=false; render(); return S.records.length;
+})"""
+
+
+def x15_phone_reveal(browser, url):
+    """B-115: mapReveal read `vh` inside its own initializer, so every reveal on a phone threw (deep link, search, arrows)."""
+    a = App(browser, url, 390, 844, legacy=False)
+    try:
+        a.ev("M.sheet='half'; goSpot('B1','all')"); _settle(a)
+        check(a.ev("V.unit") == "B1", "goSpot on a phone did not select the bag")
+        a.ev("location.hash='#C1'"); _settle(a, 300)
+        check(a.ev("V.unit") == "C1", "bag/crate deep link on a phone did not select it")
+        a.page.fill("#q", "voodoo"); a.page.keyboard.press("Enter"); _settle(a, 200)
+        check(a.ev("V.unit") == "B1", "search result did not open the record's spot")
+        a.ev("document.activeElement.blur()"); a.page.keyboard.press("ArrowDown"); _settle(a, 150)
+        check(a.ev("V.unit") == "C1", f"ArrowDown should step to the next spot, got {a.ev('V.unit')}")
+        check(not a.js_errors(), a.js_errors())
+        return "deep link, search and arrows reveal without errors"
+    finally:
+        a.close()
+
+
+def x16_loaded_file_sanitized(a):
+    """B-116: Load from file trusted ids, colors and YouTube ids, so a crafted collection ran script (stored XSS)."""
+    evil = {"v": 2, "settings": {"accent": "red"}, "playlists": [{"id": "p\"><b>", "name": "P", "color": "red\" onmouseover=\"x", "items": ["r\"><img src=x onerror=window.__pwn=2>"]}], "gigs": [], "recent": [], "syncQueue": [],
+            "units": [{"id": "K1\"><img src=x onerror=window.__pwn=1>", "name": "Evil <i>", "kind": "shelf", "rows": 1, "cols": 2, "preset": "kallax-1x1", "labels": {"0-0": "<b>x</b>", "bad\"": "y"}, "finish": {"name": "x", "hex": "red;background:url(javascript:1)"}, "photo": "x\" onerror=\"window.__pwn=5"}],
+            "records": [{"id": "r\"><img src=x onerror=window.__pwn=2>", "artist": "a", "title": "<img src=x onerror=window.__pwn=6>", "label": "", "year": 1990, "yt": ["x\"onmouseover=\"window.__pwn=3", "5oMUQKLzXH4"], "loc": {"u": "K1\"><img src=x onerror=window.__pwn=1>", "c": "0-1"}, "home": None, "pal": ["#000\"/><image href=x onerror=\"window.__pwn=4", "#fff", "#000"], "pat": 0, "plays": [{"d": "2020-01-01"}, {"d": "<x>"}]}]}
+    a.ev("openBackups()")
+    a.page.set_input_files("#col-load", files=[{"name": "evil.json", "mimeType": "application/json", "buffer": json.dumps(evil).encode()}]); _settle(a, 300)
+    for v in ("map", "columns", "table"):
+        a.ev(f"(()=>{{ if('{v}'!=='table') S.settings.view='{v}'; V.view='{v}'; render(); }})()"); _settle(a, 150)
+    a.ev("V.view='unit';V.unit=S.units[0].id;V.cell='0-1';render()"); _settle(a, 150)
+    check(a.ev("window.__pwn") is None, f"injected markup ran: __pwn={a.ev('window.__pwn')}")
+    check(a.ev("S.units.every(u=>SAFE_ID.test(u.id)) && S.records.every(r=>SAFE_ID.test(r.id)) && S.playlists.every(p=>SAFE_ID.test(p.id))"), "ids not sanitized")
+    check(a.ev("S.records[0].loc.u===S.units[0].id && S.records[0].loc.c==='0-1'"), "the record lost its spot when its unit id was rewritten")
+    check(a.ev("S.playlists[0].items[0]===S.records[0].id"), "playlist lost its record when the record id was rewritten")
+    check(a.ev("JSON.stringify(S.records[0].yt)") == '["5oMUQKLzXH4"]', "bad YouTube id kept")
+    check(a.ev("S.records[0].pal.every(c=>SAFE_HEX.test(c)) && SAFE_HEX.test(S.units[0].finish.hex) && S.units[0].photo===null && SAFE_HEX.test(S.playlists[0].color)"), "colors or photo not sanitized")
+    check(a.ev("S.records[0].plays.length") == 1 and a.ev("Object.keys(S.units[0].labels).join()") == "0-0", "bad plays or cubby keys kept")
+    check(a.ev("document.querySelector('.dig-info h3').textContent.includes('<img')"), "title should render as text")
+    check(not a.js_errors(), a.js_errors())
+    return "ids, colors, photo, YouTube ids, plays and cubby keys sanitized; nothing ran"
+
+
+def x17_imported_record_edit(a):
+    """B-117: records from a Discogs import had no `custom`/`cs`, so Edit details threw on them."""
+    a.ev("importDemoDiscogs()"); _settle(a, 150)
+    rid = a.ev("S.records.find(r=>r.artist==='Kraftwerk').id")
+    a.ev(f"openEditRecord('{rid}')"); _settle(a, 100)
+    check(a.page.locator(".sheet #er-form").count() == 1, "edit sheet did not open for an imported record")
+    a.page.fill("#er-label", "EMI Electrola"); a.click(".sheet button[type=submit]"); _settle(a, 150)
+    check(a.ev(f"rec('{rid}').label") == "EMI Electrola", "label edit not saved")
+    check(a.ev(f"editedSet(rec('{rid}')).has('label')"), "imported label should count as edited against its Discogs original")
+    a.ev("loadCollectionFile && openBackups()")
+    a.page.set_input_files("#col-load", files=[{"name": "bad.json", "mimeType": "application/json", "buffer": b'{"v":2,"units":[{"id":"Z1","kind":"shelf","rows":1,"cols":1}],"records":[{"id":"x","title":"No loc"}]}'}]); _settle(a, 300)
+    check(a.ev("S.records.length") == 1 and a.ev("S.records[0].loc.u") is None, "a sparse but valid file should load with the record unplaced")
+    a.ev("V.view='table';T.filt='all';render()"); _settle(a, 100)
+    a.ev("openBackups()")
+    a.page.set_input_files("#col-load", files=[{"name": "junk.json", "mimeType": "application/json", "buffer": b'{"v":2,"units":"nope","records":[]}'}]); _settle(a, 300)
+    check("isn" in a.toast(), "a broken file should say it isn't a Crates collection")
+    check(not a.js_errors(), a.js_errors())
+    return "imported record edits; sparse file loads; broken file is refused"
+
+
+def x18_big_table_fast(a):
+    """B-118: the Collection table built every shelf into every Home spot select (1.7 s, 53k nodes at 300 records)."""
+    a.ev(_GEN, [30, 300])
+    a.ev("V.view='table';T.filt='all';T.spot=null;render()")
+    t = a.ev("(()=>{ const t=[]; for(let i=0;i<5;i++){ const s=performance.now(); render(); t.push(performance.now()-s); } t.sort((x,y)=>x-y); return t[2]; })()")
+    nodes = a.ev("document.getElementsByTagName('*').length")
+    opts = a.ev("document.querySelectorAll('.ctable option').length")
+    check(nodes < 32000, f"{nodes} DOM nodes at 300 records (53k before the fix)")
+    check(opts < 12000, f"{opts} <option>s at 300 records: Home spot selects are not lazy")
+    sel = a.page.locator("select[data-thome]").nth(3)
+    check(sel.locator("option").count() <= 2, "Home spot select should start with just its current value")
+    sel.focus(); _settle(a, 50)
+    check(sel.locator("option").count() > 20, "Home spot select did not fill in on focus")
+    rid = sel.get_attribute("data-thome")
+    sel.select_option("K4|1-2"); _settle(a, 200)
+    check(a.ev(f"JSON.stringify(rec('{rid}').home)") == '{"u":"K4","c":"1-2"}', "picking a home from a filled-in select did not save")
+    check(not a.js_errors(), a.js_errors())
+    return f"render {t:.0f} ms, {nodes} nodes, {opts} options at 300 records"
+
+
+def x19_phone_gutters_and_resize(browser, url):
+    """B-119/B-120: phones clipped the full-bleed map, sheet and columns by 16px; resizing to a phone left the sheet undraggable."""
+    a = App(browser, url, 390, 844, legacy=False)
+    try:
+        mm = a.ev("(()=>{const m=document.getElementById('main'); return [m.scrollWidth, m.clientWidth]})()")
+        check(mm[0] <= mm[1], f"#main scrolls sideways on a phone: {mm}")
+        y = a.ev("(()=>{const r=document.querySelector('.spot-foot').getBoundingClientRect(); return r.top+r.height/2})()")
+        check(a.ev(f"!!document.elementFromPoint(4,{y}).closest('.spot-panel')"), "left gutter of the sheet is covered")
+        ov = a.ev("(()=>{const t=document.querySelector('.map-tools').getBoundingClientRect(); return [...document.querySelectorAll('.plate')].some(p=>{const r=p.getBoundingClientRect(); return r.right>t.left && r.left<t.right && r.bottom>t.top && r.top<t.bottom;})})()")
+        check(not ov, "zoom tools cover a unit after Fit room")
+        a.page.set_viewport_size({"width": 1440, "height": 900}); _settle(a, 250)
+        a.ev("mapZoomAt(1.4, 300, 300, false)")
+        a.page.set_viewport_size({"width": 390, "height": 844}); _settle(a, 300)
+        check(a.ev("!!document.querySelector('.spot-panel .spot-head').onpointerdown"), "sheet not draggable after resizing to a phone")
+        check(a.ev("document.querySelector('.spot-foot').textContent").startswith("Press and hold"), "phone wording missing after resize")
+        check(not a.js_errors(), a.js_errors())
+        return "no clipped gutter, tools clear of units, sheet re-binds on resize"
+    finally:
+        a.close()
+
+
+def x20_phone_columns_history(browser, url):
+    """B-121: on phones without view transitions, Columns pushed no history, so the system Back left the app; stepping spots stacked entries."""
+    a = App(browser, url, 390, 844, legacy=False)
+    try:
+        a.ev("S.settings.view='columns';V.view='columns';V.col='spots';render()")
+        h0 = a.ev("history.length")
+        a.click(".col-spots .spot-row[data-u=K1][data-c='0-1']"); _settle(a, 200)
+        a.click(".col-recs [data-act=spot-step][data-d='1']"); _settle(a, 150)
+        a.click(".col-recs [data-act=spot-step][data-d='-1']"); _settle(a, 150)
+        check(a.ev("history.length") == h0 + 1, f"history grew by {a.ev('history.length') - h0}, expected 1")
+        a.click(".col-recs .li[data-act=col-rec] >> nth=0"); _settle(a, 200)
+        check(a.ev("V.col") == "record", "row tap did not push the record column")
+        a.page.go_back(); _settle(a, 300)
+        check(a.ev("typeof V") == "object" and a.ev("V.col") == "records", "Back should pop to the records column")
+        a.click(".col-recs [data-act=col-back]"); _settle(a, 300)
+        check(a.ev("V.col") == "spots" and a.ev("history.length") == h0 + 2, "in-app back should pop through history")
+        check(not a.js_errors(), a.js_errors())
+        return "push, step, Back and in-app back stay in step with history"
+    finally:
+        a.close()
+
+
+def x21_sheet_release_velocity(browser, url):
+    """B-122: sheet snapping used the average speed of the whole drag, so a flick at the end of a slow drag was ignored."""
+    a = App(browser, url, 390, 844, legacy=False)
+    try:
+        box = a.page.locator(".spot-panel .grabber").bounding_box()
+        x, y = box["x"] + box["width"] / 2, box["y"] + 2
+        a.page.mouse.move(x, y); a.page.mouse.down()
+        for i in range(1, 7):
+            a.page.mouse.move(x, y - i * 10); a.page.wait_for_timeout(120)
+        a.page.mouse.move(x, y - 60 + 45, steps=3); a.page.mouse.up(); _settle(a, 400)
+        check(a.ev("M.sheet") == "peek", f"a downward flick should drop the sheet to peek, got {a.ev('M.sheet')}")
+        a.page.mouse.move(x, a.page.locator(".spot-panel .grabber").bounding_box()["y"] + 2); a.page.mouse.down()
+        yy = a.page.locator(".spot-panel .grabber").bounding_box()["y"] + 2
+        a.page.mouse.move(x, yy - 250, steps=4); a.page.wait_for_timeout(350); a.page.mouse.up(); _settle(a, 400)
+        check(a.ev("M.sheet") == "half", f"a drag that stops should snap to the nearest detent, got {a.ev('M.sheet')}")
+        check(not a.js_errors(), a.js_errors())
+        return "flick honoured, held drag snaps to nearest"
+    finally:
+        a.close()
+
+
+def x22_storage_full(a):
+    """B-123: a full localStorage dropped every save silently; backups share the quota."""
+    for i in range(4):
+        a.ev(f"backupNow('fill{i}')")
+    a.ev("""(()=>{ const orig = Storage.prototype.setItem; window.__orig = orig;
+      Storage.prototype.setItem = function(k, v){ if(k==='crates-demo-v3' && backups().length > 2){ const e = new DOMException('full','QuotaExceededError'); throw e; } return orig.call(this, k, v); }; })()""")   # IIFE: evaluate() would call a returned function
+    a.ev("(()=>{ const r=rec('r1'); lastUndo=snap([r]); place(r,{u:'C1',c:'0-0'}); render(); })()"); _settle(a, 100)
+    check(a.ev("backups().length") == 2, f"oldest backups not trimmed: {a.ev('backups().length')}")
+    check(a.ev("JSON.parse(localStorage.getItem('crates-demo-v3')).records.find(r=>r.id==='r1').loc.u") == "C1", "change not saved after trimming")
+    check("oldest backup" in a.toast(), "no notice that backups were removed")
+    a.ev("void (Storage.prototype.setItem = function(k, v){ if(k==='crates-demo-v3') throw new DOMException('full','QuotaExceededError'); return window.__orig.call(this, k, v); })")
+    a.ev("localStorage.removeItem('crates-backups'); render()"); _settle(a, 100)
+    check("storage is full" in a.toast(), "no warning when nothing can be saved")
+    a.ev("void (Storage.prototype.setItem = window.__orig)")
+    check(not a.js_errors(), a.js_errors())
+    return "trims oldest backups, then warns"
+
+
+def x23_focus_and_empty_guards(a):
+    """B-124/B-125: closing a sheet dropped focus to <body>; Add > Record with no units threw; CSV cells with a bare CR were not quoted."""
+    a.ev("V.view='map';render()")
+    a.page.locator("[data-act=open-settings]").focus(); a.page.keyboard.press("Enter"); _settle(a, 100)
+    check(a.ev("sheetKind") == "sheet", "settings did not open from the keyboard")
+    a.page.keyboard.press("Escape"); _settle(a, 80)
+    check(a.ev("document.activeElement.dataset.act") == "open-settings", f"focus after Escape: {a.ev('document.activeElement.tagName')}")
+    feel = a.ev("""(()=>{ const b=document.querySelector('.spot-tools .chip'), pv=document.querySelector('button.pv, a.pv');
+      return {ta:getComputedStyle(b).touchAction, slop: pv ? getComputedStyle(pv,'::before').content : 'none'}; })()""")
+    check(feel["ta"] == "manipulation", f"buttons should use touch-action: manipulation, got {feel['ta']}")
+    check(feel["slop"] != "none", "preview buttons have no hit slop")
+    a.ev("S.units=[]; S.records.forEach(r=>{ r.loc={u:null,c:null}; r.home=null; }); V.unit=null; render(); openAdd()")
+    a.click(".sheet [data-act=add-record]"); _settle(a, 80)
+    check("first" in a.toast(), "Add > Record with no units should ask for a unit first")
+    check(a.ev("csvCell('a\\rb')") == '"a\rb"', "bare CR not quoted in CSV")
+    check(not a.js_errors(), a.js_errors())
+    return "focus returns to the trigger; empty-room add and CSV CR handled"
+
+
+TESTS += [
+    ("X15 Phone reveal: deep link, search, arrows", x15_phone_reveal),
+    ("X16 Loaded file is sanitized", x16_loaded_file_sanitized),
+    ("X17 Imported record edit + broken files", x17_imported_record_edit),
+    ("X18 Big Collection table is fast", x18_big_table_fast),
+    ("X19 Phone gutters + resize re-bind", x19_phone_gutters_and_resize),
+    ("X20 Phone columns history", x20_phone_columns_history),
+    ("X21 Sheet release velocity", x21_sheet_release_velocity),
+    ("X22 Storage full", x22_storage_full),
+    ("X23 Focus return + empty-room guards", x23_focus_and_empty_guards),
+]
+
+
+def x24_build_csp_hashes(browser, url):
+    """B-128: the deployed page carries a meta CSP that allows only its own inline scripts by hash; a stale hash would blank the site."""
+    import base64, hashlib, subprocess
+    root = HERE.parent
+    subprocess.run(["node", "scripts/build.mjs"], cwd=root, check=True, capture_output=True)
+    html = (root / "dist" / "index.html").read_text()
+    m = re.search(r'http-equiv="Content-Security-Policy" content="([^"]+)"', html)
+    check(m, "no meta CSP in dist/index.html")
+    want = {"'sha256-" + base64.b64encode(hashlib.sha256(s.encode()).digest()).decode() + "'" for s in re.findall(r"<script>([\s\S]*?)</script>", html)}
+    have = set(re.findall(r"'sha256-[^']+'", m.group(1)))
+    check(want and want <= have, f"{len(want - have)} inline script(s) not covered by the meta CSP")
+    check("unsafe-inline" not in m.group(1), "meta CSP must not allow unsafe-inline")
+    return f"{len(want)} inline scripts hashed"
+
+
+TESTS += [("X24 Build CSP hashes match", x24_build_csp_hashes)]
+BROWSER_LEVEL |= {x15_phone_reveal, x19_phone_gutters_and_resize, x20_phone_columns_history, x21_sheet_release_velocity} | {x24_build_csp_hashes}
+
 
 def main():
     only = sys.argv[1:]

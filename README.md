@@ -5,7 +5,7 @@
   </picture>
 </p>
 
-<p align="center"><b>Vinyl DJ Librarian.</b> Know which shelf, crate or bag every record is in, play it, and pack it for the gig.</p>
+<p align="center"><b>Vinyl DJ Librarian.</b> Version 0.8b. Know which shelf, crate or bag every record is in, play it, and pack it for the gig.</p>
 
 <p align="center"><a href="https://crates-livid.vercel.app/"><b>Open the live app → crates-livid.vercel.app</b></a></p>
 
@@ -109,6 +109,10 @@ The build adds the page title, favicon, Vercel Web Analytics and Speed Insights.
 
 - **Prototype:** HTML, CSS and vanilla JS in one file, with QR generation inlined and the barcode reader (ZXing) loaded on demand. Static site on Vercel.
 - **Planned app:** Vite + React + TypeScript + Tailwind, Vercel functions, Neon Postgres and the Discogs API, with the YouTube player ported from discogs-stream.
+
+## Credits
+
+Version 0.8b. **Thought up by Carlos Franzetti.** **Put into motion by Claude and the Crates crew** — the research, build and review agents that work in this repo.
 
 ---
 

@@ -14,7 +14,7 @@ In the database sections, `[x]` means the table or object exists in the Neon pro
 
 - 64 furniture presets in 6 groups (40 shelving, 24 crates and boxes); 138 finish entries across them (33 with wood grain, 7 gloss).
 - 41 record-bag presets from 12 brands; 73 color entries.
-- 16 database tables, 1 view, 5 functions, 4 triggers (from `001` and `003`).
+- 26 database tables, 1 view, 6 functions, 5 triggers (from `001`, `003` and `005`; `005` mirrors discogs-stream's tables and adds backups and imports).
 - 3 demo places (Kallax 1, bag Crater, Milk crate), 10 demo records, 2 playlists, 2 gigs.
 
 ## 1. App shell
@@ -36,7 +36,15 @@ In the database sections, `[x]` means the table or object exists in the Neon pro
 
 ## 2. Room view
 
-- [x] "Your room" grid of unit cards: name, ID tag, drawing or photo, preset and finish, record count
+- [x] App shell never scrolls: fixed-height layout, each view scrolls inside; phone bottom tab bar with Add in the middle; desktop header on one row
+- [x] Two room layouts with a switch, remembered in settings: **Map** and **Columns**
+- [x] Map: furniture drawn on a canvas laid out to the viewport's aspect; drag to pan, pinch to zoom, wheel/trackpad zoom around the cursor, inertia on release, soft clamp, double-tap or double-click a unit to zoom to it, Fit room, + / −
+- [x] Map: tap a cubby, bag or crate → its records in a side panel (desktop) or a bottom sheet with peek / half / full snap points (phone); the chosen record expands inline with its details and actions
+- [x] Columns: spots list (every cubby, bag, crate with LED, name, count) → records in the spot → record detail with big cover and prev/play/preview/next; phone shows one column at a time with push/pop view transitions and ‹ › spot stepping; hardware back pops
+- [x] Arrow keys: ← → flip records, ↑ ↓ step spots (Map and Columns)
+- [x] Density setting: Regular / Compact
+- [x] Drag a record from the panel or a column onto any cubby, bag or crate on the map or in the spots column
+- [~] "Your room" grid of unit cards (the old room) is no longer a main view; the Flip page (unit view) remains reachable from More… → Flip through
 - [x] Header line: total records and number of places
 - [x] "Play collection" button (queues every record)
 - [x] "Not played in a year" button with a live count
@@ -291,6 +299,8 @@ Bag capacities are in LPs unless stated; "Capacity not listed" means the maker g
 
 ## 15. Player
 
+- [x] Prefetch: a standby YouTube player cues the next record's first link (discogs-stream prefetches the next 4); on advance the players swap so playback starts at once
+
 ### Shell
 
 - [x] Mini bar: spinning vinyl, title, artist, status, previous, play or pause, next
@@ -455,6 +465,15 @@ Bag capacities are in LPs unless stated; "Capacity not listed" means the maker g
 - [ ] 44 px target audit
 - [ ] Contrast audit of all finishes
 - [ ] Loading skeletons (not needed until there is a server)
+
+## 22b. Collection files, backups and import
+
+- [x] Backups: 4 rolling slots in localStorage (`crates-backups`), newest first; automatic before import, restore and reset; manual Back up now; picker sheet with Restore (backs up the current state first) and Delete
+- [x] Save the collection to a JSON file; load one back (validated, with a backup first)
+- [x] Import a Discogs CSV export (Collection → Export): CSV parser with quotes, duplicate skip by normalised artist + title, imported records land as Unplaced, import log in `S.imports`
+- [~] Demo Discogs import (6 sample records) stands in for the API import, which needs the server
+- [~] Upload to the Discogs collection: queued as `kind:'add'` entries in the sync queue; sent by the full app's server job
+- [x] Collection table: full height, container bar on top (All + every spot) filters and takes dropped rows via the ⋮⋮ handle; Unplaced filter; pads size to their text and drop the subtitle when tight
 
 ## 23. Prototype data and persistence
 

@@ -14,12 +14,12 @@ Each idea has a one-line reason, a rough effort, and what it depends on.
 Closes the gap between the prototype and a daily-use app. Most of this is already specified in `docs/`.
 
 1. **Real backend and sign-in** (L). Why: the prototype keeps everything in one browser, so a cleared cache loses the collection. Needs: Vercel project (create it in the dashboard), `app/api`, Neon Auth or similar, per-owner scoping on every query. Unblocks nearly everything below.
-2. **Export and import of your data (JSON and CSV)** (S). Why: protects the browser-only data today and stays useful later as a backup. Needs: nothing; can ship in the prototype first.
+2. ~~**Export and import of your data (JSON and CSV)**~~ Done 2026-10-20: Save to file, Load from file, Discogs CSV import and 4 rolling backups with a picker (HOWTO.md). Remaining: a server copy of the backups (`collection_backups` in `005`).
 3. **Discogs import by personal token** (M). Why: nobody will retype 800 records, and import gives covers, tracklists and YouTube links in one pass. Needs: backend, a Discogs token kept on the server, a throttled queue (60 requests a minute; about 34 minutes for 2,000 records). `[ToS risk]` for how long release data is stored; decide the snapshot policy (PRD open question 9) first.
 4. **Real barcode lookup** (S). Why: the prototype shows example pressings only; this is the fastest accurate way to add post-1979 records. Needs: backend, Discogs `/database/search?barcode=`, a candidate picker filtered by format, country and year.
 5. **Photo identification on the server** (L). Why: photo recognition works today only inside the claude.ai preview. Needs: backend, a vision model, Discogs search to confirm each candidate, a labeled photo set to measure accuracy, EXIF stripping and private photo storage. Never auto-commit; keep the tick-to-confirm step.
 6. **Real Discogs Location write-back** (M). Why: puts "K1·A2 (Acid)" in your Discogs collection, searchable in the Discogs app, as a portable backup of where things are. Needs: Discogs import (instance IDs), the existing outbox table and trigger, a worker that respects 60 requests a minute, a decision on the text format (PRD open question 8). `[ToS risk]` low; it writes the owner's own data.
-7. **Player hardening** (M). Why: the prototype handles the common failures; the spec covers the rest. Items: error-code handling (100, 2, 5 terminal; 150, 101 recoverable), autoplay retry after a skip, prefetch of the next four records, a background link verifier and weekly rescan, a quota notice with "Open in YouTube", a stop after one lap of dead tracks, saving working links back to the database. Needs: backend, `docs/PLAYER.md`.
+7. **Player hardening** (M). Why: the prototype handles the common failures; the spec covers the rest. Items: error-code handling (100, 2, 5 terminal; 150, 101 recoverable), autoplay retry after a skip, prefetch of the next four records (the standby-player half is in the prototype; the search half needs the backend), a background link verifier and weekly rescan, a quota notice with "Open in YouTube", a stop after one lap of dead tracks, saving working links back to the database. Needs: backend, `docs/PLAYER.md`.
 8. **Movement history view and "where was this last?"** (S). Why: every move is already logged in the schema; the prototype shows none of it. Needs: backend (or a local event list).
 9. **Order inside a cubby** (S). Why: flip order is undefined today. Needs: the owner's answer to PRD open question 1, then a `slot` column or a sort rule.
 10. **Shelf capacity and full warnings** (S). Why: a cubby that fits about 50 LPs looks the same as one with 80. Needs: user-editable capacity per cubby (research found no sourced per-cube figure), a bar in the unit view.
@@ -68,3 +68,18 @@ Small bets worth a weekend each, to see whether they earn a place.
 38. **Play-frequency heat map** (S). Why: shows which cubbies you never dig in. Needs: set history over time.
 39. **Harmonic mix suggestions** (M). Why: given the record on the deck, show records in the collection that fit by key and BPM, with their shelf. Needs: BPM and key fields filled in on enough records.
 40. **Crate-digging mode on a phone at a store** (M). Why: scan a barcode, see "own it / on wantlist / similar in my collection". Needs: items 4 and 23.
+
+## From the competitor scan (research/competitors.md, 2026-10-20)
+
+Ideas that none of the vinyl catalog apps do well, in the order the research ranked them. Effort as above.
+
+1. **Printable gig pull sheet** (S): the packing list as a one-page sheet grouped by spot, so you pull records shelf by shelf.
+2. **Format-aware packing check** (S): warn when a bag preset's capacity is exceeded, counting 7" and 12" differently.
+3. **Pulled stack / holding place** (S): a virtual "on the decks" spot for records out of their cubby but not in a bag, so nothing reads as lost.
+4. **Letter jump index** (S): an A–Z rail on long lists (iCollect-style) in Columns and Collection.
+5. **Cover wall** (M): a grid of sleeves for a spot or the whole collection (CLZ-style), as a third room layout.
+6. **Batch barcode mode** (M): scan ten sleeves in a row and review once (StackRoom-style), on the real barcode lookup.
+7. **History to crate** (S): turn a gig's played list into a playlist in one tap (Serato's history-to-crate).
+8. **Tick-to-bag from Collection** (S): a checkbox column that packs straight into the chosen bag (rekordbox's tick-to-USB).
+9. **Recently added / recently moved** (S): two smart filters fed by `location_events` and import logs.
+10. **Share a spot** (M): a read-only link to one cubby's list for a B2B partner, built on QR deep links.

@@ -601,7 +601,7 @@ body:has(#player[hidden]){padding-bottom:24px}
 .cue .n{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
 .cue .nm{grid-column:2/4;font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px}
 .cue[aria-current="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
-.cue:hover{border-color:var(--accent)}
+@media (hover:hover){.cue:hover{border-color:var(--accent)}}
 :root[data-look="booth"] .cue{background:linear-gradient(180deg,#2a1f40,#1e1530);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 4px 10px rgba(0,0,0,.4)}
 .cuebar .sep{flex:0 0 1px;background:var(--line);margin:6px 2px}
 
@@ -754,7 +754,7 @@ html[data-density="compact"] .top{padding-block:calc(4px + env(safe-area-inset-t
 .uhead .uh{border:0;background:none;padding:0;font-family:var(--f-display);font-weight:800;font-size:19px;text-transform:uppercase;letter-spacing:.02em;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;text-align:left;flex:1}
 .uhead .n{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
 .spot-row{width:100%;height:var(--row-h,44px);display:flex;align-items:center;gap:10px;padding:0 10px;border:0;border-radius:9px;background:none;text-align:left;color:var(--ink)}
-.spot-row:hover{background:var(--surface-2)}
+@media (hover:hover){.spot-row:hover{background:var(--surface-2)}}
 .spot-row[aria-current="true"]{background:color-mix(in srgb,var(--accent) 16%,var(--surface));box-shadow:inset 0 0 0 1px var(--accent)}
 .spot-row .led{width:8px;height:8px;border-radius:50%;background:var(--line);flex:0 0 auto}
 .spot-row.lit .led{background:#F5A524;box-shadow:0 0 8px rgba(245,165,36,.75)}
@@ -808,6 +808,20 @@ html[data-navdir="pop"]::view-transition-new(col){animation:col-in-l .3s cubic-b
 .cue.all b{font-family:var(--f-body);font-weight:700}
 .ctable .dragh{cursor:grab;color:var(--muted);font-size:14px;letter-spacing:-2px;padding:0 4px;display:inline-block;touch-action:none}
 @media (max-width:600px){.tbl-shell .tbl-tools{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.tbl-shell .tbl-tools input[type=search]{flex:0 0 200px}.tbl-shell .tbl-tools .chip{flex:0 0 auto}.tbl-shell .tbl-foot{display:none}}
+
+/* ---------- touch feel and phone gutters (review swarm) ---------- */
+/* phones: #main spans the full width with the gutter as padding, so the edge-to-edge map, sheet and columns aren't clipped by 16px on the left */
+@media (max-width:780px){#main.shell{width:auto;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px))) calc(-1 * max(16px,env(safe-area-inset-right,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}}
+/* no grey tap flash, no double-tap zoom delay; our own press state instead */
+button,a,[role=button],label.btn,.cue,.spot-row,select{-webkit-tap-highlight-color:transparent}
+button,a,[role=button],label.btn,select{touch-action:manipulation}
+.btn:active:not(:disabled),.chip:active,.round:active:not(:disabled),.icon-btn:active:not(:disabled),.mini-btn:active:not(:disabled),a.pv:active,button.pv:active,.cue:active,.seg button:active,.tabbar button:active,.map-tools button:active,.backlink:active,.uh:active{transform:scale(.96)}
+.spot-row:active,.li[role=button]:active,.result:active{background:color-mix(in srgb,var(--accent) 10%,var(--surface-2))}
+@media (prefers-reduced-motion:reduce){.btn:active:not(:disabled),.chip:active,.round:active:not(:disabled),.icon-btn:active:not(:disabled),.mini-btn:active:not(:disabled),a.pv:active,button.pv:active,.cue:active,.seg button:active,.tabbar button:active,.map-tools button:active,.backlink:active,.uh:active{transform:none;opacity:.7}}
+/* hit slop: small visuals keep their size but get a 44px touch area */
+a.pv::before,button.pv::before,.icon-btn::before,.step .round::before,.map-tools button::before{content:"";position:absolute;inset:-6px}
+.icon-btn,.step .round,.map-tools button{position:relative}
+.backlink{min-height:44px;padding-right:8px}
 </style>
 
 <div class="top"><div class="wrap">
@@ -952,10 +966,53 @@ function seedExtras(st){
   st.records.forEach(r=>{ r.plays ||= []; if(st.units.find(u=>u.id===r.loc.u)?.kind!=='shelf' && r.home) r.from = {...r.home}; });
   return st;
 }
+/* migrate() also sanitizes: saved data, loaded files and backups all pass through here, so ids, colors, photos,
+   YouTube ids and cell keys that end up in attributes are forced into safe shapes (review swarm, S-1). */
+const SAFE_ID = /^[A-Za-z0-9_-]{1,40}$/, SAFE_HEX = /^#[0-9a-fA-F]{3,8}$/, SAFE_CELL = /^\d{1,2}-\d{1,2}$/, SAFE_YT = /^[A-Za-z0-9_-]{6,20}$/, SAFE_DAY = /^\d{4}-\d{2}-\d{2}$/;
 function migrate(st){
-  st.gigs ||= []; st.syncQueue ||= []; st.settings.discogsSync ??= false; st.settings.look ||= 'booth'; st.settings.view ||= 'map'; st.settings.density ||= 'regular';
-  st.units.forEach(u=>{ u.labels ||= {}; });
-  st.records.forEach(r=>{ r.plays ||= []; r.barcode ??= ''; if(r.from===undefined) r.from = null; });
+  const isObj = x => !!x && typeof x==='object' && !Array.isArray(x);
+  const list = x => Array.isArray(x) ? x.filter(isObj) : [];
+  const txt = x => typeof x==='string' ? x : x==null ? '' : String(x);
+  const val = x => typeof x==='number' && isFinite(x) ? x : txt(x);
+  st.settings = isObj(st.settings) ? st.settings : {};
+  ['units','records','playlists','gigs','syncQueue','recent'].forEach(k=>{ st[k] = list(st[k]); });
+  const s = st.settings;
+  if(!['red','brass','cyan'].includes(s.accent)) s.accent = 'red';
+  s.discogsSync = !!s.discogsSync; s.look = ['booth','shop','auto'].includes(s.look) ? s.look : 'booth'; s.view = s.view==='columns' ? 'columns' : 'map'; s.density = s.density==='compact' ? 'compact' : 'regular';
+  const remap = (items, p) => { const taken = new Set(), m = new Map();
+    items.forEach(x=>{ const old = txt(x.id); let id = old; if(!SAFE_ID.test(id) || taken.has(id)){ let n=1; while(taken.has(p+n)) n++; id = p+n; } taken.add(id); if(!m.has(old)) m.set(old, id); x.id = id; });
+    return id => m.get(txt(id)) ?? null; };
+  const U = remap(st.units,'U'), R = remap(st.records,'r'); remap(st.playlists,'p'); remap(st.gigs,'g');
+  const loc = l => { const u = isObj(l) ? U(l.u) : null; return u ? {u, c: SAFE_CELL.test(l.c) ? l.c : '0-0'} : null; };
+  st.units.forEach(u=>{
+    u.kind = ['shelf','bag','crate'].includes(u.kind) ? u.kind : 'crate';
+    u.rows = u.kind==='shelf' ? Math.max(1, Math.min(26, Math.round(+u.rows)||1)) : 1; u.cols = u.kind==='shelf' ? Math.max(1, Math.min(26, Math.round(+u.cols)||1)) : 1;
+    u.name = txt(u.name) || u.id; u.preset = txt(u.preset);
+    u.labels = isObj(u.labels) ? u.labels : {}; Object.keys(u.labels).forEach(k=>{ if(SAFE_CELL.test(k) && u.labels[k]) u.labels[k] = txt(u.labels[k]); else delete u.labels[k]; });
+    u.finish = isObj(u.finish) ? {...u.finish, name:txt(u.finish.name), hex: SAFE_HEX.test(u.finish.hex) ? u.finish.hex : '#888888'} : null;
+    u.photo = typeof u.photo==='string' && /^data:image\/(png|jpeg|jpg|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(u.photo) ? u.photo : null;
+  });
+  st.records.forEach(r=>{
+    ['artist','title','label','catno','cm','cs','notes','barcode','style','key'].forEach(k=>{ r[k] = txt(r[k]); });
+    r.year = val(r.year); r.bpm = val(r.bpm);
+    r.rating = Math.max(0, Math.min(5, Math.round(+r.rating)||0));
+    r.tags = Array.isArray(r.tags) ? r.tags.map(txt).filter(Boolean) : [];
+    r.custom = list(r.custom).map(x=>({k:txt(x.k), v:txt(x.v)}));
+    r.yt = Array.isArray(r.yt) ? r.yt.filter(y=>SAFE_YT.test(y)) : [];
+    r.pal = Array.isArray(r.pal) && r.pal.length>=3 && r.pal.slice(0,3).every(c=>SAFE_HEX.test(c)) ? r.pal.slice(0,3) : PAL[hash(r.id)%PAL.length];
+    r.pat = Number.isInteger(r.pat) ? ((r.pat%6)+6)%6 : 0;
+    r.loc = loc(r.loc) || {u:null, c:null}; r.home = loc(r.home); r.from = loc(r.from);
+    r.plays = list(r.plays).filter(p=>SAFE_DAY.test(p.d)).map(p=>({...p, venue:txt(p.venue)}));
+    r.orig = isObj(r.orig) ? r.orig : {};
+    if(r.dl!=null) r.dl = txt(r.dl);
+  });
+  st.playlists.forEach(p=>{ p.name = txt(p.name) || 'Untitled'; p.color = SAFE_HEX.test(p.color) ? p.color : PL_COLORS[0]; p.items = Array.isArray(p.items) ? p.items.map(R).filter(Boolean) : []; });
+  st.gigs.forEach(g=>{ g.name = txt(g.name) || 'Gig'; g.venue = txt(g.venue); if(!SAFE_DAY.test(g.date)) g.date = new Date().toISOString().slice(0,10);
+    if(!['planning','packing','out','return','done'].includes(g.status)) g.status = 'planning'; g.bag = U(g.bag);
+    g.items = list(g.items).map(it=>({r:R(it.r), packed:!!it.packed, played:!!it.played, back:!!it.back})).filter(it=>it.r); });
+  st.syncQueue = st.syncQueue.map(q=>({...q, r:R(q.r), value:txt(q.value)})).filter(q=>q.r);
+  st.recent = st.recent.map(loc).filter(Boolean);
+  st.v = 2;
   return st;
 }
 
@@ -1067,9 +1124,28 @@ const KEY='crates-demo-v3';
 let S; try{ S = JSON.parse(localStorage.getItem(KEY)) }catch(e){}
 if(!S || S.v!==2 || !Array.isArray(S.units) || !Array.isArray(S.records)) S = seedExtras(seed());
 // Never throw away a saved collection because a preset key changed: point unknown presets at a close match instead.
-S.units.forEach(u=>{ if(u.kind==='bag' ? !bpreset(u.preset) : !fpreset(u.preset)) u.preset = u.kind==='bag' ? BAGS[0].key : (u.kind==='shelf' ? (FURNITURE.find(x=>x.kind==='shelf'&&x.custom)||FURNITURE.find(x=>x.kind==='shelf')).key : (FURNITURE.find(x=>x.kind==='crate')||FURNITURE[0]).key); });
+S.units.forEach(u=>{ if(!u || typeof u!=='object') return; if(u.kind==='bag' ? !bpreset(u.preset) : !fpreset(u.preset)) u.preset = u.kind==='bag' ? BAGS[0].key : (u.kind==='shelf' ? (FURNITURE.find(x=>x.kind==='shelf'&&x.custom)||FURNITURE.find(x=>x.kind==='shelf')).key : (FURNITURE.find(x=>x.kind==='crate')||FURNITURE[0]).key); });
 S = migrate(S);
-const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(S)) }catch(e){} };
+/* When storage is full, drop the oldest backup (they share the quota) until the collection fits, and say so. */
+let saveFailNoted = false;
+const save = () => {
+  const data = JSON.stringify(S); let trimmed = 0;
+  for(;;){
+    try{ localStorage.setItem(KEY, data); break; }
+    catch(e){
+      let b = []; try{ b = JSON.parse(localStorage.getItem('crates-backups')||'[]'); }catch(x){}
+      if(!Array.isArray(b) || !b.length){
+        if(!saveFailNoted){ saveFailNoted = true; setTimeout(()=>toast('Couldn’t save: this browser’s storage is full. Use Settings → Save to file.'), 0); }
+        return false;
+      }
+      b.pop(); trimmed++;
+      try{ b.length ? localStorage.setItem('crates-backups', JSON.stringify(b)) : localStorage.removeItem('crates-backups'); }catch(x){ localStorage.removeItem('crates-backups'); }
+    }
+  }
+  saveFailNoted = false;
+  if(trimmed) setTimeout(()=>toast(`Storage was full, so the oldest backup${trimmed>1?'s were':' was'} removed to keep your changes`), 0);
+  return true;
+};
 const V = {view:'map', unit:'K1', cell:'0-0', dig:0, focus:null, flash:null, pl:null, gig:null, stale:false, sel:null, col:'spots'};
 const roomView = () => S.settings.view==='columns' ? 'columns' : 'map';
 V.view = roomView();
@@ -1097,6 +1173,7 @@ function render(){
   layoutVars();
   fitRoom(); fitStrip();
   if(V.view==='playlists') bindPlaylist();
+  V.phone = isPhone();   // the resize handler re-renders when this flips (sheet binding and phone-only markup)
   save();
 }
 function layoutVars(){
@@ -1485,6 +1562,7 @@ function applyCustom(px, fin){
 /* ---------- add record ---------- */
 let addRec = null;
 function openAddRecord(){
+  if(!S.units.length){ toast('Add a shelf, crate or bag first'); return; }
   const first = (V.view==='unit'&&unit(V.unit)) ? {u:V.unit,c:V.cell==='all'?'0-0':V.cell} : {u:S.units[0].id,c:'0-0'};
   addRec = {loc:first, found:[], f:{artist:'',title:'',label:'',year:'',catno:'',barcode:''}, cands:null, bcMsg:''};
   renderAddRecord();
@@ -2025,13 +2103,24 @@ function routeHash(){
 window.addEventListener('hashchange', routeHash);
 
 /* ---------- sheets & toast ---------- */
-let sheetKind = null;
+let sheetKind = null, sheetTrigger = null;
 function openSheet(html, kind='sheet'){
+  if(!sheetKind){ const a = document.activeElement;   // remember what opened the sheet, so closing returns focus there
+    sheetTrigger = a && a!==document.body && !a.closest('#layer') ? {el:a, sel: a.dataset?.act ? `[data-act="${CSS.escape(a.dataset.act)}"]${a.dataset.r?`[data-r="${CSS.escape(a.dataset.r)}"]`:''}${a.dataset.u?`[data-u="${CSS.escape(a.dataset.u)}"]`:''}` : (a.id ? '#'+CSS.escape(a.id) : '')} : null; }
   sheetKind = kind;
   $('#layer').innerHTML = `<div class="scrim" data-act="scrim"><div class="sheet" role="dialog" aria-modal="true">${html}</div></div>`;
   setTimeout(()=>$('.sheet button, .sheet a')?.focus({preventScroll:true}), 30);
 }
-function closeSheet(){ $('#layer').innerHTML=''; sheetKind=null; }
+function closeSheet(){
+  const had = sheetKind; $('#layer').innerHTML=''; sheetKind=null;
+  if(!had) return;
+  const t = sheetTrigger; sheetTrigger = null;
+  setTimeout(()=>{   // after any re-render: the trigger itself, or the same control in the new DOM
+    if(sheetKind || (document.activeElement && document.activeElement!==document.body)) return;
+    const el = t?.el?.isConnected ? t.el : (t?.sel ? document.querySelector(t.sel) : null);
+    el?.focus?.({preventScroll:true});
+  }, 0);
+}
 let toastT;
 function toast(msg, undo){
   document.querySelector('.toast')?.remove();
@@ -2288,7 +2377,7 @@ function fitArt(box){
 }
 function fitStrip(){ document.querySelectorAll('.strip .stage-box').forEach(fitArt); }
 let fitRaf = 0;
-window.addEventListener('resize', ()=>{ cancelAnimationFrame(fitRaf); fitRaf = requestAnimationFrame(()=>{ fitRoom(); fitStrip(); layoutVars(); if(V.view==='map'){ const m = mapEl(); if(m){ M.vw=m.clientWidth; M.vh=m.clientHeight; if(!M.moved){ M.layout = mapLayout(M.vw,M.vh); render(); } else mapClamp(), mapApply(false); } } if(V.view==='table') fitCue(); }); });
+window.addEventListener('resize', ()=>{ cancelAnimationFrame(fitRaf); fitRaf = requestAnimationFrame(()=>{ if((V.view==='map'||V.view==='columns') && isPhone()!==V.phone){ render(); return; } fitRoom(); fitStrip(); layoutVars(); if(V.view==='map'){ const m = mapEl(); if(m){ M.vw=m.clientWidth; M.vh=m.clientHeight; if(!M.moved){ M.layout = mapLayout(M.vw,M.vh); render(); } else mapClamp(), mapApply(false); } } if(V.view==='table') fitCue(); }); });
 
 /* zoom room <-> unit with a shared-element view transition (falls back to an instant swap) */
 function zoomTo(view, uid, cell){
@@ -2564,10 +2653,10 @@ function mapApply(anim){
 }
 function mapFit(anim){
   const m = mapEl(); if(!m || !M.layout) return;
-  const vw = m.clientWidth, vh = m.clientHeight, pad = isPhone()?16:40;
+  const vw = m.clientWidth, vh = m.clientHeight, pad = isPhone()?16:40, top = isPhone()?58:pad;   // phones: the zoom tools sit at the top right
   const sheetH = isPhone() && M.sheet!=='peek' ? vh*(M.sheet==='full'?.5:.46) : 0;
-  const s = Math.max(.08, Math.min(2.5, Math.min((vw-pad*2)/M.layout.W, (vh-sheetH-pad*2)/M.layout.H)));
-  M.s = s; M.x = (vw - M.layout.W*s)/2; M.y = (vh - sheetH - M.layout.H*s)/2; M.fitted = true; M.moved = false;
+  const s = Math.max(.08, Math.min(2.5, Math.min((vw-pad*2)/M.layout.W, (vh-sheetH-top-pad)/M.layout.H)));
+  M.s = s; M.x = (vw - M.layout.W*s)/2; M.y = top + (vh - sheetH - top - pad - M.layout.H*s)/2; M.fitted = true; M.moved = false;
   mapApply(anim);
 }
 function mapZoomUnit(uid, anim=true){
@@ -2581,12 +2670,11 @@ function mapZoomUnit(uid, anim=true){
 /* bring a unit into view without moving the map if it's already visible */
 function mapReveal(uid){
   const m = mapEl(), it = M.layout?.items.find(i=>i.u.id===uid); if(!m || !it) return;
-  const vw = m.clientWidth, vh = m.clientHeight - (isPhone() && M.sheet!=='peek' ? vh0(vh)*0 + vh*.46 : 0);
+  const vw = m.clientWidth, H = m.clientHeight, vh = H - (isPhone() && M.sheet!=='peek' ? H*.46 : 0);
   const x0 = M.x + it.x*M.s, y0 = M.y + it.y*M.s, x1 = x0 + it.w*M.s, y1 = y0 + it.h*M.s;
   if(x0 >= 0 && y0 >= 0 && x1 <= vw && y1 <= vh) return;
   mapZoomUnit(uid, true);
 }
-function vh0(v){ return v; }
 function mapZoomAt(factor, cx, cy, anim){
   const s = Math.max(.08, Math.min(2.5, M.s*factor)); const k = s/M.s;
   M.x = cx - (cx - M.x)*k; M.y = cy - (cy - M.y)*k; M.s = s; M.moved = true;
@@ -2682,10 +2770,12 @@ function bindSheetDrag(){
   p.style.setProperty('--sheet-h', (SNAPS[M.sheet]*100)+'%');
   const head = p.querySelector('.spot-head'); if(!head) return;
   let st = null;
-  head.onpointerdown = e => { if(e.target.closest('button,input,a')) return; const H = p.parentElement.clientHeight; st = {y:e.clientY, h:p.offsetHeight, H, t:performance.now(), moved:false}; head.setPointerCapture(e.pointerId); p.classList.add('dragging'); };
-  head.onpointermove = e => { if(!st) return; const dy = st.y - e.clientY; if(Math.abs(dy)>4) st.moved=true; const h = Math.max(st.H*.1, Math.min(st.H*.94, st.h+dy)); p.style.setProperty('--sheet-h', h+'px'); st.last = {y:e.clientY, t:performance.now()}; };
+  head.onpointerdown = e => { if(e.target.closest('button,input,a')) return; const H = p.parentElement.clientHeight; st = {y:e.clientY, h:p.offsetHeight, H, t:performance.now(), moved:false, samples:[{y:e.clientY, t:performance.now()}]}; head.setPointerCapture(e.pointerId); p.classList.add('dragging'); };
+  head.onpointermove = e => { if(!st) return; const dy = st.y - e.clientY; if(Math.abs(dy)>4) st.moved=true; const h = Math.max(st.H*.1, Math.min(st.H*.94, st.h+dy)); p.style.setProperty('--sheet-h', h+'px'); st.samples.push({y:e.clientY, t:performance.now()}); if(st.samples.length>12) st.samples.shift(); };
   const end = e => { if(!st) return; const s = st; st = null; p.classList.remove('dragging');
-    const h = p.offsetHeight / s.H; const v = s.last ? (s.y - s.last.y)/Math.max(1, s.last.t - s.t) : 0;
+    /* release velocity: the last ~100 ms of movement, zero if the finger stopped before letting go */
+    const sm = s.samples, last = sm[sm.length-1], ref = sm.find(q=>last.t - q.t <= 100) || last;
+    const h = p.offsetHeight / s.H; const v = (performance.now() - last.t > 80 || ref===last) ? 0 : (ref.y - last.y)/Math.max(1, last.t - ref.t);
     let snap;
     if(!s.moved){ snap = M.sheet==='peek' ? 'half' : M.sheet==='half' ? 'full' : 'half'; }
     else if(Math.abs(v) > .4) snap = v>0 ? (M.sheet==='peek'?'half':'full') : (M.sheet==='full'?'half':'peek');
@@ -2729,13 +2819,13 @@ function renderColumns(){
 }
 /* phone push/pop between columns with a same-document view transition */
 function colGo(col, dir){
-  if(!isPhone()){ V.col = col; render(); return; }
+  if(!isPhone() || col===V.col){ V.col = col; render(); return; }   // same column (e.g. stepping spots): no new history entry, no slide
+  if(dir==='push') try{ history.pushState({crates:col}, ''); }catch(e){}   // every push gets an entry, so the system Back pops a column instead of leaving
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.documentElement.dataset.navdir = dir;
   const apply = () => { V.col = col; render(); };
   if(!document.startViewTransition || reduce || navigator.webdriver || V.view!=='columns'){ apply(); return; }
   document.startViewTransition(apply).finished.finally(()=>{ delete document.documentElement.dataset.navdir; });
-  if(dir==='push') try{ history.pushState({crates:col}, ''); }catch(e){}
 }
 window.addEventListener('popstate', e=>{
   if(V.view==='columns' && isPhone() && V.col!=='spots'){ colGo(V.col==='record' ? 'records' : 'spots', 'pop'); }
@@ -2838,7 +2928,7 @@ Object.assign(A, {
   'col-spot':d=>{ if(dragJustEnded) return; selectSpot(d.u, d.c); },
   'col-unit':d=>{ if(dragJustEnded) return; selectSpot(d.u, null); },
   'col-rec':d=>{ if(dragJustEnded) return; V.dig = +d.i; if(isPhone()) colGo('record','push'); else render(); },
-  'col-back':d=>colGo(d.to, 'pop'),
+  'col-back':d=>{ if(isPhone() && history.state?.crates) history.back(); else colGo(d.to, 'pop'); },   // popstate does the pop, so history stays in step
   'spot-step':d=>spotStep(+d.d),
   'spot-tools':()=>openSpotTools(),
   'play-whole':d=>{ const u = unit(d.u); closeSheet(); setQueue(inCell(u.id,'all'), 0, u.name); },
@@ -2925,11 +3015,27 @@ const T_KEYS = {
   tags:r=>r.tags.join(',').toLowerCase(), bag:r=>inBagNow(r)?unit(r.loc.u).name.toLowerCase():'~', home:r=>hasHome(r)?addrShort(r.home):'~', played:r=>lastPlayed(r)||'0',
 };
 function tRows(){ const k = T_KEYS[T.sort]||T_KEYS.artist; return S.records.filter(tFilter).sort((a,b)=>{ const x=k(a), y=k(b); return (x>y?1:x<y?-1:0)*T.dir || a.title.localeCompare(b.title); }); }
+const shelfOpt = (u, k, sel) => { const v=u.id+'|'+k, n=cellName(u,k); return `<option value="${v}" ${sel===v?'selected':''}>${esc(u.id)}·${esc(cellLabel(u,k))}${n?' · '+esc(n):''}</option>`; };
 function shelfOptions(sel){
-  return S.units.filter(u=>u.kind==='shelf').map(u=>`<optgroup label="${esc(u.id)} · ${esc(u.name)}">${cellKeys(u).map(k=>{ const v=u.id+'|'+k; const n=cellName(u,k); return `<option value="${v}" ${sel===v?'selected':''}>${esc(u.id)}·${esc(cellLabel(u,k))}${n?' · '+esc(n):''}</option>`; }).join('')}</optgroup>`).join('');
+  return S.units.filter(u=>u.kind==='shelf').map(u=>`<optgroup label="${esc(u.id)} · ${esc(u.name)}">${cellKeys(u).map(k=>shelfOpt(u,k,sel)).join('')}</optgroup>`).join('');
 }
+/* Big tables: each Home spot select starts with just its current value and fills in every shelf on first touch or focus.
+   Building every option into every row cost 1.7 s and 53k nodes per render at 300 records (review swarm, P-1). */
+const T_LAZY_ROWS = 60;
+function homeSelectOptions(r, homeVal, lazy){
+  if(!lazy) return shelfOptions(homeVal);
+  const u = homeVal ? unit(r.home.u) : null;
+  return u ? shelfOpt(u, r.home.c, homeVal) : '';
+}
+function hydrateHome(sel){
+  if(!sel || !sel.dataset.lazy) return;
+  const v = sel.value; delete sel.dataset.lazy;
+  sel.innerHTML = `<option value="">No home yet</option>${shelfOptions(v)}`; sel.value = v;
+}
+document.addEventListener('pointerdown', e=>hydrateHome(e.target.closest?.('select[data-lazy]')), true);
+document.addEventListener('focusin', e=>hydrateHome(e.target.closest?.('select[data-lazy]')));
 function renderTable(){
-  const rows = tRows(), bags = S.units.filter(u=>u.kind!=='shelf');
+  const rows = tRows(), bags = S.units.filter(u=>u.kind!=='shelf'), lazy = rows.length > T_LAZY_ROWS;
   const away = S.records.filter(r=>inBagNow(r)&&hasHome(r)).length;
   const head = (k,label,cls='') => `<th class="${cls}"><button data-act="t-sort" data-k="${k}" aria-sort="${T.sort===k?(T.dir>0?'ascending':'descending'):'none'}">${label}${T.sort===k?(T.dir>0?' ↑':' ↓'):''}</button></th>`;
   const txt = (r,f,cls,ph='') => `<td><input class="ce ${cls} ${editedSet(r).has(f)?'edited':''}" data-tedit="${f}" data-r="${r.id}" value="${esc(r[f])}" aria-label="${f} for ${esc(r.title)}" placeholder="${ph}"></td>`;
@@ -2941,7 +3047,7 @@ function renderTable(){
       <td class="stick2"><span class="dragh" data-drag="${r.id}" title="Drag to a spot above" aria-hidden="true">⋮⋮</span><button class="mini-btn" style="width:auto;height:auto;padding:0;display:inline-grid;vertical-align:middle" data-act="goto-rec" data-r="${r.id}" aria-label="Show ${esc(r.title)} on its shelf">${thumb(r)}</button></td>
       ${txt(r,'artist','w-artist')}${txt(r,'title','w-title')}
       <td><div class="spot"><select class="ce" data-tbag="${r.id}" aria-label="Bag for ${esc(r.title)}"><option value="">${inBagNow(r)?'Take out':'—'}</option>${bags.map(b=>`<option value="${b.id}" ${bagSel===b.id?'selected':''}>${esc(b.name)}</option>`).join('')}</select>${inBagNow(r)&&hasHome(r)?`<button class="btn sm" data-act="t-back" data-r="${r.id}">Put back</button>`:''}</div></td>
-      <td><select class="ce" data-thome="${r.id}" aria-label="Home spot for ${esc(r.title)}"><option value="">No home yet</option>${shelfOptions(homeVal)}</select></td>
+      <td><select class="ce" data-thome="${r.id}"${lazy?' data-lazy="1"':''} aria-label="Home spot for ${esc(r.title)}"><option value="">No home yet</option>${homeSelectOptions(r, homeVal, lazy)}</select></td>
       ${txt(r,'label','w-label')}${txt(r,'catno','w-catno code')}${txt(r,'year','w-year num')}${txt(r,'style','w-style')}${txt(r,'bpm','w-bpm num')}${txt(r,'key','w-key code')}
       <td><select class="ce w-rating" data-tedit="rating" data-r="${r.id}" aria-label="Rating for ${esc(r.title)}">${[0,1,2,3,4,5].map(n=>`<option value="${n}" ${r.rating===n?'selected':''}>${n?'★'.repeat(n):'—'}</option>`).join('')}</select></td>
       <td><input class="ce w-tags" data-tedit="tags" data-r="${r.id}" value="${esc(r.tags.join(', '))}" aria-label="Tags for ${esc(r.title)}" placeholder="add tags"></td>
@@ -2993,7 +3099,7 @@ document.addEventListener('keydown', e=>{ if(e.key==='Enter' && e.target.dataset
 let tQT;
 document.addEventListener('input', e=>{ if(e.target.id==='t-q'){ T.q = e.target.value; clearTimeout(tQT); tQT = setTimeout(()=>{ const pos = e.target.selectionStart; render(); const q = $('#t-q'); if(q){ q.focus(); q.setSelectionRange(pos,pos); } }, 160); } });
 function putBack(recs){ const list = recs.filter(r=>hasHome(r) && !same(r.loc,r.home)); lastUndo = snap(list); list.forEach(r=>place(r,{...r.home},{setHome:false})); return list.length; }
-function csvCell(v){ v = String(v??''); if(/^[=+\-@\t\r]/.test(v)) v = "'"+v; return /[",\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }
+function csvCell(v){ v = String(v??''); if(/^[=+\-@\t\r]/.test(v)) v = "'"+v; return /[",\r\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }
 async function exportCSV(){
   const head = ['Artist','Title','Label','Cat no.','Year','Style','BPM','Key','Rating','Tags','Notes','Now','Home spot','Bag','Last played','Plays'];
   const lines = [head.join(',')].concat(tRows().map(r=>[r.artist,r.title,r.label,r.catno,r.year,r.style,r.bpm,r.key,r.rating||'',r.tags.join('; '),r.notes,addrLong(r.loc),hasHome(r)?addrLong(r.home):'',inBagNow(r)?unit(r.loc.u).name:'',lastPlayed(r),(r.plays||[]).length].map(csvCell).join(',')));
@@ -3041,8 +3147,9 @@ function backupNow(label, kind='manual'){
 }
 function restoreBackup(id){
   const b = backups().find(x=>x.id===id); if(!b) return;
+  let next; try{ if(b.state?.v!==2) throw 0; next = migrate(JSON.parse(JSON.stringify(b.state))); }catch(e){ toast('That backup can’t be read, so nothing changed'); return; }
   backupNow('Before restoring “'+b.label+'”', 'restore');
-  S = migrate(b.state); V.sel=null; V.stale=false; P.st={}; closeSheet(); V.view = roomView(); M.moved = false; render(); renderPlayer();
+  S = next; V.sel=null; V.stale=false; P.st={}; closeSheet(); V.view = roomView(); M.moved = false; render(); renderPlayer();
   toast(`Restored “${b.label}” (${b.records} records)`);
 }
 function deleteBackup(id){ const list = backups().filter(x=>x.id!==id); localStorage.setItem(BK_KEY, JSON.stringify(list)); openBackups(); }
@@ -3075,8 +3182,9 @@ function loadCollectionFile(file){
     let j; try{ j = JSON.parse(rd.result); }catch(e){ toast('That file isn’t a Crates collection'); return; }
     const st = j?.state || j;
     if(!st || st.v!==2 || !Array.isArray(st.units) || !Array.isArray(st.records)){ toast('That file isn’t a Crates collection'); return; }
+    let next; try{ next = migrate(st); }catch(e){ toast('That file isn’t a Crates collection'); return; }
     backupNow('Before loading '+file.name, 'import');
-    S = migrate(st); V.sel=null; V.stale=false; P.st={}; closeSheet(); V.view = roomView(); M.moved = false; render(); renderPlayer();
+    S = next; V.sel=null; V.stale=false; P.st={}; closeSheet(); V.view = roomView(); M.moved = false; render(); renderPlayer();
     toast(`Loaded ${S.records.length} records from ${file.name} (backup made)`, false);
   };
   rd.readAsText(file);
@@ -3095,7 +3203,9 @@ function recordFromDiscogsRow(h, r){
   const g = k => { const i = h.findIndex(x=>x.trim().toLowerCase()===k); return i>=0 ? (r[i]||'').trim() : ''; };
   const artist = g('artist'), title = g('title'); if(!artist && !title) return null;
   const n = hash(artist+title);
-  return {id:uid('r'), artist, title, label:g('label').split(',')[0].trim(), year:g('released').slice(0,4), style:g('genre')||g('style')||'', catno:g('catalog#')||g('catno'), barcode:'', bpm:'', key:'', rating:+g('rating')||0, cm:g('collection media condition')||'', notes:g('collection notes')||g('notes')||'', tags:[], yt:[], pal:PALS[n%PALS.length], pat:n%6, loc:{u:null,c:null}, home:null, from:null, plays:[], orig:{artist,title}, releaseId:+g('release_id')||null, folder:g('collectionfolder')||''};
+  const out = {id:uid('r'), artist, title, label:g('label').split(',')[0].trim(), year:g('released').slice(0,4), style:g('genre')||g('style')||'', catno:g('catalog#')||g('catno'), barcode:'', bpm:'', key:'', rating:+g('rating')||0, cm:g('collection media condition')||'', cs:'', notes:g('collection notes')||g('notes')||'', tags:[], custom:[], yt:[], pal:PALS[n%PALS.length], pat:n%6, loc:{u:null,c:null}, home:null, from:null, plays:[], orig:{}, releaseId:+g('release_id')||null, folder:g('collectionfolder')||''};
+  ['artist','title','label','catno','year','style'].forEach(k=>{ out.orig[k] = out[k]; });   // the Discogs original, for "Edited by me" and Undo edit
+  return out;
 }
 const DEMO_DISCOGS = [['Underground Resistance','The Final Frontier','Underground Resistance','1991','Techno'],['Larry Heard','Alien','Black Market International','1996','Deep House'],['Kraftwerk','Tour De France','EMI','1983','Electro'],['Jeff Mills','The Bells','Purpose Maker','1996','Techno'],['Armand Van Helden','Witch Doktor','Strictly Rhythm','1994','House'],['Aphex Twin','Didgeridoo','R&S Records','1992','Techno']];
 function openDiscogsImport(){

@@ -6,7 +6,7 @@ Last updated 2026-10-20. Each phase ends with something the owner can use. Exit 
 
 - `crates.html`: single-file clickable prototype (about 77 KB) with presets, room view, unit and cell flipping, search, move, a catalog flow, seeded demo records.
 - `app/db/001_init.sql` and `002_seed.sql` applied to Neon project `crates`; seed lookup verified ([INFRA.md](INFRA.md)).
-- Open from Phase 0: the Vercel project cannot be created with the current tool permissions, and `gh` auth is invalid.
+- 2026-10-20: live at https://crates-livid.vercel.app/ (Vercel project `crates`, linked to GitHub `main`). Map and Columns layouts, phone tab bar and sheet, density, full-height Collection, YouTube prefetch, 4-slot backups, file save/load, Discogs CSV import. `app/db/005_stream_parity.sql` written (apply on a Neon branch first).
 
 ## Phase 1: Real app skeleton on Neon
 

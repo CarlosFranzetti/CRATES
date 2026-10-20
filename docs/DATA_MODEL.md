@@ -268,3 +268,14 @@ select r.artist, r.title, lp.last_played_at, coalesce(lp.play_count, 0) as plays
 6. **`preset_key` naming differs** between the prototype (`kallax-2x4`) and the seed (`ikea-kallax-2x4`). Pick one before the preset table is written.
 7. **No auth link or RLS.** `owner_id` is plain text. Decide the Neon Auth id mapping in Phase 1 and consider RLS as defence in depth.
 8. `playlist_items.track_id` has no `ON DELETE` action, so deleting a single track that is in a playlist fails. Records cascade fine.
+
+## discogs-stream parity and backups (005)
+
+`app/db/005_stream_parity.sql` adds discogs-stream's tables with their original names and columns, so the player's server jobs (search cache, link rescan, cover art cache) can be reused without a rewrite: `youtube_videos`, `search_cache`, `track_media_links`, `release_cover_art`, `discogs_track_cache`, `user_tokens` (server-only; `revoke all ... from public`), `rescan_log`, `track_preferences`. `media_links` (001) stays the per-record link table Crates reads; `track_media_links` is the stream-shaped mirror keyed by Discogs username, release and track position.
+
+Two new Crates tables back the prototype's collection tools:
+
+- `collection_backups`: one snapshot per row (`snapshot jsonb`, the same shape the prototype keeps in localStorage), `kind` manual / import / restore / reset. A trigger keeps the newest 4 per owner, matching the app's 4 slots.
+- `collection_imports`: one row per import (`source` discogs_api / discogs_csv / crates_file / demo) with `added`, `skipped` and the `backup_id` that was written first.
+
+`discogs_sync_queue.kind` gains `'add'` for uploads to the Discogs collection (`POST /users/{u}/collection/folders/1/releases/{release_id}`), next to the existing `'location'` field writes. See `research/discogs-api.md` for the endpoints and the 60-requests-a-minute limit.

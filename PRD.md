@@ -62,6 +62,26 @@ A working DJ with hundreds of records across Kallax shelves, milk crates and rec
 
 ## Flows and acceptance criteria
 
+### 0. Navigation model (2026-10-20)
+
+The page never scrolls; each view scrolls inside itself. Room has two layouts the owner can switch between, remembered per device: **Map** (the furniture drawn on a pannable, pinch-zoomable canvas; a spot's records in a side panel on desktop or a snapping bottom sheet on phones) and **Columns** (spots → records → record, one column at a time on phones with push/pop). Phones use a bottom tab bar with Add in the middle. A density setting (regular / compact) tightens rows and bars.
+
+- AC0.1 At 390×844, 844×390, 1280×800 and 1440×900 the document never scrolls and never scrolls sideways; only panes do.
+- AC0.2 Tapping a cubby on the map selects it without moving the map; double-tap zooms to its unit; Fit room restores the fitted scale.
+- AC0.3 A plain tap on the map never pans; a pan never fires a tap. A pinch zooms around the fingers' midpoint.
+- AC0.4 On phones the sheet snaps to peek, half and full; the list scrolls only inside the sheet.
+- AC0.5 In Columns on a phone, the hardware back button pops one column; ‹ › step to the neighbouring spot without going back.
+- AC0.6 ← → flip records and ↑ ↓ step spots in both layouts when no field has focus.
+- AC0.7 The chosen layout, look and density survive a reload.
+
+### 0b. Backups, files and Discogs import
+
+- AC0b.1 Four backup slots, newest first; one is written before every import, restore and reset; the oldest is dropped at five.
+- AC0b.2 Restore writes a backup of the current collection first and is confirmed in-page.
+- AC0b.3 Save to file produces a JSON the app loads back unchanged; a non-Crates file is refused with a toast.
+- AC0b.4 A Discogs CSV export imports with quoted fields intact; records already owned (normalised artist + title) are skipped and the count is shown; new records are Unplaced until filed.
+- AC0b.5 Upload to Discogs is queued per record and sent only from the server, within the rate limit.
+
 ### 1. Capture furniture and bags
 
 The owner picks a preset (or a custom grid), picks a finish or color, names it, optionally photographs it, and it appears in the room.

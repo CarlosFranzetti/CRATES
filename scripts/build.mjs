@@ -2,12 +2,17 @@
 // into a full document at dist/index.html for static hosting on Vercel.
 import { readFileSync, writeFileSync, mkdirSync, cpSync, existsSync } from 'node:fs';
 
-const body = readFileSync('crates.html', 'utf8');
+let body = readFileSync('crates.html', 'utf8');
+// Lift <title> and claude:* meta tags out of the page content into <head>.
+const title = (body.match(/<title>[\s\S]*?<\/title>/) || ['<title>Crates</title>'])[0];
+body = body.replace(/<title>[\s\S]*?<\/title>\s*/, '').replace(/<meta name="claude:[^>]*>\s*/g, '');
 const html = `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+${title}
+<meta name="description" content="Crates, a vinyl DJ librarian: know which shelf, crate or bag every record is in, play it, and pack it for the gig.">
 <meta name="theme-color" content="#E8EBED" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0F1113" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="/logos/mark-3.svg" type="image/svg+xml">

@@ -727,7 +727,7 @@ function seed(){
       {id:'p1',name:'Warm-up',color:PL_COLORS[1],items:['r1','r4','r7','r8']},
       {id:'p2',name:'Acid hour',color:PL_COLORS[0],items:['r3','r5','r8','r6']},
     ],
-    settings:{accent:'red', discogsSync:false},
+    settings:{accent:'red', discogsSync:false, look:'booth'},
     recent:[],
     gigs:[
       {id:'g1',name:'Sunday loft session',venue:'Loft session',date:'2026-08-30',bag:'B1',status:'done',items:[{r:'r1',packed:true,played:true,back:true},{r:'r4',packed:true,played:true,back:false},{r:'r7',packed:true,played:true,back:true},{r:'r8',packed:true,played:true,back:true}]},
@@ -744,7 +744,7 @@ function seedExtras(st){
   return st;
 }
 function migrate(st){
-  st.gigs ||= []; st.syncQueue ||= []; st.settings.discogsSync ??= false; st.settings.look ||= 'shop';
+  st.gigs ||= []; st.syncQueue ||= []; st.settings.discogsSync ??= false; st.settings.look ||= 'booth';
   st.units.forEach(u=>{ u.labels ||= {}; });
   st.records.forEach(r=>{ r.plays ||= []; r.barcode ??= ''; if(r.from===undefined) r.from = null; });
   return st;
@@ -1440,7 +1440,7 @@ function sortPl(pl, how){
 function openSettings(){
   openSheet(`<div class="sheet-head"><h2>Settings</h2><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
     <p class="muted" style="margin:0 0 8px;font-size:13px">Look</p>
-    <div class="row" style="margin-bottom:16px">${LOOKS.map(([k,n])=>`<button class="chip" data-act="set-look" data-l="${k}" aria-pressed="${(S.settings.look||'shop')===k}">${n}</button>`).join('')}</div>
+    <div class="row" style="margin-bottom:16px">${LOOKS.map(([k,n])=>`<button class="chip" data-act="set-look" data-l="${k}" aria-pressed="${(S.settings.look||'booth')===k}">${n}</button>`).join('')}</div>
     <p class="muted" style="margin:0 0 8px;font-size:13px">Accent color</p>
     <div class="swatches">${[['red','Signal red','#D2412C'],['brass','Brass','#B8862F'],['cyan','Booth cyan','#0EA5E9']].map(([k,n,h])=>`<button class="sw" data-act="set-accent" data-a="${k}" aria-pressed="${S.settings.accent===k}"><i style="background:${h}"></i>${n}</button>`).join('')}</div>
     <div class="bcbox" style="margin-top:18px"><label class="row" style="justify-content:space-between;cursor:pointer;flex-wrap:nowrap"><span><b style="font-size:14px">Save locations to Discogs</b><br><span class="muted" style="font-size:13px">Writes each record's spot (e.g. “K1·A2 (Acid)”) to a “Location” field in your Discogs collection, so you see it in the Discogs app too.</span></span><input type="checkbox" id="set-dsync" ${S.settings.discogsSync?'checked':''} style="width:22px;height:22px;accent-color:var(--accent);flex:0 0 auto"></label>
@@ -1685,7 +1685,7 @@ document.addEventListener('change', e=>{
 });
 
 /* ---- QR stickers ---- */
-const ARTIFACT_URL = 'https://claude.ai/artifact/JcYvbywAtZvY3rQvNGj5k2';
+const ARTIFACT_URL = 'https://crates-livid.vercel.app/';   // live site: stickers made in the preview point here
 const IN_ARTIFACT = !!window.claude;
 const BASE_URL = (IN_ARTIFACT || location.protocol==='file:' || /^(localhost|127\.)/.test(location.hostname) || /claude/.test(location.hostname)) ? ARTIFACT_URL : location.origin + location.pathname;
 const stickerToken = (u, c) => c==null ? u.id : `${u.id}-${cellLabel(u,c)}`;
@@ -2136,9 +2136,9 @@ function previewOnPlaying(){
 
 
 /* ---------- looks + cue bar ---------- */
-const LOOKS = [['shop','Shop floor'],['booth','Booth'],['auto','Match my device']];
+const LOOKS = [['booth','Booth (dark)'],['shop','Shop floor (light)'],['auto','Match my device']];
 function applyLook(){
-  const look = S.settings.look || 'shop';
+  const look = S.settings.look || 'booth';
   if(look==='auto') delete document.documentElement.dataset.look; else document.documentElement.dataset.look = look;
   const b = document.getElementById('look-btn'); if(b){ const n = LOOKS.find(l=>l[0]===look)?.[1]; b.title = `Look: ${n}. Click to switch.`; b.setAttribute('aria-label', b.title); }
 }
@@ -2237,7 +2237,7 @@ const A = {
 Object.assign(A, {
   'preview':d=>startPreview(d.r),
   'go-spot':d=>{ if(dragJustEnded) return; goSpot(d.u, d.c); },
-  'toggle-look':()=>{ const order = ['shop','booth','auto']; const cur = S.settings.look||'shop'; S.settings.look = order[(order.indexOf(cur)+1)%order.length]; applyLook(); save(); toast(`Look: ${LOOKS.find(l=>l[0]===S.settings.look)[1]}`); fitRoom(); },
+  'toggle-look':()=>{ const order = ['booth','shop','auto']; const cur = S.settings.look||'booth'; S.settings.look = order[(order.indexOf(cur)+1)%order.length]; applyLook(); save(); toast(`Look: ${LOOKS.find(l=>l[0]===S.settings.look)[1]}`); fitRoom(); },
   'go-gigs':()=>{ V.view='gigs'; if(!V.gig) V.gig = S.gigs.slice().sort((a,b)=>a.date.localeCompare(b.date)).find(g=>g.status!=='done')?.id || S.gigs[0]?.id || null; render(); },
   'open-gig':d=>{ V.gig=d.g; render(); document.querySelector('.gig')?.scrollIntoView({behavior:'smooth',block:'start'}); },
   'new-gig':()=>openNewGig(),

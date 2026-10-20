@@ -1,0 +1,1424 @@
+<title>Crates</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: the room (drawn furniture) is the home screen; a unit opens into a dig view; the player slides up over everything
+   with a spinning record. Display face is reserved for unit names, like record-store divider cards. */
+:root{
+  --bg:#E8EBED; --surface:#FFFFFF; --surface-2:#F2F4F5; --ink:#121518; --muted:#58616A; --line:#D3D8DC;
+  --ok:#17894B; --warn:#B26F05; --bad:#C2352B;
+  --accent:#D2412C; --accent-ink:#FFFFFF;
+  --shadow:0 1px 2px rgba(18,21,24,.06),0 10px 30px rgba(18,21,24,.08);
+  --f-display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"DM Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --player-h:76px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1113; --surface:#171A1E; --surface-2:#1F2328; --ink:#E8EBED; --muted:#98A1A9; --line:#2A3036;
+  --ok:#3CC47A; --warn:#E6A23C; --bad:#F06A5E; --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1113; --surface:#171A1E; --surface-2:#1F2328; --ink:#E8EBED; --muted:#98A1A9; --line:#2A3036;
+  --ok:#3CC47A; --warn:#E6A23C; --bad:#F06A5E; --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px rgba(0,0,0,.35); color-scheme:dark}
+body[data-accent="brass"]{--accent:#B8862F;--accent-ink:#1A1206}
+body[data-accent="cyan"]{--accent:#0EA5E9;--accent-ink:#04121A}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0 calc(var(--player-h) + 30px + env(safe-area-inset-bottom,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1100px;margin:0 auto}
+.code{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- top bar ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);padding-block:14px 12px;border-bottom:1px solid var(--line)}
+.top-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto;background:none;border:0;padding:0}
+.brand svg{width:30px;height:30px}
+.brand b{font-family:var(--f-display);font-weight:800;font-size:30px;letter-spacing:.02em;text-transform:uppercase;line-height:1}
+.tabs{display:flex;gap:3px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px}
+.tabs button{border:0;background:none;padding:6px 13px;border-radius:999px;font-weight:600;font-size:13.5px;color:var(--muted)}
+.tabs button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.icon-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;flex:0 0 auto}
+.icon-btn svg{width:18px;height:18px}
+.add-btn{height:38px;border-radius:999px;border:0;background:var(--accent);color:var(--accent-ink);padding:0 14px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.search{position:relative;flex:1 1 100%;order:3}
+.search input{width:100%;height:46px;border-radius:12px;border:1px solid var(--line);background:var(--surface);padding:0 14px 0 42px;font-size:16px}
+.search>svg{position:absolute;left:14px;top:14px;width:18px;height:18px;color:var(--muted)}
+.results{position:absolute;left:0;right:0;top:52px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);z-index:30;max-height:70vh;overflow-y:auto}
+.result{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:10px 12px;border-bottom:1px solid var(--line)}
+.result:last-child{border-bottom:0}
+.result:hover,.result.active{background:var(--surface-2)}
+.t{min-width:0}
+.t b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t span{display:block;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ---------- location chip ---------- */
+.loc{display:inline-flex;align-items:center;gap:7px;font-family:var(--f-mono);font-size:12px;font-weight:500;padding:4px 9px 4px 6px;border-radius:7px;background:var(--surface-2);border:1px solid var(--line);white-space:nowrap}
+.loc .mini{display:grid;gap:1.5px;padding:2px;background:#C9B48F;border-radius:2px}
+.loc .mini i{width:5px;height:5px;background:var(--surface);display:block}
+.loc .mini i.on{background:var(--accent)}
+.loc .bagdot{width:12px;height:10px;border-radius:3px 3px 4px 4px;background:#26292D;border-top:3px solid var(--accent)}
+.loc.home{background:none;border-style:dashed;color:var(--muted)}
+
+/* ---------- headings ---------- */
+.sec-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:26px 0 12px;flex-wrap:wrap}
+.sec-head h2{font-family:var(--f-display);font-weight:800;font-size:28px;text-transform:uppercase;letter-spacing:.02em;margin:0;line-height:1}
+.kicker{font-size:13px;color:var(--muted);margin-bottom:4px}
+
+/* ---------- room ---------- */
+.room{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.unit-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:14px;text-align:left;box-shadow:var(--shadow);transition:border-color .15s}
+.unit-card:hover{border-color:var(--accent)}
+.unit-card .meta{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.unit-card h3{margin:0;font-family:var(--f-display);font-weight:800;font-size:23px;text-transform:uppercase;letter-spacing:.02em;line-height:1}
+.unit-card .sub{font-size:12.5px;color:var(--muted)}
+.idtag{font-family:var(--f-mono);font-size:11px;padding:2px 6px;border-radius:5px;background:var(--ink);color:var(--bg);letter-spacing:.04em}
+.stage-box{display:grid;place-items:end center;min-height:150px;padding-top:6px}
+.photo{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;display:block}
+
+/* ---------- Kallax / cube shelving ---------- */
+.kallax{--fin:#EEECE6;--g:7px;display:grid;gap:var(--g);padding:var(--g);width:100%;border-radius:3px;position:relative;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0) 18%,rgba(0,0,0,0) 70%,rgba(0,0,0,.18)),
+    var(--grain,none),
+    var(--fin);
+  box-shadow:0 1px 0 rgba(255,255,255,.4) inset,0 -3px 0 color-mix(in srgb,var(--fin) 70%,#000) inset,0 3px 0 color-mix(in srgb,var(--fin) 60%,#000),0 12px 18px -8px rgba(0,0,0,.35)}
+.kallax.grain{--grain:repeating-linear-gradient(92deg,rgba(90,60,30,.07) 0 2px,rgba(255,255,255,0) 2px 7px,rgba(90,60,30,.05) 7px 8px,rgba(255,255,255,0) 8px 15px)}
+.kallax.gloss::after{content:"";position:absolute;inset:0;border-radius:3px;background:linear-gradient(115deg,rgba(255,255,255,.45) 0 12%,rgba(255,255,255,0) 22% 100%);pointer-events:none}
+.kallax.ledge{--g:5px;background:none;box-shadow:none;padding:0;gap:16px 8px}
+.kallax.ledge .cube{background:none;box-shadow:none;border-bottom:7px solid var(--fin);filter:drop-shadow(0 4px 3px rgba(0,0,0,.25))}
+.cube{aspect-ratio:1;position:relative;display:flex;align-items:flex-end;gap:2px;padding:12% 8% 0;overflow:hidden;border:0;border-radius:1px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--fin) 45%,#000) 0%,color-mix(in srgb,var(--fin) 72%,#000) 55%,color-mix(in srgb,var(--fin) 82%,#000) 100%);
+  box-shadow:inset 0 10px 14px -6px rgba(0,0,0,.55),inset 8px 0 12px -8px rgba(0,0,0,.45),inset -6px 0 10px -8px rgba(0,0,0,.3)}
+.cube .lbl{position:absolute;top:5px;left:6px;font-family:var(--f-mono);font-size:10px;color:rgba(255,255,255,.75);line-height:1;text-shadow:0 1px 1px rgba(0,0,0,.5)}
+.cube .cnt{position:absolute;top:5px;right:6px;font-family:var(--f-mono);font-size:10px;color:rgba(255,255,255,.75);line-height:1}
+.kallax.ledge .cube .lbl,.kallax.ledge .cube .cnt{color:var(--muted);text-shadow:none}
+.spine{flex:0 0 auto;width:var(--sw,6px);height:var(--h,88%);border-radius:1px 1px 0 0;
+  background:linear-gradient(90deg,rgba(255,255,255,.22),rgba(255,255,255,0) 35%,rgba(0,0,0,.28)),var(--c);box-shadow:1px 0 0 rgba(0,0,0,.35)}
+.spine.lean{transform:rotate(-8deg);transform-origin:bottom left}
+.kallax.big{--g:10px}
+.kallax.big .cube{cursor:pointer;--sw:9px}
+.kallax.big .cube .lbl,.kallax.big .cube .cnt{font-size:12.5px;top:8px}
+.kallax.big .cube .lbl{left:9px}.kallax.big .cube .cnt{right:9px}
+.kallax.big .cube[aria-pressed="true"]{outline:3px solid var(--accent);outline-offset:-3px}
+.cube.flash{animation:flash 1.1s ease 2}
+@keyframes flash{50%{box-shadow:inset 0 0 0 5px var(--accent)}}
+
+/* ---------- bags (textured) ---------- */
+.bagwrap{width:100%;display:grid;place-items:end center;padding-top:26px}
+.bag{--bc:#22262B;position:relative;width:min(100%,250px);aspect-ratio:5/3.7;border-radius:12px 12px 16px 16px;
+  background:
+    repeating-linear-gradient(45deg,rgba(255,255,255,.045) 0 1px,rgba(0,0,0,0) 1px 3px),
+    repeating-linear-gradient(-45deg,rgba(0,0,0,.12) 0 1px,rgba(0,0,0,0) 1px 3px),
+    linear-gradient(180deg,rgba(255,255,255,.10),rgba(0,0,0,.28)),var(--bc);
+  box-shadow:inset 0 -5px 0 rgba(0,0,0,.35),0 14px 18px -10px rgba(0,0,0,.55)}
+.bag.canvas{background:repeating-linear-gradient(0deg,rgba(0,0,0,.07) 0 1px,rgba(0,0,0,0) 1px 3px),repeating-linear-gradient(90deg,rgba(255,255,255,.06) 0 1px,rgba(0,0,0,0) 1px 3px),linear-gradient(180deg,rgba(255,255,255,.12),rgba(0,0,0,.18)),var(--bc)}
+.bag.metal{border-radius:8px;background:repeating-linear-gradient(0deg,rgba(255,255,255,.18) 0 1px,rgba(0,0,0,.04) 1px 2px),linear-gradient(180deg,#fff0,rgba(0,0,0,.25)),var(--bc);
+  box-shadow:inset 0 0 0 4px rgba(0,0,0,.25),inset 0 -5px 0 rgba(0,0,0,.3),0 14px 18px -10px rgba(0,0,0,.55)}
+.bag .stitch{position:absolute;inset:7px;border:1.5px dashed rgba(255,255,255,.22);border-radius:9px 9px 12px 12px;pointer-events:none}
+.bag.metal .stitch{border:0}
+.bag.board{border-radius:6px;background:repeating-radial-gradient(circle at 30% 40%,rgba(255,255,255,.035) 0 1px,rgba(0,0,0,0) 1px 3px),linear-gradient(180deg,rgba(255,255,255,.12),rgba(0,0,0,.3)),var(--bc);
+  box-shadow:inset 0 0 0 3px rgba(0,0,0,.35),inset 0 -5px 0 rgba(0,0,0,.3),0 14px 18px -10px rgba(0,0,0,.55)}
+.bag.board .stitch{border:0;border-top:3px solid rgba(190,195,200,.75);inset:46% 0 auto 0;border-radius:0}
+.kallax.bin .cube{aspect-ratio:1.5;padding-top:6%}
+.kallax.bin .spine{transform:rotate(-14deg);transform-origin:bottom left}
+.sw.custom{position:relative}
+.sw.custom i{background:conic-gradient(#e4572e,#f4d35e,#2ec4b6,#2e5eaa,#9b2335,#e4572e)}
+.sw.custom input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.bag .corner{position:absolute;width:16px;height:16px;background:linear-gradient(135deg,#d9dde0,#8b9196);border-radius:3px}
+.bag .flap{position:absolute;left:-3%;right:-3%;top:-8px;height:44%;border-radius:12px 12px 7px 7px;background:inherit;filter:brightness(1.15);box-shadow:0 4px 0 rgba(0,0,0,.28)}
+.bag .flap::after{content:"";position:absolute;inset:6px;border:1.5px dashed rgba(255,255,255,.22);border-radius:8px 8px 4px 4px}
+.bag .handle{position:absolute;left:31%;right:31%;top:-26px;height:28px;border:6px solid var(--bc);border-bottom:0;border-radius:16px 16px 0 0;filter:brightness(.85)}
+.bag .strap{position:absolute;left:4%;top:12%;width:6px;height:80%;background:rgba(0,0,0,.35);border-radius:3px}
+.bag .tag{position:absolute;left:50%;top:22%;transform:translateX(-50%) rotate(-2deg);background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;padding:2px 10px;border-radius:3px;z-index:3;white-space:nowrap;box-shadow:0 2px 3px rgba(0,0,0,.35)}
+.bag .peek{position:absolute;left:12%;right:12%;bottom:14%;height:30%;display:flex;gap:2px;align-items:flex-end;z-index:1}
+.bag .peek .spine{height:100%}
+.bag.backpack{aspect-ratio:3.6/4.4;width:min(70%,170px);border-radius:40px 40px 16px 16px}
+.bag.backpack .flap{border-radius:40px 40px 10px 10px;height:38%}
+.bag.backpack .handle{left:38%;right:38%}
+.bag .wheels{position:absolute;bottom:-9px;left:10%;right:10%;display:flex;justify-content:space-between}
+.bag .wheels i{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle,#666 0 25%,#111 27%);display:block}
+.bag .bar{position:absolute;top:-46px;left:28%;right:28%;height:48px;border:4px solid #8b9196;border-bottom:0;border-radius:4px 4px 0 0}
+.bag.tote{border-radius:4px 4px 10px 10px;aspect-ratio:4/4.2;width:min(78%,190px)}
+.bag.tote .handle{left:22%;right:22%;top:-34px;height:36px;border-width:5px;border-radius:30px 30px 0 0}
+
+/* ---------- crates / boxes ---------- */
+.cratewrap{width:min(100%,250px);position:relative;padding-top:22px}
+.crate-in{position:absolute;left:8%;right:8%;top:6px;height:46%;display:flex;gap:2px;align-items:flex-end}
+.crate-in .spine{height:100%}
+.crate-face{position:relative;width:100%;aspect-ratio:5/3.2;border-radius:6px;overflow:hidden;box-shadow:0 14px 18px -10px rgba(0,0,0,.5)}
+.crate-face svg{display:block;width:100%;height:100%}
+
+/* ---------- unit detail ---------- */
+.detail{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:16px;box-shadow:var(--shadow)}
+.detail-head{display:flex;gap:14px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.detail-head h2{margin:2px 0 6px;font-family:var(--f-display);font-weight:800;font-size:36px;text-transform:uppercase;letter-spacing:.02em;line-height:1}
+.back{border:0;background:none;padding:0;color:var(--muted);font-weight:600;font-size:13px}
+.detail-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:24px;margin-top:16px}
+@media (max-width:780px){.detail-grid{grid-template-columns:1fr}}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.chip{border:1px solid var(--line);background:var(--surface-2);padding:6px 11px;border-radius:999px;font-size:13px;display:inline-flex;gap:6px;align-items:center}
+.chip.code{font-family:var(--f-mono);font-size:12.5px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip small{opacity:.6}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:40px;padding:0 15px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:14px;text-decoration:none;white-space:nowrap}
+.btn svg{width:16px;height:16px}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn.ink{background:var(--ink);color:var(--bg);border-color:transparent}
+.btn.ghost{background:none}
+.btn.danger{color:var(--bad)}
+.btn.sm{height:32px;padding:0 10px;font-size:13px;border-radius:8px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* ---------- dig ---------- */
+.dig{display:flex;flex-direction:column;gap:14px}
+.stage{position:relative;height:clamp(230px,60vw,320px);touch-action:pan-y;user-select:none;overflow-x:clip}
+.sleeve{position:absolute;top:0;left:50%;width:clamp(200px,54vw,292px);aspect-ratio:1;border-radius:3px;overflow:hidden;box-shadow:0 16px 32px rgba(0,0,0,.3);transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .35s;background:var(--surface-2)}
+.sleeve svg{width:100%;height:100%;display:block}
+.sleeve .txt{position:absolute;left:12px;right:12px;bottom:11px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6);font-family:var(--f-display);font-weight:800;text-transform:uppercase;line-height:1.02}
+.sleeve .txt span{display:block;font-size:13px;letter-spacing:.06em;opacity:.9}
+.sleeve .txt b{display:block;font-size:25px}
+@media (prefers-reduced-motion:reduce){.sleeve{transition:none}}
+.dig-nav{display:flex;align-items:center;justify-content:center;gap:16px}
+.dig-info h3{margin:0;font-size:23px;font-weight:600;line-height:1.2;text-wrap:balance}
+.dig-info .by{font-size:16px;color:var(--muted);margin-top:2px}
+.facts{display:flex;gap:6px 14px;flex-wrap:wrap;margin-top:10px;font-size:13px;color:var(--muted);align-items:center}
+.facts b{color:var(--ink);font-weight:500}
+.edited{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-left:5px;vertical-align:middle}
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.tagchip{font-size:12px;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--ink)}
+.list{display:flex;flex-direction:column;border-top:1px solid var(--line);margin-top:4px}
+.li{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:9px 4px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;width:100%}
+.li.cur{background:var(--surface-2)}
+.thumb{width:40px;height:40px;border-radius:3px;overflow:hidden;display:block;flex:0 0 auto}
+.thumb svg{width:100%;height:100%;display:block}
+.empty{border:1.5px dashed var(--line);border-radius:14px;padding:28px 18px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:4px}
+
+/* ---------- sheets ---------- */
+.scrim{position:fixed;inset:0;background:rgba(5,7,9,.5);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:min(760px,100%);max-height:90vh;overflow:auto;border-radius:20px 20px 0 0;
+  padding-block:18px calc(22px + env(safe-area-inset-bottom,0px));padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));box-shadow:0 -10px 40px rgba(0,0,0,.3);animation:up .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes up{from{transform:translateY(40px);opacity:.4}}
+@media (min-width:780px){.scrim{align-items:center}.sheet{border-radius:20px;max-height:86vh}}
+@media (prefers-reduced-motion:reduce){.sheet,.np-sheet{animation:none!important}}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.sheet-head h2{margin:0;font-family:var(--f-display);font-weight:800;font-size:27px;text-transform:uppercase;letter-spacing:.02em;line-height:1.05}
+.targets{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+.target{border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.target .name{display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px}
+.tgrid{display:grid;gap:4px;padding:4px;background:#C9B48F;border-radius:3px}
+.tgrid button{aspect-ratio:1.25;border:0;background:var(--surface);font-family:var(--f-mono);font-size:12px;color:var(--ink);border-radius:2px}
+.tgrid button:hover,.tgrid button.sel{background:var(--accent);color:var(--accent-ink)}
+.tgrid button.here{background:repeating-linear-gradient(45deg,var(--surface) 0 4px,var(--line) 4px 6px);color:var(--muted);cursor:default}
+.tgrid button.homeslot{box-shadow:inset 0 0 0 2px var(--accent)}
+.tbag{height:56px;border-radius:9px 9px 11px 11px;border:0;background:#26292D;color:#fff;font-family:var(--f-display);font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:16px;border-top:6px solid var(--accent)}
+.tbag.here{opacity:.4;cursor:default}
+.tbag.sel{outline:3px solid var(--accent);outline-offset:2px}
+.quick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+
+/* ---------- forms ---------- */
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+label.f{display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--muted);min-width:0}
+label.f .lab{display:flex;justify-content:space-between;gap:8px;align-items:center}
+label.f input,label.f select,textarea{height:42px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:0 12px;font-size:15px;color:var(--ink);font-weight:400;width:100%;min-width:0}
+textarea{height:auto;min-height:96px;padding:10px 12px;resize:vertical}
+.revert{border:0;background:none;color:var(--accent);font-size:12px;font-weight:600;padding:0}
+.file{position:relative;overflow:hidden}
+.file input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.sw{display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:none;padding:0;font-size:11.5px;color:var(--muted);width:64px;text-align:center}
+.sw i{width:38px;height:38px;border-radius:50%;display:block;border:2px solid var(--line);box-shadow:inset 0 -6px 10px rgba(0,0,0,.18)}
+.sw[aria-pressed="true"] i{border-color:var(--ink);box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--ink)}
+.sw[aria-pressed="true"]{color:var(--ink);font-weight:600}
+.stars{display:flex;gap:2px}
+.stars button{border:0;background:none;font-size:22px;line-height:1;padding:2px;color:var(--line)}
+.stars button.on{color:var(--accent)}
+.kv{display:grid;grid-template-columns:1fr 1.4fr auto;gap:8px;align-items:center;margin-top:6px}
+.kv input{height:38px;border-radius:9px;border:1px solid var(--line);background:var(--surface);padding:0 10px;min-width:0}
+
+/* ---------- catalogs (presets) ---------- */
+.pfilter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.preset{border:1px solid var(--line);background:var(--surface-2);border-radius:12px;padding:10px;text-align:left;display:flex;flex-direction:column;gap:6px}
+.preset .pv{height:96px;display:grid;place-items:end center;overflow:hidden}
+.preset .pv>*{transform:scale(.62);transform-origin:bottom center}
+.preset b{font-size:13.5px;font-weight:600;line-height:1.25}
+.preset span{font-size:12px;color:var(--muted)}
+.preset[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--surface)}
+.preview{border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;place-items:end center;min-height:180px;background:linear-gradient(180deg,var(--surface-2),var(--surface))}
+.choice{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.choice button{border:1px solid var(--line);background:var(--surface-2);border-radius:16px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:8px}
+.choice button b{font-size:17px}
+.choice button span{color:var(--muted);font-size:13.5px}
+.choice .ico{height:70px;display:grid;place-items:end start}
+
+/* ---------- toast ---------- */
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--player-h) + 28px + env(safe-area-inset-bottom,0px));z-index:70;background:var(--ink);color:var(--bg);padding:10px 12px 10px 16px;border-radius:12px;display:flex;gap:14px;align-items:center;box-shadow:var(--shadow);font-size:14px;max-width:calc(100% - 32px)}
+.toast button{background:none;border:0;color:var(--accent);font-weight:700}
+
+/* ---------- mini player ---------- */
+.player{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--surface);border-top:1px solid var(--line);
+  padding-block:10px calc(10px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));box-shadow:0 -8px 24px rgba(0,0,0,.08)}
+.player-in{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:12px;align-items:center}
+.pinfo{min-width:0;border:0;background:none;text-align:left;padding:0}
+.pinfo b{display:block;font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pinfo span{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pbtns{display:flex;gap:6px;align-items:center}
+.round{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;text-decoration:none;flex:0 0 auto}
+.round.main{background:var(--accent);color:var(--accent-ink);border-color:transparent;width:50px;height:50px}
+.round.xl{width:64px;height:64px}
+.round svg{width:18px;height:18px}
+.round.xl svg{width:24px;height:24px}
+.round:disabled{opacity:.4}
+.progress{height:3px;background:var(--line);position:absolute;left:0;right:0;top:0}
+.progress i{display:block;height:100%;background:var(--accent);width:0}
+#yt-host{position:fixed;left:-420px;bottom:0;width:320px;height:180px;overflow:hidden;opacity:0;pointer-events:none}
+
+/* ---------- vinyl (ported look from discogs-stream MobileAlbumCover) ---------- */
+.vinyl{position:relative;aspect-ratio:1;border-radius:50%;
+  background:repeating-radial-gradient(circle at 50% 50%,#131313 0 1.1px,#1c1c1c 1.1px 2.3px);
+  box-shadow:0 0 0 2px #0a0a0a,0 22px 50px rgba(0,0,0,.45)}
+.vinyl .disc{position:absolute;inset:0;border-radius:50%}
+.vinyl .g{position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.06)}
+.vinyl .lab{position:absolute;inset:31%;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px rgba(0,0,0,.6),0 0 0 4px rgba(255,255,255,.05)}
+.vinyl .lab svg{width:100%;height:100%;display:block}
+.vinyl .hole{position:absolute;inset:48.4%;border-radius:50%;background:#c9cdd1;box-shadow:inset 0 1px 2px rgba(0,0,0,.6)}
+.vinyl .sheen{position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 20deg,rgba(255,255,255,0) 0deg,rgba(255,255,255,.11) 30deg,rgba(255,255,255,0) 60deg,rgba(255,255,255,0) 180deg,rgba(255,255,255,.08) 215deg,rgba(255,255,255,0) 250deg)}
+.vinyl.spin .disc{animation:spin 1.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.vinyl.glow{animation:glow 2.4s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 2px #0a0a0a,0 0 34px 6px color-mix(in srgb,var(--accent) 45%,transparent),0 22px 50px rgba(0,0,0,.45)}}
+@media (prefers-reduced-motion:reduce){.vinyl.spin .disc,.vinyl.glow{animation:none}}
+.mini-vinyl{width:54px;height:54px}
+
+/* ---------- slide-up player ---------- */
+.np-scrim{position:fixed;inset:0;z-index:55;background:rgba(5,7,9,.55)}
+.np-sheet{position:fixed;left:0;right:0;bottom:0;top:max(18px,env(safe-area-inset-top,0px));z-index:56;background:var(--surface);border-radius:22px 22px 0 0;overflow:auto;
+  padding-block:10px calc(26px + env(safe-area-inset-bottom,0px));padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));
+  animation:slide .38s cubic-bezier(.2,.85,.2,1);box-shadow:0 -14px 40px rgba(0,0,0,.35)}
+@keyframes slide{from{transform:translateY(100%)}}
+.grab{width:44px;height:5px;border-radius:3px;background:var(--line);margin:4px auto 10px;border:0;display:block}
+.np-wrap{max-width:860px;margin:0 auto}
+.deck{position:relative;width:min(78vw,380px);margin:8px auto 0;padding:16px;border-radius:22px;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--surface-2) 80%,#fff),var(--surface-2));box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 10px 26px rgba(0,0,0,.12);border:1px solid var(--line)}
+.arm{position:absolute;right:4%;top:6%;width:34%;height:72%;pointer-events:none;transform-origin:78% 12%;transform:rotate(-24deg);transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.arm.on{transform:rotate(2deg)}
+@media (prefers-reduced-motion:reduce){.arm{transition:none}}
+.np-meta{text-align:center;margin-top:18px}
+.np-meta h3{margin:0;font-size:27px;font-weight:700;line-height:1.15;text-wrap:balance}
+.np-meta .by{font-size:18px;color:var(--muted);margin-top:2px}
+.np-ctrl{display:flex;justify-content:center;align-items:center;gap:18px;margin-top:16px}
+.scrub{height:4px;background:var(--line);border-radius:2px;margin:16px auto 4px;max-width:420px;overflow:hidden}
+.scrub i{display:block;height:100%;background:var(--accent);width:0}
+.np-tabs{display:flex;gap:4px;margin:22px 0 10px;border-bottom:1px solid var(--line)}
+.np-tabs button{border:0;background:none;padding:10px 12px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.np-tabs button[aria-pressed="true"]{color:var(--ink);border-color:var(--accent)}
+.notice{border:1px solid var(--line);background:var(--surface-2);border-radius:12px;padding:12px 14px;font-size:13.5px;margin-top:14px}
+.notice b{font-weight:600}
+.links{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.link{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:10px;font-size:14px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--line);display:inline-block}
+.dot.ok{background:var(--ok)}.dot.bad{background:var(--bad)}.dot.try{background:var(--warn);animation:pulse 1s infinite}.dot.pend{background:transparent;border:2px solid var(--muted)}
+@keyframes pulse{50%{opacity:.35}}
+.chain{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:2px;counter-reset:s}
+.chain li{display:grid;grid-template-columns:26px 1fr;gap:10px;padding:7px 8px;border-radius:8px;font-size:13.5px;counter-increment:s}
+.chain li::before{content:counter(s);font-family:var(--f-mono);font-size:12px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);color:var(--muted)}
+.chain li.on{background:var(--surface-2)}
+.chain li.on::before{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.chain li.done::before{content:"✓";color:var(--ok)}
+.chain li.fail::before{content:"✕";color:var(--bad)}
+.log{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);margin-top:8px;max-height:120px;overflow:auto;white-space:pre-wrap}
+.pl button.pli{display:grid;grid-template-columns:16px 50px minmax(0,1fr);gap:12px;align-items:center;width:100%;border:0;border-bottom:1px solid var(--line);background:none;padding:11px 4px;text-align:left}
+.pl .pli .thumb{width:50px;height:50px}
+.pl .pli .t b{font-size:20px;line-height:1.2}
+.pl .pli .t span{font-size:15.5px}
+.pl .pli.cur .t b{color:var(--accent)}
+.pl .pli.bad{opacity:.5}
+
+/* ---------- playlists ---------- */
+.plgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.plcard{border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.plcard::before{content:"";position:absolute;inset:0 0 auto;height:5px;background:var(--pc)}
+.plcard .covers{display:flex}
+.plcard .covers .thumb{width:48px;height:48px;margin-right:-12px;box-shadow:0 0 0 2px var(--surface)}
+.plcard b{font-size:18px}
+.plcard span{color:var(--muted);font-size:13px}
+.pledit{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:16px;box-shadow:var(--shadow)}
+.plname{font-family:var(--f-display);font-weight:800;font-size:34px;text-transform:uppercase;letter-spacing:.02em;border:0;border-bottom:2px dashed transparent;background:none;width:100%;padding:2px 0;line-height:1.1}
+.plname:hover,.plname:focus{border-bottom-color:var(--line);outline:none}
+.items{margin-top:12px;border-top:1px solid var(--line);touch-action:pan-y}
+.item{display:grid;grid-template-columns:28px 22px 44px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 2px;border-bottom:1px solid var(--line);background:var(--surface)}
+.item.dragging{background:var(--surface-2);box-shadow:0 8px 20px rgba(0,0,0,.15);position:relative;z-index:2}
+.handle{cursor:grab;touch-action:none;border:0;background:none;color:var(--muted);display:grid;place-items:center;height:36px}
+.handle svg{width:18px;height:18px}
+.item .n{font-family:var(--f-mono);font-size:12px;color:var(--muted);text-align:right}
+.item .thumb{width:44px;height:44px}
+.item .t b{font-size:16px}
+.item .acts{display:flex;gap:2px}
+.mini-btn{width:32px;height:32px;border-radius:8px;border:1px solid transparent;background:none;display:grid;place-items:center;color:var(--muted)}
+.mini-btn:hover{border-color:var(--line);color:var(--ink)}
+.mini-btn svg{width:15px;height:15px}
+.pick{display:flex;flex-direction:column;gap:6px;margin-top:12px;max-height:50vh;overflow:auto}
+.pick label{display:grid;grid-template-columns:22px 40px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:10px;font-size:14px}
+.diff{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.diff .d{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:12px}
+.diff .d .t{display:flex;flex-direction:column;gap:6px}
+.pill{font-size:11.5px;padding:2px 8px;border-radius:5px;font-weight:600}
+.pill.in{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
+.pill.out{background:color-mix(in srgb,var(--warn) 20%,transparent);color:var(--warn)}
+.foot{margin-top:34px;font-size:12.5px;color:var(--muted);max-width:72ch}
+</style>
+
+<div class="top"><div class="wrap">
+  <div class="top-row">
+    <button class="brand" data-act="go-room" aria-label="Crates home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="3" fill="var(--ink)"/><rect x="5" y="5" width="10" height="10" fill="var(--accent)"/><rect x="17" y="5" width="10" height="10" fill="var(--bg)"/><rect x="5" y="17" width="10" height="10" fill="var(--bg)"/><rect x="17" y="17" width="10" height="10" fill="var(--bg)"/><rect x="7" y="8" width="2" height="7" fill="var(--ink)"/><rect x="10" y="7" width="2" height="8" fill="var(--ink)"/></svg>
+      <b>Crates</b></button>
+    <div class="tabs" role="group" aria-label="Sections">
+      <button data-act="go-room" id="tab-room">Room</button>
+      <button data-act="go-playlists" id="tab-pl">Playlists</button>
+    </div>
+    <button class="add-btn" data-act="open-add"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add</button>
+    <button class="icon-btn" data-act="open-settings" aria-label="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/></svg>
+    </button>
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <label for="q" class="sr">Search your records</label>
+      <input id="q" type="search" placeholder="Find a record — artist, title, label, tag…" autocomplete="off">
+      <div class="results" id="results" hidden></div>
+    </div>
+  </div>
+</div></div>
+
+<main class="wrap" id="main"></main>
+
+<div class="player" id="player" hidden></div>
+<div id="yt-host"><div id="yt"></div></div>
+<div id="layer"></div>
+<div id="np"></div>
+
+<script>
+/* =====================================================================
+   PRESET CATALOGS — regenerated from research (furniture.json, bags.json)
+   ===================================================================== */
+const BASE_FURNITURE = [
+  {key:'kallax-1x2',brand:'IKEA',name:'Kallax 1×2',kind:'shelf',style:'cube',rows:1,cols:2,cap:'~65 LPs per cube',group:'IKEA Kallax'},
+  {key:'kallax-1x4',brand:'IKEA',name:'Kallax 1×4',kind:'shelf',style:'cube',rows:1,cols:4,cap:'~65 LPs per cube',group:'IKEA Kallax'},
+  {key:'kallax-4x1',brand:'IKEA',name:'Kallax 4×1 (upright)',kind:'shelf',style:'cube',rows:4,cols:1,cap:'~65 LPs per cube',group:'IKEA Kallax'},
+  {key:'kallax-2x2',brand:'IKEA',name:'Kallax 2×2',kind:'shelf',style:'cube',rows:2,cols:2,cap:'~65 LPs per cube',group:'IKEA Kallax'},
+  {key:'kallax-2x4',brand:'IKEA',name:'Kallax 2×4',kind:'shelf',style:'cube',rows:2,cols:4,cap:'~65 LPs per cube',group:'IKEA Kallax'},
+  {key:'kallax-4x2',brand:'IKEA',name:'Kallax 4×2 (upright)',kind:'shelf',style:'cube',rows:4,cols:2,cap:'~65 LPs per cube',group:'IKEA Kallax'},
+  {key:'kallax-4x4',brand:'IKEA',name:'Kallax 4×4',kind:'shelf',style:'cube',rows:4,cols:4,cap:'~65 LPs per cube',group:'IKEA Kallax'},
+  {key:'kallax-5x5',brand:'IKEA',name:'Kallax 5×5',kind:'shelf',style:'cube',rows:5,cols:5,cap:'~65 LPs per cube',group:'IKEA Kallax'},
+  {key:'expedit-5x5',brand:'IKEA',name:'Expedit 5×5 (discontinued)',kind:'shelf',style:'cube',rows:5,cols:5,cap:'~65 LPs per cube',group:'Other shelving'},
+  {key:'eket-3x1',brand:'IKEA',name:'Eket 3×1',kind:'shelf',style:'cube',rows:1,cols:3,cap:'~60 LPs per cube',group:'Other shelving'},
+  {key:'wall-ledge',brand:'Generic',name:'Wall ledge / picture rail',kind:'shelf',style:'ledge',rows:2,cols:3,cap:'Front-facing sleeves',group:'Other shelving'},
+  {key:'custom-grid',brand:'Custom',name:'Custom grid',kind:'shelf',style:'cube',rows:3,cols:3,cap:'Any rows × columns',custom:true,group:'Other shelving'},
+  {key:'milk-crate',brand:'Generic',name:'Milk crate',kind:'crate',style:'milk',cap:'~60 LPs',group:'Crates & boxes'},
+  {key:'wood-crate',brand:'Generic',name:'Wooden record crate',kind:'crate',style:'wood',cap:'~60 LPs',group:'Crates & boxes'},
+  {key:'magma-lp100-box',brand:'Magma',name:'Magma LP-100 Box',kind:'crate',style:'case',cap:'~100 LPs',group:'Crates & boxes'},
+];
+const FINISHES = {
+  cube:[{name:'White',hex:'#EEECE6'},{name:'Black-brown',hex:'#2F2723'},{name:'White stained oak effect',hex:'#E3D9C6',grain:1},{name:'Oak effect',hex:'#C9A577',grain:1},{name:'High-gloss white',hex:'#F7F7F5',gloss:1},{name:'Grey',hex:'#9EA1A3'}],
+  ledge:[{name:'White',hex:'#EEECE6'},{name:'Black',hex:'#222'},{name:'Oak',hex:'#C9A577',grain:1}],
+  milk:[{name:'Blue',hex:'#1F5FBF'},{name:'Red',hex:'#C8322B'},{name:'Black',hex:'#1E1E1E'},{name:'Green',hex:'#2F8F46'},{name:'Yellow',hex:'#E8B921'},{name:'White',hex:'#E9E9E6'},{name:'Orange',hex:'#E86A1C'},{name:'Grey',hex:'#7D8287'}],
+  wood:[{name:'Pine',hex:'#D8B27C'},{name:'Walnut stain',hex:'#6B4428'},{name:'Whitewash',hex:'#E4DED3'}],
+  case:[{name:'Black',hex:'#1D1F22'},{name:'Silver',hex:'#B9BEC2'}],
+};
+const BASE_BAGS = [
+  {key:'udg-ultimate-60',brand:'UDG',name:'Ultimate Record Bag 60',form:'shoulder',cap:'~60 LPs',material:'nylon',colors:[{name:'Black',hex:'#1E2124'},{name:'Steel Grey',hex:'#5A5F63'},{name:'Army Green',hex:'#4B5233'},{name:'Burgundy',hex:'#5A1E26'}]},
+  {key:'udg-sling-60',brand:'UDG',name:'Ultimate SlingBag 60',form:'sling',cap:'~60 LPs',material:'nylon',colors:[{name:'Black',hex:'#1E2124'},{name:'Steel Grey',hex:'#5A5F63'},{name:'Army Green',hex:'#4B5233'}]},
+  {key:'udg-trolley',brand:'UDG',name:'Ultimate Trolley To Go',form:'trolley',cap:'~70 LPs',material:'nylon',colors:[{name:'Black',hex:'#1E2124'}]},
+  {key:'magma-riot-50',brand:'Magma',name:'Riot LP-Bag 50',form:'shoulder',cap:'~50 LPs',material:'nylon',colors:[{name:'Black/Red',hex:'#202022'}]},
+  {key:'magma-riot-100',brand:'Magma',name:'Riot LP-Bag 100',form:'shoulder',cap:'~100 LPs',material:'nylon',colors:[{name:'Black/Red',hex:'#202022'}]},
+  {key:'flight-50',brand:'Generic',name:'Flight case, 50 LPs',form:'case',cap:'~50 LPs',material:'aluminum',colors:[{name:'Silver',hex:'#B5BBC0'},{name:'Black',hex:'#2A2C2F'}]},
+  {key:'tote',brand:'Generic',name:'Canvas tote',form:'tote',cap:'~15 LPs',material:'canvas',colors:[{name:'Natural',hex:'#D9CDB4'},{name:'Black',hex:'#2B2B2B'},{name:'Navy',hex:'#24314F'}]},
+];
+/*PRESETS_START*/
+const RESEARCH = {"bags":[{"key":"udg-ultimate-slingbag-trolley-set-deluxe-mk2","brand":"UDG","name":"Ultimate SlingBag Trolley Set DeLuxe MK2","form":"trolley","texture":"nylon","cap":"~90 LPs","colors":[{"name":"Black","hex":"#1c1c1e"},{"name":"Black / orange inside","hex":"#f26b1d"}],"conf":"high","src":"https://udggear.com/products/udg-ultimate-slingbag-trolley-set-deluxe-mk2"},{"key":"udg-ultimate-slingbag-trolley-deluxe","brand":"UDG","name":"Ultimate SlingBag Trolley DeLuxe","form":"trolley","texture":"nylon","cap":"~60 LPs","colors":[{"name":"Black","hex":"#1c1c1e"},{"name":"Black / orange inside","hex":"#f26b1d"}],"conf":"medium","src":"https://www.deejay.de/Udg+Slingbag"},{"key":"udg-ultimate-slingbag-mk2","brand":"UDG","name":"Ultimate SlingBag MK2","form":"sling","texture":"nylon","cap":"~45 LPs","colors":[{"name":"Black","hex":"#1c1c1e"}],"conf":"medium","src":"https://www.deejay.de/Udg+Slingbag"},{"key":"udg-trolley-to-go","brand":"UDG","name":"Trolley To Go","form":"trolley","texture":"nylon","cap":"~40–50 LPs","colors":[{"name":"Black","hex":"#1c1c1e"}],"conf":"medium","src":"https://www.deejay.de/Udg+Slingbag"},{"key":"udg-ultimate-7-slingbag-60","brand":"UDG","name":"Ultimate 7\" SlingBag 60","form":"sling","texture":"nylon","cap":"~60 LPs","colors":[{"name":"Black","hex":"#1c1c1e"}],"conf":"medium","src":"https://www.deejay.de/Udg+Slingbag"},{"key":"udg-ultimate-starterbag","brand":"UDG","name":"Ultimate StarterBag","form":"shoulder","texture":"nylon","cap":"~50 LPs","colors":[{"name":"Black","hex":"#1c1c1e"}],"conf":"high","src":"https://www.thomann.co.uk/udg_ultimate_starterbag_black.htm"},{"key":"udg-ultimate-softbag-60","brand":"UDG","name":"Ultimate SoftBag 60","form":"shoulder","texture":"nylon","cap":"~60 LPs","colors":[{"name":"Black","hex":"#1c1c1e"}],"conf":"medium","src":"https://www.bax-shop.co.uk/record-bags-cases/udg-ultimate-carrying-bag-for-60-12-vinyl-records"},{"key":"udg-ultimate-softbag-90-90-slanted","brand":"UDG","name":"Ultimate SoftBag 90 / 90 Slanted","form":"shoulder","texture":"nylon","cap":"~90 LPs","colors":[{"name":"Black","hex":"#1c1c1e"}],"conf":"low","src":"https://djmag.com/tech/udg-rerelease-vinyl-dj-bag"},{"key":"udg-ultimate-backpack-slim","brand":"UDG","name":"Ultimate Backpack Slim","form":"backpack","texture":"nylon","cap":"~7 LPs","colors":[{"name":"Black / orange inside","hex":"#1c1c1e"}],"conf":"high","src":"https://www.udggear.com/vinyl/udg-ultimate-backpack-slim-black-orange-inside"},{"key":"magma-lp-bag-100-trolley","brand":"Magma","name":"LP-Bag 100 Trolley","form":"trolley","texture":"nylon","cap":"~90 LPs","colors":[{"name":"Black","hex":"#1c1c1e"},{"name":"Black / red","hex":"#b3202a"}],"conf":"high","src":"https://djcity.com.au/product/magma-lp-bag-100-trolley-fits-90-12-records-40500"},{"key":"magma-riot-lp-trolley-50","brand":"Magma","name":"Riot LP-Trolley 50","form":"trolley","texture":"nylon","cap":"~40–45 LPs","colors":[{"name":"Black","hex":"#1c1c1e"}],"conf":"high","src":"https://www.thomannmusic.com/magma_riot_lp_trolley_50.htm"},{"key":"magma-riot-lp-bag-50-with-trolley-sling","brand":"Magma","name":"Riot LP-Bag 50 with Trolley Sling","form":"shoulder","texture":"nylon","cap":"~50 LPs","colors":[{"name":"Black","hex":"#1c1c1e"}],"conf":"medium","src":"https://avlgear.com/products/magma-riot-lp-bag-50-with-trolley-sling"},{"key":"magma-lp-bag-40-ii-with-trolley-sling-straps","brand":"Magma","name":"LP-Bag 40 II with Trolley Sling Straps","form":"shoulder","texture":"nylon","cap":"~40 LPs","colors":[{"name":"Black / red interior","hex":"#b3202a"}],"conf":"high","src":"https://avlgear.com/collections/magma/products/magma-lp-bag-40-ii-with-trolley-sling-straps-black-and-red"},{"key":"magma-lp-bag-ii-42640-courier-style","brand":"Magma","name":"LP Bag II 42640 (courier style)","form":"shoulder","texture":"nylon","cap":"~40 LPs","colors":[{"name":"Black","hex":"#1c1c1e"}],"conf":"medium","src":"https://djcity.com.au/product/magma-42640-record-case/"},{"key":"magma-lp-bag-60-profi","brand":"Magma","name":"LP-Bag 60 Profi","form":"shoulder","texture":"nylon","cap":"~60 LPs","colors":[{"name":"Black","hex":"#1c1c1e"}],"conf":"high","src":"https://djcity.com.au/product/magma-44150-record-case/"},{"key":"magma-lp-100-profi-bag","brand":"Magma","name":"LP 100 Profi Bag","form":"shoulder","texture":"nylon","cap":"Capacity not listed","colors":[{"name":"Black / red","hex":"#b3202a"}],"conf":"low","src":"https://www.gak.co.uk/en/magma-lp-100-profi-bag-blackred/124126"},{"key":"magma-12-sandwich","brand":"Magma","name":"12\" Sandwich","form":"shoulder","texture":"nylon","cap":"~60 LPs","colors":[{"name":"Black","hex":"#1c1c1e"},{"name":"Misty magenta","hex":"#c0397f"}],"conf":"high","src":"https://www.thomannmusic.com/magma_12_sandwich.htm"},{"key":"magma-solid-blaze-vinyl-bag","brand":"Magma","name":"Solid Blaze Vinyl Bag","form":"shoulder","texture":"nylon","cap":"~50 LPs","colors":[{"name":"Black","hex":"#1c1c1e"}],"conf":"high","src":"https://www.thomannmusic.com/magma_solid_blaze_vinyl_bag.htm"},{"key":"magma-solid-blaze-vinyl-trolley","brand":"Magma","name":"Solid Blaze Vinyl-Trolley","form":"trolley","texture":"nylon","cap":"~60 7\" singles","colors":[{"name":"Black","hex":"#1c1c1e"}],"conf":"high","src":"https://www.thomann.cz/magma_solid_blaze_vinyl_trolley.htm"},{"key":"zomo-vs-box-50","brand":"Zomo","name":"VS-Box 50","form":"case","texture":"metal","cap":"~50–60 LPs","colors":[{"name":"Black","hex":"#1c1c1e"},{"name":"White","hex":"#f2f2f0"},{"name":"Walnut","hex":"#5c3d2a"},{"name":"Zebrano","hex":"#a88a5a"}],"conf":"medium","src":"https://www.recordcase.de/zomo-vs-box-50-weiss"},{"key":"zomo-vs-box-100","brand":"Zomo","name":"VS-Box 100","form":"case","texture":"metal","cap":"~100–120 LPs","colors":[{"name":"Black","hex":"#1c1c1e"},{"name":"White","hex":"#f2f2f0"}],"conf":"medium","src":"https://www.simplysoundandlighting.co.uk/products/zomo-vs-box-100-vinyl-storage-box-shelf-cabinet-for-vinyl-record-lp-12"},{"key":"zomo-technics-backbag-45-lps","brand":"Zomo","name":"Technics BackBag (45 LPs)","form":"backpack","texture":"nylon","cap":"~45 LPs","colors":[{"name":"White / silver","hex":"#d8dadd"},{"name":"Turquoise / white","hex":"#2fb5b0"},{"name":"Camouflage green","hex":"#5b6b3c"},{"name":"Gold / white","hex":"#c9a24a"},{"name":"Wine","hex":"#6e1f35"}],"conf":"high","src":"https://musicstore.de/en_DE/EUR/Zomo-Technics-BackBag-weiss-silber/art-DJE0006841-000"},{"key":"zomo-technics-dj-bag","brand":"Zomo","name":"Technics DJ-Bag","form":"shoulder","texture":"nylon","cap":"~60 LPs","colors":[{"name":"White","hex":"#f2f2f0"},{"name":"Black","hex":"#1c1c1e"},{"name":"Brown","hex":"#6b4a32"},{"name":"Grey","hex":"#7d7f83"},{"name":"Orange","hex":"#f07a1a"},{"name":"Pink","hex":"#e87fa6"},{"name":"Red","hex":"#c0272d"},{"name":"Silver","hex":"#b8bcc2"},{"name":"Camouflage brown","hex":"#7a6a48"}],"conf":"high","src":"https://musicstore.de/en_DE/EUR/Zomo-Technics-DJ-Bag-weiss/art-DJE0006850-000"},{"key":"glorious-record-box-advanced-110","brand":"Glorious","name":"Record Box Advanced 110","form":"case","texture":"board","cap":"~110 LPs","colors":[{"name":"Black","hex":"#1c1c1e"},{"name":"White","hex":"#f4f4f2"}],"conf":"high","src":"https://www.adorama.com/glorious-record-box-advanced-110-vinyl-case-white/p/glrbx110whta"},{"key":"glorious-record-box-110","brand":"Glorious","name":"Record Box 110","form":"case","texture":"board","cap":"~110 LPs","colors":[{"name":"Black","hex":"#1c1c1e"},{"name":"White","hex":"#f4f4f2"}],"conf":"low","src":"https://www.adorama.com/GLRBX110BLK.html"},{"key":"glorious-record-rack-330","brand":"Glorious","name":"Record Rack 330","form":"case","texture":"board","cap":"~330 LPs","colors":[{"name":"Black","hex":"#1c1c1e"},{"name":"White","hex":"#f4f4f2"}],"conf":"high","src":"https://www.adorama.com/glorious-record-rack-330-vinyl-case-white/p/glrrck330wht"},{"key":"reloop-80-record-case","brand":"Reloop","name":"80 Record Case","form":"case","texture":"metal","cap":"~80 LPs","colors":[{"name":"Black","hex":"#1c1c1e"}],"conf":"high","src":"https://www.adorama.com/reloop-80-record-case-vinyl-dj-storage-black/p/reccase80blk"},{"key":"reloop-club-series-120-trolley-case","brand":"Reloop","name":"Club Series 120 Trolley Case","form":"case","texture":"metal","cap":"~120 LPs","colors":[{"name":"Black","hex":"#1c1c1e"}],"conf":"high","src":"https://www.scmsinc.com/reloop-ams-rec-trolley-120-blk-reloop-120-trolley-record-case.html"},{"key":"odyssey-clp100p-carpeted-record-case","brand":"Odyssey","name":"CLP100P Carpeted Record Case","form":"case","texture":"canvas","cap":"~100 LPs","colors":[{"name":"Black carpet","hex":"#262626"}],"conf":"high","src":"https://www.fullcompass.com/prod/505866-odyssey-clp100p-12-vinyl-records-case"},{"key":"odyssey-clp200p-pro-record-utility-carpeted-case","brand":"Odyssey","name":"CLP200P Pro Record/Utility Carpeted Case","form":"case","texture":"canvas","cap":"~200 LPs","colors":[{"name":"Black carpet","hex":"#262626"},{"name":"Gray carpet","hex":"#6f7276"}],"conf":"medium","src":"https://www.gearclubdirect.com/odyssey-pro-record-utility-carpeted-case-for-200-12-vinyl-records-lps/"},{"key":"odyssey-flight-zone-fzlp80","brand":"Odyssey","name":"Flight Zone FZLP80","form":"case","texture":"metal","cap":"~80 LPs","colors":[{"name":"Black laminate","hex":"#202020"}],"conf":"high","src":"https://www.simplysoundandlighting.co.uk/odyssey-flight-zone-case-for-up-to-80-lp-12-vinyl-records.html"},{"key":"odyssey-flight-zone-fzlp120hw-trolley","brand":"Odyssey","name":"Flight Zone FZLP120HW (trolley)","form":"case","texture":"metal","cap":"~120 LPs","colors":[{"name":"Black laminate / silver hardware","hex":"#202020"}],"conf":"high","src":"https://musicredone.com/products/odyssey-fzlp120hw-utility-flight-trolley-case-with-wheels-for-120-12-vinyl-records"},{"key":"odyssey-krom-klp70bl-klp1","brand":"Odyssey","name":"Krom KLP70BL / KLP1","form":"case","texture":"metal","cap":"~70 LPs","colors":[{"name":"Black","hex":"#1c1c1e"},{"name":"Silver (KLP1SIL)","hex":"#b8bcc2"}],"conf":"medium","src":"https://www.adorama.com/odklp70bl.html"},{"key":"odyssey-krom-klp2-stacking-record-case","brand":"Odyssey","name":"Krom KLP2 Stacking Record Case","form":"case","texture":"board","cap":"~70 LPs","colors":[{"name":"Black","hex":"#1c1c1e"},{"name":"Blue","hex":"#2250b8"},{"name":"Red","hex":"#c0272d"},{"name":"Silver","hex":"#b8bcc2"}],"conf":"high","src":"https://www.zzounds.com/item--ODYKLP2"},{"key":"gator-onyx-case-for-12-vinyl","brand":"Gator","name":"ONYX Case for 12\" Vinyl","form":"case","texture":"board","cap":"~50–70 LPs","colors":[{"name":"Black","hex":"#1c1c1e"}],"conf":"high","src":"https://gatorco.com/product/g-onyx-vinyl-1270/"},{"key":"gorilla-gc-lp100-flight-carry-case","brand":"Gorilla","name":"GC-LP100 Flight Carry Case","form":"case","texture":"metal","cap":"~100 LPs","colors":[{"name":"Black","hex":"#1c1c1e"}],"conf":"medium","src":"https://ebay.com/itm/201232570601"},{"key":"selektor-worker-dj-record-bag","brand":"Selektor","name":"Worker DJ Record Bag","form":"shoulder","texture":"nylon","cap":"~50 LPs","colors":[{"name":"Black","hex":"#1c1c1e"}],"conf":"medium","src":"https://turntablelab.com/products/selektor-worker-dj-record-bag-holds-50-lps"},{"key":"crosley-record-carrier-case","brand":"Crosley","name":"Record Carrier Case","form":"case","texture":"board","cap":"~30 LPs","colors":[{"name":"Tan","hex":"#b08a5a"},{"name":"Dark turquoise","hex":"#1d6f73"},{"name":"Black","hex":"#1c1c1e"}],"conf":"medium","src":"https://shop.crackerbarrel.com/crosley-record-carrier-case/p/558279"},{"key":"crosley-platter-pak","brand":"Crosley","name":"Platter-Pak","form":"case","texture":"board","cap":"~30 LPs","colors":[{"name":"Tan","hex":"#b08a5a"}],"conf":"low","src":"https://drhead.ae/product/crosley_platterpak_tan/"},{"key":"humminguru-vinyl-record-tote-bag","brand":"HumminGuru","name":"Vinyl Record Tote Bag","form":"tote","texture":"canvas","cap":"~30 LPs","colors":[{"name":"Dark","hex":"#2a2a2a"}],"conf":"medium","src":"https://theaudio.co/products/humminguru-vinyl-record-tote-bag"},{"key":"generic-canvas-record-tote-preset-template","brand":"Generic","name":"Canvas Record Tote (preset template)","form":"tote","texture":"canvas","cap":"~20–30 LPs","colors":[{"name":"Natural canvas","hex":"#e6dcc3"},{"name":"Black","hex":"#1c1c1e"},{"name":"Navy","hex":"#1f2d4a"}],"conf":"low","src":"https://theaudio.co/products/humminguru-vinyl-record-tote-bag"}],"furniture":[{"key":"ikea-kallax-1-4-42-147-cm","brand":"IKEA","name":"Kallax 1×4 · 42×147 cm","kind":"shelf","style":"cube","rows":4,"cols":1,"cap":"Capacity not listed","group":"IKEA Kallax","finishes":[{"name":"White","hex":"#F2F2EE"},{"name":"Black-brown","hex":"#3A2E29"},{"name":"White stained oak effect","hex":"#E3D6C0","grain":1},{"name":"Walnut effect light gray","hex":"#B8B2A9","grain":1}],"conf":"medium","src":"https://www.dimensions.com/element/ikea-kallax-shelf-unit-1x4"},{"key":"ikea-kallax-2-2-77-77-cm","brand":"IKEA","name":"Kallax 2×2 · 77×77 cm","kind":"shelf","style":"cube","rows":2,"cols":2,"cap":"Capacity not listed","group":"IKEA Kallax","finishes":[{"name":"White","hex":"#F2F2EE"},{"name":"Black-brown","hex":"#3A2E29"},{"name":"White stained oak effect","hex":"#E3D6C0","grain":1}],"conf":"medium","src":"https://www.dimensions.com/element/ikea-kallax-shelf-unit-2x2"},{"key":"ikea-kallax-2-4-77-147-cm","brand":"IKEA","name":"Kallax 2×4 · 77×147 cm","kind":"shelf","style":"cube","rows":2,"cols":4,"cap":"Capacity not listed","group":"IKEA Kallax","finishes":[{"name":"White","hex":"#F2F2EE"},{"name":"Black-brown","hex":"#3A2E29"},{"name":"White stained oak effect","hex":"#E3D6C0","grain":1},{"name":"High-gloss white (older/regional)","hex":"#FFFFFF","gloss":1}],"conf":"medium","src":"https://www.dimensions.com/element/ikea-kallax-shelf-unit-4x2"},{"key":"ikea-kallax-2-4-with-2-doors-4-drawers-147-77-cm","brand":"IKEA","name":"Kallax 2×4 with 2 doors + 4 drawers · 147×77 cm","kind":"shelf","style":"cube","rows":2,"cols":4,"cap":"Capacity not listed","group":"IKEA Kallax","finishes":[{"name":"White","hex":"#F2F2EE"},{"name":"Black-brown","hex":"#3A2E29"},{"name":"White stained oak effect","hex":"#E3D6C0","grain":1},{"name":"White / light grey-blue wave-shaped fronts","hex":"#C9D4DA"}],"conf":"medium","src":"https://www.ikea.com/nz/en/cat/kallax-series-27534/"},{"key":"ikea-kallax-2-4-on-underframe-147-94-cm","brand":"IKEA","name":"Kallax 2×4 on underframe · 147×94 cm","kind":"shelf","style":"cube","rows":2,"cols":4,"cap":"Capacity not listed","group":"IKEA Kallax","finishes":[{"name":"White / white","hex":"#F2F2EE"},{"name":"Black-brown / black","hex":"#2E2622"},{"name":"White stained oak effect / white","hex":"#E3D6C0","grain":1},{"name":"White stained oak effect / black","hex":"#E3D6C0","grain":1},{"name":"Black-brown / white","hex":"#3A2E29"},{"name":"White / black","hex":"#F2F2EE"}],"conf":"low","src":"https://www.ikea.com/nz/en/cat/kallax-series-27534/"},{"key":"ikea-kallax-tv-bench-on-underframe-147-39-78-cm","brand":"IKEA","name":"Kallax TV bench on underframe · 147×39×78 cm","kind":"shelf","style":"cube","rows":2,"cols":4,"cap":"Capacity not listed","group":"IKEA Kallax","finishes":[{"name":"White","hex":"#F2F2EE"},{"name":"Black-brown","hex":"#3A2E29"},{"name":"White stained oak effect","hex":"#E3D6C0","grain":1}],"conf":"low","src":"https://www.ikea.com/nz/en/cat/kallax-series-27534/"},{"key":"ikea-kallax-3-3-112-112-cm","brand":"IKEA","name":"Kallax 3×3 · 112×112 cm","kind":"shelf","style":"cube","rows":3,"cols":3,"cap":"Capacity not listed","group":"IKEA Kallax","finishes":[{"name":"White","hex":"#F2F2EE"},{"name":"Black-brown","hex":"#3A2E29"}],"conf":"medium","src":"https://www.dimensions.com/element/ikea-kallax-shelf-unit-3x3"},{"key":"ikea-kallax-3-4-112-147-cm","brand":"IKEA","name":"Kallax 3×4 · 112×147 cm","kind":"shelf","style":"cube","rows":4,"cols":3,"cap":"Capacity not listed","group":"IKEA Kallax","finishes":[{"name":"White","hex":"#F2F2EE"},{"name":"Black-brown","hex":"#3A2E29"},{"name":"White stained oak effect","hex":"#E3D6C0","grain":1}],"conf":"medium","src":"https://www.dimensions.com/element/ikea-kallax-shelf-unit-3x4"},{"key":"ikea-kallax-4-4-147-147-cm","brand":"IKEA","name":"Kallax 4×4 · 147×147 cm","kind":"shelf","style":"cube","rows":4,"cols":4,"cap":"Capacity not listed","group":"IKEA Kallax","finishes":[{"name":"White","hex":"#F2F2EE"},{"name":"Black-brown","hex":"#3A2E29"},{"name":"White stained oak effect","hex":"#E3D6C0","grain":1}],"conf":"medium","src":"https://www.dimensions.com/element/ikea-kallax-shelf-unit-4x4"},{"key":"ikea-kallax-5-5-182-182-cm","brand":"IKEA","name":"Kallax 5×5 · 182×182 cm","kind":"shelf","style":"cube","rows":5,"cols":5,"cap":"Capacity not listed","group":"IKEA Kallax","finishes":[{"name":"White","hex":"#F2F2EE"},{"name":"Black-brown","hex":"#3A2E29"},{"name":"White stained oak effect","hex":"#E3D6C0","grain":1}],"conf":"medium","src":"https://www.dimensions.com/element/ikea-kallax-shelf-unit-5x5"},{"key":"ikea-eket-cube-cabinet-35x35x35-cm","brand":"IKEA","name":"Eket cube cabinet 35x35x35 cm","kind":"shelf","style":"cube","rows":1,"cols":1,"cap":"Capacity not listed","group":"IKEA (other)","finishes":[{"name":"White","hex":"#F2F2EE"},{"name":"Dark grey","hex":"#4A4D50"},{"name":"Pale lilac","hex":"#CFC3DA"}],"conf":"low","src":"https://community.naimaudio.com/t/ikea-eket-for-vinyl-storage/15772"},{"key":"ikea-eket-storage-combination-with-legs-70x35x80","brand":"IKEA","name":"Eket storage combination with legs (70x35x80 cm approx)","kind":"shelf","style":"cube","rows":1,"cols":2,"cap":"Capacity not listed · set your own sections","group":"IKEA (other)","finishes":[{"name":"Brown walnut effect","hex":"#6B4A32","grain":1}],"conf":"medium","src":"https://www.gearpatrol.com/?p=1030926"},{"key":"ikea-eket-storage-combination-with-feet-70x35x80","brand":"IKEA","name":"Eket storage combination with feet (70x35x80 cm approx)","kind":"shelf","style":"cube","rows":1,"cols":2,"cap":"Capacity not listed · set your own sections","group":"IKEA (other)","finishes":[{"name":"White","hex":"#F2F2EE"}],"conf":"medium","src":"https://www.gearpatrol.com/?p=1030926"},{"key":"ikea-besta-frame-cabinet","brand":"IKEA","name":"Besta frame/cabinet","kind":"shelf","style":"cube","rows":1,"cols":2,"cap":"Capacity not listed · set your own sections","group":"IKEA (other)","finishes":[{"name":"White","hex":"#F2F2EE"},{"name":"Black-brown","hex":"#3A2E29"}],"conf":"low","src":"https://www.ikea.com/us/en/cat/besta-series-27531/"},{"key":"ikea-tonstad-cabinet-with-doors","brand":"IKEA","name":"Tonstad cabinet with doors","kind":"shelf","style":"cube","rows":1,"cols":2,"cap":"Capacity not listed · set your own sections","group":"IKEA (other)","finishes":[{"name":"Light oak veneer","hex":"#D2B48C","grain":1}],"conf":"medium","src":"https://www.gearpatrol.com/?p=1030926"},{"key":"ikea-bror-cabinet-with-2-doors","brand":"IKEA","name":"Bror cabinet with 2 doors","kind":"shelf","style":"cube","rows":1,"cols":2,"cap":"Capacity not listed · set your own sections","group":"IKEA (other)","finishes":[{"name":"Gray-green / matte olive","hex":"#6F7A67"}],"conf":"medium","src":"https://www.gearpatrol.com/?p=1030926"},{"key":"ikea-ekenabben-cabinet","brand":"IKEA","name":"Ekenabben cabinet","kind":"shelf","style":"cube","rows":1,"cols":2,"cap":"Capacity not listed · set your own sections","group":"IKEA (other)","finishes":[{"name":"Aspen white","hex":"#EDEBE4"}],"conf":"medium","src":"https://www.gearpatrol.com/?p=1030926"},{"key":"ikea-vittsjo-shelf-unit","brand":"IKEA","name":"Vittsjo shelf unit","kind":"shelf","style":"cube","rows":1,"cols":2,"cap":"Capacity not listed · set your own sections","group":"IKEA (other)","finishes":[{"name":"Black frame / brown glass","hex":"#2B2623"}],"conf":"medium","src":"https://www.gearpatrol.com/?p=1030926"},{"key":"ikea-expedit-2-2-legacy","brand":"IKEA","name":"Expedit 2×2 (legacy)","kind":"shelf","style":"cube","rows":2,"cols":2,"cap":"Capacity not listed","group":"IKEA (other)","finishes":[{"name":"Birch effect","hex":"#D9B98A","grain":1},{"name":"Black-brown","hex":"#3A2E29"},{"name":"White","hex":"#F2F2EE"}],"conf":"medium","src":"https://djworx.com/ikea-expedit-discontinued-now/"},{"key":"ikea-expedit-4-2-legacy","brand":"IKEA","name":"Expedit 4×2 (legacy)","kind":"shelf","style":"cube","rows":2,"cols":4,"cap":"Capacity not listed","group":"IKEA (other)","finishes":[{"name":"Birch effect","hex":"#D9B98A","grain":1},{"name":"Black-brown","hex":"#3A2E29"},{"name":"White","hex":"#F2F2EE"}],"conf":"medium","src":"https://djworx.com/ikea-expedit-discontinued-now/"},{"key":"ikea-expedit-4-4-legacy","brand":"IKEA","name":"Expedit 4×4 (legacy)","kind":"shelf","style":"cube","rows":4,"cols":4,"cap":"Capacity not listed","group":"IKEA (other)","finishes":[{"name":"Birch effect","hex":"#D9B98A","grain":1},{"name":"Black-brown","hex":"#3A2E29"},{"name":"White","hex":"#F2F2EE"}],"conf":"low","src":"https://www.interiorinsider.com/article/ikea-expedit-vs-kallax-dimensions"},{"key":"ikea-expedit-5-5-legacy","brand":"IKEA","name":"Expedit 5×5 (legacy)","kind":"shelf","style":"cube","rows":5,"cols":5,"cap":"Capacity not listed","group":"IKEA (other)","finishes":[{"name":"Birch effect","hex":"#D9B98A","grain":1},{"name":"Black-brown","hex":"#3A2E29"},{"name":"White","hex":"#F2F2EE"}],"conf":"medium","src":"https://djworx.com/ikea-expedit-discontinued-now/"},{"key":"zomo-vs-rack-vinya-150","brand":"Zomo","name":"VS-Rack Vinya 150","kind":"shelf","style":"cube","rows":1,"cols":1,"cap":"Capacity not listed","group":"Record furniture","finishes":[{"name":"Black","hex":"#1E1E20"}],"conf":"low","src":"https://www.recordcase.de/en/zomo-vs-rack-studio"},{"key":"zomo-vs-rack-vinya-100","brand":"Zomo","name":"VS-Rack Vinya 100","kind":"shelf","style":"cube","rows":1,"cols":1,"cap":"Capacity not listed","group":"Record furniture","finishes":[{"name":"Black","hex":"#1E1E20"}],"conf":"low","src":"https://www.recordcase.de/en/zomo-vs-rack-studio"},{"key":"mapleshade-record-shelf-system","brand":"Mapleshade","name":"Record Shelf System","kind":"shelf","style":"cube","rows":1,"cols":1,"cap":"~150 LPs per cube","group":"Record furniture","finishes":[{"name":"Unfinished oak","hex":"#D2B48C","grain":1},{"name":"Finished oak","hex":"#B88A4A","grain":1},{"name":"Finished Ambrosia maple","hex":"#C79A5F"}],"conf":"medium","src":"https://www.theabsolutesound.com/articles/mapleshade-record-shelf-system/"},{"key":"lp-bin-lp-bin-unnamed-model","brand":"LP Bin","name":"LP Bin (unnamed model)","kind":"shelf","style":"cube","rows":1,"cols":2,"cap":"Capacity not listed · set your own sections","group":"Record furniture","finishes":[{"name":"3 colors offered, unnamed","hex":"#8A8D91"}],"conf":"low","src":"https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records"},{"key":"department-chicago-walnut-record-cabinet","brand":"Department Chicago","name":"Walnut Record Cabinet","kind":"shelf","style":"cube","rows":1,"cols":2,"cap":"Capacity not listed · set your own sections","group":"Record furniture","finishes":[{"name":"Walnut","hex":"#5B3F2B","grain":1}],"conf":"low","src":"https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records"},{"key":"dual-portland-cabinet","brand":"Dual","name":"Portland cabinet","kind":"shelf","style":"cube","rows":1,"cols":2,"cap":"Capacity not listed · set your own sections","group":"Record furniture","finishes":[{"name":"9 colors offered, unnamed","hex":"#8B6B4A"}],"conf":"low","src":"https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records"},{"key":"can-am-lpcab29","brand":"Can-Am","name":"LPCAB29","kind":"shelf","style":"cube","rows":1,"cols":2,"cap":"Capacity not listed · set your own sections","group":"Record furniture","finishes":[{"name":"Chocolate brown","hex":"#4B2E22"},{"name":"Plum","hex":"#5A2E4D"}],"conf":"low","src":"https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records"},{"key":"siosi-record-lp-shelving","brand":"Siosi","name":"Record // LP Shelving","kind":"shelf","style":"cube","rows":1,"cols":2,"cap":"Capacity not listed · set your own sections","group":"Record furniture","finishes":[{"name":"Solid ash","hex":"#CDB58B","grain":1}],"conf":"low","src":"https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records"},{"key":"symbol-audio-aero-51in-media-cabinet","brand":"Symbol Audio","name":"Aero 51in media cabinet","kind":"shelf","style":"cube","rows":1,"cols":2,"cap":"~120 LPs per cube","group":"Record furniture","finishes":[{"name":"Walnut","hex":"#5B3F2B","grain":1},{"name":"Other finishes (4 total)","hex":"#D8D4CC"}],"conf":"low","src":"https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records"},{"key":"symbol-audio-aero-76-5in-lp-storage-console","brand":"Symbol Audio","name":"Aero 76.5in LP storage console","kind":"shelf","style":"cube","rows":1,"cols":2,"cap":"~120 LPs per cube","group":"Record furniture","finishes":[{"name":"Glacier White (maple)","hex":"#F0EFEA"},{"name":"Slate Grey (maple)","hex":"#6C7075"},{"name":"Jet Black (maple)","hex":"#1C1C1E"},{"name":"Natural walnut","hex":"#6B4A32","grain":1}],"conf":"high","src":"https://paragonsns.com/products/symbol-audio-aero-76-5-lp-storage-console"},{"key":"atocha-record-cabinet","brand":"Atocha","name":"Record Cabinet","kind":"shelf","style":"cube","rows":1,"cols":2,"cap":"~96 LPs per cube · set your own sections","group":"Record furniture","finishes":[{"name":"Unspecified","hex":"#8B6B4A"}],"conf":"low","src":"https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records"},{"key":"gothic-furniture-lp-record-rack","brand":"Gothic Furniture","name":"LP Record Rack","kind":"shelf","style":"cube","rows":1,"cols":3,"cap":"Capacity not listed","group":"Record furniture","finishes":[{"name":"Wild cherry","hex":"#8B3A2B"},{"name":"Midnight blue","hex":"#1F2A44"}],"conf":"low","src":"https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records"},{"key":"cubitec-cubitec-13-25in-deep-cube-kit","brand":"Cubitec","name":"Cubitec 13.25in-deep cube kit","kind":"shelf","style":"cube","rows":2,"cols":2,"cap":"~55 LPs per cube","group":"Record furniture","finishes":[{"name":"Moulded polypropylene (colors unspecified)","hex":"#BFC3C7"}],"conf":"low","src":"https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records"},{"key":"boltz-lp-record-storage-rack-4-shelves","brand":"Boltz","name":"LP Record Storage Rack (4 shelves)","kind":"shelf","style":"cube","rows":4,"cols":1,"cap":"Capacity not listed","group":"Record furniture","finishes":[{"name":"Industrial","hex":"#4A4A4A"}],"conf":"low","src":"https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records"},{"key":"custom-grid","brand":"Custom","name":"Custom grid","kind":"shelf","style":"cube","rows":3,"cols":3,"cap":"Any rows × columns","group":"Record furniture","custom":true,"finishes":[],"conf":"high","src":""},{"key":"wax-rax-lp-v4-vertical-rack","brand":"Wax Rax","name":"LP-V4 vertical rack","kind":"shelf","style":"ledge","rows":1,"cols":1,"cap":"Capacity not listed","group":"Wall & bins","finishes":[{"name":"Anodized aluminum (various)","hex":"#9AA0A6"}],"conf":"medium","src":"https://www.analogplanet.com/content/wax-rax-adds-vertical-model-lp-v4-its-record-storage-catalog"},{"key":"generic-record-store-browser-flip-bin","brand":"Generic","name":"Record store browser/flip bin","kind":"shelf","style":"bin","rows":1,"cols":1,"cap":"Capacity not listed","group":"Wall & bins","finishes":[{"name":"Wood (varies)","hex":"#B88A4A","grain":1}],"conf":"low","src":"https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records"},{"key":"generic-wall-mounted-lp-display-ledge","brand":"Generic","name":"Wall-mounted LP display ledge","kind":"shelf","style":"ledge","rows":1,"cols":1,"cap":"Capacity not listed","group":"Wall & bins","finishes":[{"name":"Metal black","hex":"#1E1E20"},{"name":"Wood","hex":"#B88A4A","grain":1}],"conf":"low","src":"https://www.dutchvinyl.com.au/products/lp-wall-display-shelf-metal-on-wall-vinyl-record-display-ledge"},{"key":"wax-stacks-wax-stacks-crate","brand":"Wax Stacks","name":"Wax Stacks crate","kind":"crate","style":"wood","rows":1,"cols":1,"cap":"~50 LPs","group":"Crates","finishes":[{"name":"Baltic birch natural","hex":"#D8BE8D","grain":1}],"conf":"medium","src":"https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records"},{"key":"vinyl-styl-original-lp-crate-vs-rs-04","brand":"Vinyl Styl","name":"Original LP Crate (VS-RS-04)","kind":"crate","style":"wood","rows":1,"cols":1,"cap":"~110 LPs","group":"Crates","finishes":[{"name":"Natural wood","hex":"#D2B48C","grain":1}],"conf":"medium","src":"https://seasickbham.com/products/vinyl-style-the-original-lp-crate-wooden-crate"},{"key":"vinyl-styl-metro-lp-crate-vs-rs-05","brand":"Vinyl Styl","name":"Metro LP Crate (VS-RS-05)","kind":"crate","style":"wood","rows":1,"cols":1,"cap":"~85 LPs","group":"Crates","finishes":[{"name":"Wood blond","hex":"#E0C79A","grain":1}],"conf":"medium","src":"https://store.loudwire.com/products/vinyl-styl-vsrs05-metro-lp-crate-75-cap-wood-blond-vinyl-styl-vs-rs-05-metro-lp-crate-12-inch-lp-record-storage-85-to-95-capacity"},{"key":"studio-57-vinyl-record-crate-wood","brand":"Studio 57","name":"Vinyl Record Crate (wood)","kind":"crate","style":"wood","rows":1,"cols":1,"cap":"~50 LPs","group":"Crates","finishes":[{"name":"Natural wood","hex":"#D2B48C","grain":1}],"conf":"medium","src":"https://www.soundstorexl.com/products/studio-57-vinyl-record-crate-wood"},{"key":"crosley-record-storage-crate","brand":"Crosley","name":"Record Storage Crate","kind":"crate","style":"wood","rows":1,"cols":1,"cap":"~75 LPs","group":"Crates","finishes":[{"name":"Brown solid wood","hex":"#6B4A32","grain":1}],"conf":"medium","src":"https://www.jbhifi.co.nz/products/crosley-record-storage-crate"},{"key":"generic-plastic-milk-crate-16-qt-13x13x11-in","brand":"Generic","name":"Plastic milk crate, 16 qt (13x13x11 in)","kind":"crate","style":"milk","rows":1,"cols":1,"cap":"Capacity not listed","group":"Crates","finishes":[{"name":"Black","hex":"#1A1A1A"},{"name":"Blue","hex":"#1F5FBF"},{"name":"Brown","hex":"#6B4423"},{"name":"Gray","hex":"#808080"},{"name":"Green","hex":"#2E8B3E"},{"name":"Lime green","hex":"#8CCB2B"},{"name":"Orange","hex":"#F26A21"},{"name":"Pink","hex":"#F06BA8"},{"name":"Red","hex":"#C8202B"},{"name":"White","hex":"#F2F2F2"},{"name":"Yellow","hex":"#F5C518"},{"name":"Purple","hex":"#5B3A8C"}],"conf":"medium","src":"https://www.webstaurantstore.com/orange-16-qt-customizable-square-milk-crate-13-x-13-x-11/227MC16ORG.html"},{"key":"generic-wooden-apple-produce-crate","brand":"Generic","name":"Wooden apple/produce crate","kind":"crate","style":"wood","rows":1,"cols":1,"cap":"Capacity not listed","group":"Crates","finishes":[{"name":"Raw pine","hex":"#C9A66B","grain":1}],"conf":"low","src":"https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records"},{"key":"glorious-record-box-110","brand":"Glorious","name":"Record Box 110","kind":"crate","style":"case","rows":1,"cols":1,"cap":"~110 LPs","group":"Record boxes & cases","finishes":[{"name":"Black","hex":"#1E1E20"},{"name":"White","hex":"#F4F4F2"}],"conf":"high","src":"https://www.adorama.com/GLRBX110BLK.html"},{"key":"glorious-record-box-advanced-110","brand":"Glorious","name":"Record Box Advanced 110","kind":"crate","style":"case","rows":1,"cols":1,"cap":"~110 LPs","group":"Record boxes & cases","finishes":[{"name":"Black","hex":"#1E1E20"},{"name":"White","hex":"#F4F4F2"}],"conf":"high","src":"https://www.adorama.com/glorious-record-box-advanced-110-vinyl-case-white/p/glrbx110whta"},{"key":"glorious-record-box-230","brand":"Glorious","name":"Record Box 230","kind":"crate","style":"case","rows":1,"cols":1,"cap":"~230 LPs","group":"Record boxes & cases","finishes":[{"name":"Black","hex":"#1E1E20"},{"name":"White","hex":"#F4F4F2"}],"conf":"high","src":"https://www.idjnow.com/glorious-record-box-230-black.html"},{"key":"glorious-record-rack-330","brand":"Glorious","name":"Record Rack 330","kind":"crate","style":"case","rows":1,"cols":1,"cap":"~330 LPs","group":"Record boxes & cases","finishes":[{"name":"Black","hex":"#1E1E20"},{"name":"White","hex":"#F4F4F2"}],"conf":"high","src":"https://www.simplysoundandlighting.co.uk/products/glorious-record-rack-330-white-2-piece-vinyl-station"},{"key":"zomo-vs-box-100-1","brand":"Zomo","name":"VS-Box 100/1","kind":"crate","style":"case","rows":1,"cols":1,"cap":"~100 LPs","group":"Record boxes & cases","finishes":[{"name":"Unspecified (likely black)","hex":"#222222"}],"conf":"medium","src":"https://www.simplysoundandlighting.co.uk/products/zomo-vs-box-100-vinyl-storage-box-shelf-cabinet-for-vinyl-record-lp-12"},{"key":"zomo-vs-box-100-2","brand":"Zomo","name":"VS-Box 100/2","kind":"crate","style":"case","rows":1,"cols":1,"cap":"~200 LPs","group":"Record boxes & cases","finishes":[{"name":"Black","hex":"#1E1E20"},{"name":"White","hex":"#F2F2EE"},{"name":"Walnut","hex":"#5A3E2B","grain":1},{"name":"Zebrano","hex":"#B08A5A"}],"conf":"medium","src":"https://www.recordcase.de/en/zomo-vs-box-100-2"},{"key":"zomo-vs-box-100-4","brand":"Zomo","name":"VS-Box 100/4","kind":"crate","style":"case","rows":1,"cols":1,"cap":"~400 LPs","group":"Record boxes & cases","finishes":[{"name":"Unspecified","hex":"#222222"}],"conf":"medium","src":"https://www.simplysoundandlighting.co.uk/de/products/zomo-vs-box-100-4-wooden-storage-rack-shelf-for-vinyl-record-lp-12"},{"key":"zomo-vs-box-50","brand":"Zomo","name":"VS-Box 50","kind":"crate","style":"case","rows":1,"cols":1,"cap":"~50 LPs","group":"Record boxes & cases","finishes":[{"name":"Unspecified","hex":"#222222"}],"conf":"medium","src":"https://www.recordcase.de/en/zomo-vs-rack-studio"},{"key":"zomo-vs-rack-loft","brand":"Zomo","name":"VS-Rack Loft","kind":"crate","style":"case","rows":1,"cols":1,"cap":"~35 LPs","group":"Record boxes & cases","finishes":[{"name":"4 colors offered, names not listed","hex":"#777777"}],"conf":"medium","src":"https://www.recordcase.de/en/zomo-vs-rack-studio"},{"key":"zomo-vs-rack-wave","brand":"Zomo","name":"VS-Rack Wave","kind":"crate","style":"case","rows":1,"cols":1,"cap":"~29 LPs","group":"Record boxes & cases","finishes":[{"name":"Black","hex":"#1E1E20"}],"conf":"medium","src":"https://www.recordcase.de/en/zomo-vs-rack-studio"},{"key":"zomo-vs-rack-cube","brand":"Zomo","name":"VS-Rack Cube","kind":"crate","style":"case","rows":1,"cols":1,"cap":"~100 LPs","group":"Record boxes & cases","finishes":[{"name":"Black","hex":"#1E1E20"},{"name":"White","hex":"#F2F2EE"},{"name":"Chrome","hex":"#C9CCCF"},{"name":"Gold","hex":"#C9A24B"}],"conf":"medium","src":"https://www.recordcase.de/en/zomo-vs-rack-cube"},{"key":"udg-ultimate-12-vinyl-record-case-80","brand":"UDG","name":"Ultimate 12\" Vinyl Record Case 80","kind":"crate","style":"case","rows":1,"cols":1,"cap":"~80 LPs","group":"Record boxes & cases","finishes":[{"name":"Black","hex":"#1A1A1A"},{"name":"Silver","hex":"#B8BBBF"}],"conf":"medium","src":"https://djcity.com.au/product/udg-u93017bl-ultimate-record-case-black-fits-80-vinyls"},{"key":"odyssey-flight-zone-fzlp80-utility-case","brand":"Odyssey","name":"Flight Zone FZLP80 utility case","kind":"crate","style":"case","rows":1,"cols":1,"cap":"~80 LPs","group":"Record boxes & cases","finishes":[{"name":"Black laminate","hex":"#1A1A1A"}],"conf":"medium","src":"https://www.simplysoundandlighting.co.uk/products/odyssey-cases-fzlp80-flight-zone-80-12in-lp-vinyl-utility-case"},{"key":"hama-50-lp-vinyl-record-storage-case","brand":"Hama","name":"50 LP Vinyl Record Storage Case","kind":"crate","style":"case","rows":1,"cols":1,"cap":"~50 LPs","group":"Record boxes & cases","finishes":[{"name":"Black","hex":"#1A1A1A"}],"conf":"low","src":"https://www.currys.co.uk/products/hama-50-lp-vinyl-record-lp-storage-case-black-10219469.html"},{"key":"pro-ject-rack-it-basic-cube","brand":"Pro-Ject","name":"Rack It - Basic Cube","kind":"crate","style":"case","rows":1,"cols":1,"cap":"~150 LPs","group":"Record boxes & cases","finishes":[{"name":"Matt black","hex":"#1E1E1E"},{"name":"Matt white","hex":"#F2F2EE"},{"name":"High-gloss black","hex":"#0B0B0D","gloss":1},{"name":"High-gloss white","hex":"#FFFFFF","gloss":1},{"name":"High-gloss grey","hex":"#8A8D91","gloss":1},{"name":"High-gloss champagne","hex":"#D9C7A3","gloss":1},{"name":"High-gloss yellow","hex":"#E8C21A","gloss":1},{"name":"High-gloss petrol","hex":"#1F5A63","gloss":1}],"conf":"medium","src":"https://www.project-audio.com/wp-content/uploads/2018/04/Rack-it-EN.pdf"},{"key":"keep-them-spinning-the-standard-modular-wood-cub","brand":"Keep Them Spinning","name":"The Standard modular wood cube","kind":"crate","style":"case","rows":1,"cols":1,"cap":"~50 LPs","group":"Record boxes & cases","finishes":[{"name":"Natural","hex":"#D9B98A"},{"name":"Walnut","hex":"#5B3F2B","grain":1}],"conf":"medium","src":"https://keepthemspinning.com/products/the-standard-modular-solid-wood-vinyl-record-cube-stackable-50-lps"},{"key":"generic-corrugated-cardboard-12in-record-box","brand":"Generic","name":"Corrugated cardboard 12in record box","kind":"crate","style":"case","rows":1,"cols":1,"cap":"~50 LPs","group":"Record boxes & cases","finishes":[{"name":"Kraft","hex":"#C8A27A"}],"conf":"low","src":"https://www.bagsunlimited.com/12-vinyl-record-storage-box-corrugated-cardboard-holds-50-65-lp-records-13-12-x-13-x-10-34"}]};
+/*PRESETS_END*/
+
+const FURNITURE = RESEARCH.furniture.length ? RESEARCH.furniture : BASE_FURNITURE;
+const BAGS = RESEARCH.bags.length ? RESEARCH.bags : BASE_BAGS;
+function pickPreset(list, pred, fallback){ return (list.find(pred) || list.find(x=>x.key===fallback) || list[0]).key; }
+
+const FORM_NAMES = {shoulder:'Shoulder bag',sling:'Sling bag',trolley:'Trolley',backpack:'Backpack',tote:'Tote',case:'Hard case'};
+const SRC_NOTE = 'Furniture and bag presets come from maker and retailer listings; capacities are approximate and colors are close matches, not official swatches.';
+
+const PAL = [['#E4572E','#F3DFC1','#1B1B1E'],['#2E5EAA','#F2E8CF','#E8B04A'],['#0B6E4F','#F4D35E','#101419'],['#9B2335','#EFE6DD','#2D2A32'],['#F25F5C','#247BA0','#FFF8E8'],['#3D2C8D','#F0A6CA','#FAF3DD'],['#D7263D','#F5F5F0','#1A1A1A'],['#FF9F1C','#2EC4B6','#011627'],['#5F0F40','#FB8B24','#F4E9D8'],['#283618','#DDA15E','#FEFAE0']];
+const PL_COLORS = ['#D2412C','#0EA5E9','#B8862F','#17894B','#7C3AED','#DB2777'];
+const GRADES = ['','M','NM','VG+','VG','G+','G','F','P'];
+
+const SEED_K = pickPreset(FURNITURE, x=>/kallax/i.test(x.name+x.brand)&&x.rows===2&&x.cols===4, 'kallax-2x4');
+const SEED_C = pickPreset(FURNITURE, x=>x.style==='milk', 'milk-crate');
+const SEED_B = pickPreset(BAGS, x=>x.brand==='UDG'&&/softbag 60|record bag 60/i.test(x.name), 'udg-ultimate-60');
+function seed(){
+  const R = (id,artist,title,label,year,style,yt,cell,home,p) => {
+    const loc = cell==='bag' ? {u:'B1',c:'0-0'} : {u:'K1',c:cell};
+    return {id,artist,title,label,catno:'',year,style,yt,loc,home:{u:'K1',c:home||cell},pal:PAL[p],pat:p%6,
+      bpm:'',key:'',rating:0,cm:'',cs:'',notes:'',tags:[],custom:[],orig:{artist,title,label,catno:'',year,style}};
+  };
+  return {
+    v:2,
+    units:[
+      {id:'K1',name:'Kallax 1',preset:SEED_K,kind:'shelf',rows:2,cols:4,finish:finishesFor(fpreset(SEED_K))[0],photo:null},
+      {id:'B1',name:'Crater',preset:SEED_B,kind:'bag',rows:1,cols:1,finish:bpreset(SEED_B).colors[0],photo:null},
+      {id:'C1',name:'Milk crate',preset:SEED_C,kind:'crate',rows:1,cols:1,finish:finishesFor(fpreset(SEED_C)).find(f=>/blue/i.test(f.name))||finishesFor(fpreset(SEED_C))[0],photo:null},
+    ],
+    records:[
+      R('r9',"Model 500","No UFO's",'Metroplex',1985,'Electro',['UHja6QCvwRc','EarSRa19sZc','XtkpjkpD8xQ'],'0-0',null,0),
+      R('r2','Rhythim Is Rhythim','Strings Of Life','Transmat',1987,'Detroit Techno',['5oMUQKLzXH4','Hu3qPCAWgNg','jNREVOeGI5w'],'0-0',null,1),
+      R('r1','Mr. Fingers','Can You Feel It','Trax Records',1986,'Deep House',['AG040c9mkbg','1N9Wnqz8Rh8','Z1LAAenjlIw','SjTpxkvtRhA'],'0-0',null,2),
+      R('r6','Joey Beltram','Energy Flash','R&S Records',1990,'Techno',['AvqUnGKk7F8','maOM81a-Gyg','awdWUt7sI5I'],'0-0',null,3),
+      R('r3','Phuture','Acid Tracks','Trax Records',1987,'Acid House',['RbJTxipRrRY','QZSd2pP2dms','8P7w7waKT-0'],'0-0',null,4),
+      R('r8','Josh Wink','Higher State Of Consciousness','Strictly Rhythm',1995,'Acid Techno',['d3hAnAnJwyU','1Z9mhK8Liqg','Ldfc68bxlB8'],'0-1',null,5),
+      R('r7','808 State','Pacific State','ZTT',1989,'Acid House',['6jQ_bOP0HfY','Tv0UiQ5n7SM','rtUf9fDgtV0'],'0-1',null,6),
+      R('r4','Inner City','Good Life','10 Records',1988,'Detroit House',['M4_fMRNVvqA','EC40LAcZGkE','cPPRw5Ad86c'],'bag','0-1',7),
+      R('r5','A Guy Called Gerald','Voodoo Ray','Rham!',1988,'Acid House',['UwXSsNAtGTU','BEGRBp8-fvY'],'bag','0-0',8),
+      R('r10','Daft Punk','Around The World','Virgin',1997,'French House',['K0HSD_i2DvA','LKYPYj2XX80','T0lxekHV0qU'],'bag','0-1',9),
+    ],
+    playlists:[
+      {id:'p1',name:'Warm-up',color:PL_COLORS[1],items:['r1','r4','r7','r8']},
+      {id:'p2',name:'Acid hour',color:PL_COLORS[0],items:['r3','r5','r8','r6']},
+    ],
+    settings:{accent:'red'},
+    recent:[]
+  };
+}
+
+/* ---------- state ---------- */
+const KEY='crates-demo-v3';
+let S; try{ S = JSON.parse(localStorage.getItem(KEY)) }catch(e){}
+if(!S || S.v!==2 || !S.units.every(u=>u.kind==='bag'?bpreset(u.preset):fpreset(u.preset))) S = seed();
+const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(S)) }catch(e){} };
+const V = {view:'unit', unit:'K1', cell:'0-0', dig:0, focus:null, flash:null, pl:null};
+let AI = null, AI_IMAGES = false;
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const unit = id => S.units.find(u => u.id === id);
+const rec = id => S.records.find(r => r.id === id);
+const fpreset = k => FURNITURE.find(p=>p.key===k);
+const bpreset = k => BAGS.find(p=>p.key===k);
+const presetOf = u => u.kind==='bag' ? (bpreset(u.preset)||BAGS[0]) : (fpreset(u.preset)||FURNITURE[0]);
+const presetName = u => { const p = presetOf(u); return u.kind==='bag' ? p.brand+' '+p.name : p.name; };
+const finishesFor = p => p.form ? p.colors : (p.finishes?.length ? p.finishes : (FINISHES[p.style] || FINISHES.cube));
+const cellKeys = u => { const a=[]; for(let r=0;r<u.rows;r++) for(let c=0;c<u.cols;c++) a.push(r+'-'+c); return a; };
+const rowLetter = r => r<26 ? String.fromCharCode(65+r) : 'A'+String.fromCharCode(65+r-26);
+function cellLabel(u, key){ if(!u || u.kind!=='shelf') return ''; const [r,c] = key.split('-').map(Number); return rowLetter(r)+(c+1); }
+function addrShort(loc){ const u=unit(loc?.u); if(!u) return 'Unplaced'; return u.kind==='shelf' ? u.id+'·'+cellLabel(u,loc.c) : u.name; }
+function addrLong(loc){ const u=unit(loc?.u); if(!u) return 'Unplaced';
+  if(u.kind==='shelf') return u.name+', shelf '+cellLabel(u,loc.c);
+  return (u.kind==='bag'?'Bag':'Crate')+' “'+u.name+'”'; }
+const same = (a,b) => a && b && a.u===b.u && a.c===b.c;
+const hasHome = r => !!(r.home && unit(r.home.u)?.kind==='shelf');
+const inCell = (u,c) => S.records.filter(r => r.loc.u===u && (c==='all' || r.loc.c===c));
+const discogsUrl = r => 'https://www.discogs.com/search/?q='+encodeURIComponent(r.artist+' '+r.title)+'&type=all';
+const ytUrl = id => 'https://www.youtube.com/watch?v='+id;
+const ytSearch = r => 'https://www.youtube.com/results?search_query='+encodeURIComponent(r.artist+' '+r.title);
+function hash(s){ let h=0; for(const ch of String(s)) h=(Math.imul(31,h)+ch.charCodeAt(0))>>>0; return h; }
+const uid = p => p+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36);
+
+function cover(r){
+  const [a,b,c] = r.pal; let g='';
+  switch(r.pat){
+    case 0: g=`<rect width="100" height="100" fill="${b}"/>${[44,34,24,14].map((rad,i)=>`<circle cx="50" cy="42" r="${rad}" fill="${i%2?b:a}"/>`).join('')}<circle cx="50" cy="42" r="5" fill="${c}"/>`; break;
+    case 1: g=`<rect width="100" height="100" fill="${c}"/>${[0,1,2,3,4,5,6,7].map(i=>`<rect x="${i*14-20}" y="-10" width="7" height="140" fill="${i%2?a:b}" transform="rotate(30 50 50)"/>`).join('')}`; break;
+    case 2: g=`<rect width="100" height="100" fill="${a}"/><rect width="100" height="46" fill="${b}"/><rect x="8" y="8" width="30" height="30" fill="${c}"/>`; break;
+    case 3: g=`<rect width="100" height="100" fill="${b}"/>${Array.from({length:36},(_,i)=>`<circle cx="${10+(i%6)*16}" cy="${8+Math.floor(i/6)*12}" r="${3+((i*7)%5)}" fill="${i%3?a:c}"/>`).join('')}`; break;
+    case 4: g=`<rect width="100" height="100" fill="${c}"/><circle cx="70" cy="30" r="40" fill="${a}"/><rect y="62" width="100" height="38" fill="${b}"/>`; break;
+    default: g=`<rect width="100" height="100" fill="${b}"/>${[0,1,2,3,4,5].map(i=>`<rect x="${6+i*15}" y="${10+i*6}" width="9" height="${60-i*6}" fill="${i%2?c:a}"/>`).join('')}`;
+  }
+  return `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="sh${r.id}" x1="0" y1="0" x2="0" y2="1"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient></defs>${g}<rect width="100" height="100" fill="url(#sh${r.id})"/></svg>`;
+}
+const thumb = r => `<span class="thumb">${cover(r)}</span>`;
+
+function locChip(loc, cls=''){
+  const u = unit(loc?.u); if(!u) return `<span class="loc ${cls}">Unplaced</span>`;
+  const ic = u.kind==='shelf'
+    ? `<span class="mini" style="grid-template-columns:repeat(${u.cols},5px)">${cellKeys(u).map(k=>`<i class="${k===loc.c?'on':''}"></i>`).join('')}</span>`
+    : `<span class="bagdot" style="background:${esc(u.finish?.hex||'#26292D')}"></span>`;
+  return `<span class="loc ${cls}" title="${esc(addrLong(loc))}">${ic}${esc(addrShort(loc))}</span>`;
+}
+
+/* ---------- drawing ---------- */
+function spines(list, max=40, lean=true){
+  return list.slice(0,max).map((r,i)=>`<span class="spine ${lean&&list.length<5&&list.length>1&&i===list.length-1?'lean':''}" style="--c:${r.pal[0]};--h:${84+hash(r.id)%10}%"></span>`).join('');
+}
+function drawShelf(u, big=false, opts={}){
+  const p = fpreset(u.preset) || {style:'cube'};
+  const f = u.finish || FINISHES.cube[0];
+  const cls = ['kallax', big?'big':'', p.style==='ledge'?'ledge':'', p.style==='bin'?'bin':'', f.grain?'grain':'', f.gloss?'gloss':''].join(' ');
+  return `<div class="${cls}" style="grid-template-columns:repeat(${u.cols},1fr);--fin:${f.hex};max-width:${Math.min(100, u.cols*(big?26:22))}%">${cellKeys(u).map(k=>{
+    const list = opts.empty ? [] : inCell(u.id,k);
+    const inner = `<span class="lbl">${esc(cellLabel(u,k))}</span>${list.length?`<span class="cnt">${list.length}</span>`:''}${spines(list)}`;
+    return big ? `<button type="button" class="cube ${V.flash===k?'flash':''}" data-act="pick-cell" data-c="${k}" aria-pressed="${V.cell===k}" aria-label="Shelf ${esc(cellLabel(u,k))}, ${list.length} records">${inner}</button>` : `<div class="cube">${inner}</div>`;
+  }).join('')}</div>`;
+}
+function drawBag(u, opts={}){
+  const p = bpreset(u.preset) || BAGS[0];
+  const hex = u.finish?.hex || p.colors[0].hex;
+  const list = opts.empty ? [] : inCell(u.id,'all');
+  const mat = p.texture || (p.material==='canvas'?'canvas':p.material==='aluminum'?'metal':'nylon');
+  const form = p.form;
+  let extra = '';
+  if(form==='case') extra = `<i class="corner" style="left:-3px;top:-3px"></i><i class="corner" style="right:-3px;top:-3px"></i><i class="corner" style="left:-3px;bottom:-3px"></i><i class="corner" style="right:-3px;bottom:-3px"></i><span class="handle" style="border-color:#8b9196"></span>`;
+  else if(form==='tote') extra = `<span class="handle"></span>`;
+  else if(form==='trolley') extra = `<span class="flap"></span><span class="bar"></span><span class="wheels"><i></i><i></i></span>`;
+  else if(form==='backpack') extra = `<span class="flap"></span><span class="handle"></span>`;
+  else if(form==='sling') extra = `<span class="flap"></span><span class="strap"></span>`;
+  else extra = `<span class="flap"></span><span class="handle"></span>`;
+  const cls = ['bag', mat, form==='backpack'?'backpack':'', form==='tote'?'tote':''].join(' ');
+  return `<div class="bagwrap"><div class="${cls}" style="--bc:${esc(hex)};${form==='trolley'?'margin-top:26px':''}">${extra}<span class="stitch"></span>${opts.noTag?'':`<span class="tag">${esc(u.name)}</span>`}<div class="peek">${spines(list,40,false)}</div></div></div>`;
+}
+function drawCrate(u, opts={}){
+  const p = fpreset(u.preset) || {style:'milk'};
+  const hex = u.finish?.hex || '#1F5FBF';
+  const list = opts.empty ? [] : inCell(u.id,'all');
+  const pid = 'cp'+hash(u.id+hex+(opts.empty?'e':''));
+  let face;
+  if(p.style==='milk') face = `<svg viewBox="0 0 250 160" preserveAspectRatio="none" aria-hidden="true"><defs>
+      <pattern id="${pid}" width="22" height="18" patternUnits="userSpaceOnUse"><rect width="22" height="18" fill="${hex}"/><rect x="4" y="4" width="14" height="10" rx="3" fill="rgba(0,0,0,.45)"/><rect x="4" y="4" width="14" height="3" rx="1.5" fill="rgba(0,0,0,.25)"/></pattern>
+      <linearGradient id="${pid}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset=".3" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient></defs>
+      <rect width="250" height="160" fill="url(#${pid})"/><rect width="250" height="16" fill="${hex}"/><rect y="144" width="250" height="16" fill="${hex}"/><rect width="14" height="160" fill="${hex}"/><rect x="236" width="14" height="160" fill="${hex}"/><rect x="90" y="22" width="70" height="20" rx="10" fill="rgba(0,0,0,.5)"/><rect width="250" height="160" fill="url(#${pid}g)"/></svg>`;
+  else if(p.style==='wood') face = `<svg viewBox="0 0 250 160" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="${pid}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity=".28"/></linearGradient></defs>
+      <rect width="250" height="160" fill="rgba(0,0,0,.55)"/>${[0,1,2].map(i=>`<rect y="${6+i*52}" width="250" height="44" rx="2" fill="${hex}"/><path d="M0 ${18+i*52} Q 60 ${14+i*52} 125 ${20+i*52} T 250 ${16+i*52}" stroke="rgba(0,0,0,.12)" fill="none"/>`).join('')}<rect width="250" height="160" fill="url(#${pid}g)"/></svg>`;
+  else face = `<svg viewBox="0 0 250 160" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="${pid}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".25"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></linearGradient></defs><rect width="250" height="160" fill="${hex}"/>${Array.from({length:40},(_,i)=>`<rect y="${i*4}" width="250" height="1" fill="rgba(255,255,255,.07)"/>`).join('')}<rect x="6" y="6" width="238" height="148" rx="4" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="4"/>${[[0,0],[226,0],[0,136],[226,136]].map(([x,y])=>`<rect x="${x}" y="${y}" width="24" height="24" rx="4" fill="#9aa0a5"/>`).join('')}<rect x="95" y="70" width="60" height="12" rx="6" fill="rgba(0,0,0,.5)"/><rect width="250" height="160" fill="url(#${pid}g)"/></svg>`;
+  return `<div class="cratewrap"><div class="crate-in">${spines(list,40,false)}</div><div class="crate-face">${face}</div></div>`;
+}
+function drawUnit(u, big=false, opts={}){
+  if(u.kind==='shelf') return drawShelf(u,big,opts);
+  if(u.kind==='bag') return drawBag(u,opts);
+  return drawCrate(u,opts);
+}
+
+/* ---------- render ---------- */
+function render(){
+  document.body.dataset.accent = S.settings.accent;
+  $('#tab-room').setAttribute('aria-pressed', V.view==='room'||V.view==='unit');
+  $('#tab-pl').setAttribute('aria-pressed', V.view==='playlists');
+  $('#main').innerHTML = V.view==='playlists' ? renderPlaylists() : renderRoom();
+  if(V.view==='unit') bindSwipe();
+  if(V.view==='playlists') bindPlaylist();
+  save();
+}
+
+function renderRoom(){
+  const cards = S.units.map(u=>{
+    const n = inCell(u.id,'all').length;
+    return `<button class="unit-card" data-act="open-unit" data-u="${u.id}">
+      <div class="meta"><h3>${esc(u.name)}</h3><span class="idtag">${esc(u.id)}</span></div>
+      ${u.photo?`<img class="photo" src="${u.photo}" alt="Photo of ${esc(u.name)}">`:`<div class="stage-box">${drawUnit(u)}</div>`}
+      <div class="meta"><span class="sub">${esc(presetName(u))} · ${esc(u.finish?.name||'')}</span><span class="sub code">${n} ${n===1?'record':'records'}</span></div>
+    </button>`;
+  }).join('');
+  let html = `<div class="sec-head"><div><div class="kicker">${S.records.length} records in ${S.units.length} places</div><h2>Your room</h2></div>
+    <div class="row"><button class="btn" data-act="play-all"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>Play collection</button></div></div>
+    <div class="room">${cards}</div>`;
+  if(V.view==='unit' && unit(V.unit)) html += renderDetail();
+  html += `<p class="foot">Demo collection. Covers are placeholder art; the full app pulls sleeves and metadata from Discogs. ${SRC_NOTE} Changes stay in this browser.</p>`;
+  return html;
+}
+
+function renderDetail(){
+  const u = unit(V.unit);
+  const list = inCell(u.id, V.cell);
+  V.dig = Math.max(0, Math.min(V.dig, list.length-1));
+  if(V.focus){ const i = list.findIndex(r=>r.id===V.focus); if(i>=0) V.dig=i; V.focus=null; }
+  const cur = list[V.dig];
+  const chips = u.kind==='shelf' ? `<div class="chips" role="group" aria-label="Shelves">
+      <button class="chip" data-act="pick-cell" data-c="all" aria-pressed="${V.cell==='all'}">All <small>${inCell(u.id,'all').length}</small></button>
+      ${cellKeys(u).map(k=>`<button class="chip code" data-act="pick-cell" data-c="${k}" aria-pressed="${V.cell===k}">${esc(cellLabel(u,k))} <small>${inCell(u.id,k).length}</small></button>`).join('')}</div>` : '';
+  const where = V.cell==='all' ? 'All shelves' : 'Shelf '+cellLabel(u,V.cell);
+  const bagActs = u.kind==='bag' ? `<button class="btn primary" data-act="scan-bag" data-u="${u.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Scan bag</button>
+      <button class="btn" data-act="empty-bag" data-u="${u.id}">Unpack to home slots</button>` : '';
+  return `<section class="detail" aria-label="${esc(u.name)}">
+    <div class="detail-head"><div><button class="back" data-act="go-room">← Room</button>
+      <h2>${esc(u.name)}</h2><div class="row"><span class="idtag">${esc(u.id)}</span><span class="muted" style="font-size:13px">${esc(presetName(u))} · ${esc(u.finish?.name||'')} · ${esc(presetOf(u).cap||'')}</span></div></div>
+      <div class="row">${bagActs}<button class="btn" data-act="play-unit"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>Play ${u.kind==='shelf'&&V.cell!=='all'?esc(cellLabel(u,V.cell)):'all'}</button><button class="btn" data-act="edit-unit" data-u="${u.id}">Look & name</button></div></div>
+    <div class="detail-grid">
+      <div>${u.photo?`<img class="photo" src="${u.photo}" alt="Photo of ${esc(u.name)}" style="margin-bottom:12px">`:''}<div style="display:grid;place-items:end center">${drawUnit(u,true)}</div>${chips}</div>
+      <div class="dig">
+        <div class="row" style="justify-content:space-between"><span class="muted" style="font-size:13px;font-weight:600">${u.kind==='shelf'?esc(where):'Inside '+esc(u.name)}</span><span class="code muted" style="font-size:12px">${list.length?(V.dig+1)+' of '+list.length:'empty'}</span></div>
+        ${list.length ? digView(list, cur) : `<div class="empty"><b>${u.kind==='shelf'?esc(where)+' is empty':'Nothing in '+esc(u.name)}</b>Move a record here from any sleeve, or use Add → Record.</div>`}
+      </div>
+    </div>
+  </section>`;
+}
+
+function editedSet(r){ return new Set(Object.keys(r.orig||{}).filter(k=>String(r[k]??'')!==String(r.orig[k]??''))); }
+
+function digView(list, cur){
+  const sleeves = list.map((r,i)=>{
+    const d = i - V.dig; if(Math.abs(d)>2) return '';
+    const x = d*26, s = 1 - Math.abs(d)*0.1, z = 10-Math.abs(d), o = Math.abs(d)>1?0.35:1;
+    return `<div class="sleeve" style="transform:translateX(calc(-50% + ${x}%)) scale(${s}) rotate(${d*2}deg);z-index:${z};opacity:${o}" ${d?`data-act="dig-to" data-i="${i}"`:''}>${cover(r)}<div class="txt"><span>${esc(r.artist)}</span><b>${esc(r.title)}</b></div></div>`;
+  }).join('');
+  const atHome = !hasHome(cur) || same(cur.loc, cur.home);
+  const bag = S.units.find(u=>u.kind==='bag');
+  const inBag = unit(cur.loc.u)?.kind==='bag';
+  const ed = editedSet(cur);
+  const dot = k => ed.has(k)?'<i class="edited" title="Edited by you"></i>':'';
+  return `<div class="stage" id="stage">${sleeves}</div>
+    <div class="dig-nav">
+      <button class="round" data-act="dig" data-d="-1" aria-label="Previous record" ${V.dig===0?'disabled':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m15 18-6-6 6-6"/></svg></button>
+      <button class="round main" data-act="play-rec" data-r="${cur.id}" aria-label="Play ${esc(cur.title)}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg></button>
+      <button class="round" data-act="dig" data-d="1" aria-label="Next record" ${V.dig===list.length-1?'disabled':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+    <div class="dig-info"><h3>${esc(cur.title)}${dot('title')}</h3><div class="by">${esc(cur.artist)}${dot('artist')}</div>
+      <div class="facts"><span><b>${esc(cur.label)}</b>${dot('label')}</span>${cur.catno?`<span class="code">${esc(cur.catno)}</span>`:''}<span class="code">${esc(cur.year||'—')}${dot('year')}</span><span>${esc(cur.style||'')}</span>${cur.bpm?`<span class="code">${esc(cur.bpm)} BPM</span>`:''}${cur.key?`<span class="code">${esc(cur.key)}</span>`:''}${cur.rating?`<span style="color:var(--accent)">${'★'.repeat(cur.rating)}</span>`:''}${cur.cm?`<span>Media ${esc(cur.cm)}</span>`:''}</div>
+      ${cur.tags.length?`<div class="tags">${cur.tags.map(t=>`<span class="tagchip">${esc(t)}</span>`).join('')}</div>`:''}
+      ${cur.notes?`<p style="margin:8px 0 0;font-size:14px">${esc(cur.notes)}</p>`:''}
+      <div class="row" style="margin-top:12px">${locChip(cur.loc)}${atHome?'':`<span class="muted" style="font-size:12px">home</span>${locChip(cur.home,'home')}`}${hasHome(cur)?'':`<span class="muted" style="font-size:12px">No home shelf yet. Move it to a shelf to set one.</span>`}</div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn ink" data-act="move" data-r="${cur.id}">Move…</button>
+        ${!inBag&&bag?`<button class="btn" data-act="to-bag" data-r="${cur.id}">Put in bag</button>`:''}
+        ${!atHome?`<button class="btn" data-act="go-home" data-r="${cur.id}">Back to ${esc(addrShort(cur.home))}</button>`:''}
+        <button class="btn" data-act="edit-rec" data-r="${cur.id}">Edit details</button>
+        <button class="btn" data-act="add-to-pl" data-r="${cur.id}">+ Playlist</button>
+        <a class="btn ghost" href="${discogsUrl(cur)}" target="_blank" rel="noopener">Discogs ↗</a>
+      </div></div>
+    <div class="list">${list.map((r,i)=>`<button class="li ${i===V.dig?'cur':''}" data-act="dig-to" data-i="${i}">${thumb(r)}<span class="t"><b>${esc(r.title)}</b><span>${esc(r.artist)} · ${esc(r.label)}</span></span>${V.cell==='all'&&unit(r.loc.u)?.kind==='shelf'?locChip(r.loc):''}</button>`).join('')}</div>`;
+}
+function bindSwipe(){
+  const st = $('#stage'); if(!st) return;
+  let x0=null;
+  st.onpointerdown = e => { x0 = e.clientX; };
+  st.onpointerup = e => { if(x0==null) return; const dx = e.clientX-x0; x0=null; if(Math.abs(dx)>40) dig(dx<0?1:-1); };
+}
+function dig(d){ const list = inCell(V.unit,V.cell); if(!list.length) return; V.dig = Math.max(0, Math.min(list.length-1, V.dig+d)); render(); }
+
+/* ---------- moving ---------- */
+let lastUndo = null;
+function moveRecord(id, to){
+  const r = rec(id); const from = {...r.loc}, fromHome = {...r.home};
+  if(same(from,to)) return;
+  r.loc = {...to};
+  if(unit(to.u)?.kind==='shelf') r.home = {...to};
+  S.recent = [to, ...S.recent.filter(l=>!same(l,to))].slice(0,3);
+  lastUndo = () => { r.loc = from; r.home = fromHome; };
+  closeSheet(); render(); toast(`Moved to ${addrShort(to)}`, true);
+}
+function targetGrid(u, onAct, dataAttrs, hereLoc, homeLoc, sel){
+  if(u.kind!=='shelf'){
+    const here = hereLoc && hereLoc.u===u.id, isSel = sel && sel.u===u.id;
+    return `<div class="target"><div class="name">${esc(u.name)} <span class="idtag">${u.id}</span></div><button class="tbag ${here?'here':''} ${isSel?'sel':''}" style="background:${esc(u.finish?.hex||'#26292D')}" ${here?'disabled':''} data-act="${onAct}" ${dataAttrs} data-u="${u.id}" data-c="0-0">${here?'Here now':esc(u.name)}</button></div>`;
+  }
+  return `<div class="target"><div class="name">${esc(u.name)} <span class="idtag">${u.id}</span></div>
+    <div class="tgrid" style="grid-template-columns:repeat(${u.cols},1fr);background:${esc(u.finish?.hex||'#C9B48F')}">${cellKeys(u).map(k=>{
+      const here = hereLoc && hereLoc.u===u.id && hereLoc.c===k, home = homeLoc && homeLoc.u===u.id && homeLoc.c===k, isSel = sel && sel.u===u.id && sel.c===k;
+      return `<button class="${here?'here':''} ${home&&!here?'homeslot':''} ${isSel?'sel':''}" ${here?'disabled':''} data-act="${onAct}" ${dataAttrs} data-u="${u.id}" data-c="${k}" aria-label="${esc(u.name)} ${esc(cellLabel(u,k))}${here?' (current)':''}">${esc(cellLabel(u,k))}</button>`;}).join('')}</div></div>`;
+}
+function openMove(id){
+  const r = rec(id);
+  const quick = [];
+  if(hasHome(r) && !same(r.loc,r.home)) quick.push({l:r.home,t:'Home · '+addrShort(r.home)});
+  S.recent.filter(l=>!same(l,r.loc)&&!same(l,r.home)&&unit(l.u)).forEach(l=>quick.push({l,t:'Recent · '+addrShort(l)}));
+  openSheet(`<div class="sheet-head"><div><div class="kicker">Now at ${esc(addrShort(r.loc))}</div><h2>Move ${esc(r.title)}</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    ${quick.length?`<div class="quick">${quick.map(q=>`<button class="btn" data-act="move-to" data-r="${id}" data-u="${q.l.u}" data-c="${q.l.c}">${esc(q.t)}</button>`).join('')}</div>`:''}
+    <p class="muted" style="margin:0 0 10px;font-size:13px">Tap a shelf or bag. The outlined slot is its home.</p>
+    <div class="targets">${S.units.map(u=>targetGrid(u,'move-to',`data-r="${id}"`,r.loc,hasHome(r)?r.home:null)).join('')}</div>`);
+}
+
+/* ---------- bag scan ---------- */
+let scan = null;
+function openScan(uId){
+  scan = {u:uId, found:null, unknown:[], mode:null};
+  const u = unit(uId);
+  openSheet(`<div class="sheet-head"><div><div class="kicker">Scan ${esc(u.name)}</div><h2>What's in the bag?</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <p class="muted" style="margin-top:0">Fan the records out so the sleeves show, then take one photo. Crates matches what it sees to your collection and updates every location at once.</p>
+    <div class="row">
+      ${AI&&AI_IMAGES?`<label class="btn primary file">Take or choose photo<input type="file" accept="image/*" capture="environment" id="scan-photo"></label>`:''}
+      <button class="btn ${AI&&AI_IMAGES?'':'primary'}" data-act="scan-sim">Simulate a scan</button>
+    </div>
+    ${AI&&AI_IMAGES?'':`<div class="notice">Photo recognition runs when this page can ask Claude about images. Here, try the simulated scan to see the reconcile step.</div>`}
+    <div id="scan-out"></div>`);
+  const inp = $('#scan-photo'); if(inp) inp.onchange = () => runScanAI(inp.files);
+}
+async function runScanAI(files){
+  if(!files || !files.length) return;
+  const out = $('#scan-out'); out.innerHTML = `<div class="notice">Reading the photo…</div>`;
+  const listTxt = S.records.map(r=>`${r.id} | ${r.artist} – ${r.title} (${r.label})`).join('\n');
+  try{
+    const res = await AI.json(`A DJ photographed the open contents of a record bag. Identify which vinyl records are visible (sleeves, center labels or spines).\nTheir collection (id | artist – title (label)):\n${listTxt}\n\nReply with only JSON: {"found":["id",...],"unknown":[{"artist":"...","title":"..."}]}. "found" lists collection ids you can see. "unknown" lists visible records not in the collection. Leave out anything you cannot read.`, {images: files});
+    scan.found = new Set((res?.found||[]).map(String).filter(id=>rec(id)));
+    scan.unknown = Array.isArray(res?.unknown) ? res.unknown.filter(x=>x&&x.title).slice(0,12) : [];
+    scan.mode = 'photo'; renderScanFound();
+  }catch(e){
+    out.innerHTML = `<div class="notice"><b>Couldn't read that photo.</b> ${e.code==='not_granted'?'Claude access was declined for this page.':e.code==='rate_limited'?'Too many requests right now. Try again in a minute.':'Try a brighter photo with the sleeves facing the camera.'} You can still use the simulated scan.</div>`;
+  }
+}
+function simScan(){
+  const inBag = S.records.filter(r=>r.loc.u===scan.u);
+  const others = S.records.filter(r=>r.loc.u!==scan.u);
+  const found = new Set(inBag.slice(1).map(r=>r.id));
+  others.slice().sort((a,b)=>hash(a.id+Date.now())-hash(b.id+Date.now())).slice(0,2).forEach(r=>found.add(r.id));
+  scan.found = found; scan.unknown = []; scan.mode = 'sim'; renderScanFound();
+}
+function renderScanFound(){
+  const u = unit(scan.u);
+  const rows = [...S.records].sort((a,b)=>(scan.found.has(b.id)-scan.found.has(a.id))).map(r=>`<label>
+      <input type="checkbox" data-scan="${r.id}" ${scan.found.has(r.id)?'checked':''}>${thumb(r)}
+      <span class="t"><b>${esc(r.title)}</b><span>${esc(r.artist)}</span></span>${locChip(r.loc)}</label>`).join('');
+  $('#scan-out').innerHTML = `<div class="sec-head" style="margin-top:18px"><div><div class="kicker">${scan.mode==='sim'?'Simulated result':'From your photo'}</div><h2 style="font-size:21px">Found ${scan.found.size} in ${esc(u.name)}</h2></div></div>
+    <p class="muted" style="margin:0">Tick anything it missed, untick anything that isn't there.</p>
+    <div class="pick">${rows}</div>
+    ${scan.unknown.length?`<div class="notice"><b>Not in your collection yet:</b> ${scan.unknown.map(x=>esc((x.artist?x.artist+' – ':'')+x.title)).join(', ')}. Add them with Add → Record.</div>`:''}
+    <div class="row" style="margin-top:14px"><button class="btn primary" data-act="scan-review">Review changes</button></div>
+    <div id="scan-diff"></div>`;
+  document.querySelectorAll('[data-scan]').forEach(cb => cb.onchange = () => { cb.checked ? scan.found.add(cb.dataset.scan) : scan.found.delete(cb.dataset.scan); });
+}
+function scanReview(){
+  const goingIn = S.records.filter(r=>scan.found.has(r.id) && r.loc.u!==scan.u);
+  const goingOut = S.records.filter(r=>!scan.found.has(r.id) && r.loc.u===scan.u && hasHome(r));
+  const homeless = S.records.filter(r=>!scan.found.has(r.id) && r.loc.u===scan.u && !hasHome(r));
+  if(!goingIn.length && !goingOut.length && !homeless.length){ $('#scan-diff').innerHTML = `<div class="notice">Everything already matches. Nothing to move.</div>`; return; }
+  $('#scan-diff').innerHTML = `<div class="diff">
+    ${goingIn.map(r=>`<div class="d">${thumb(r)}<div class="t"><b>${esc(r.title)} <span class="muted" style="font-weight:400">· ${esc(r.artist)}</span></b><div class="row"><span class="pill in">Into bag</span>${locChip(r.loc)}<span class="muted">→</span>${locChip({u:scan.u,c:'0-0'})}</div></div></div>`).join('')}
+    ${goingOut.map(r=>`<div class="d">${thumb(r)}<div class="t"><b>${esc(r.title)} <span class="muted" style="font-weight:400">· ${esc(r.artist)}</span></b><div class="row"><span class="pill out">Not in bag</span><span class="muted">→</span>${locChip(r.home)}<span class="muted" style="font-size:12px">its home slot</span></div></div></div>`).join('')}
+  </div>${homeless.length?`<div class="notice">${homeless.length} unticked record${homeless.length>1?'s have':' has'} no home shelf yet, so ${homeless.length>1?'they stay':'it stays'} listed in the bag: ${homeless.map(r=>esc(r.title)).join(', ')}.</div>`:''}<div class="row" style="margin-top:14px"><button class="btn primary" data-act="scan-apply">Update ${goingIn.length+goingOut.length} locations</button></div>`;
+}
+function scanApply(){
+  const moves = [];
+  S.records.forEach(r=>{
+    if(scan.found.has(r.id) && r.loc.u!==scan.u){ moves.push([r,{...r.loc}]); r.loc={u:scan.u,c:'0-0'}; }
+    else if(!scan.found.has(r.id) && r.loc.u===scan.u && hasHome(r)){ moves.push([r,{...r.loc}]); r.loc={...r.home}; }
+  });
+  lastUndo = () => moves.forEach(([r,l])=>r.loc=l);
+  closeSheet(); render(); toast(`${unit(scan.u).name} updated · ${moves.length} moved`, true);
+}
+
+/* ---------- add: chooser ---------- */
+function openAdd(){
+  const demoShelf = {id:'X',name:'',kind:'shelf',preset:'kallax-2x2',rows:2,cols:2,finish:FINISHES.cube[0]};
+  const demoBag = {id:'X',name:'Bag',kind:'bag',preset:'udg-ultimate-60',finish:BAGS[0].colors[0]};
+  openSheet(`<div class="sheet-head"><h2>Add</h2><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <div class="choice">
+      <button data-act="add-record"><span class="ico">${thumb(S.records[0])}</span><b>Record</b><span>Photograph a shelf or type it in, then file it to a slot.</span></button>
+      <button data-act="add-furniture"><span class="ico" style="width:90px">${drawShelf(demoShelf,false,{empty:true})}</span><b>Furniture</b><span>Kallax and other shelving, crates and record boxes.</span></button>
+      <button data-act="add-bag"><span class="ico" style="width:120px;transform:scale(.5);transform-origin:bottom left">${drawBag(demoBag,{empty:true,noTag:true})}</span><b>Record bag</b><span>UDG, Magma and more. Pick its color and give it a name.</span></button>
+    </div>`);
+}
+
+/* ---------- add furniture / bag ---------- */
+let draft = null;
+function openAddFurniture(){
+  draft = {kind:'furniture', preset:FURNITURE[0].key, group:FURNITURE[0].group, finish:null, name:'', id:'', rows:FURNITURE[0].rows||1, cols:FURNITURE[0].cols||1, photo:null};
+  renderAddFurniture();
+}
+function nextId(prefix){ let n=1; while(unit(prefix+n)) n++; return prefix+n; }
+function prefixFor(p){ return p.kind==='crate'?'C':/kallax|expedit/i.test(p.key+' '+p.name)?'K':'S'; }
+function renderAddFurniture(){
+  const p = fpreset(draft.preset); const fins = finishesFor(p);
+  if(!draft.finish || (draft.finish.name!=='Custom' && !fins.find(f=>f.name===draft.finish.name))) draft.finish = fins[0];
+  const groups = [...new Set(FURNITURE.map(x=>x.group))];
+  const sample = {id:'X',name:draft.name||'',kind:p.kind,preset:p.key,rows:p.kind==='shelf'?draft.rows:1,cols:p.kind==='shelf'?draft.cols:1,finish:draft.finish};
+  openSheet(`<div class="sheet-head"><div><div class="kicker">Add furniture</div><h2>${esc(p.name)}</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <div class="pfilter">${groups.map(g=>`<button class="chip" data-act="af-group" data-g="${esc(g)}" aria-pressed="${draft.group===g}">${esc(g)}</button>`).join('')}</div>
+    <div class="pgrid">${FURNITURE.filter(x=>x.group===draft.group).map(x=>{
+      const s = {id:'X',kind:x.kind,preset:x.key,rows:x.rows||1,cols:x.cols||1,finish:finishesFor(x)[0],name:''};
+      return `<button class="preset" data-act="af-preset" data-k="${x.key}" aria-pressed="${draft.preset===x.key}"><span class="pv">${drawUnit(s,false,{empty:true})}</span><b>${esc((x.brand&&x.brand!=='Generic'&&x.brand!=='Custom'&&!x.name.includes(x.brand)?x.brand+' ':'')+x.name)}</b><span>${x.kind==='shelf'?(x.rows+'×'+x.cols+' · '):''}${esc(x.cap||'')}</span></button>`;}).join('')}</div>
+    <div class="sec-head"><div><h2 style="font-size:21px">Look</h2></div></div>
+    <div class="detail-grid" style="margin-top:0">
+      <div class="preview">${drawUnit(sample,false,{empty:true})}</div>
+      <div><div class="swatches">${fins.map(f=>`<button class="sw" data-act="af-finish" data-n="${esc(f.name)}" aria-pressed="${draft.finish.name===f.name}"><i style="background:${esc(f.hex)}"></i>${esc(f.name)}</button>`).join('')}${customSwatch('af', draft.finish)}</div>
+        <form class="form" id="af-form" style="margin-top:16px">
+          <label class="f">Name<input id="af-name" value="${esc(draft.name)}" placeholder="${p.kind==='crate'?'e.g. Blue crate':'e.g. Kallax 2'}"></label>
+          <label class="f">ID<input id="af-id" maxlength="6" value="${esc(draft.id||nextId(prefixFor(p)))}"></label>
+          ${p.kind==='shelf'?`<label class="f">Rows (A, B, C…)<input id="af-rows" type="number" min="1" max="10" value="${draft.rows}"></label><label class="f">Columns (1, 2, 3…)<input id="af-cols" type="number" min="1" max="10" value="${draft.cols}"></label>`:''}
+          <label class="f">Photo<span class="btn file" style="justify-content:flex-start">${draft.photo?'Photo added ✓':'Take or choose…'}<input type="file" accept="image/*" capture="environment" id="af-photo"></span></label>
+          <div style="display:flex;align-items:end"><button class="btn primary" type="submit">Add ${p.kind==='crate'?'crate':'shelf unit'}</button></div>
+        </form></div></div>`);
+  bindDraftForm('af');
+}
+function openAddBag(){
+  draft = {kind:'bag', preset:BAGS[0].key, brand:'All', finish:null, name:'', id:'', photo:null};
+  renderAddBag();
+}
+function renderAddBag(){
+  const p = bpreset(draft.preset);
+  if(!draft.finish || (draft.finish.name!=='Custom' && !p.colors.find(f=>f.name===draft.finish.name))) draft.finish = p.colors[0];
+  const brands = ['All',...new Set(BAGS.map(b=>b.brand))];
+  const sample = {id:'X',name:draft.name||'Your bag',kind:'bag',preset:p.key,finish:draft.finish};
+  openSheet(`<div class="sheet-head"><div><div class="kicker">Add a record bag</div><h2>${esc(p.brand+' '+p.name)}</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <div class="pfilter">${brands.map(b=>`<button class="chip" data-act="ab-brand" data-b="${esc(b)}" aria-pressed="${draft.brand===b}">${esc(b)}</button>`).join('')}</div>
+    <div class="pgrid">${BAGS.filter(b=>draft.brand==='All'||b.brand===draft.brand).map(b=>`<button class="preset" data-act="ab-preset" data-k="${b.key}" aria-pressed="${draft.preset===b.key}"><span class="pv">${drawBag({id:'X',name:'',kind:'bag',preset:b.key,finish:b.colors[0]},{empty:true,noTag:true})}</span><b>${esc(b.brand+' '+b.name)}</b><span>${esc(FORM_NAMES[b.form]||b.form)} · ${esc(b.cap)}${b.conf==='low'?' · unverified':''}</span></button>`).join('')}</div>
+    <div class="sec-head"><div><h2 style="font-size:21px">Color & name</h2></div></div>
+    <div class="detail-grid" style="margin-top:0">
+      <div class="preview">${drawBag(sample,{empty:true})}</div>
+      <div><div class="swatches">${p.colors.map(f=>`<button class="sw" data-act="ab-finish" data-n="${esc(f.name)}" aria-pressed="${draft.finish.name===f.name}"><i style="background:${esc(f.hex)}"></i>${esc(f.name)}</button>`).join('')}${customSwatch('ab', draft.finish)}</div>
+        <form class="form" id="ab-form" style="margin-top:16px">
+          <label class="f">Bag name<input id="ab-name" value="${esc(draft.name)}" placeholder="e.g. Crater"></label>
+          <label class="f">ID<input id="ab-id" maxlength="6" value="${esc(draft.id||nextId('B'))}"></label>
+          <label class="f">Photo (becomes the cover)<span class="btn file" style="justify-content:flex-start">${draft.photo?'Photo added ✓':'Take or choose…'}<input type="file" accept="image/*" capture="environment" id="ab-photo"></span></label>
+          <div style="display:flex;align-items:end"><button class="btn primary" type="submit">Add bag</button></div>
+        </form></div></div>`);
+  bindDraftForm('ab');
+}
+function bindDraftForm(px){
+  const nameEl = $('#'+px+'-name'), idEl = $('#'+px+'-id');
+  nameEl.oninput = () => { draft.name = nameEl.value; };
+  idEl.oninput = () => { draft.id = idEl.value; };
+  ['rows','cols'].forEach(k=>{ const el=$('#'+px+'-'+k); if(el){ el.oninput=()=>{ draft[k]=Math.max(1,Math.min(10,+el.value||1)); }; el.onchange=()=>{ draft[k]=Math.max(1,Math.min(10,+el.value||1)); setTimeout(()=>px==='af'?renderAddFurniture():renderAddBag(), 0); }; } });
+  const ph = $('#'+px+'-photo'); ph.onchange = async () => { draft.photo = ph.files[0] ? await shrink(ph.files[0]) : null; px==='af'?renderAddFurniture():renderAddBag(); };
+  $('#'+px+'-form').onsubmit = e => {
+    e.preventDefault();
+    const id = (draft.id||idEl.value).trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+    if(!id){ toast('Give it a short ID, like K2'); return; }
+    if(unit(id)){ toast(`ID ${id} is taken. Pick another.`); return; }
+    let u;
+    if(px==='ab'){ u = {id,name:draft.name.trim()||id,preset:draft.preset,kind:'bag',rows:1,cols:1,finish:draft.finish,photo:draft.photo}; }
+    else { const p = fpreset(draft.preset);
+      u = {id,name:draft.name.trim()||id,preset:p.key,kind:p.kind,rows:p.kind==='shelf'?draft.rows:1,cols:p.kind==='shelf'?draft.cols:1,finish:draft.finish,photo:draft.photo}; }
+    S.units.push(u); closeSheet(); V.view='unit'; V.unit=u.id; V.cell='all'; render(); toast(`${u.name} added to your room`);
+  };
+}
+function openEditUnit(id){
+  const u = unit(id); const p = presetOf(u); const fins = finishesFor(p);
+  const n = inCell(id,'all').length;
+  openSheet(`<div class="sheet-head"><div><div class="kicker">${esc(presetName(u))}</div><h2>${esc(u.name)}</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <div class="detail-grid" style="margin-top:0"><div class="preview">${drawUnit(u)}</div>
+    <div><div class="swatches">${fins.map(f=>`<button class="sw" data-act="eu-finish" data-u="${id}" data-n="${esc(f.name)}" aria-pressed="${u.finish?.name===f.name}"><i style="background:${esc(f.hex)}"></i>${esc(f.name)}</button>`).join('')}${customSwatch('eu', u.finish)}</div>
+      <form class="form" id="eu-form" style="margin-top:16px">
+        <label class="f">Name<input id="eu-name" value="${esc(u.name)}"></label>
+        <label class="f">Photo<span class="btn file" style="justify-content:flex-start">${u.photo?'Replace photo':'Take or choose…'}<input type="file" accept="image/*" capture="environment" id="eu-photo"></span></label>
+        <div style="display:flex;align-items:end;gap:8px"><button class="btn primary" type="submit">Save</button>${u.photo?`<button class="btn" type="button" data-act="eu-nophoto" data-u="${id}">Use drawing</button>`:''}</div>
+      </form>
+      <div class="row" style="margin-top:18px"><button class="btn danger" data-act="del-unit" data-u="${id}" ${n?'disabled':''}>Remove ${esc(u.name)}</button>${n?`<span class="muted" style="font-size:12.5px">Move its ${n} records out first.</span>`:''}</div>
+      <div id="del-confirm"></div></div></div>`);
+  $('#eu-form').onsubmit = e => { e.preventDefault(); u.name = $('#eu-name').value.trim()||u.name; closeSheet(); render(); toast('Saved'); };
+  $('#eu-photo').onchange = async e => { const f = e.target.files[0]; if(f){ u.photo = await shrink(f); render(); openEditUnit(id); } };
+}
+
+function customSwatch(px, fin){
+  const on = fin?.name==='Custom';
+  return `<label class="sw custom" aria-pressed="${on}"><i style="${on?'background:'+esc(fin.hex):''}"></i>Custom<input type="color" data-custom="${px}" value="${on?esc(fin.hex):'#888888'}" aria-label="Pick a custom color"></label>`;
+}
+document.addEventListener('change', e=>{
+  const px = e.target.dataset?.custom; if(!px) return;
+  const fin = {name:'Custom', hex:e.target.value};
+  setTimeout(()=>applyCustom(px, fin), 0);
+});
+function applyCustom(px, fin){
+  if(px==='af'){ draft.finish=fin; renderAddFurniture(); }
+  else if(px==='ab'){ draft.finish=fin; renderAddBag(); }
+  else if(px==='eu'){ const u = unit(document.querySelector('[data-act="del-unit"]')?.dataset.u); if(u){ u.finish=fin; render(); openEditUnit(u.id); } }
+}
+
+/* ---------- add record ---------- */
+let addRec = null;
+function openAddRecord(){
+  const first = (V.view==='unit'&&unit(V.unit)) ? {u:V.unit,c:V.cell==='all'?'0-0':V.cell} : {u:S.units[0].id,c:'0-0'};
+  addRec = {loc:first, found:[], f:{artist:'',title:'',label:'',year:''}};
+  renderAddRecord();
+}
+function renderAddRecord(){
+  const a = addRec;
+  openSheet(`<div class="sheet-head"><div><div class="kicker">Add records to ${esc(addrShort(a.loc))}</div><h2>Add a record</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <p class="muted" style="margin:0 0 10px;font-size:13px">1. Pick where they live</p>
+    <div class="targets">${S.units.map(u=>targetGrid(u,'ar-loc','',null,null,a.loc)).join('')}</div>
+    <p class="muted" style="margin:18px 0 10px;font-size:13px">2. Photograph the records, or type them in</p>
+    <div class="row">${AI&&AI_IMAGES?`<label class="btn primary file">Photograph ${esc(addrShort(a.loc))}<input type="file" accept="image/*" capture="environment" id="ar-photo" multiple></label>`:''}</div>
+    ${AI&&AI_IMAGES?'':`<div class="notice" style="margin-top:0">Photo recognition runs when this page can ask Claude about images. Here, type records in below.</div>`}
+    <form class="form" id="ar-form" style="margin-top:12px">
+      <label class="f">Artist<input id="ar-artist" value="${esc(a.f.artist)}" required placeholder="Larry Heard"></label>
+      <label class="f">Title<input id="ar-title" value="${esc(a.f.title)}" required placeholder="Washing Machine"></label>
+      <label class="f">Label<input id="ar-label" value="${esc(a.f.label)}" placeholder="Trax Records"></label>
+      <label class="f">Year<input id="ar-year" value="${esc(a.f.year)}" inputmode="numeric" placeholder="1986"></label>
+      <div style="display:flex;align-items:end"><button class="btn primary" type="submit">File into ${esc(addrShort(a.loc))}</button></div>
+    </form>
+    <div id="ar-out">${a.found.length?foundList():''}</div>`);
+  $('#ar-form').onsubmit = e => { e.preventDefault();
+    fileRecords([{artist:$('#ar-artist').value.trim(),title:$('#ar-title').value.trim(),label:$('#ar-label').value.trim(),year:$('#ar-year').value.trim()}]); };
+  ['artist','title','label','year'].forEach(k=>{ const el=$('#ar-'+k); el.oninput=()=>{ a.f[k]=el.value; }; });
+  const ph = $('#ar-photo'); if(ph) ph.onchange = () => identifyShelf(ph.files);
+  bindFound();
+}
+function foundList(){
+  return `<div class="pick">${addRec.found.map((f,i)=>`<label><input type="checkbox" data-found="${i}" ${f.keep?'checked':''}><span class="thumb" style="background:var(--surface-2)"></span><span class="t"><b>${esc(f.title)}</b><span>${esc([f.artist,f.label,f.year].filter(Boolean).join(' · '))}${f.confidence?' · '+esc(f.confidence)+' confidence':''}</span></span><a class="btn ghost sm" href="${discogsUrl(f)}" target="_blank" rel="noopener">Discogs ↗</a></label>`).join('')}</div>
+    <div class="row" style="margin-top:12px"><button class="btn primary" data-act="file-found">Add to ${esc(addrShort(addRec.loc))}</button></div>`;
+}
+function bindFound(){ document.querySelectorAll('[data-found]').forEach(cb=>cb.onchange=()=>{ addRec.found[+cb.dataset.found].keep = cb.checked; }); }
+async function identifyShelf(files){
+  if(!files?.length) return;
+  const out = $('#ar-out'); out.innerHTML = `<div class="notice">Reading the sleeves…</div>`;
+  try{
+    const res = await AI.json(`This photo shows vinyl records on a DJ's shelf, in a crate or in a bag — sleeves, center labels or spines. List every record you can actually read. Reply with only a JSON array like [{"artist":"...","title":"...","label":"...","year":1990,"confidence":"high"}]. Use null for fields you cannot read and "low" confidence when unsure. Never invent records you cannot see.`, {images: files});
+    addRec.found = (Array.isArray(res)?res:[]).filter(x=>x&&x.title).slice(0,40).map(x=>({artist:x.artist||'Unknown artist',title:String(x.title),label:x.label||'',year:x.year||'',confidence:x.confidence||'',keep:x.confidence!=='low'}));
+    out.innerHTML = addRec.found.length ? foundList() : `<div class="notice">No readable sleeves in that photo. Try straight-on, with more light.</div>`;
+    bindFound();
+  }catch(e){ out.innerHTML = `<div class="notice"><b>Couldn't read that photo.</b> ${e.code==='not_granted'?'Claude access was declined for this page.':'Try again, or type the record in above.'}</div>`; }
+}
+function fileRecords(list){
+  const loc = {...addRec.loc};
+  list.forEach(f=>{ const h = hash(f.artist+f.title);
+    S.records.push({id:uid('n'), artist:f.artist||'Unknown artist', title:f.title, label:f.label||'', catno:'', year:f.year||'', style:'', yt:[], loc:{...loc}, home:unit(loc.u).kind==='shelf'?{...loc}:null, pal:PAL[h%PAL.length], pat:h%6,
+      bpm:'',key:'',rating:0,cm:'',cs:'',notes:'',tags:[],custom:[],orig:{artist:f.artist||'Unknown artist',title:f.title,label:f.label||'',catno:'',year:f.year||'',style:''}}); });
+  closeSheet(); V.view='unit'; V.unit=loc.u; V.cell=unit(loc.u).kind==='shelf'?loc.c:'all'; V.dig=inCell(V.unit,V.cell).length-1; render();
+  toast(`${list.length} filed into ${addrShort(loc)}`);
+}
+function shrink(file){ return new Promise(res=>{ const img = new Image(); img.onload=()=>{ const s = Math.min(1, 900/Math.max(img.width,img.height)); const c=document.createElement('canvas'); c.width=img.width*s; c.height=img.height*s; c.getContext('2d').drawImage(img,0,0,c.width,c.height); res(c.toDataURL('image/jpeg',.8)); URL.revokeObjectURL(img.src); }; img.onerror=()=>res(null); img.src = URL.createObjectURL(file); }); }
+
+/* ---------- edit record details ---------- */
+let editing = null;
+function openEditRecord(id){
+  const r = rec(id); editing = {id, rating:r.rating, custom:r.custom.map(x=>({...x}))};
+  const ed = editedSet(r);
+  const fld = (k,label,attrs='') => `<label class="f"><span class="lab">${label}${ed.has(k)?`<button type="button" class="revert" data-act="revert" data-k="${k}" data-r="${id}">Undo edit</button>`:''}</span><input id="er-${k}" value="${esc(r[k])}" ${attrs}></label>`;
+  openSheet(`<div class="sheet-head"><div><div class="kicker">Your details · Discogs data is kept untouched</div><h2>Edit ${esc(r.title)}</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <form id="er-form">
+      <div class="form">
+        ${fld('artist','Artist')}${fld('title','Title')}${fld('label','Label')}${fld('catno','Cat no.')}${fld('year','Year','inputmode="numeric"')}${fld('style','Style')}
+        <label class="f">BPM<input id="er-bpm" value="${esc(r.bpm)}" inputmode="decimal" placeholder="122"></label>
+        <label class="f">Key<input id="er-key" value="${esc(r.key)}" placeholder="8A or Am"></label>
+        <label class="f">Media condition<select id="er-cm">${GRADES.map(g=>`<option ${r.cm===g?'selected':''} value="${g}">${g||'—'}</option>`).join('')}</select></label>
+        <label class="f">Sleeve condition<select id="er-cs">${GRADES.map(g=>`<option ${r.cs===g?'selected':''} value="${g}">${g||'—'}</option>`).join('')}</select></label>
+        <label class="f">Tags<input id="er-tags" value="${esc(r.tags.join(', '))}" placeholder="peak time, warm-up"></label>
+      </div>
+      <label class="f" style="margin-top:12px">Rating<span class="stars" id="er-stars">${[1,2,3,4,5].map(n=>`<button type="button" class="${n<=r.rating?'on':''}" data-act="er-star" data-n="${n}" aria-label="${n} star${n>1?'s':''}">★</button>`).join('')}</span></label>
+      <label class="f" style="margin-top:12px">Notes<textarea id="er-notes" placeholder="Cue on the second break. Pressing has a light scuff on A2.">${esc(r.notes)}</textarea></label>
+      <div style="margin-top:14px"><div class="row" style="justify-content:space-between"><b style="font-size:14px">Your own fields</b><button type="button" class="btn sm" data-act="er-addkv">+ Field</button></div><div id="er-kv"></div></div>
+      <div class="row" style="margin-top:18px"><button class="btn primary" type="submit">Save details</button><button class="btn ghost" type="button" data-act="close">Cancel</button></div>
+    </form>`);
+  renderKV();
+  $('#er-form').onsubmit = e => { e.preventDefault(); saveRecordEdit(); };
+}
+function renderKV(){
+  $('#er-kv').innerHTML = editing.custom.map((x,i)=>`<div class="kv"><input aria-label="Field name" data-kv="${i}" data-p="k" value="${esc(x.k)}" placeholder="e.g. Bought at"><input aria-label="Value" data-kv="${i}" data-p="v" value="${esc(x.v)}" placeholder="e.g. Halcyon, Brooklyn"><button type="button" class="mini-btn" data-act="er-delkv" data-i="${i}" aria-label="Remove field">✕</button></div>`).join('') || `<p class="muted" style="font-size:13px;margin:6px 0 0">Add anything Discogs doesn't track: where you bought it, who you lent it to, cue points.</p>`;
+  document.querySelectorAll('[data-kv]').forEach(inp=>inp.oninput=()=>{ editing.custom[+inp.dataset.kv][inp.dataset.p]=inp.value; });
+}
+function saveRecordEdit(){
+  const r = rec(editing.id);
+  ['artist','title','label','catno','year','style','bpm','key','cm','cs','notes'].forEach(k=>{ const el=$('#er-'+k); if(el) r[k]=el.value.trim(); });
+  r.tags = $('#er-tags').value.split(',').map(s=>s.trim()).filter(Boolean);
+  r.rating = editing.rating; r.custom = editing.custom.filter(x=>x.k||x.v);
+  closeSheet(); render(); toast('Details saved'); if(cur()?.id===r.id) renderPlayer();
+}
+
+/* ---------- playlists ---------- */
+function renderPlaylists(){
+  const pl = S.playlists.find(p=>p.id===V.pl);
+  const cards = S.playlists.map(p=>`<button class="plcard" style="--pc:${p.color}" data-act="open-pl" data-p="${p.id}">
+      <span class="covers">${p.items.slice(0,5).map(id=>rec(id)?thumb(rec(id)):'').join('')}</span>
+      <b>${esc(p.name)}</b><span>${p.items.length} records · ${new Set(p.items.map(id=>rec(id)?.loc.u).filter(Boolean)).size} places</span></button>`).join('');
+  return `<div class="sec-head"><div><div class="kicker">Sets, digs and gig lists</div><h2>Playlists</h2></div><button class="btn primary" data-act="new-pl">+ New playlist</button></div>
+    <div class="plgrid">${cards||`<div class="empty"><b>No playlists yet</b>Make one for your next set, then pack it into a bag in one tap.</div>`}</div>
+    ${pl?renderPlEditor(pl):''}`;
+}
+function renderPlEditor(pl){
+  return `<section class="pledit" aria-label="Edit ${esc(pl.name)}">
+    <div class="row" style="justify-content:space-between;align-items:flex-start">
+      <div style="flex:1 1 260px;min-width:0"><label for="pl-name" class="sr">Playlist name</label><input id="pl-name" class="plname" value="${esc(pl.name)}">
+        <div class="swatches" style="margin-top:8px;gap:6px">${PL_COLORS.map(c=>`<button class="sw" style="width:auto" data-act="pl-color" data-c="${c}" aria-pressed="${pl.color===c}" aria-label="Color ${c}"><i style="background:${c};width:24px;height:24px"></i></button>`).join('')}</div></div>
+      <div class="row">
+        <button class="btn primary" data-act="pl-play" ${pl.items.length?'':'disabled'}><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>Play</button>
+        <button class="btn" data-act="pl-shuffle" ${pl.items.length?'':'disabled'}>Shuffle</button>
+        <button class="btn" data-act="pl-add">+ Add records</button>
+      </div>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <span class="muted" style="font-size:13px">Sort:</span>
+      <button class="chip" data-act="pl-sort" data-s="loc">Pull order (by shelf)</button>
+      <button class="chip" data-act="pl-sort" data-s="artist">Artist</button>
+      <button class="chip" data-act="pl-sort" data-s="year">Year</button>
+      <button class="chip" data-act="pl-sort" data-s="bpm">BPM</button>
+      <button class="chip" data-act="pl-sort" data-s="rev">Reverse</button>
+    </div>
+    <div class="items" id="items">${renderItems(pl)}</div>
+    <div class="row" style="margin-top:14px">
+      ${S.units.some(u=>u.kind==='bag')?`<button class="btn ink" data-act="pl-pack" ${pl.items.length?'':'disabled'}>Pack into bag…</button>`:''}
+      <button class="btn" data-act="pl-dup">Duplicate</button>
+      <button class="btn danger" data-act="pl-del">Delete playlist</button>
+    </div>
+    <div id="pl-confirm"></div>
+  </section>`;
+}
+function renderItems(pl){
+  if(!pl.items.length) return `<div class="empty" style="margin-top:12px"><b>This playlist is empty</b>Add records from here, or use “+ Playlist” on any record.</div>`;
+  const grip = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>';
+  return pl.items.map((id,i)=>{ const r = rec(id); if(!r) return '';
+    return `<div class="item" data-idx="${i}"><button class="handle" data-handle="${i}" aria-label="Drag to reorder ${esc(r.title)}">${grip}</button><span class="n">${i+1}</span>${thumb(r)}
+      <span class="t"><b>${esc(r.title)}</b><span>${esc(r.artist)}${r.bpm?' · '+esc(r.bpm)+' BPM':''} · ${esc(addrShort(r.loc))}</span></span>
+      <span class="acts"><button class="mini-btn" data-act="pl-up" data-i="${i}" aria-label="Move up" ${i===0?'disabled':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 15 6-6 6 6"/></svg></button><button class="mini-btn" data-act="pl-down" data-i="${i}" aria-label="Move down" ${i===pl.items.length-1?'disabled':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></button><button class="mini-btn" data-act="pl-rm" data-i="${i}" aria-label="Remove from playlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6 6 18"/></svg></button></span></div>`; }).join('');
+}
+const curPl = () => S.playlists.find(p=>p.id===V.pl);
+function bindPlaylist(){
+  const pl = curPl(); if(!pl) return;
+  const nm = $('#pl-name'); nm.onchange = () => { pl.name = nm.value.trim()||'Untitled'; render(); };
+  const box = $('#items'); let drag = null;
+  box.onpointerdown = e => {
+    const h = e.target.closest('[data-handle]'); if(!h) return;
+    e.preventDefault(); drag = {i:+h.dataset.handle}; box.setPointerCapture(e.pointerId);
+    box.querySelector(`.item[data-idx="${drag.i}"]`)?.classList.add('dragging');
+  };
+  box.onpointermove = e => {
+    if(!drag) return;
+    const items = [...box.querySelectorAll('.item')];
+    let to = items.findIndex(it=>{ const b = it.getBoundingClientRect(); return e.clientY < b.top + b.height/2; });
+    if(to<0) to = items.length-1;
+    if(to!==drag.i){ const [x] = pl.items.splice(drag.i,1); pl.items.splice(to,0,x); drag.i = to; box.innerHTML = renderItems(pl); box.querySelector(`.item[data-idx="${to}"]`)?.classList.add('dragging'); }
+  };
+  const end = () => { if(!drag) return; drag=null; save(); box.innerHTML = renderItems(pl); };
+  box.onpointerup = end; box.onpointercancel = end;
+}
+function openPickRecords(){
+  const pl = curPl(); const chosen = new Set();
+  openSheet(`<div class="sheet-head"><div><div class="kicker">Add to ${esc(pl.name)}</div><h2>Pick records</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <label for="pk-q" class="sr">Filter records</label><input id="pk-q" class="" style="width:100%;height:42px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:0 12px" placeholder="Filter by artist, title, shelf…">
+    <div class="pick" id="pk-list"></div>
+    <div class="row" style="margin-top:12px"><button class="btn primary" data-act="pk-done" id="pk-done">Add 0 records</button></div>`);
+  const draw = () => { const q = $('#pk-q').value.toLowerCase();
+    $('#pk-list').innerHTML = S.records.filter(r=>!q || `${r.artist} ${r.title} ${r.label} ${addrShort(r.loc)}`.toLowerCase().includes(q)).map(r=>`<label><input type="checkbox" data-pk="${r.id}" ${chosen.has(r.id)||pl.items.includes(r.id)?'checked':''} ${pl.items.includes(r.id)?'disabled':''}>${thumb(r)}<span class="t"><b>${esc(r.title)}</b><span>${esc(r.artist)}${pl.items.includes(r.id)?' · already in playlist':''}</span></span>${locChip(r.loc)}</label>`).join('');
+    document.querySelectorAll('[data-pk]').forEach(cb=>cb.onchange=()=>{ cb.checked?chosen.add(cb.dataset.pk):chosen.delete(cb.dataset.pk); $('#pk-done').textContent = `Add ${chosen.size} record${chosen.size===1?'':'s'}`; }); };
+  $('#pk-q').oninput = draw; draw();
+  A['pk-done'] = () => { [...chosen].forEach(id=>{ if(!pl.items.includes(id)) pl.items.push(id); }); closeSheet(); render(); toast(`${chosen.size} added to ${pl.name}`); };
+}
+function openAddToPlaylist(rid){
+  const r = rec(rid);
+  openSheet(`<div class="sheet-head"><div><div class="kicker">${esc(r.artist)}</div><h2>Add ${esc(r.title)} to…</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <div class="plgrid">${S.playlists.map(p=>`<button class="plcard" style="--pc:${p.color}" data-act="atp" data-p="${p.id}" data-r="${rid}" ${p.items.includes(rid)?'disabled':''}><b>${esc(p.name)}</b><span>${p.items.includes(rid)?'Already in this playlist':p.items.length+' records'}</span></button>`).join('')}
+    <button class="plcard" style="--pc:var(--line)" data-act="atp-new" data-r="${rid}"><b>+ New playlist</b><span>Starts with this record</span></button></div>`);
+}
+function sortPl(pl, how){
+  const R = id => rec(id);
+  const unitIdx = id => S.units.findIndex(u=>u.id===R(id)?.loc.u);
+  const cmp = {
+    loc:(a,b)=> unitIdx(a)-unitIdx(b) || (R(a).loc.c>R(b).loc.c?1:R(a).loc.c<R(b).loc.c?-1:0),
+    artist:(a,b)=> R(a).artist.localeCompare(R(b).artist),
+    year:(a,b)=> (+R(a).year||9999)-(+R(b).year||9999),
+    bpm:(a,b)=> (+R(a).bpm||999)-(+R(b).bpm||999),
+  };
+  const prevOrder = [...pl.items];
+  if(how==='rev') pl.items.reverse(); else pl.items.sort(cmp[how]);
+  lastUndo = () => { pl.items = prevOrder; };
+  render(); toast(how==='loc'?'Sorted by where they live — pull them in this order':'Sorted', true);
+}
+
+/* ---------- settings ---------- */
+function openSettings(){
+  openSheet(`<div class="sheet-head"><h2>Settings</h2><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <p class="muted" style="margin:0 0 8px;font-size:13px">Accent color</p>
+    <div class="swatches">${[['red','Signal red','#D2412C'],['brass','Brass','#B8862F'],['cyan','Booth cyan','#0EA5E9']].map(([k,n,h])=>`<button class="sw" data-act="set-accent" data-a="${k}" aria-pressed="${S.settings.accent===k}"><i style="background:${h}"></i>${n}</button>`).join('')}</div>
+    <p class="muted" style="font-size:13px;margin-top:18px">Shelf slots are named by row letter and column number: A1–A4 on the top row, B1–B4 below, then C, D… Codes always include the unit ID (K1·B2), so they never read like a side-B track number.</p>
+    <p class="muted" style="font-size:13px">Each unit's finish or bag color is set from its own page: open it and tap “Look & name”.</p>
+    <div class="row" style="margin-top:18px"><button class="btn" data-act="reset">Reset demo collection</button></div><div id="reset-confirm"></div>`);
+}
+
+/* ---------- sheets & toast ---------- */
+let sheetKind = null;
+function openSheet(html, kind='sheet'){
+  sheetKind = kind;
+  $('#layer').innerHTML = `<div class="scrim" data-act="scrim"><div class="sheet" role="dialog" aria-modal="true">${html}</div></div>`;
+  setTimeout(()=>$('.sheet button, .sheet a')?.focus({preventScroll:true}), 30);
+}
+function closeSheet(){ $('#layer').innerHTML=''; sheetKind=null; }
+let toastT;
+function toast(msg, undo){
+  document.querySelector('.toast')?.remove();
+  const t = document.createElement('div'); t.className='toast'; t.setAttribute('role','status');
+  t.innerHTML = `<span>${esc(msg)}</span>${undo?'<button data-act="undo">Undo</button>':''}`;
+  document.body.appendChild(t); clearTimeout(toastT); toastT = setTimeout(()=>t.remove(), 5000);
+}
+
+/* ---------- search ---------- */
+let qActive = 0;
+function search(q){
+  const box = $('#results'); q = q.trim().toLowerCase();
+  if(!q){ box.hidden = true; return; }
+  const words = q.split(/\s+/);
+  const hits = S.records.filter(r=>{ const hay = `${r.artist} ${r.title} ${r.label} ${r.catno} ${r.year} ${r.style} ${r.bpm} ${r.key} ${r.tags.join(' ')} ${r.notes} ${addrShort(r.loc)}`.toLowerCase(); return words.every(w=>hay.includes(w)); }).slice(0,8);
+  const uhits = S.units.filter(u=>(u.name+' '+u.id).toLowerCase().includes(q)).slice(0,3);
+  if(!hits.length && !uhits.length){ box.innerHTML = `<div class="result" style="grid-template-columns:1fr"><span class="t"><b>No match for “${esc(q)}”</b><span>Search covers artist, title, label, year, style, BPM, key, tags and notes.</span></span></div>`; box.hidden=false; return; }
+  qActive = 0;
+  box.innerHTML = hits.map((r,i)=>`<button class="result ${i===0?'active':''}" data-act="goto-rec" data-r="${r.id}">${thumb(r)}<span class="t"><b>${esc(r.title)}</b><span>${esc(r.artist)} · ${esc(addrLong(r.loc))}</span></span>${locChip(r.loc)}</button>`).join('')
+    + uhits.map(u=>`<button class="result" data-act="open-unit" data-u="${u.id}"><span class="idtag" style="justify-self:center">${u.id}</span><span class="t"><b>${esc(u.name)}</b><span>${esc(presetName(u))} · ${inCell(u.id,'all').length} records</span></span><span></span></button>`).join('');
+  box.hidden = false;
+}
+$('#q').addEventListener('input', e=>search(e.target.value));
+$('#q').addEventListener('keydown', e=>{
+  const items=[...document.querySelectorAll('#results .result[data-act]')]; if(!items.length) return;
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault(); qActive=(qActive+(e.key==='ArrowDown'?1:-1)+items.length)%items.length; items.forEach((it,i)=>it.classList.toggle('active',i===qActive)); }
+  if(e.key==='Enter'){ e.preventDefault(); items[qActive].click(); }
+  if(e.key==='Escape'){ $('#results').hidden=true; }
+});
+document.addEventListener('click', e=>{ if(!e.target.closest('.search')) $('#results').hidden = true; });
+function gotoRecord(id){
+  const r = rec(id); if(!unit(r.loc.u)) return; V.view='unit'; V.unit=r.loc.u; V.cell = unit(r.loc.u).kind==='shelf' ? r.loc.c : 'all'; V.focus=id; V.flash = V.cell;
+  $('#results').hidden=true; $('#q').value=''; $('#q').blur(); render();
+  document.querySelector('.detail')?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth', block:'start'});
+  setTimeout(()=>{ V.flash=null; }, 2600);
+}
+
+/* =====================================================================
+   PLAYER — ported from discogs-stream (YouTubePlayer + MobilePlayer chain)
+   ===================================================================== */
+const P = {queue:[], i:-1, playing:false, mode:'loading', yt:null, ready:false, st:{}, timers:[], log:[], progT:null, dry:null, open:false, tab:'queue', src:''};
+const CHAIN = ['Load the saved YouTube link','3-second window: must start playing or buffering','Try the cached alternate links','Force a fresh search (Crates backend)','Mark not working · offer “Search on YouTube” · skip'];
+function stOf(r){ return P.st[r.id] ||= {cand:0, state: r.yt.length?'pending':'non_working', step:0, fails:{}}; }
+function clearTimers(){ P.timers.forEach(clearTimeout); P.timers=[]; }
+function plog(m){ P.log.unshift(new Date().toLocaleTimeString([], {minute:'2-digit',second:'2-digit'})+'  '+m); P.log=P.log.slice(0,30); }
+
+function loadYT(){
+  return new Promise((res,rej)=>{
+    if(window.YT?.Player) return res();
+    const t = setTimeout(()=>rej('timeout'), 6000);
+    window.onYouTubeIframeAPIReady = () => { clearTimeout(t); res(); };
+    const s = document.createElement('script'); s.src='https://www.youtube.com/iframe_api';
+    s.onerror = () => { clearTimeout(t); rej('blocked'); };
+    document.head.appendChild(s);
+  });
+}
+loadYT().then(()=>{
+  P.yt = new YT.Player('yt', {height:'180', width:'320', host:'https://www.youtube-nocookie.com',
+    playerVars:{autoplay:0,controls:0,disablekb:1,modestbranding:1,rel:0,iv_load_policy:3,playsinline:1,origin:location.origin},
+    events:{ onReady:()=>{ P.ready=true; P.mode='yt'; renderPlayer(); },
+             onStateChange:e=>onYTState(e.data), onError:e=>failCandidate('YouTube error '+e.data) }});
+  setTimeout(()=>{ if(!P.ready){ P.mode='link'; renderPlayer(); } }, 6000);
+}).catch(why=>{ P.mode='link'; plog('Inline playback unavailable ('+why+'), using YouTube links'); renderPlayer(); });
+
+function setQueue(list, start=0, src=''){ if(!list.length) return; P.queue = list.map(r=>r.id); P.src = src; playAt(start); }
+function cur(){ return rec(P.queue[P.i]); }
+function playAt(i){
+  if(!P.queue.length) return;
+  P.i = (i+P.queue.length)%P.queue.length; clearTimers();
+  const r = cur(); if(!r){ P.queue.splice(P.i,1); return playAt(P.i); }
+  const st = stOf(r);
+  if(st.state==='non_working' && r.yt.length){ st.state='pending'; st.cand=0; st.fails={}; }
+  P.playing = true;
+  if(P.mode!=='yt'){ st.step=0; renderPlayer(); return; }
+  if(!r.yt.length){ st.state='non_working'; st.step=4; plog(`${r.title}: no saved link, search on YouTube, skipping in 3s`); renderPlayer(); P.timers.push(setTimeout(()=>next(), 3000)); return; }
+  loadCandidate();
+}
+function loadCandidate(){
+  const r = cur(), st = stOf(r), id = r.yt[st.cand];
+  st.state='trying'; plog(`${r.title}: link ${st.cand+1}/${r.yt.length} (${id})`);
+  P.yt.loadVideoById(id);
+  st.step = st.cand===0?1:2; renderPlayer();
+  P.timers.push(setTimeout(()=>{ const s = P.yt.getPlayerState?.(); if(s===1||s===3) return; failCandidate('no signal within 3s'); }, 3000));
+  P.timers.push(setTimeout(()=>{ if(P.yt.getPlayerState?.()===3) failCandidate('stalled while buffering'); }, 12000));
+}
+function onYTState(s){
+  const r = cur(); if(!r) return; const st = stOf(r);
+  if(s===1){ P.playing = true;
+    const d = P.yt.getDuration?.()||0;
+    if(d>0 && d<30){ failCandidate('only '+Math.round(d)+'s long, likely a teaser'); return; }
+    if(st.state!=='working'){ st.state='working'; plog(`${r.title}: playing`); clearTimers(); }
+    tick(); }
+  if(s===2){ P.playing=false; }
+  if(s===0){ next(); return; }
+  renderPlayer();
+}
+function failCandidate(reason){
+  const r = cur(); if(!r) return; const st = stOf(r); clearTimers();
+  st.fails[st.cand] = reason; plog(`${r.title}: link ${st.cand+1} failed, ${reason}`);
+  st.cand++;
+  if(st.cand < r.yt.length){ loadCandidate(); return; }
+  st.step = 4; st.state='non_working';
+  plog(`${r.title}: all links failed, marked not working, skipping`);
+  renderPlayer(); P.timers.push(setTimeout(()=>next(), 1500));
+}
+function next(){ playAt(P.i+1); }
+function prev(){ playAt(P.i-1); }
+function toggle(){
+  if(!cur()) return;
+  if(P.mode!=='yt'){ P.playing = !P.playing; renderPlayer(); return; }
+  if(P.playing){ P.yt.pauseVideo(); P.playing=false; } else { P.yt.playVideo(); P.playing=true; }
+  renderPlayer();
+}
+function tick(){ clearInterval(P.progT); P.progT = setInterval(()=>{ if(!P.yt?.getDuration) return; const d=P.yt.getDuration(), t=P.yt.getCurrentTime(); document.querySelectorAll('.pbar').forEach(b=>b.style.width = d?(t/d*100)+'%':'0'); const tl=$('#ptime'); if(tl) tl.textContent = fmt(t)+' / '+fmt(d); }, 500); }
+const fmt = s => isFinite(s)&&s>0 ? Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0') : '0:00';
+
+function statusText(r){
+  const st = stOf(r);
+  if(P.mode==='loading') return 'Connecting to YouTube…';
+  if(P.mode==='link') return r.yt.length ? 'Opens on YouTube here' : 'No saved link · search YouTube';
+  if(st.state==='trying') return `Trying link ${st.cand+1} of ${r.yt.length}…`;
+  if(st.state==='working') return P.playing?'Playing':'Paused';
+  if(st.state==='non_working') return 'Not working · skipped';
+  return 'Ready';
+}
+const I = {play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>', pause:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>', next:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 5v14l10-7zM16 5h3v14h-3z"/></svg>', prev:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 5v14L9 12zM5 5h3v14H5z"/></svg>', ext:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>'};
+
+function mainBtn(r, xl){
+  const cls = 'round main'+(xl?' xl':'');
+  if(P.mode==='yt') return `<button class="${cls}" data-act="p-toggle" aria-label="${P.playing?'Pause':'Play'}">${P.playing?I.pause:I.play}</button>`;
+  const href = r.yt.length ? ytUrl(r.yt[stOf(r).cand]||r.yt[0]) : ytSearch(r);
+  return `<a class="${cls}" href="${href}" target="_blank" rel="noopener" data-spin="1" aria-label="Open ${esc(r.title)} on YouTube">${I.ext}</a>`;
+}
+function vinyl(r, opts={}){
+  const dust = Array.from({length:12},(_,i)=>{ const h = hash(r.id+i); const ang = (h%360)*Math.PI/180, rad = 24+(h>>8)%23; return `<circle cx="${(50+Math.cos(ang)*rad).toFixed(2)}" cy="${(50+Math.sin(ang)*rad).toFixed(2)}" r="${(.1+((h>>4)%20)/100).toFixed(2)}" fill="#fff" fill-opacity="${(.04+((h>>6)%7)/100).toFixed(2)}"/>`; }).join('');
+  return `<div class="vinyl ${opts.cls||''} ${P.playing?'spin glow':''}"><div class="disc">
+      <span class="g" style="inset:7%"></span><span class="g" style="inset:14%"></span><span class="g" style="inset:21%"></span>
+      <svg viewBox="0 0 100 100" style="position:absolute;inset:0;width:100%;height:100%">${dust}</svg>
+      <span class="lab">${cover(r)}</span><span class="hole"></span></div><span class="sheen"></span></div>`;
+}
+function renderPlayer(){
+  const el = $('#player'), r = cur();
+  if(!r){ el.hidden = true; return; }
+  el.hidden = false;
+  const st = stOf(r);
+  el.innerHTML = `${P.mode==='yt'?'<div class="progress"><i class="pbar"></i></div>':''}<div class="player-in">
+    <button style="border:0;background:none;padding:0" data-act="open-player" aria-label="Open player">${vinyl(r,{cls:'mini-vinyl'})}</button>
+    <button class="pinfo" data-act="open-player" aria-label="Open player"><b>${esc(r.title)}</b><span>${esc(r.artist)} · <span style="color:${st.state==='non_working'?'var(--bad)':st.state==='trying'?'var(--warn)':'var(--muted)'}">${esc(statusText(r))}</span></span></button>
+    <div class="pbtns"><button class="round" data-act="p-prev" aria-label="Previous">${I.prev}</button>${mainBtn(r)}<button class="round" data-act="p-next" aria-label="Next">${I.next}</button></div></div>`;
+  if(P.open) renderNP();
+}
+function openNP(){ P.open = true; $('#np').innerHTML = `<div class="np-scrim" data-act="close-np"></div><div class="np-sheet" role="dialog" aria-modal="true" aria-label="Now playing" id="np-sheet"></div>`; renderNP(); bindNPSwipe(); }
+function closeNP(){ P.open = false; $('#np').innerHTML=''; }
+function bindNPSwipe(){
+  const sh = $('#np-sheet'); let y0=null;
+  sh.addEventListener('pointerdown', e=>{ if(sh.scrollTop<=0 && e.target.closest('.grab,.deck')) y0=e.clientY; });
+  sh.addEventListener('pointerup', e=>{ if(y0!=null && e.clientY-y0>90) closeNP(); y0=null; });
+}
+function renderNP(){
+  const sh = $('#np-sheet'); const r = cur(); if(!sh||!r) return; const st = stOf(r);
+  const step = P.dry?.step ?? (P.mode==='yt' ? st.step : -1);
+  const chainCls = i => { if(step<0) return ''; if(i<step) return 'done'; if(i===step) return st.state==='non_working'&&!P.dry?'fail':'on'; return ''; };
+  const y = sh.scrollTop;
+  const arm = `<svg class="arm ${P.playing?'on':''}" viewBox="0 0 100 200" aria-hidden="true"><circle cx="78" cy="24" r="16" fill="#9aa0a5"/><circle cx="78" cy="24" r="7" fill="#5c6166"/><path d="M78 24 L70 150 L52 178" stroke="#b9bec2" stroke-width="5" fill="none" stroke-linecap="round"/><rect x="40" y="172" width="20" height="13" rx="2" transform="rotate(-35 50 178)" fill="#3a3d41"/></svg>`;
+  const tabs = [['queue','Up next'],['links','YouTube links'],['chain','Fallback chain']];
+  let body = '';
+  if(P.tab==='queue') body = `<div class="pl">${P.queue.map((id,i)=>{ const x = rec(id); if(!x) return ''; const s = stOf(x);
+      const d = s.state==='working'?'ok':s.state==='non_working'?'bad':s.state==='trying'?'try':'pend';
+      return `<button class="pli ${i===P.i?'cur':''} ${s.state==='non_working'?'bad':''}" data-act="p-at" data-i="${i}"><span class="dot ${d}"></span>${thumb(x)}<span class="t"><b>${esc(x.title)}</b><span>${esc(x.artist)} · ${esc(addrShort(x.loc))}</span></span></button>`;}).join('')}</div>`;
+  if(P.tab==='links') body = `<div class="links">${r.yt.map((id,i)=>{ const f = st.fails[i]; const cls = f?'bad':(P.mode==='yt'&&st.cand===i)?(st.state==='working'?'ok':'try'):'pend';
+      return `<div class="link"><span class="dot ${cls}"></span><span class="code" style="min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:13px">${i===0?'Primary':'Alternate '+i} · ${id}${f?` <span style="color:var(--bad)">${esc(f)}</span>`:''}</span><a class="btn ghost sm" href="${ytUrl(id)}" target="_blank" rel="noopener">Open ↗</a></div>`;}).join('')}
+      <div class="link"><span class="dot pend"></span><span>Search YouTube for “${esc(r.artist)} ${esc(r.title)}”</span><a class="btn ghost sm" href="${ytSearch(r)}" target="_blank" rel="noopener">Search ↗</a></div></div>`;
+  if(P.tab==='chain') body = `<div class="row" style="justify-content:space-between"><p class="muted" style="margin:0;font-size:13.5px">Each step has its own timeout, so a dead link never stalls the set.</p>${P.mode!=='yt'?`<button class="btn sm" data-act="dry-run">${P.dry?'Running…':'Dry run'}</button>`:''}</div>
+      <ol class="chain">${CHAIN.map((c,i)=>`<li class="${chainCls(i)}"><span>${esc(c)}</span></li>`).join('')}</ol>${P.log.length?`<div class="log">${esc(P.log.join('\n'))}</div>`:''}`;
+  sh.innerHTML = `<button class="grab" data-act="close-np" aria-label="Close player"></button>
+    <div class="np-wrap">
+      <div class="row" style="justify-content:space-between"><span class="muted" style="font-size:13px">${esc(P.src||'Now playing')} · ${P.i+1} of ${P.queue.length}</span><button class="icon-btn" data-act="close-np" aria-label="Close player"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></button></div>
+      <div class="deck">${vinyl(r)}${arm}</div>
+      <div class="np-meta"><h3>${esc(r.title)}</h3><div class="by">${esc(r.artist)}</div>
+        <div class="facts" style="justify-content:center"><span><b>${esc(r.label)}</b></span><span class="code">${esc(r.year||'—')}</span>${r.bpm?`<span class="code">${esc(r.bpm)} BPM</span>`:''}${locChip(r.loc)}</div>
+        ${P.mode==='yt'?`<div class="scrub"><i class="pbar"></i></div><div class="code muted" id="ptime" style="font-size:12px">0:00 / 0:00</div>`:''}
+        <div class="np-ctrl"><button class="round" data-act="p-prev" aria-label="Previous">${I.prev}</button>${mainBtn(r,true)}<button class="round" data-act="p-next" aria-label="Next">${I.next}</button></div>
+        <div class="row" style="justify-content:center;margin-top:12px"><span class="muted" style="font-size:13px;color:${st.state==='non_working'?'var(--bad)':st.state==='trying'?'var(--warn)':'var(--muted)'}">${esc(statusText(r))}</span></div>
+        <div class="row" style="justify-content:center;margin-top:10px"><button class="btn sm" data-act="edit-rec" data-r="${r.id}">Edit details</button><button class="btn sm" data-act="add-to-pl" data-r="${r.id}">+ Playlist</button><button class="btn sm" data-act="goto-rec" data-r="${r.id}">Show on shelf</button></div>
+      </div>
+      ${P.mode==='link'?`<div class="notice"><b>Inline playback is blocked inside this preview.</b> The play button opens the track on YouTube. On Crates' own site the same player plays inline and runs the full fallback chain.</div>`:''}
+      <div class="np-tabs" role="tablist">${tabs.map(([k,n])=>`<button role="tab" data-act="np-tab" data-t="${k}" aria-pressed="${P.tab===k}">${n}</button>`).join('')}</div>
+      ${body}
+    </div>`;
+  sh.scrollTop = y;
+}
+function dryRun(){
+  const r = cur(); if(!r||P.dry) return;
+  const outcomes = r.yt.length>1 ? [[0,'Loading primary link'],[1,'No signal within 3s, fail'],[2,'Alternate link loads, playing ✓']] : [[0,'Loading primary link'],[1,'No signal within 3s'],[3,'No alternates, fresh search'],[4,'Nothing found, skip']];
+  P.dry = {step:0}; let k=0;
+  const stepf = () => { if(k>=outcomes.length){ setTimeout(()=>{ P.dry=null; renderNP(); }, 1800); return; }
+    const [s,m] = outcomes[k++]; P.dry.step=s; plog('Dry run · '+r.title+': '+m); renderNP(); setTimeout(stepf, 1100); };
+  stepf();
+}
+
+/* ---------- actions ---------- */
+const A = {
+  'go-room':()=>{ V.view = 'room'; V.unit=null; render(); },
+  'go-playlists':()=>{ V.view='playlists'; if(!V.pl) V.pl = S.playlists[0]?.id||null; render(); },
+  'open-unit':d=>{ V.view='unit'; V.unit=d.u; V.cell='all'; V.dig=0; $('#results').hidden=true; render(); document.querySelector('.detail')?.scrollIntoView({behavior:'smooth',block:'start'}); },
+  'pick-cell':d=>{ V.cell=d.c; V.dig=0; render(); },
+  'dig':d=>dig(+d.d),
+  'dig-to':d=>{ V.dig=+d.i; render(); },
+  'move':d=>openMove(d.r),
+  'move-to':d=>moveRecord(d.r,{u:d.u,c:d.c}),
+  'to-bag':d=>{ const bags = S.units.filter(u=>u.kind==='bag'); if(bags.length===1) moveRecord(d.r,{u:bags[0].id,c:'0-0'}); else openMove(d.r); },
+  'go-home':d=>{ const r=rec(d.r); moveRecord(d.r,{...r.home}); },
+  'empty-bag':d=>{ const all = S.records.filter(r=>r.loc.u===d.u); const moved = all.filter(hasHome); const prevL = moved.map(r=>[r,{...r.loc}]); moved.forEach(r=>r.loc={...r.home}); lastUndo=()=>prevL.forEach(([r,l])=>r.loc=l); render(); const left = all.length-moved.length; toast(`Unpacked ${moved.length} to their home slots`+(left?` · ${left} with no home shelf stayed`:''), true); },
+  'scan-bag':d=>openScan(d.u), 'scan-sim':()=>simScan(), 'scan-review':()=>scanReview(), 'scan-apply':()=>scanApply(),
+  'undo':()=>{ if(lastUndo){ lastUndo(); lastUndo=null; render(); renderPlayer(); document.querySelector('.toast')?.remove(); } },
+  'close':()=>closeSheet(),
+  'scrim':(d,e)=>{ if(e.target.classList.contains('scrim')) closeSheet(); },
+  'goto-rec':d=>{ closeNP(); closeSheet(); gotoRecord(d.r); },
+  'open-settings':()=>openSettings(),
+  'set-accent':d=>{ S.settings.accent=d.a; render(); openSettings(); },
+  'reset':()=>{ $('#reset-confirm').innerHTML = `<div class="notice">This puts back the 10 demo records and removes anything you added. <div class="row" style="margin-top:8px"><button class="btn danger" data-act="reset-yes">Reset</button><button class="btn" data-act="close">Keep my changes</button></div></div>`; },
+  'reset-yes':()=>{ S = seed(); P.st={}; P.queue=[]; P.i=-1; closeSheet(); V.view='unit'; V.unit='K1'; V.cell='0-0'; render(); renderPlayer(); toast('Demo collection restored'); },
+  'open-add':()=>openAdd(),
+  'add-record':()=>openAddRecord(), 'add-furniture':()=>openAddFurniture(), 'add-bag':()=>openAddBag(),
+  'af-group':d=>{ const x=FURNITURE.find(x=>x.group===d.g); draft.group=d.g; draft.preset=x.key; draft.rows=x.rows||1; draft.cols=x.cols||1; draft.id=''; renderAddFurniture(); },
+  'af-preset':d=>{ const x=fpreset(d.k); draft.preset=d.k; draft.rows=x.rows||1; draft.cols=x.cols||1; draft.id=''; renderAddFurniture(); },
+  'af-finish':d=>{ draft.finish = finishesFor(fpreset(draft.preset)).find(f=>f.name===d.n); renderAddFurniture(); },
+  'ab-brand':d=>{ draft.brand=d.b; renderAddBag(); },
+  'ab-preset':d=>{ draft.preset=d.k; renderAddBag(); },
+  'ab-finish':d=>{ draft.finish = bpreset(draft.preset).colors.find(f=>f.name===d.n); renderAddBag(); },
+  'edit-unit':d=>openEditUnit(d.u),
+  'eu-finish':d=>{ const u = unit(d.u); u.finish = finishesFor(presetOf(u)).find(f=>f.name===d.n); render(); openEditUnit(d.u); },
+  'eu-nophoto':d=>{ unit(d.u).photo=null; render(); openEditUnit(d.u); },
+  'del-unit':d=>{ $('#del-confirm').innerHTML = `<div class="notice">Remove ${esc(unit(d.u).name)} from your room? <div class="row" style="margin-top:8px"><button class="btn danger" data-act="del-unit-yes" data-u="${d.u}">Remove</button><button class="btn" data-act="close">Keep it</button></div></div>`; },
+  'del-unit-yes':d=>{ S.units = S.units.filter(u=>u.id!==d.u); S.records.forEach(r=>{ if(r.home?.u===d.u) r.home=null; }); S.recent = S.recent.filter(l=>l.u!==d.u); closeSheet(); V.view='room'; V.unit=null; render(); toast('Removed'); },
+  'ar-loc':d=>{ addRec.loc={u:d.u,c:d.c}; renderAddRecord(); },
+  'file-found':()=>{ const list = addRec.found.filter(f=>f.keep); if(!list.length){ toast('Tick at least one record'); return; } fileRecords(list); },
+  'edit-rec':d=>{ closeNP(); openEditRecord(d.r); },
+  'revert':(d,e,el)=>{ const r = rec(d.r); const inp = $('#er-'+d.k); if(inp){ inp.value = r.orig[d.k] ?? ''; inp.focus(); } el.remove(); },
+  'er-star':d=>{ editing.rating = editing.rating===+d.n ? 0 : +d.n; document.querySelectorAll('#er-stars button').forEach((b,i)=>b.classList.toggle('on', i<editing.rating)); },
+  'er-addkv':()=>{ editing.custom.push({k:'',v:''}); renderKV(); },
+  'er-delkv':d=>{ editing.custom.splice(+d.i,1); renderKV(); },
+  'add-to-pl':d=>{ closeNP(); openAddToPlaylist(d.r); },
+  'atp':d=>{ const p = S.playlists.find(x=>x.id===d.p); if(!p.items.includes(d.r)) p.items.push(d.r); closeSheet(); render(); toast(`Added to ${p.name}`); },
+  'atp-new':d=>{ const p = {id:uid('p'),name:'New playlist',color:PL_COLORS[S.playlists.length%PL_COLORS.length],items:[d.r]}; S.playlists.push(p); closeSheet(); V.view='playlists'; V.pl=p.id; render(); $('#pl-name')?.select(); },
+  'open-pl':d=>{ V.pl=d.p; render(); document.querySelector('.pledit')?.scrollIntoView({behavior:'smooth',block:'start'}); },
+  'new-pl':()=>{ const p = {id:uid('p'),name:'New playlist',color:PL_COLORS[S.playlists.length%PL_COLORS.length],items:[]}; S.playlists.push(p); V.pl=p.id; render(); $('#pl-name')?.select(); },
+  'pl-color':d=>{ curPl().color=d.c; render(); },
+  'pl-play':()=>{ const p=curPl(); setQueue(p.items.map(rec).filter(Boolean),0,p.name); openNP(); },
+  'pl-shuffle':()=>{ const p=curPl(); const l=p.items.map(rec).filter(Boolean).sort(()=>Math.random()-.5); setQueue(l,0,p.name+' · shuffled'); openNP(); },
+  'pl-add':()=>openPickRecords(),
+  'pl-sort':d=>sortPl(curPl(), d.s),
+  'pl-up':d=>{ const p=curPl(), i=+d.i; [p.items[i-1],p.items[i]]=[p.items[i],p.items[i-1]]; render(); },
+  'pl-down':d=>{ const p=curPl(), i=+d.i; [p.items[i+1],p.items[i]]=[p.items[i],p.items[i+1]]; render(); },
+  'pl-rm':d=>{ const p=curPl(), i=+d.i; const [x]=p.items.splice(i,1); lastUndo=()=>p.items.splice(i,0,x); render(); toast('Removed from '+p.name, true); },
+  'pl-dup':()=>{ const p=curPl(); const c={...p,id:uid('p'),name:p.name+' copy',items:[...p.items]}; S.playlists.push(c); V.pl=c.id; render(); toast('Duplicated'); },
+  'pl-del':()=>{ $('#pl-confirm').innerHTML = `<div class="notice">Delete “${esc(curPl().name)}”? The records stay in your collection. <div class="row" style="margin-top:8px"><button class="btn danger" data-act="pl-del-yes">Delete playlist</button><button class="btn" data-act="pl-del-no">Keep it</button></div></div>`; },
+  'pl-del-no':()=>{ $('#pl-confirm').innerHTML=''; },
+  'pl-del-yes':()=>{ const p=curPl(); const idx=S.playlists.indexOf(p); S.playlists.splice(idx,1); lastUndo=()=>S.playlists.splice(idx,0,p); V.pl=S.playlists[0]?.id||null; render(); toast('Playlist deleted', true); },
+  'pl-pack':()=>{ const p=curPl(); const bags=S.units.filter(u=>u.kind==='bag');
+    openSheet(`<div class="sheet-head"><div><div class="kicker">${p.items.length} records</div><h2>Pack ${esc(p.name)}</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+      <p class="muted" style="margin-top:0">Every record in this playlist moves into the bag you pick. Their home slots stay the same, so unpacking puts them back.</p>
+      <div class="targets">${bags.map(b=>`<div class="target"><div class="name">${esc(b.name)} <span class="idtag">${b.id}</span></div><button class="tbag" style="background:${esc(b.finish?.hex)}" data-act="pack-to" data-u="${b.id}">${esc(b.name)}</button></div>`).join('')}</div>`); },
+  'pack-to':d=>{ const p=curPl(); const moves=[]; p.items.map(rec).filter(Boolean).forEach(r=>{ if(r.loc.u!==d.u){ moves.push([r,{...r.loc}]); r.loc={u:d.u,c:'0-0'}; } }); lastUndo=()=>moves.forEach(([r,l])=>r.loc=l); closeSheet(); render(); toast(`${moves.length} packed into ${unit(d.u).name}`, true); },
+  'play-rec':d=>{ const list = inCell(V.unit, V.cell); const i = list.findIndex(r=>r.id===d.r); const u=unit(V.unit); setQueue(list, Math.max(0,i), u.kind==='shelf'&&V.cell!=='all'?u.id+'·'+cellLabel(u,V.cell):u.name); },
+  'play-unit':()=>{ const u=unit(V.unit); setQueue(inCell(V.unit,V.cell),0,u.kind==='shelf'&&V.cell!=='all'?u.id+'·'+cellLabel(u,V.cell):u.name); },
+  'play-all':()=>setQueue(S.records,0,'Whole collection'),
+  'p-toggle':()=>toggle(), 'p-next':()=>next(), 'p-prev':()=>prev(),
+  'p-at':d=>playAt(+d.i),
+  'open-player':()=>openNP(), 'close-np':()=>closeNP(),
+  'np-tab':d=>{ P.tab=d.t; renderNP(); },
+  'dry-run':()=>dryRun(),
+};
+document.addEventListener('click', e=>{
+  const el = e.target.closest('[data-act],[data-spin]'); if(!el) return;
+  if(el.tagName==='A'){ if(el.dataset.spin){ P.playing = true; setTimeout(renderPlayer, 50); } return; }
+  const fn = A[el.dataset.act]; if(!fn) return;
+  fn(el.dataset, e, el);
+});
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape'){ if(P.open){ closeNP(); return; } if(sheetKind){ closeSheet(); return; } }
+  if(V.view==='unit' && !sheetKind && !P.open && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){
+    if(e.key==='ArrowRight') dig(1); if(e.key==='ArrowLeft') dig(-1);
+  }
+});
+
+/* ---------- Claude photo recognition (optional) ---------- */
+(async()=>{
+  try{ AI = await window.claude?.use?.('sample'); if(AI){ const lim = await AI.limits().catch(()=>null); AI_IMAGES = !!lim?.images; } }catch(e){ AI = null; }
+})();
+
+/* ---------- boot ---------- */
+render();
+P.queue = S.records.map(r=>r.id); P.i = 0; P.src='Whole collection'; renderPlayer();
+</script>

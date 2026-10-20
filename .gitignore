@@ -1,0 +1,4 @@
+tests/__pycache__/
+tests/harness.html
+tests/shots/
+.env*

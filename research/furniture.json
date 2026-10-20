@@ -1,0 +1,1656 @@
+[
+  {
+    "brand": "IKEA",
+    "model": "KALLAX 1x4 (42x147 cm)",
+    "category": "shelf-grid",
+    "rows": 4,
+    "cols": 1,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      },
+      {
+        "name": "Black-brown",
+        "hex": "#3A2E29"
+      },
+      {
+        "name": "White stained oak effect",
+        "hex": "#E3D6C0"
+      },
+      {
+        "name": "Walnut effect light gray",
+        "hex": "#B8B2A9"
+      }
+    ],
+    "dims": "41.9 x 147 x 39.1 cm (16.5 x 57.9 x 15.4 in)",
+    "sourceUrl": "https://www.dimensions.com/element/ikea-kallax-shelf-unit-1x4",
+    "confidence": "medium",
+    "notes": "Cube interior approx 13x13x15 in (33x33x39 cm) per interiorinsider.com; fits 12in LPs. No source gave an LP-per-cube count. Max shelf load 29 lb (13 kg) per dimensions.com; use KALLAX inserts (door, 2 drawers, shelves) with care: shelf/drawer inserts reduce LP space. Can stand upright (4 rows x 1 col) or lie on its side (1 row x 4 cols). Finishes from dimensions.com (walnut-effect light gray) and IKEA NZ (white, white stained oak effect, black-brown). A 1x2 / 1x1 / 2x1 unit was not confirmed as currently sold."
+  },
+  {
+    "brand": "IKEA",
+    "model": "KALLAX 2x2 (77x77 cm)",
+    "category": "shelf-grid",
+    "rows": 2,
+    "cols": 2,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      },
+      {
+        "name": "Black-brown",
+        "hex": "#3A2E29"
+      },
+      {
+        "name": "White stained oak effect",
+        "hex": "#E3D6C0"
+      }
+    ],
+    "dims": "77.2 x 77.2 x 39.1 cm (30.4 x 30.4 x 15.4 in)",
+    "sourceUrl": "https://www.dimensions.com/element/ikea-kallax-shelf-unit-2x2",
+    "confidence": "medium",
+    "notes": "Cube interior approx 13x13x15 in (33x33x39 cm) per interiorinsider.com; fits 12in LPs. No source gave an LP-per-cube count. Max shelf load 29 lb (13 kg) per dimensions.com; use KALLAX inserts (door, 2 drawers, shelves) with care: shelf/drawer inserts reduce LP space. 4 cubes. Can be wall-mounted or floor-standing; 44 lb (20 kg) wall-hung per Gear Patrol."
+  },
+  {
+    "brand": "IKEA",
+    "model": "KALLAX 2x4 (77x147 cm)",
+    "category": "shelf-grid",
+    "rows": 2,
+    "cols": 4,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      },
+      {
+        "name": "Black-brown",
+        "hex": "#3A2E29"
+      },
+      {
+        "name": "White stained oak effect",
+        "hex": "#E3D6C0"
+      },
+      {
+        "name": "High-gloss white (older/regional)",
+        "hex": "#FFFFFF"
+      }
+    ],
+    "dims": "147 x 77.2 x 39.1 cm (57.9 x 30.4 x 15.4 in)",
+    "sourceUrl": "https://www.dimensions.com/element/ikea-kallax-shelf-unit-4x2",
+    "confidence": "medium",
+    "notes": "Cube interior approx 13x13x15 in (33x33x39 cm) per interiorinsider.com; fits 12in LPs. No source gave an LP-per-cube count. Max shelf load 29 lb (13 kg) per dimensions.com; use KALLAX inserts (door, 2 drawers, shelves) with care: shelf/drawer inserts reduce LP space. 8 cubes; the classic DJ-booth base lying on its side (4 cols x 2 rows) or upright (2 cols x 4 rows). High-gloss listed by dimensions.com; may be discontinued or regional."
+  },
+  {
+    "brand": "IKEA",
+    "model": "KALLAX 3x3 (112x112 cm)",
+    "category": "shelf-grid",
+    "rows": 3,
+    "cols": 3,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      },
+      {
+        "name": "Black-brown",
+        "hex": "#3A2E29"
+      }
+    ],
+    "dims": "112.1 x 112.1 x 39.1 cm (44.1 x 44.1 x 15.4 in)",
+    "sourceUrl": "https://www.dimensions.com/element/ikea-kallax-shelf-unit-3x3",
+    "confidence": "medium",
+    "notes": "Cube interior approx 13x13x15 in (33x33x39 cm) per interiorinsider.com; fits 12in LPs. No source gave an LP-per-cube count. Max shelf load 29 lb (13 kg) per dimensions.com; use KALLAX inserts (door, 2 drawers, shelves) with care: shelf/drawer inserts reduce LP space. 9 cubes. Not seen in the partial IKEA NZ listing (24 of 82 results shown), so current availability unverified; finishes per dimensions.com."
+  },
+  {
+    "brand": "IKEA",
+    "model": "KALLAX 3x4 (112x147 cm)",
+    "category": "shelf-grid",
+    "rows": 4,
+    "cols": 3,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      },
+      {
+        "name": "Black-brown",
+        "hex": "#3A2E29"
+      },
+      {
+        "name": "White stained oak effect",
+        "hex": "#E3D6C0"
+      }
+    ],
+    "dims": "112.1 x 147 x 39.1 cm (44.1 x 57.9 x 15.4 in)",
+    "sourceUrl": "https://www.dimensions.com/element/ikea-kallax-shelf-unit-3x4",
+    "confidence": "medium",
+    "notes": "Cube interior approx 13x13x15 in (33x33x39 cm) per interiorinsider.com; fits 12in LPs. No source gave an LP-per-cube count. Max shelf load 29 lb (13 kg) per dimensions.com; use KALLAX inserts (door, 2 drawers, shelves) with care: shelf/drawer inserts reduce LP space. 12 cubes; 3 cols x 4 rows upright, or 4 cols x 3 rows on its side. IKEA NZ confirms 112x147 in white, black-brown, white stained oak effect."
+  },
+  {
+    "brand": "IKEA",
+    "model": "KALLAX 4x4 (147x147 cm)",
+    "category": "shelf-grid",
+    "rows": 4,
+    "cols": 4,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      },
+      {
+        "name": "Black-brown",
+        "hex": "#3A2E29"
+      },
+      {
+        "name": "White stained oak effect",
+        "hex": "#E3D6C0"
+      }
+    ],
+    "dims": "147 x 147 x 39.1 cm (57.9 x 57.9 x 15.4 in)",
+    "sourceUrl": "https://www.dimensions.com/element/ikea-kallax-shelf-unit-4x4",
+    "confidence": "medium",
+    "notes": "Cube interior approx 13x13x15 in (33x33x39 cm) per interiorinsider.com; fits 12in LPs. No source gave an LP-per-cube count. Max shelf load 29 lb (13 kg) per dimensions.com; use KALLAX inserts (door, 2 drawers, shelves) with care: shelf/drawer inserts reduce LP space. 16 cubes. IKEA NZ confirms 147x147 in white, black-brown, white stained oak effect."
+  },
+  {
+    "brand": "IKEA",
+    "model": "KALLAX 5x5 (182x182 cm)",
+    "category": "shelf-grid",
+    "rows": 5,
+    "cols": 5,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      },
+      {
+        "name": "Black-brown",
+        "hex": "#3A2E29"
+      },
+      {
+        "name": "White stained oak effect",
+        "hex": "#E3D6C0"
+      }
+    ],
+    "dims": "181.9 x 181.9 x 39.1 cm (71.6 x 71.6 x 15.4 in)",
+    "sourceUrl": "https://www.dimensions.com/element/ikea-kallax-shelf-unit-5x5",
+    "confidence": "medium",
+    "notes": "Cube interior approx 13x13x15 in (33x33x39 cm) per interiorinsider.com; fits 12in LPs. No source gave an LP-per-cube count. Max shelf load 29 lb (13 kg) per dimensions.com; use KALLAX inserts (door, 2 drawers, shelves) with care: shelf/drawer inserts reduce LP space. 25 cubes; the largest standard grid. Floor-to-ceiling tip risk: wall-anchor it."
+  },
+  {
+    "brand": "IKEA",
+    "model": "KALLAX 2x4 with 2 doors + 4 drawers (147x77 cm)",
+    "category": "shelf-grid",
+    "rows": 2,
+    "cols": 4,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      },
+      {
+        "name": "Black-brown",
+        "hex": "#3A2E29"
+      },
+      {
+        "name": "White stained oak effect",
+        "hex": "#E3D6C0"
+      },
+      {
+        "name": "White / light grey-blue wave-shaped fronts",
+        "hex": "#C9D4DA"
+      }
+    ],
+    "dims": "147 x 77 x 39 cm",
+    "sourceUrl": "https://www.ikea.com/nz/en/cat/kallax-series-27534/",
+    "confidence": "medium",
+    "notes": "Cube interior approx 13x13x15 in (33x33x39 cm) per interiorinsider.com; fits 12in LPs. No source gave an LP-per-cube count. Max shelf load 29 lb (13 kg) per dimensions.com; use KALLAX inserts (door, 2 drawers, shelves) with care: shelf/drawer inserts reduce LP space. Pre-configured: 2 door inserts + 2 two-drawer inserts, which occupy 4 of 8 cubes; only the open cubes are good for LPs unless the drawer insert is removed. Drawers are too shallow/narrow-fronted for upright LPs."
+  },
+  {
+    "brand": "IKEA",
+    "model": "KALLAX 2x4 on underframe (147x94 cm)",
+    "category": "shelf-grid",
+    "rows": 2,
+    "cols": 4,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "White / white",
+        "hex": "#F2F2EE"
+      },
+      {
+        "name": "Black-brown / black",
+        "hex": "#2E2622"
+      },
+      {
+        "name": "White stained oak effect / white",
+        "hex": "#E3D6C0"
+      },
+      {
+        "name": "White stained oak effect / black",
+        "hex": "#E3D6C0"
+      },
+      {
+        "name": "Black-brown / white",
+        "hex": "#3A2E29"
+      },
+      {
+        "name": "White / black",
+        "hex": "#F2F2EE"
+      }
+    ],
+    "dims": "147 x 94 cm (on metal underframe/legs)",
+    "sourceUrl": "https://www.ikea.com/nz/en/cat/kallax-series-27534/",
+    "confidence": "low",
+    "notes": "Listed on IKEA NZ as 'Shelving unit with underframe' 147x94. Cube count inferred as 2x4 from the 147 width; not stated on the listing. Frame gives ~17 cm of under-shelf clearance for gear."
+  },
+  {
+    "brand": "IKEA",
+    "model": "KALLAX TV bench on underframe (147x39x78 cm)",
+    "category": "shelf-grid",
+    "rows": 2,
+    "cols": 4,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      },
+      {
+        "name": "Black-brown",
+        "hex": "#3A2E29"
+      },
+      {
+        "name": "White stained oak effect",
+        "hex": "#E3D6C0"
+      }
+    ],
+    "dims": "147 x 39 x 78 cm",
+    "sourceUrl": "https://www.ikea.com/nz/en/cat/kallax-series-27534/",
+    "confidence": "low",
+    "notes": "IKEA NZ lists a KALLAX TV bench with underframe; cube layout inferred (2x4 on legs), not stated. Useful as a turntable/mixer stand with records in cubes below."
+  },
+  {
+    "brand": "IKEA",
+    "model": "EXPEDIT 2x2 (legacy)",
+    "category": "shelf-grid",
+    "rows": 2,
+    "cols": 2,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "Birch effect",
+        "hex": "#D9B98A"
+      },
+      {
+        "name": "Black-brown",
+        "hex": "#3A2E29"
+      },
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      }
+    ],
+    "dims": "unknown (slightly larger than KALLAX 2x2)",
+    "sourceUrl": "https://djworx.com/ikea-expedit-discontinued-now/",
+    "confidence": "medium",
+    "notes": "Discontinued 2014, replaced by KALLAX; second-hand only. Interior cubes are the same size as KALLAX (13x13x15 in), so KALLAX inserts fit. Outer frame is slightly thicker (~2 in vs ~1.5 in). Finishes per djworx.com (birch effect, black, brown, white); sizes vary by region. "
+  },
+  {
+    "brand": "IKEA",
+    "model": "EXPEDIT 4x2 (legacy)",
+    "category": "shelf-grid",
+    "rows": 2,
+    "cols": 4,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "Birch effect",
+        "hex": "#D9B98A"
+      },
+      {
+        "name": "Black-brown",
+        "hex": "#3A2E29"
+      },
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      }
+    ],
+    "dims": "unknown (slightly larger than KALLAX 2x4)",
+    "sourceUrl": "https://djworx.com/ikea-expedit-discontinued-now/",
+    "confidence": "medium",
+    "notes": "Discontinued 2014, replaced by KALLAX; second-hand only. Interior cubes are the same size as KALLAX (13x13x15 in), so KALLAX inserts fit. Outer frame is slightly thicker (~2 in vs ~1.5 in). Finishes per djworx.com (birch effect, black, brown, white); sizes vary by region. Popular turned on its side as a DJ-booth base."
+  },
+  {
+    "brand": "IKEA",
+    "model": "EXPEDIT 4x4 (legacy)",
+    "category": "shelf-grid",
+    "rows": 4,
+    "cols": 4,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "Birch effect",
+        "hex": "#D9B98A"
+      },
+      {
+        "name": "Black-brown",
+        "hex": "#3A2E29"
+      },
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      }
+    ],
+    "dims": "approx 57 x 57 in",
+    "sourceUrl": "https://www.interiorinsider.com/article/ikea-expedit-vs-kallax-dimensions",
+    "confidence": "low",
+    "notes": "Discontinued 2014, replaced by KALLAX; second-hand only. Interior cubes are the same size as KALLAX (13x13x15 in), so KALLAX inserts fit. Outer frame is slightly thicker (~2 in vs ~1.5 in). Finishes per djworx.com (birch effect, black, brown, white); sizes vary by region. djworx commenters dispute whether a 4x4 was ever sold (reportedly Sweden/Singapore); interiorinsider quotes ~57x57 in."
+  },
+  {
+    "brand": "IKEA",
+    "model": "EXPEDIT 5x5 (legacy)",
+    "category": "shelf-grid",
+    "rows": 5,
+    "cols": 5,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "Birch effect",
+        "hex": "#D9B98A"
+      },
+      {
+        "name": "Black-brown",
+        "hex": "#3A2E29"
+      },
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      }
+    ],
+    "dims": "unknown",
+    "sourceUrl": "https://djworx.com/ikea-expedit-discontinued-now/",
+    "confidence": "medium",
+    "notes": "Discontinued 2014, replaced by KALLAX; second-hand only. Interior cubes are the same size as KALLAX (13x13x15 in), so KALLAX inserts fit. Outer frame is slightly thicker (~2 in vs ~1.5 in). Finishes per djworx.com (birch effect, black, brown, white); sizes vary by region. "
+  },
+  {
+    "brand": "IKEA",
+    "model": "EKET cube cabinet 35x35x35 cm",
+    "category": "shelf-grid",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      },
+      {
+        "name": "Dark grey",
+        "hex": "#4A4D50"
+      },
+      {
+        "name": "Pale lilac",
+        "hex": "#CFC3DA"
+      }
+    ],
+    "dims": "approx 35 x 35 x 35 cm (larger of two cube sizes, per forum)",
+    "sourceUrl": "https://community.naimaudio.com/t/ikea-eket-for-vinyl-storage/15772",
+    "confidence": "low",
+    "notes": "Forum users confirm a 12in LP fits the larger 35x35 cube, but oversized (US) jackets may not; no capacity stated. Edge joints are weak: back-panel or brackets advised before stacking. Colors listed are examples seen on IKEA pages/forum, not a full range."
+  },
+  {
+    "brand": "IKEA",
+    "model": "EKET storage combination with legs (70x35x80 cm approx)",
+    "category": "shelf-grid",
+    "rows": "unknown",
+    "cols": "unknown",
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "Brown walnut effect",
+        "hex": "#6B4A32"
+      }
+    ],
+    "dims": "27.5 x 13.75 x 31.5 in (70 x 35 x 80 cm)",
+    "sourceUrl": "https://www.gearpatrol.com/?p=1030926",
+    "confidence": "medium",
+    "notes": "Gear Patrol suggests EKET for vinyl; 15.4 lb max per shelf. Cube layout not stated (likely 2x2 on legs - inferred). Needs >=13 in depth for LPs; 13.75 in is tight."
+  },
+  {
+    "brand": "IKEA",
+    "model": "EKET storage combination with feet (70x35x80 cm approx)",
+    "category": "shelf-grid",
+    "rows": "unknown",
+    "cols": "unknown",
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      }
+    ],
+    "dims": "27.5 x 13.75 x 31.5 in (70 x 35 x 80 cm)",
+    "sourceUrl": "https://www.gearpatrol.com/?p=1030926",
+    "confidence": "medium",
+    "notes": "Same footprint as the legs version, with adjustable galvanized steel feet. 15.4 lb max per shelf."
+  },
+  {
+    "brand": "IKEA",
+    "model": "BILLY bookcase (28 cm deep)",
+    "category": "shelf-grid",
+    "rows": "unknown",
+    "cols": "unknown",
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      },
+      {
+        "name": "Black-brown",
+        "hex": "#3A2E29"
+      },
+      {
+        "name": "Oak effect",
+        "hex": "#C9A872"
+      }
+    ],
+    "dims": "Depth 28 cm (11 in); widths 40 or 80 cm; heights 106 / 202 / 237 cm",
+    "sourceUrl": "https://www.dimensions.com/element/ikea-billy-bookcases",
+    "confidence": "medium",
+    "notes": "NOT recommended for LPs: 11 in depth is less than a 12.4 in jacket, so records overhang (inferred from depth vs LP size). Dimensions are sourced; finishes are low-confidence and from memory, not fetched. Could be fine for 7in singles."
+  },
+  {
+    "brand": "IKEA",
+    "model": "BESTA frame/cabinet",
+    "category": "shelf-grid",
+    "rows": "unknown",
+    "cols": "unknown",
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      },
+      {
+        "name": "Black-brown",
+        "hex": "#3A2E29"
+      }
+    ],
+    "dims": "unknown (not verified in this research)",
+    "sourceUrl": "https://www.ikea.com/us/en/cat/besta-series-27531/",
+    "confidence": "low",
+    "notes": "Included as commonly cited for LPs but no depth/capacity was verified here (URL is a category link not fetched). Verify >=13 in interior depth before offering as a preset."
+  },
+  {
+    "brand": "IKEA",
+    "model": "TONSTAD cabinet with doors",
+    "category": "shelf-grid",
+    "rows": "unknown",
+    "cols": "unknown",
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "Light oak veneer",
+        "hex": "#D2B48C"
+      }
+    ],
+    "dims": "32.125 x 18.625 x 35.375 in (W x D x H)",
+    "sourceUrl": "https://www.gearpatrol.com/?p=1030926",
+    "confidence": "medium",
+    "notes": "Gear Patrol recommends for turntable + records; 49 lb per shelf, two soft-close doors. Compartment layout not stated."
+  },
+  {
+    "brand": "IKEA",
+    "model": "BROR cabinet with 2 doors",
+    "category": "shelf-grid",
+    "rows": "unknown",
+    "cols": "unknown",
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "Gray-green / matte olive",
+        "hex": "#6F7A67"
+      }
+    ],
+    "dims": "29.875 x 15.75 x 26 in (W x D x H)",
+    "sourceUrl": "https://www.gearpatrol.com/?p=1030926",
+    "confidence": "medium",
+    "notes": "Gear Patrol list; 55 lb per shelf. Layout not stated."
+  },
+  {
+    "brand": "IKEA",
+    "model": "EKENABBEN cabinet",
+    "category": "shelf-grid",
+    "rows": "unknown",
+    "cols": "unknown",
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "Aspen white",
+        "hex": "#EDEBE4"
+      }
+    ],
+    "dims": "27.5 x 13.75 x 20.125 in (W x D x H)",
+    "sourceUrl": "https://www.gearpatrol.com/?p=1030926",
+    "confidence": "medium",
+    "notes": "Gear Patrol list; 44 lb per shelf; 4.75 in under-clearance. 13.75 in depth is tight for LPs."
+  },
+  {
+    "brand": "IKEA",
+    "model": "VITTSJO shelf unit",
+    "category": "shelf-grid",
+    "rows": "unknown",
+    "cols": "unknown",
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "Black frame / brown glass",
+        "hex": "#2B2623"
+      }
+    ],
+    "dims": "39.375 x 14.125 x 36.625 in (W x D x H)",
+    "sourceUrl": "https://www.gearpatrol.com/?p=1030926",
+    "confidence": "medium",
+    "notes": "Gear Patrol list; open glass shelves, 33 lb per shelf."
+  },
+  {
+    "brand": "IKEA",
+    "model": "KOLBJORN cabinet (indoor/outdoor)",
+    "category": "shelf-grid",
+    "rows": "unknown",
+    "cols": "unknown",
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "Beige",
+        "hex": "#CDBFA6"
+      }
+    ],
+    "dims": "31.5 x 13.75 x 31.875 in (W x D x H)",
+    "sourceUrl": "https://www.gearpatrol.com/?p=1030926",
+    "confidence": "medium",
+    "notes": "Gear Patrol list; 66 lb per shelf."
+  },
+  {
+    "brand": "IKEA",
+    "model": "LIXHULT cabinet",
+    "category": "shelf-grid",
+    "rows": "unknown",
+    "cols": "unknown",
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "Metal gray",
+        "hex": "#8D9094"
+      }
+    ],
+    "dims": "23.625 x 13.75 x 22.5 in (W x D x H)",
+    "sourceUrl": "https://www.gearpatrol.com/?p=1030926",
+    "confidence": "medium",
+    "notes": "Gear Patrol list; small metal cabinet; 11 lb on top panel."
+  },
+  {
+    "brand": "Glorious",
+    "model": "Record Box 110",
+    "category": "box",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 110,
+    "capacityTotal": 110,
+    "finishes": [
+      {
+        "name": "Black",
+        "hex": "#1E1E20"
+      },
+      {
+        "name": "White",
+        "hex": "#F4F4F2"
+      }
+    ],
+    "dims": "355 x 355 x 340 mm (13.9 x 13.9 x 13.3 in); 6.3 kg",
+    "sourceUrl": "https://www.adorama.com/GLRBX110BLK.html",
+    "confidence": "high",
+    "notes": "Stackable with other Glorious boxes; optional Record Box Display Door. Black or white shrink-wrap finish."
+  },
+  {
+    "brand": "Glorious",
+    "model": "Record Box Advanced 110",
+    "category": "box",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 110,
+    "capacityTotal": 110,
+    "finishes": [
+      {
+        "name": "Black",
+        "hex": "#1E1E20"
+      },
+      {
+        "name": "White",
+        "hex": "#F4F4F2"
+      }
+    ],
+    "dims": "355 x 265 x 340 mm (13.9 x 10.4 x 13.3 in); 4.4 kg",
+    "sourceUrl": "https://www.adorama.com/glorious-record-box-advanced-110-vinyl-case-white/p/glrbx110whta",
+    "confidence": "high",
+    "notes": "Slanted sides for easy access; styled to match Glorious Mix Station."
+  },
+  {
+    "brand": "Glorious",
+    "model": "Record Box 230",
+    "category": "box",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 230,
+    "capacityTotal": 230,
+    "finishes": [
+      {
+        "name": "Black",
+        "hex": "#1E1E20"
+      },
+      {
+        "name": "White",
+        "hex": "#F4F4F2"
+      }
+    ],
+    "dims": "705 x 355 x 340 mm; inner 325 x 325 x 327 mm",
+    "sourceUrl": "https://www.idjnow.com/glorious-record-box-230-black.html",
+    "confidence": "high",
+    "notes": "Double-width box; 2-piece combination with Advanced 110 forms the Record Rack 330."
+  },
+  {
+    "brand": "Glorious",
+    "model": "Record Rack 330",
+    "category": "box",
+    "rows": 2,
+    "cols": 1,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": 330,
+    "finishes": [
+      {
+        "name": "Black",
+        "hex": "#1E1E20"
+      },
+      {
+        "name": "White",
+        "hex": "#F4F4F2"
+      }
+    ],
+    "dims": "356 x 956 x 342 mm; 12.7 kg",
+    "sourceUrl": "https://www.simplysoundandlighting.co.uk/products/glorious-record-rack-330-white-2-piece-vinyl-station",
+    "confidence": "high",
+    "notes": "2 pieces: Record Box 230 + Record Box Advanced 110 (so roughly 230 + 110). One reviewer fit only ~245 LPs with gatefolds/outer sleeves. MDF."
+  },
+  {
+    "brand": "Zomo",
+    "model": "VS-Box 100/1",
+    "category": "box",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 100,
+    "capacityTotal": 100,
+    "finishes": [
+      {
+        "name": "Unspecified (likely black)",
+        "hex": "#222222"
+      }
+    ],
+    "dims": "360 x 370 x 335 mm; inner 330 x 340 x 320 mm; 6 kg",
+    "sourceUrl": "https://www.simplysoundandlighting.co.uk/products/zomo-vs-box-100-vinyl-storage-box-shelf-cabinet-for-vinyl-record-lp-12",
+    "confidence": "medium",
+    "notes": "Page states both 100-120 and 100-150 LPs depending on thickness. Listed as discontinued/out of stock at the retailer. MDF, stackable."
+  },
+  {
+    "brand": "Zomo",
+    "model": "VS-Box 100/2",
+    "category": "box",
+    "rows": 2,
+    "cols": 1,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": 200,
+    "finishes": [
+      {
+        "name": "Black",
+        "hex": "#1E1E20"
+      },
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      },
+      {
+        "name": "Walnut",
+        "hex": "#5A3E2B"
+      },
+      {
+        "name": "Zebrano",
+        "hex": "#B08A5A"
+      }
+    ],
+    "dims": "360 x 335 x 560 mm; 9.5 kg",
+    "sourceUrl": "https://www.recordcase.de/en/zomo-vs-box-100-2",
+    "confidence": "medium",
+    "notes": "200-240 LPs per page (summary table says 200-300). Two stepped tiers; top for frequently played records."
+  },
+  {
+    "brand": "Zomo",
+    "model": "VS-Box 100/4",
+    "category": "box",
+    "rows": 4,
+    "cols": 1,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": 400,
+    "finishes": [
+      {
+        "name": "Unspecified",
+        "hex": "#222222"
+      }
+    ],
+    "dims": "370 x 335 x 1270 mm; 20 kg",
+    "sourceUrl": "https://www.simplysoundandlighting.co.uk/de/products/zomo-vs-box-100-4-wooden-storage-rack-shelf-for-vinyl-record-lp-12",
+    "confidence": "medium",
+    "notes": "400-480 LPs, four tiers (3 storage + 1 browsing top). Listed discontinued at the retailer."
+  },
+  {
+    "brand": "Zomo",
+    "model": "VS-Box 50",
+    "category": "box",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 50,
+    "capacityTotal": 50,
+    "finishes": [
+      {
+        "name": "Unspecified",
+        "hex": "#222222"
+      }
+    ],
+    "dims": "190 x 335 x 370 mm (outer)",
+    "sourceUrl": "https://www.recordcase.de/en/zomo-vs-rack-studio",
+    "confidence": "medium",
+    "notes": "50-60 LPs (12in). MDF with laminated surface."
+  },
+  {
+    "brand": "Zomo",
+    "model": "VS-Rack Vinya 150",
+    "category": "shelf-grid",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": 150,
+    "finishes": [
+      {
+        "name": "Black (inferred from image names)",
+        "hex": "#1E1E20"
+      }
+    ],
+    "dims": "300 x 190 x 1155 mm",
+    "sourceUrl": "https://www.recordcase.de/en/zomo-vs-rack-studio",
+    "confidence": "low",
+    "notes": "Powder-coated steel vertical rack; up to 150 LPs. Color not confirmed in text."
+  },
+  {
+    "brand": "Zomo",
+    "model": "VS-Rack Vinya 100",
+    "category": "shelf-grid",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": 100,
+    "finishes": [
+      {
+        "name": "Black (inferred from image names)",
+        "hex": "#1E1E20"
+      }
+    ],
+    "dims": "300 x 190 x 805 mm",
+    "sourceUrl": "https://www.recordcase.de/en/zomo-vs-rack-studio",
+    "confidence": "low",
+    "notes": "Powder-coated steel; up to 100 LPs."
+  },
+  {
+    "brand": "Zomo",
+    "model": "VS-Rack Loft",
+    "category": "box",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": 35,
+    "finishes": [
+      {
+        "name": "4 colors offered, names not listed",
+        "hex": "#777777"
+      }
+    ],
+    "dims": "233 x 333 x 253 mm",
+    "sourceUrl": "https://www.recordcase.de/en/zomo-vs-rack-studio",
+    "confidence": "medium",
+    "notes": "About 35-55 LPs depending on thickness. Steel."
+  },
+  {
+    "brand": "Zomo",
+    "model": "VS-Rack Wave",
+    "category": "box",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": 29,
+    "finishes": [
+      {
+        "name": "4 colors offered, names not listed",
+        "hex": "#777777"
+      },
+      {
+        "name": "Black (inferred)",
+        "hex": "#1E1E20"
+      }
+    ],
+    "dims": "300 x 300 x 220 mm",
+    "sourceUrl": "https://www.recordcase.de/en/zomo-vs-rack-studio",
+    "confidence": "medium",
+    "notes": "29-40 LPs depending on thickness/sorting. Steel."
+  },
+  {
+    "brand": "Zomo",
+    "model": "VS-Rack Cube",
+    "category": "box",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 100,
+    "capacityTotal": 100,
+    "finishes": [
+      {
+        "name": "Black",
+        "hex": "#1E1E20"
+      },
+      {
+        "name": "White",
+        "hex": "#F2F2EE"
+      },
+      {
+        "name": "Chrome",
+        "hex": "#C9CCCF"
+      },
+      {
+        "name": "Gold",
+        "hex": "#C9A24B"
+      }
+    ],
+    "dims": "348 x 348 x 315 mm; 1.9 kg",
+    "sourceUrl": "https://www.recordcase.de/en/zomo-vs-rack-cube",
+    "confidence": "medium",
+    "notes": "Features say 100-120 LPs, tech table says 100-150. Powder-coated steel."
+  },
+  {
+    "brand": "Magma",
+    "model": "LP-Bag 100 Trolley",
+    "category": "case",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 90,
+    "capacityTotal": 90,
+    "finishes": [
+      {
+        "name": "Black/black",
+        "hex": "#1A1A1A"
+      },
+      {
+        "name": "Black/red",
+        "hex": "#B3202A"
+      }
+    ],
+    "dims": "outer 38 x 45 x 38 cm; inner 32 x 31 x 28 cm; 4.2 kg",
+    "sourceUrl": "https://djcity.com.au/product/magma-lp-bag-100-trolley-fits-90-12-records-40500",
+    "confidence": "medium",
+    "notes": "Holds ~90 12in records despite the '100' name. Marked discontinued at the retailer. Records also sold as 40540 (black/red)."
+  },
+  {
+    "brand": "Magma",
+    "model": "LP-Bag 60 Profi",
+    "category": "case",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 60,
+    "capacityTotal": 60,
+    "finishes": [
+      {
+        "name": "Black",
+        "hex": "#1A1A1A"
+      }
+    ],
+    "dims": "380 x 380 x 270 mm",
+    "sourceUrl": "https://www.bax-shop.co.uk/record-bag/magma-lp-bag-60-profi-black",
+    "confidence": "medium",
+    "notes": "Approx 60 LPs; listed as discontinued at one retailer."
+  },
+  {
+    "brand": "Magma",
+    "model": "LP-Bag 40 II",
+    "category": "case",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 40,
+    "capacityTotal": 40,
+    "finishes": [
+      {
+        "name": "Black/red",
+        "hex": "#B3202A"
+      },
+      {
+        "name": "Black",
+        "hex": "#1A1A1A"
+      }
+    ],
+    "dims": "outer 330 x 330 x 200 mm; inner 320 x 320 x 150 mm",
+    "sourceUrl": "https://djcity.com.au/product/magma-42640-record-case/",
+    "confidence": "medium",
+    "notes": "Roughly 40 12in records. Page conflicts on color (title Black/Red, spec Black)."
+  },
+  {
+    "brand": "Magma",
+    "model": "12\" Sandwich bag",
+    "category": "case",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 60,
+    "capacityTotal": 60,
+    "finishes": [
+      {
+        "name": "Black",
+        "hex": "#1A1A1A"
+      },
+      {
+        "name": "Black/magenta (conflicting listing)",
+        "hex": "#C2185B"
+      }
+    ],
+    "dims": "outer 380 x 245 x 385 mm; inner 330 x 200 x 330 mm; 1.9 kg",
+    "sourceUrl": "https://www.thomann.de/be/magma_12_sandwich.htm",
+    "confidence": "low",
+    "notes": "Thomann says 60 records; another retailer (tanotis) lists 38.5x38x24.5 cm/60 under a title that says 'for 12 records' - capacity needs verification."
+  },
+  {
+    "brand": "UDG",
+    "model": "Ultimate 12\" Vinyl Record Case 80",
+    "category": "case",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 80,
+    "capacityTotal": 80,
+    "finishes": [
+      {
+        "name": "Black",
+        "hex": "#1A1A1A"
+      },
+      {
+        "name": "Silver",
+        "hex": "#B8BBBF"
+      }
+    ],
+    "dims": "outer 35 x 36 x 29.5 cm; inner 33 x 34 x 27.5 cm; 3.13 kg",
+    "sourceUrl": "https://djcity.com.au/product/udg-u93017bl-ultimate-record-case-black-fits-80-vinyls",
+    "confidence": "medium",
+    "notes": "Approx 80 LPs; spec section lists Black and Silver."
+  },
+  {
+    "brand": "Odyssey",
+    "model": "Flight Zone FZLP80 utility case",
+    "category": "case",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 80,
+    "capacityTotal": 80,
+    "finishes": [
+      {
+        "name": "Black laminate",
+        "hex": "#1A1A1A"
+      }
+    ],
+    "dims": "15 x 15 x 15 in; 10 kg",
+    "sourceUrl": "https://www.simplysoundandlighting.co.uk/products/odyssey-cases-fzlp80-flight-zone-80-12in-lp-vinyl-utility-case",
+    "confidence": "medium",
+    "notes": "Approx 80 LP/12in records; 3/8 in black laminate plywood flight case."
+  },
+  {
+    "brand": "Hama",
+    "model": "50 LP Vinyl Record Storage Case",
+    "category": "case",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 50,
+    "capacityTotal": 50,
+    "finishes": [
+      {
+        "name": "Black",
+        "hex": "#1A1A1A"
+      }
+    ],
+    "dims": "unknown",
+    "sourceUrl": "https://www.currys.co.uk/products/hama-50-lp-vinyl-record-lp-storage-case-black-10219469.html",
+    "confidence": "low",
+    "notes": "Capacity taken from the product title only; page not fetched."
+  },
+  {
+    "brand": "Pro-Ject",
+    "model": "Rack It - Basic Cube",
+    "category": "box",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 150,
+    "capacityTotal": 150,
+    "finishes": [
+      {
+        "name": "Matt black",
+        "hex": "#1E1E1E"
+      },
+      {
+        "name": "Matt white",
+        "hex": "#F2F2EE"
+      },
+      {
+        "name": "High-gloss black",
+        "hex": "#0B0B0D"
+      },
+      {
+        "name": "High-gloss white",
+        "hex": "#FFFFFF"
+      },
+      {
+        "name": "High-gloss grey",
+        "hex": "#8A8D91"
+      },
+      {
+        "name": "High-gloss champagne",
+        "hex": "#D9C7A3"
+      },
+      {
+        "name": "High-gloss yellow",
+        "hex": "#E8C21A"
+      },
+      {
+        "name": "High-gloss petrol",
+        "hex": "#1F5A63"
+      }
+    ],
+    "dims": "535 x 376 x 440 mm (W x H x D)",
+    "sourceUrl": "https://www.project-audio.com/wp-content/uploads/2018/04/Rack-it-EN.pdf",
+    "confidence": "medium",
+    "notes": "Per Pro-Ject PDF one Basic Cube holds ~150 LPs. Shelf variant is for CDs/DVDs only (485x7x380 mm)."
+  },
+  {
+    "brand": "Keep Them Spinning",
+    "model": "The Standard modular wood cube",
+    "category": "box",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 50,
+    "capacityTotal": 50,
+    "finishes": [
+      {
+        "name": "Natural",
+        "hex": "#D9B98A"
+      },
+      {
+        "name": "Walnut",
+        "hex": "#5B3F2B"
+      }
+    ],
+    "dims": "33 x 33 x 33 cm exterior; 4.9 kg",
+    "sourceUrl": "https://keepthemspinning.com/products/the-standard-modular-solid-wood-vinyl-record-cube-stackable-50-lps",
+    "confidence": "medium",
+    "notes": "Up to 50 LPs per cube (plan ~40 with thick outer sleeves); stacks 4 high (~200). Optional acrylic lid colors. All variants showed sold out."
+  },
+  {
+    "brand": "Wax Stacks",
+    "model": "Wax Stacks crate",
+    "category": "crate",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 50,
+    "capacityTotal": 50,
+    "finishes": [
+      {
+        "name": "Baltic birch natural",
+        "hex": "#D8BE8D"
+      }
+    ],
+    "dims": "unknown",
+    "sourceUrl": "https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records",
+    "confidence": "medium",
+    "notes": "Holds '50+' records per crate per The Vinyl Factory; $65 Kickstarter price (2015-era). Interlocking, ships flat, stacks in any configuration. 'Variety of finishes' unspecified; current status not verified."
+  },
+  {
+    "brand": "Wax Rax",
+    "model": "LP-V4 vertical rack",
+    "category": "wall",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": 700,
+    "finishes": [
+      {
+        "name": "Anodized aluminum (various)",
+        "hex": "#9AA0A6"
+      }
+    ],
+    "dims": "16 in shelf depth; dividers 9 in apart; overall size not stated",
+    "sourceUrl": "https://www.analogplanet.com/content/wax-rax-adds-vertical-model-lp-v4-its-record-storage-catalog",
+    "confidence": "medium",
+    "notes": "Up to 700 LPs, $6,200 at launch. Audiophile product, likely irrelevant for most DJs."
+  },
+  {
+    "brand": "Mapleshade",
+    "model": "Record Shelf System",
+    "category": "shelf-grid",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 150,
+    "capacityTotal": 150,
+    "finishes": [
+      {
+        "name": "Unfinished oak",
+        "hex": "#D2B48C"
+      },
+      {
+        "name": "Finished oak",
+        "hex": "#B88A4A"
+      },
+      {
+        "name": "Finished Ambrosia maple",
+        "hex": "#C79A5F"
+      }
+    ],
+    "dims": "27 in wide, 3/4 in planks; height/depth not stated",
+    "sourceUrl": "https://www.theabsolutesound.com/articles/mapleshade-record-shelf-system/",
+    "confidence": "medium",
+    "notes": "150 LPs per shelf and stacking 6 high comes from The Vinyl Factory article; The Absolute Sound gives width/finishes but no capacity. Stacks up to 4 high per TAS."
+  },
+  {
+    "brand": "Gothic Furniture",
+    "model": "LP Record Rack",
+    "category": "shelf-grid",
+    "rows": 1,
+    "cols": 3,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": 150,
+    "finishes": [
+      {
+        "name": "Wild cherry",
+        "hex": "#8B3A2B"
+      },
+      {
+        "name": "Midnight blue",
+        "hex": "#1F2A44"
+      },
+      {
+        "name": "20 finishes total",
+        "hex": "#B88A4A"
+      }
+    ],
+    "dims": "unknown",
+    "sourceUrl": "https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records",
+    "confidence": "low",
+    "notes": "Each shelf is 3 cubes wide; ~150 LPs plus ~200 7in per rack per The Vinyl Factory (2-shelf $169, 3-shelf $199). Single secondary source."
+  },
+  {
+    "brand": "Cubitec",
+    "model": "Cubitec 13.25in-deep cube kit",
+    "category": "shelf-grid",
+    "rows": 2,
+    "cols": 2,
+    "capacityPerSlot": 55,
+    "capacityTotal": 210,
+    "finishes": [
+      {
+        "name": "Moulded polypropylene (colors unspecified)",
+        "hex": "#BFC3C7"
+      }
+    ],
+    "dims": "each box 18 in wide; 13.25 in deep",
+    "sourceUrl": "https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records",
+    "confidence": "low",
+    "notes": "4-cube kit ~210 records; each box holds up to 55. 2x2 layout is inferred from the 4-cube kit. Optional doors."
+  },
+  {
+    "brand": "LP Bin",
+    "model": "LP Bin (unnamed model)",
+    "category": "shelf-grid",
+    "rows": "unknown",
+    "cols": "unknown",
+    "capacityPerSlot": "unknown",
+    "capacityTotal": 560,
+    "finishes": [
+      {
+        "name": "3 colors offered, unnamed",
+        "hex": "#8A8D91"
+      }
+    ],
+    "dims": "unknown",
+    "sourceUrl": "https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records",
+    "confidence": "low",
+    "notes": "560 records at $239.99 per The Vinyl Factory; model and colors not given."
+  },
+  {
+    "brand": "Department Chicago",
+    "model": "Walnut Record Cabinet",
+    "category": "shelf-grid",
+    "rows": "unknown",
+    "cols": "unknown",
+    "capacityPerSlot": "unknown",
+    "capacityTotal": 90,
+    "finishes": [
+      {
+        "name": "Walnut",
+        "hex": "#5B3F2B"
+      }
+    ],
+    "dims": "unknown",
+    "sourceUrl": "https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records",
+    "confidence": "low",
+    "notes": "~90 records; sliding doors; built to order. Single secondary source."
+  },
+  {
+    "brand": "Dual",
+    "model": "Portland cabinet",
+    "category": "shelf-grid",
+    "rows": "unknown",
+    "cols": "unknown",
+    "capacityPerSlot": "unknown",
+    "capacityTotal": 600,
+    "finishes": [
+      {
+        "name": "9 colors offered, unnamed",
+        "hex": "#8B6B4A"
+      }
+    ],
+    "dims": "unknown",
+    "sourceUrl": "https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records",
+    "confidence": "low",
+    "notes": "600 records at $625; Hartland and Boston mentioned with no details."
+  },
+  {
+    "brand": "Can-Am",
+    "model": "LPCAB29",
+    "category": "shelf-grid",
+    "rows": "unknown",
+    "cols": "unknown",
+    "capacityPerSlot": "unknown",
+    "capacityTotal": 560,
+    "finishes": [
+      {
+        "name": "Chocolate brown",
+        "hex": "#4B2E22"
+      },
+      {
+        "name": "Plum",
+        "hex": "#5A2E4D"
+      }
+    ],
+    "dims": "unknown",
+    "sourceUrl": "https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records",
+    "confidence": "low",
+    "notes": "560 records at $650; 38 modules/accessories available."
+  },
+  {
+    "brand": "Boltz",
+    "model": "LP Record Storage Rack (4 shelves)",
+    "category": "shelf-grid",
+    "rows": 4,
+    "cols": 1,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": 720,
+    "finishes": [
+      {
+        "name": "Industrial (unspecified)",
+        "hex": "#4A4A4A"
+      }
+    ],
+    "dims": "unknown",
+    "sourceUrl": "https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records",
+    "confidence": "low",
+    "notes": "720 records, on wheels, $769."
+  },
+  {
+    "brand": "Siosi",
+    "model": "Record // LP Shelving",
+    "category": "shelf-grid",
+    "rows": "unknown",
+    "cols": "unknown",
+    "capacityPerSlot": "unknown",
+    "capacityTotal": 150,
+    "finishes": [
+      {
+        "name": "Solid ash",
+        "hex": "#CDB58B"
+      }
+    ],
+    "dims": "unknown",
+    "sourceUrl": "https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records",
+    "confidence": "low",
+    "notes": "~150 LPs + 200 7in; ash with powder-coated base; made to order, ~$1,200."
+  },
+  {
+    "brand": "Symbol Audio",
+    "model": "Aero 51in media cabinet",
+    "category": "shelf-grid",
+    "rows": 1,
+    "cols": 2,
+    "capacityPerSlot": 120,
+    "capacityTotal": 240,
+    "finishes": [
+      {
+        "name": "Walnut",
+        "hex": "#5B3F2B"
+      },
+      {
+        "name": "Other finishes (4 total)",
+        "hex": "#D8D4CC"
+      }
+    ],
+    "dims": "51 in wide",
+    "sourceUrl": "https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records",
+    "confidence": "low",
+    "notes": "240+ records: 2 swivel bins x ~120. Hand-built, $4,745 at publication."
+  },
+  {
+    "brand": "Symbol Audio",
+    "model": "Aero 76.5in LP storage console",
+    "category": "shelf-grid",
+    "rows": 1,
+    "cols": 2,
+    "capacityPerSlot": 120,
+    "capacityTotal": 240,
+    "finishes": [
+      {
+        "name": "Glacier White (maple)",
+        "hex": "#F0EFEA"
+      },
+      {
+        "name": "Slate Grey (maple)",
+        "hex": "#6C7075"
+      },
+      {
+        "name": "Jet Black (maple)",
+        "hex": "#1C1C1E"
+      },
+      {
+        "name": "Natural walnut",
+        "hex": "#6B4A32"
+      }
+    ],
+    "dims": "76.5 x 20 x 25.5 in (W x D x H); shelf space 24 x 19 x 20 in",
+    "sourceUrl": "https://paragonsns.com/products/symbol-audio-aero-76-5-lp-storage-console",
+    "confidence": "high",
+    "notes": "Two LP bins of ~120 LPs each, plus one adjustable shelf."
+  },
+  {
+    "brand": "Atocha",
+    "model": "Record Cabinet",
+    "category": "shelf-grid",
+    "rows": "unknown",
+    "cols": "unknown",
+    "capacityPerSlot": 96,
+    "capacityTotal": 570,
+    "finishes": [
+      {
+        "name": "Unspecified",
+        "hex": "#8B6B4A"
+      }
+    ],
+    "dims": "unknown",
+    "sourceUrl": "https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records",
+    "confidence": "low",
+    "notes": "570+ records; 96 per drawer (article also says 95). Hand-made, ~$5-8.5k."
+  },
+  {
+    "brand": "Vinyl Styl",
+    "model": "Original LP Crate (VS-RS-04)",
+    "category": "crate",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 110,
+    "capacityTotal": 110,
+    "finishes": [
+      {
+        "name": "Natural wood",
+        "hex": "#D2B48C"
+      }
+    ],
+    "dims": "unknown",
+    "sourceUrl": "https://seasickbham.com/products/vinyl-style-the-original-lp-crate-wooden-crate",
+    "confidence": "medium",
+    "notes": "110-120 LPs per retailer; some titles say '100 cap'. Solid natural wood, easy to paint/stain."
+  },
+  {
+    "brand": "Vinyl Styl",
+    "model": "Metro LP Crate (VS-RS-05)",
+    "category": "crate",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 85,
+    "capacityTotal": 85,
+    "finishes": [
+      {
+        "name": "Wood blond",
+        "hex": "#E0C79A"
+      }
+    ],
+    "dims": "unknown",
+    "sourceUrl": "https://store.loudwire.com/products/vinyl-styl-vsrs05-metro-lp-crate-75-cap-wood-blond-vinyl-styl-vs-rs-05-metro-lp-crate-12-inch-lp-record-storage-85-to-95-capacity",
+    "confidence": "medium",
+    "notes": "85-95 LPs; listing title also says '75 cap' (inconsistent)."
+  },
+  {
+    "brand": "Studio 57",
+    "model": "Vinyl Record Crate (wood)",
+    "category": "crate",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 50,
+    "capacityTotal": 50,
+    "finishes": [
+      {
+        "name": "Natural wood",
+        "hex": "#D2B48C"
+      }
+    ],
+    "dims": "32.8 x 35.2 x 35 cm; 1.2 cm wood",
+    "sourceUrl": "https://www.soundstorexl.com/products/studio-57-vinyl-record-crate-wood",
+    "confidence": "medium",
+    "notes": "'Approximately 50-70' LPs."
+  },
+  {
+    "brand": "Crosley",
+    "model": "Record Storage Crate",
+    "category": "crate",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 75,
+    "capacityTotal": 75,
+    "finishes": [
+      {
+        "name": "Brown solid wood",
+        "hex": "#6B4A32"
+      }
+    ],
+    "dims": "unknown (not listed)",
+    "sourceUrl": "https://www.jbhifi.co.nz/products/crosley-record-storage-crate",
+    "confidence": "medium",
+    "notes": "'Holds approximately 75 albums'; fire-branded logo."
+  },
+  {
+    "brand": "Generic",
+    "model": "Corrugated cardboard 12in record box",
+    "category": "box",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": 50,
+    "capacityTotal": 50,
+    "finishes": [
+      {
+        "name": "Kraft",
+        "hex": "#C8A27A"
+      }
+    ],
+    "dims": "approx 13.5 x 13 x 10.75 in (from product URL)",
+    "sourceUrl": "https://www.bagsunlimited.com/12-vinyl-record-storage-box-corrugated-cardboard-holds-50-65-lp-records-13-12-x-13-x-10-34",
+    "confidence": "low",
+    "notes": "Capacity '50-65 LPs' and size taken from the URL slug only (page needed JavaScript). Similar boxes sold by BCW and others."
+  },
+  {
+    "brand": "Generic",
+    "model": "Plastic milk crate, 16 qt (13x13x11 in)",
+    "category": "crate",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "Black",
+        "hex": "#1A1A1A"
+      },
+      {
+        "name": "Blue",
+        "hex": "#1F5FBF"
+      },
+      {
+        "name": "Brown",
+        "hex": "#6B4423"
+      },
+      {
+        "name": "Gray",
+        "hex": "#808080"
+      },
+      {
+        "name": "Green",
+        "hex": "#2E8B3E"
+      },
+      {
+        "name": "Lime green",
+        "hex": "#8CCB2B"
+      },
+      {
+        "name": "Orange",
+        "hex": "#F26A21"
+      },
+      {
+        "name": "Pink",
+        "hex": "#F06BA8"
+      },
+      {
+        "name": "Red",
+        "hex": "#C8202B"
+      },
+      {
+        "name": "White",
+        "hex": "#F2F2F2"
+      },
+      {
+        "name": "Yellow",
+        "hex": "#F5C518"
+      }
+    ],
+    "dims": "13 x 13 x 11 in outer; 12 x 12 x 10.75 in interior",
+    "sourceUrl": "https://www.webstaurantstore.com/orange-16-qt-customizable-square-milk-crate-13-x-13-x-11/227MC16ORG.html",
+    "confidence": "medium",
+    "notes": "Colors/dims from WebstaurantStore (hex values are UI approximations). Interior (12 in) is smaller than a 12.375 in LP jacket, so fit depends on lean/taper - verify. The Vinyl Factory advises against milk crates. No capacity source."
+  },
+  {
+    "brand": "Generic",
+    "model": "Wooden apple/produce crate",
+    "category": "crate",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "Raw pine",
+        "hex": "#C9A66B"
+      }
+    ],
+    "dims": "unknown (sizes vary widely)",
+    "sourceUrl": "https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records",
+    "confidence": "low",
+    "notes": "No authoritative spec found; included as a user-customizable preset only. Treat all dimensions/capacities as user-entered."
+  },
+  {
+    "brand": "Generic",
+    "model": "Record store browser/flip bin",
+    "category": "bin",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "Wood (varies)",
+        "hex": "#B88A4A"
+      }
+    ],
+    "dims": "unknown",
+    "sourceUrl": "https://www.thevinylfactory.com/features/bored-of-ikea-12-alternative-ways-to-store-your-records",
+    "confidence": "low",
+    "notes": "No sourced model/dimensions found (search returned SEO listicles). Placeholder for a user-defined bin; capacity user-entered."
+  },
+  {
+    "brand": "Generic",
+    "model": "Wall-mounted LP display ledge",
+    "category": "wall",
+    "rows": 1,
+    "cols": 1,
+    "capacityPerSlot": "unknown",
+    "capacityTotal": "unknown",
+    "finishes": [
+      {
+        "name": "Metal black",
+        "hex": "#1E1E20"
+      },
+      {
+        "name": "Wood",
+        "hex": "#B88A4A"
+      }
+    ],
+    "dims": "unknown",
+    "sourceUrl": "https://www.dutchvinyl.com.au/products/lp-wall-display-shelf-metal-on-wall-vinyl-record-display-ledge",
+    "confidence": "low",
+    "notes": "Display only (shows 1-few covers); URL seen in search results but not fetched. Placeholder for wall presets."
+  }
+]

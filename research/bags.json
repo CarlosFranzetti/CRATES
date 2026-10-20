@@ -1,0 +1,818 @@
+[
+  {
+    "brand": "UDG",
+    "model": "Ultimate SlingBag Trolley Set DeLuxe MK2 (U9679BL / U9679BLOR)",
+    "form": "trolley",
+    "capacity": "approx. 90 LPs (trolley ~60 + detachable SlingBag up to 50, per maker)",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      },
+      {
+        "name": "Black / orange inside",
+        "hex": "#f26b1d"
+      }
+    ],
+    "material": "420D water-resistant nylon, foam-padded body",
+    "sourceUrl": "https://udggear.com/products/udg-ultimate-slingbag-trolley-set-deluxe-mk2",
+    "confidence": "high",
+    "notes": "Set = wheeled trolley + detachable sling bag. ABEC-7 inline wheels, TSA lock. Headline 90 per deejay.de listing; maker text gives 60+50. Hex values approximate from color names."
+  },
+  {
+    "brand": "UDG",
+    "model": "Ultimate SlingBag Trolley DeLuxe (U9981BL / U9981BL/OR)",
+    "form": "trolley",
+    "capacity": "approx. 60 LPs",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      },
+      {
+        "name": "Black / orange inside",
+        "hex": "#f26b1d"
+      }
+    ],
+    "material": "unknown (UDG nylon line, likely 420D; inferred)",
+    "sourceUrl": "https://www.deejay.de/Udg+Slingbag",
+    "confidence": "medium",
+    "notes": "Older generation trolley, listed out of stock at retailer; treat as discontinued/legacy. A camouflage-print Slingbag Record Bag exists at some retailers (bax-shop) but was not verified."
+  },
+  {
+    "brand": "UDG",
+    "model": "Ultimate SlingBag MK2 (U9630)",
+    "form": "sling",
+    "capacity": "approx. 45 LPs",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "unknown (UDG nylon line; inferred)",
+    "sourceUrl": "https://www.deejay.de/Udg+Slingbag",
+    "confidence": "medium",
+    "notes": "Out of stock at retailer at time of search. Single retailer source."
+  },
+  {
+    "brand": "UDG",
+    "model": "Trolley To Go (U9870BL)",
+    "form": "trolley",
+    "capacity": "approx. 40-50 LPs",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "unknown (UDG nylon line; inferred)",
+    "sourceUrl": "https://www.deejay.de/Udg+Slingbag",
+    "confidence": "medium",
+    "notes": "Compact carry-on size, no side pockets. Out of stock at retailer."
+  },
+  {
+    "brand": "UDG",
+    "model": "Ultimate 7\" SlingBag 60 (U9991BL)",
+    "form": "sling",
+    "capacity": "up to 60 x 7-inch records (not 12\")",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "unknown (UDG nylon line; inferred)",
+    "sourceUrl": "https://www.deejay.de/Udg+Slingbag",
+    "confidence": "medium",
+    "notes": "7-inch only (interior ~20.5 x 19 x 15 cm). Include only if Crates supports 7\" bags."
+  },
+  {
+    "brand": "UDG",
+    "model": "Ultimate StarterBag (U9500)",
+    "form": "shoulder bag",
+    "capacity": "50 LPs (listed); one reviewer reports only ~25 fit",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "420D water-resistant nylon, padded interior",
+    "sourceUrl": "https://www.thomann.co.uk/udg_ultimate_starterbag_black.htm",
+    "confidence": "high",
+    "notes": "Soft carry bag, not a trolley, 1.2 kg. A Black/White-logo variant appears in a retailer listing title (unverified)."
+  },
+  {
+    "brand": "UDG",
+    "model": "Ultimate SoftBag 60",
+    "form": "shoulder bag",
+    "capacity": "60 LPs",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "foam-padded soft bag (fabric not stated; nylon inferred)",
+    "sourceUrl": "https://www.bax-shop.co.uk/record-bags-cases/udg-ultimate-carrying-bag-for-60-12-vinyl-records",
+    "confidence": "medium",
+    "notes": "Discontinued at retailer. Re-release of the classic UDG bag announced 2017."
+  },
+  {
+    "brand": "UDG",
+    "model": "Ultimate SoftBag 90 / 90 Slanted",
+    "form": "shoulder bag",
+    "capacity": "90 LPs (two variants: straight and slanted)",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "foam-padded soft bag (fabric not stated; nylon inferred)",
+    "sourceUrl": "https://djmag.com/tech/udg-rerelease-vinyl-dj-bag",
+    "confidence": "low",
+    "notes": "Only a 2017 news article (DJ Mag) lists 60/90/90 slanted. Current availability unverified; colors not stated."
+  },
+  {
+    "brand": "UDG",
+    "model": "Ultimate Backpack Slim (U9108BL/OR)",
+    "form": "backpack",
+    "capacity": "unknown (maker says 'a few' 7\" & 12\" records; no count)",
+    "colors": [
+      {
+        "name": "Black / orange inside",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "450D water-resistant nylon, neoprene tablet pocket",
+    "sourceUrl": "https://www.udggear.com/vinyl/udg-ultimate-backpack-slim-black-orange-inside",
+    "confidence": "high",
+    "notes": "Mainly a laptop/controller backpack; treat as a small vinyl carry only."
+  },
+  {
+    "brand": "UDG",
+    "model": "Urbanite MIDI Controller Backpack (Medium/Large/XL)",
+    "form": "backpack",
+    "capacity": "unknown",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "unknown",
+    "sourceUrl": "https://www.gak.co.uk/en/udg-urbanite-midi-controller-backpack-medium/124293",
+    "confidence": "low",
+    "notes": "Controller backpack; vinyl capacity not verified (not fetched). Probably not a record bag. UDG Creator line was not verified at all."
+  },
+  {
+    "brand": "Magma",
+    "model": "LP-Bag 100 Trolley (40500 black/black, 40540 black/red)",
+    "form": "trolley",
+    "capacity": "up to 90 LPs",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      },
+      {
+        "name": "Black / red",
+        "hex": "#b3202a"
+      }
+    ],
+    "material": "480D water-repellent nylon, 2.5 cm padding, reinforced trolley board",
+    "sourceUrl": "https://djcity.com.au/product/magma-lp-bag-100-trolley-fits-90-12-records-40500",
+    "confidence": "high",
+    "notes": "Retailer states discontinued/out of stock. Name says 100, retailer says 90."
+  },
+  {
+    "brand": "Magma",
+    "model": "Riot LP-Trolley 50 (MGA44200)",
+    "form": "trolley",
+    "capacity": "50 LPs (a reviewer fit 40-45 in plastic sleeves)",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "waterproof tarpaulin, PVC-coated zipper, rubberized corners, fleece lining",
+    "sourceUrl": "https://www.thomannmusic.com/magma_riot_lp_trolley_50.htm",
+    "confidence": "high",
+    "notes": "Inline wheels, telescopic handle, front pocket for 7\"/needles. 3.7 kg."
+  },
+  {
+    "brand": "Magma",
+    "model": "Riot LP-Bag 50 with Trolley Sling (MGA44210)",
+    "form": "shoulder bag",
+    "capacity": "50 LPs",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "waterproof tarpaulin, fleece lining, rubberized corners",
+    "sourceUrl": "https://avlgear.com/products/magma-riot-lp-bag-50-with-trolley-sling",
+    "confidence": "medium",
+    "notes": "Capacity from retailer; color not listed on page, black assumed from Riot line (inferred). Riot LP-Bag/Trolley 100 not found."
+  },
+  {
+    "brand": "Magma",
+    "model": "LP-Bag 40 II with Trolley Sling Straps",
+    "form": "shoulder bag",
+    "capacity": "40 LPs",
+    "colors": [
+      {
+        "name": "Black / red interior",
+        "hex": "#b3202a"
+      }
+    ],
+    "material": "1680D ballistic nylon, water-resistant",
+    "sourceUrl": "https://avlgear.com/collections/magma/products/magma-lp-bag-40-ii-with-trolley-sling-straps-black-and-red",
+    "confidence": "high",
+    "notes": "Black exterior, red lining. Possibly the same family as item 42640 below."
+  },
+  {
+    "brand": "Magma",
+    "model": "LP Bag II 42640 (courier style)",
+    "form": "shoulder bag",
+    "capacity": "approx. 40 LPs",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "840D water-resistant nylon (spec table); 'ballistic nylon' in text",
+    "sourceUrl": "https://djcity.com.au/product/magma-42640-record-case/",
+    "confidence": "medium",
+    "notes": "Title says black/red, spec says black. Out of stock; discontinuation not confirmed."
+  },
+  {
+    "brand": "Magma",
+    "model": "LP-Bag 60 Profi (44150)",
+    "form": "shoulder bag",
+    "capacity": "up to 60 LPs",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "extra-robust coated fabric (type not named), water-resistant zipper",
+    "sourceUrl": "https://djcity.com.au/product/magma-44150-record-case/",
+    "confidence": "high",
+    "notes": "Page states DISCONTINUED. A black/red version also appears in retailer titles."
+  },
+  {
+    "brand": "Magma",
+    "model": "LP 100 Profi Bag",
+    "form": "shoulder bag",
+    "capacity": "unknown",
+    "colors": [
+      {
+        "name": "Black / red",
+        "hex": "#b3202a"
+      }
+    ],
+    "material": "unknown",
+    "sourceUrl": "https://www.gak.co.uk/en/magma-lp-100-profi-bag-blackred/124126",
+    "confidence": "low",
+    "notes": "Only seen in a search result title; page redirected and was not read. Likely discontinued."
+  },
+  {
+    "brand": "Magma",
+    "model": "12\" Sandwich (MGA44205 / 638190)",
+    "form": "shoulder bag",
+    "capacity": "60 LPs",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      },
+      {
+        "name": "Misty magenta",
+        "hex": "#c0397f"
+      }
+    ],
+    "material": "1680D water-resistant polyester, 8 mm EVA shell",
+    "sourceUrl": "https://www.thomannmusic.com/magma_12_sandwich.htm",
+    "confidence": "high",
+    "notes": "Lid doubles as shelf. Not a trolley but has a trolley sling. 1.9 kg."
+  },
+  {
+    "brand": "Magma",
+    "model": "Solid Blaze Vinyl Bag (626524)",
+    "form": "shoulder bag",
+    "capacity": "up to 50 LPs",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "recycled 900D polyester, water-resistant",
+    "sourceUrl": "https://www.thomannmusic.com/magma_solid_blaze_vinyl_bag.htm",
+    "confidence": "high",
+    "notes": "Three exterior pockets, not a trolley."
+  },
+  {
+    "brand": "Magma",
+    "model": "Solid Blaze Vinyl-Trolley (615995)",
+    "form": "trolley",
+    "capacity": "up to 60 LPs + pockets for 20 x 7\"",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "RPET 900D polyester, water-based PU coating",
+    "sourceUrl": "https://www.thomann.cz/magma_solid_blaze_vinyl_trolley.htm",
+    "confidence": "high",
+    "notes": "4.5 kg, replaceable wheels and handles."
+  },
+  {
+    "brand": "Zomo",
+    "model": "VS-Box 50",
+    "form": "hard case",
+    "capacity": "approx. 50-60 LPs (page also shows '50-99' in a table)",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      },
+      {
+        "name": "White",
+        "hex": "#f2f2f0"
+      },
+      {
+        "name": "Walnut",
+        "hex": "#5c3d2a"
+      },
+      {
+        "name": "Zebrano",
+        "hex": "#a88a5a"
+      }
+    ],
+    "material": "laminated MDF with water-repellent decor",
+    "sourceUrl": "https://www.recordcase.de/zomo-vs-box-50-weiss",
+    "confidence": "medium",
+    "notes": "Stackable storage box (4.5 kg), more for home/studio than gigging. Capacity conflict noted."
+  },
+  {
+    "brand": "Zomo",
+    "model": "VS-Box 100",
+    "form": "hard case",
+    "capacity": "100-120 LPs (features) / 100-150 (tech data)",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      },
+      {
+        "name": "White",
+        "hex": "#f2f2f0"
+      }
+    ],
+    "material": "laminated MDF, water-repellent decor",
+    "sourceUrl": "https://www.simplysoundandlighting.co.uk/products/zomo-vs-box-100-vinyl-storage-box-shelf-cabinet-for-vinyl-record-lp-12",
+    "confidence": "medium",
+    "notes": "Listed as discontinued at that retailer. Colors not stated on page; VS-Box colors inferred from sibling models. 6 kg, stationary storage."
+  },
+  {
+    "brand": "Zomo (Technics licensed)",
+    "model": "Technics BackBag (45 LPs)",
+    "form": "backpack",
+    "capacity": "45 LPs",
+    "colors": [
+      {
+        "name": "White / silver",
+        "hex": "#d8dadd"
+      },
+      {
+        "name": "Turquoise / white",
+        "hex": "#2fb5b0"
+      },
+      {
+        "name": "Camouflage green",
+        "hex": "#5b6b3c"
+      },
+      {
+        "name": "Gold / white",
+        "hex": "#c9a24a"
+      },
+      {
+        "name": "Wine",
+        "hex": "#6e1f35"
+      }
+    ],
+    "material": "water-repellent tear-resistant nylon, padded insert",
+    "sourceUrl": "https://musicstore.de/en_DE/EUR/Zomo-Technics-BackBag-weiss-silber/art-DJE0006841-000",
+    "confidence": "high",
+    "notes": "Carry as backpack, shoulder strap or handle; no wheels. Discontinued/sold out at Musicstore. Juno also lists Technics BackBag 12 in gold, wine and white. This is the only Technics-branded bag found; no Pioneer DJ record bag found."
+  },
+  {
+    "brand": "Zomo (Technics licensed)",
+    "model": "Technics DJ-Bag",
+    "form": "shoulder bag",
+    "capacity": "60 LPs",
+    "colors": [
+      {
+        "name": "White",
+        "hex": "#f2f2f0"
+      },
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      },
+      {
+        "name": "Brown",
+        "hex": "#6b4a32"
+      },
+      {
+        "name": "Grey",
+        "hex": "#7d7f83"
+      },
+      {
+        "name": "Orange",
+        "hex": "#f07a1a"
+      },
+      {
+        "name": "Pink",
+        "hex": "#e87fa6"
+      },
+      {
+        "name": "Red",
+        "hex": "#c0272d"
+      },
+      {
+        "name": "Silver",
+        "hex": "#b8bcc2"
+      },
+      {
+        "name": "Camouflage brown",
+        "hex": "#7a6a48"
+      }
+    ],
+    "material": "water-resistant plastic/vinyl-type exterior with stiff insert, hook-and-loop closure",
+    "sourceUrl": "https://musicstore.de/en_DE/EUR/Zomo-Technics-DJ-Bag-weiss/art-DJE0006850-000",
+    "confidence": "high",
+    "notes": "Discontinued/sold out. Color list is from the retailer variant list; hex values approximate."
+  },
+  {
+    "brand": "Glorious",
+    "model": "Record Box Advanced 110",
+    "form": "hard case",
+    "capacity": "up to 110 LPs",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      },
+      {
+        "name": "White",
+        "hex": "#f4f4f2"
+      }
+    ],
+    "material": "MDF with shrink-wrap finish",
+    "sourceUrl": "https://www.adorama.com/glorious-record-box-advanced-110-vinyl-case-white/p/glrbx110whta",
+    "confidence": "high",
+    "notes": "Slanted-sided portable box, 4.4 kg."
+  },
+  {
+    "brand": "Glorious",
+    "model": "Record Box 110",
+    "form": "hard case",
+    "capacity": "110 LPs (from model name; not verified)",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      },
+      {
+        "name": "White",
+        "hex": "#f4f4f2"
+      }
+    ],
+    "material": "MDF (inferred from Advanced version)",
+    "sourceUrl": "https://www.adorama.com/GLRBX110BLK.html",
+    "confidence": "low",
+    "notes": "Seen only in search results; non-Advanced version."
+  },
+  {
+    "brand": "Glorious",
+    "model": "Record Rack 330",
+    "form": "hard case",
+    "capacity": "up to 330 LPs",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      },
+      {
+        "name": "White",
+        "hex": "#f4f4f2"
+      }
+    ],
+    "material": "MDF",
+    "sourceUrl": "https://www.adorama.com/glorious-record-rack-330-vinyl-case-white/p/glrrck330wht",
+    "confidence": "high",
+    "notes": "Two-piece stationary rack (Advanced 110 + Box 230), 12.7 kg. Furniture-style rather than a carry case."
+  },
+  {
+    "brand": "Reloop",
+    "model": "80 Record Case",
+    "form": "hard case",
+    "capacity": "approx. 80 LPs",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "aluminum-coated wood shell, foam padding, rubber feet",
+    "sourceUrl": "https://www.adorama.com/reloop-80-record-case-vinyl-dj-storage-black/p/reccase80blk",
+    "confidence": "high",
+    "notes": "Listed as no longer available. Slanted cut, 50/50 divider."
+  },
+  {
+    "brand": "Reloop",
+    "model": "Club Series 120 Trolley Case (AMS-REC-TROLLEY-120-BLK)",
+    "form": "flight case",
+    "capacity": "up to 120 LPs",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "aluminum-coated wood shell, foam, removable trolley frame",
+    "sourceUrl": "https://www.scmsinc.com/reloop-ams-rec-trolley-120-blk-reloop-120-trolley-record-case.html",
+    "confidence": "high",
+    "notes": "Wheeled hard case with telescopic handle, stackable."
+  },
+  {
+    "brand": "Odyssey",
+    "model": "CLP100P Carpeted Record Case",
+    "form": "hard case",
+    "capacity": "approx. 100 LPs",
+    "colors": [
+      {
+        "name": "Black carpet",
+        "hex": "#262626"
+      }
+    ],
+    "material": "1/2\" plywood, carpet exterior, steel corners and hardware",
+    "sourceUrl": "https://www.fullcompass.com/prod/505866-odyssey-clp100p-12-vinyl-records-case",
+    "confidence": "high",
+    "notes": "Detachable lid, 18 lbs."
+  },
+  {
+    "brand": "Odyssey",
+    "model": "CLP200P Pro Record/Utility Carpeted Case",
+    "form": "hard case",
+    "capacity": "approx. 200 LPs (features) vs 'approx. 50' (description) - conflicting",
+    "colors": [
+      {
+        "name": "Black carpet",
+        "hex": "#262626"
+      },
+      {
+        "name": "Gray carpet (on request)",
+        "hex": "#6f7276"
+      }
+    ],
+    "material": "1/2\" plywood, carpet exterior, steel corners",
+    "sourceUrl": "https://www.gearclubdirect.com/odyssey-pro-record-utility-carpeted-case-for-200-12-vinyl-records-lps/",
+    "confidence": "medium",
+    "notes": "Page contradicts itself; 28\" wide so 200 is plausible (double-wide CLP100P)."
+  },
+  {
+    "brand": "Odyssey",
+    "model": "Flight Zone FZLP80",
+    "form": "flight case",
+    "capacity": "approx. 80 LPs",
+    "colors": [
+      {
+        "name": "Black laminate",
+        "hex": "#202020"
+      }
+    ],
+    "material": "3/8\" black laminate ply, steel and aluminum hardware, foam-lined",
+    "sourceUrl": "https://www.simplysoundandlighting.co.uk/odyssey-flight-zone-case-for-up-to-80-lp-12-vinyl-records.html",
+    "confidence": "high",
+    "notes": "ATA half-split, 10 kg."
+  },
+  {
+    "brand": "Odyssey",
+    "model": "Flight Zone FZLP120HW (trolley)",
+    "form": "flight case",
+    "capacity": "approx. 120 LPs",
+    "colors": [
+      {
+        "name": "Black laminate / silver hardware",
+        "hex": "#202020"
+      }
+    ],
+    "material": "3/8\" black laminate ply, steel/aluminum hardware, foam-lined",
+    "sourceUrl": "https://musicredone.com/products/odyssey-fzlp120hw-utility-flight-trolley-case-with-wheels-for-120-12-vinyl-records",
+    "confidence": "high",
+    "notes": "Wheeled ATA trolley case with extendable handle, 32 lbs."
+  },
+  {
+    "brand": "Odyssey",
+    "model": "Krom KLP70BL / KLP1",
+    "form": "hard case",
+    "capacity": "approx. 70 LPs",
+    "colors": [
+      {
+        "name": "Black (inferred from 'BL')",
+        "hex": "#1c1c1e"
+      },
+      {
+        "name": "Silver (KLP1SIL)",
+        "hex": "#b8bcc2"
+      }
+    ],
+    "material": "coated aluminum trim, hexagon steel corners, foam-lined; shell not stated",
+    "sourceUrl": "https://www.adorama.com/odklp70bl.html",
+    "confidence": "medium",
+    "notes": "Color not confirmed on page. Stacking case with removable lid."
+  },
+  {
+    "brand": "Odyssey",
+    "model": "Krom KLP2 Stacking Record Case",
+    "form": "hard case",
+    "capacity": "70 LPs",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      },
+      {
+        "name": "Blue",
+        "hex": "#2250b8"
+      },
+      {
+        "name": "Red",
+        "hex": "#c0272d"
+      },
+      {
+        "name": "Silver",
+        "hex": "#b8bcc2"
+      }
+    ],
+    "material": "not stated (foam-lined, rubber feet)",
+    "sourceUrl": "https://www.zzounds.com/item--ODYKLP2",
+    "confidence": "high",
+    "notes": "Colors from part numbers KLP2BLK/BLU/RED/SIL; hex approximate."
+  },
+  {
+    "brand": "Gator",
+    "model": "ONYX Case for 12\" Vinyl (G-ONYX-VINYL-1270)",
+    "form": "hard case",
+    "capacity": "50-70 LPs",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "hardwood shell, vinyl exterior wrap, foam-lined",
+    "sourceUrl": "https://gatorco.com/product/g-onyx-vinyl-1270/",
+    "confidence": "high",
+    "notes": "Page contradicts itself on latch color (black vs red). Stackable, breakaway lid, 7.8 lbs."
+  },
+  {
+    "brand": "Gorilla",
+    "model": "GC-LP100 (LP100) Flight Carry Case",
+    "form": "flight case",
+    "capacity": "100 LPs",
+    "colors": [
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "shell not stated; foam interior, aluminum corner guards, butterfly latches",
+    "sourceUrl": "https://ebay.com/itm/201232570601",
+    "confidence": "medium",
+    "notes": "Single eBay listing; says wheels yet only 4.5 kg. Seller-level source, treat with care."
+  },
+  {
+    "brand": "Selektor",
+    "model": "Worker DJ Record Bag",
+    "form": "shoulder bag",
+    "capacity": "approx. 50 LPs",
+    "colors": [
+      {
+        "name": "Black (inferred)",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "water-resistant UV-treated Cordura, double-padded base",
+    "sourceUrl": "https://turntablelab.com/products/selektor-worker-dj-record-bag-holds-50-lps",
+    "confidence": "medium",
+    "notes": "Color not stated on page. Has back trolley sling."
+  },
+  {
+    "brand": "Crosley",
+    "model": "Record Carrier Case (CR401 family)",
+    "form": "hard case",
+    "capacity": "30+ LPs",
+    "colors": [
+      {
+        "name": "Tan",
+        "hex": "#b08a5a"
+      },
+      {
+        "name": "Dark turquoise",
+        "hex": "#1d6f73"
+      },
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      }
+    ],
+    "material": "vinyl-wrapped wood/board exterior, metal hinges, corner guards, chrome snap",
+    "sourceUrl": "https://shop.crackerbarrel.com/crosley-record-carrier-case/p/558279",
+    "confidence": "medium",
+    "notes": "Page does not list colors; tan and turquoise seen in search results (unverified). 8.5 lbs."
+  },
+  {
+    "brand": "Crosley",
+    "model": "Platter-Pak (CR401-TA)",
+    "form": "hard case",
+    "capacity": "30 LPs (eBay title); drhead page says 'up to 35' (appears to conflate 45 RPM)",
+    "colors": [
+      {
+        "name": "Tan",
+        "hex": "#b08a5a"
+      }
+    ],
+    "material": "vinyl-finish exterior, metal/resin handle",
+    "sourceUrl": "https://drhead.ae/product/crosley_platterpak_tan/",
+    "confidence": "low",
+    "notes": "Conflicting capacity sources."
+  },
+  {
+    "brand": "Crosley",
+    "model": "The Beatles Fab Four Case",
+    "form": "hard case",
+    "capacity": "30 LPs",
+    "colors": [
+      {
+        "name": "Beatles-themed print",
+        "hex": "#8a2b2b"
+      }
+    ],
+    "material": "not stated",
+    "sourceUrl": "https://bax-shop.co.uk/record-bags-cases/crosley-the-beatles-fab-four-case-for-x30-12-inch-records",
+    "confidence": "medium",
+    "notes": "Licensed art edition; hex is a placeholder for the print. 3 kg."
+  },
+  {
+    "brand": "HumminGuru",
+    "model": "Vinyl Record Tote Bag",
+    "form": "tote",
+    "capacity": "up to 30 LPs",
+    "colors": [
+      {
+        "name": "Dark (unspecified)",
+        "hex": "#2a2a2a"
+      }
+    ],
+    "material": "canvas with silk-screen print",
+    "sourceUrl": "https://theaudio.co/products/humminguru-vinyl-record-tote-bag",
+    "confidence": "medium",
+    "notes": "Color not specified; 'dark-colored' only."
+  },
+  {
+    "brand": "Generic",
+    "model": "Canvas Record Tote (preset template)",
+    "form": "tote",
+    "capacity": "unknown (typically ~20-30; not sourced)",
+    "colors": [
+      {
+        "name": "Natural canvas",
+        "hex": "#e6dcc3"
+      },
+      {
+        "name": "Black",
+        "hex": "#1c1c1e"
+      },
+      {
+        "name": "Navy",
+        "hex": "#1f2d4a"
+      }
+    ],
+    "material": "cotton canvas",
+    "sourceUrl": "https://theaudio.co/products/humminguru-vinyl-record-tote-bag",
+    "confidence": "low",
+    "notes": "Placeholder preset requested for the generic case; not a real product. Capacity inferred from HumminGuru's 30."
+  }
+]

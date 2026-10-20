@@ -4,7 +4,7 @@ Crates is the "Vinyl DJ Librarian": an app that knows where every record in a DJ
 
 - Owner and first user: Carlos "Los" Franzetti. Repo: github.com/CarlosFranzetti/crates.
 - Last updated: 2026-10-20.
-- This file supersedes `docs/PRD.md`. The older draft keeps its flow numbering (F1 to F9) for reference; this file regroups the flows and adds everything the prototype gained since.
+- This file replaces the earlier draft at `docs/PRD.md` (removed; see git history). That draft numbered its flows F1 to F9; this file regroups them and adds everything the prototype gained since.
 - Companion files: [LIST.md](LIST.md) (every feature, with build status), [FUTURE.md](FUTURE.md) (ideas), [HOWTO.md](HOWTO.md) (using and developing), `docs/` (data model, architecture, player spec, roadmap, infra).
 
 ## Status in one paragraph

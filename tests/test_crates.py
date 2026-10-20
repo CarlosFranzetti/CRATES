@@ -186,7 +186,7 @@ def t05_bag(a):
     back = a.page.locator(".dig-info [data-act=go-home]")
     check(back.inner_text().strip() == "Back to K1·A1", back.inner_text())
     back.click()
-    check(a.toast() == "Moved to K1·A1" and a.loc("r9") == "K1:0-0", a.loc("r9"))
+    check(a.toast() == "Back in K1·A1" and a.loc("r9") == "K1:0-0", (a.toast(), a.loc("r9")))
 
 
 def t06_scan(a):

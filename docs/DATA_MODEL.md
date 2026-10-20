@@ -174,6 +174,90 @@ update playlist_items pi set position = w.ord
  where pi.id = w.item_id and pi.playlist_id = $1 and exists (select 1 from ok);
 ```
 
+## Feature tables (003)
+
+`app/db/003_features.sql` (applied 2026-10-20, seed `004_seed_features.sql`). The queries below were checked with EXPLAIN against the seed.
+
+| Object | What it adds |
+|---|---|
+| `cell_labels` | Cubby subtitle per `(unit_id, cell_row, cell_col)`: render `K1·A2 (Acid)` |
+| `record_locations.prev_*` | "Came from": the slot before the current container. A BEFORE trigger fills it whenever `unit_id` changes and the caller did not set `prev_*`. Show it only when the current unit is a bag/crate |
+| `records.dup_key` | Generated: `record_dup_key(artist, title)` = lowercased, quotes dropped, other punctuation to spaces. Indexed with `owner_id`; also indexes on `(owner_id, discogs_release_id)` and `(owner_id, barcode)` |
+| `records.barcode`, `discogs_instance_id` | Scan input and Discogs collection instance (still not unique; see gap 2) |
+| `barcode_lookups` | One scan: `barcode`, Discogs `candidates` jsonb, `chosen_release_id` |
+| `discogs_sync_queue` + `records.discogs_location_synced(_at)` | Outbox for the Discogs "Location" field. Trigger on `record_locations` insert/move enqueues `K1·B2` for grids or the unit name ("Crater") for bags/crates. One `pending` row per record (partial unique index); later moves overwrite its value. The worker sets `done`/`failed`, `attempts`, `last_error`, then `discogs_location_synced*` |
+| `cell_code(row, col)` | `cell_code(1,1) = 'B2'` |
+| `gigs`, `gig_items` | Packing list: gig → bag, status `planning → packed → out → returned`; items carry `packed_at`, `played`, `returned_at` |
+| `plays`, view `records_last_played` | Set history (`gig_id` optional); view gives `last_played_at`, `play_count` |
+| `units.qr_token`, `sticker_prints` | 8-char unique token per unit for QR stickers (`/u/<token>`); print log per unit or cell |
+| `location_events.reason` | Adds `gig_pack`, `gig_return`, `cubby_move`, `swap` |
+
+```sql
+-- Duplicate check on add ($2 release id, $3 barcode, $4 artist, $5 title)
+select id, artist, title,
+       case when discogs_release_id = $2 then 'release' when barcode = $3 then 'barcode' else 'name' end as matched_on
+  from records
+ where owner_id = $1
+   and (discogs_release_id = $2 or barcode = $3 or dup_key = record_dup_key($4, $5));
+
+-- Cubby move: everything in K1·A2 to K1·B1, one statement, logged
+with k as (select id from units where owner_id = $1 and code = 'K1'),
+mv as (
+  update record_locations l set cell_row = 1, cell_col = 0, home_row = 1, home_col = 0, moved_at = now()
+    from k where l.unit_id = k.id and l.cell_row = 0 and l.cell_col = 1
+  returning l.record_id, k.id as kid)
+insert into location_events (record_id, from_unit, from_row, from_col, to_unit, to_row, to_col, reason)
+select record_id, kid, 0, 1, kid, 1, 0, 'cubby_move' from mv;
+-- Bagged records whose home is A2, and the A2 label, are moved by separate updates.
+
+-- Swap K1·A1 and K1·B1 (both directions in one update, so no temp slot)
+with k as (select id from units where owner_id = $1 and code = 'K1'),
+pair(fr, fc, tr, tc) as (values (0,0,1,0), (1,0,0,0)),
+sw as (
+  update record_locations l set cell_row = p.tr, cell_col = p.tc, home_row = p.tr, home_col = p.tc, moved_at = now()
+    from k, pair p where l.unit_id = k.id and l.cell_row = p.fr and l.cell_col = p.fc
+  returning l.record_id, k.id as kid, p.fr, p.fc, p.tr, p.tc)
+insert into location_events (record_id, from_unit, from_row, from_col, to_unit, to_row, to_col, reason)
+select record_id, kid, fr, fc, kid, tr, tc, 'swap' from sw;
+
+-- Gig pack ($2 gig id): items into the gig's bag; trigger records prev_*
+with g as (select id, bag_unit_id from gigs where id = $2 and owner_id = $1 and bag_unit_id is not null),
+cur as (select l.*, g.bag_unit_id from record_locations l
+          join gig_items i on i.record_id = l.record_id join g on g.id = i.gig_id
+         where l.unit_id is distinct from g.bag_unit_id),
+mv as (update record_locations l set unit_id = c.bag_unit_id, cell_row = 0, cell_col = 0, moved_at = now()
+         from cur c where l.record_id = c.record_id returning 1),
+ev as (insert into location_events (record_id, from_unit, from_row, from_col, to_unit, to_row, to_col, reason)
+       select record_id, unit_id, cell_row, cell_col, bag_unit_id, 0, 0, 'gig_pack' from cur returning 1),
+it as (update gig_items set packed_at = now() where gig_id = (select id from g) and packed_at is null returning 1)
+update gigs set status = 'packed' where id = (select id from g);
+
+-- Gig return: records still in the bag go back to where they came from (else home)
+with g as (select id, bag_unit_id from gigs where id = $2 and owner_id = $1),
+cur as (select l.* from record_locations l
+          join gig_items i on i.record_id = l.record_id and i.gig_id = (select id from g)
+         where l.unit_id = (select bag_unit_id from g)),
+mv as (update record_locations l
+          set unit_id  = coalesce(c.prev_unit_id, c.home_unit_id),
+              cell_row = case when c.prev_unit_id is not null then c.prev_row else c.home_row end,
+              cell_col = case when c.prev_unit_id is not null then c.prev_col else c.home_col end,
+              prev_unit_id = null, prev_row = null, prev_col = null, moved_at = now()
+         from cur c where l.record_id = c.record_id
+       returning l.record_id, l.unit_id, l.cell_row, l.cell_col),
+ev as (insert into location_events (record_id, from_unit, from_row, from_col, to_unit, to_row, to_col, reason)
+       select c.record_id, c.unit_id, c.cell_row, c.cell_col, m.unit_id, m.cell_row, m.cell_col, 'gig_return'
+         from cur c join mv m using (record_id) returning 1),
+it as (update gig_items set returned_at = now() where gig_id = (select id from g) and returned_at is null returning 1)
+update gigs set status = 'returned' where id = (select id from g);
+-- Marking a record played: update gig_items set played = true, plus insert into plays (record_id, gig_id, venue).
+
+-- Not played in a year (never-played first)
+select r.artist, r.title, lp.last_played_at, coalesce(lp.play_count, 0) as plays
+  from records r left join records_last_played lp on lp.record_id = r.id
+ where r.owner_id = $1 and (lp.last_played_at is null or lp.last_played_at < now() - interval '1 year')
+ order by lp.last_played_at nulls first, r.artist;
+```
+
 ## Gaps and open items in `001_init.sql`
 
 1. **No ordering inside a cell.** Flip order is undefined. Either sort by artist/title or add `record_locations.slot int`.

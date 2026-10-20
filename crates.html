@@ -9,7 +9,7 @@
 :root{
   --bg:#E8EBED; --surface:#FFFFFF; --surface-2:#F2F4F5; --ink:#121518; --muted:#58616A; --line:#D3D8DC;
   --ok:#17894B; --warn:#B26F05; --bad:#C2352B;
-  --accent:#D2412C; --accent-ink:#FFFFFF;
+  --accent:#D2412C; --accent-ink:#FFFFFF; --brand:#E5404A;
   --shadow:0 1px 2px rgba(18,21,24,.06),0 10px 30px rgba(18,21,24,.08);
   --f-display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
   --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -17,10 +17,10 @@
   --player-h:76px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0F1113; --surface:#171A1E; --surface-2:#1F2328; --ink:#E8EBED; --muted:#98A1A9; --line:#2A3036;
+  --brand:#FF7077; --bg:#0F1113; --surface:#171A1E; --surface-2:#1F2328; --ink:#E8EBED; --muted:#98A1A9; --line:#2A3036;
   --ok:#3CC47A; --warn:#E6A23C; --bad:#F06A5E; --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px rgba(0,0,0,.35); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0F1113; --surface:#171A1E; --surface-2:#1F2328; --ink:#E8EBED; --muted:#98A1A9; --line:#2A3036;
+  --brand:#FF7077; --bg:#0F1113; --surface:#171A1E; --surface-2:#1F2328; --ink:#E8EBED; --muted:#98A1A9; --line:#2A3036;
   --ok:#3CC47A; --warn:#E6A23C; --bad:#F06A5E; --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px rgba(0,0,0,.35); color-scheme:dark}
 body[data-accent="brass"]{--accent:#B8862F;--accent-ink:#1A1206}
 body[data-accent="cyan"]{--accent:#0EA5E9;--accent-ink:#04121A}
@@ -43,7 +43,7 @@ a{color:inherit}
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);padding-block:14px 12px;border-bottom:1px solid var(--line)}
 .top-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:10px;margin-right:auto;background:none;border:0;padding:0}
-.brand svg{width:30px;height:30px}
+.brand .brandsvg{height:34px;width:auto;display:block}
 .brand b{font-family:var(--f-display);font-weight:800;font-size:30px;letter-spacing:.02em;text-transform:uppercase;line-height:1}
 .tabs{display:flex;gap:3px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px}
 .tabs button{border:0;background:none;padding:6px 13px;border-radius:999px;font-weight:600;font-size:13.5px;color:var(--muted)}
@@ -379,17 +379,66 @@ textarea{height:auto;min-height:96px;padding:10px 12px;resize:vertical}
 .pill{font-size:11.5px;padding:2px 8px;border-radius:5px;font-weight:600}
 .pill.in{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
 .pill.out{background:color-mix(in srgb,var(--warn) 20%,transparent);color:var(--warn)}
+.cube .lbl em{font-style:normal;opacity:.85;margin-left:4px;font-family:var(--f-body);font-weight:600}
+.kallax:not(.big) .cube .lbl em{display:none}
+.subname{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.subname input{height:34px;border-radius:8px;border:1px dashed var(--line);background:var(--surface);padding:0 10px;font-size:14px;min-width:0;flex:1 1 160px}
+.subname input:focus{border-style:solid}
+.chip .nm{font-family:var(--f-body);font-weight:600;font-size:12px;opacity:.85}
+.from{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);white-space:nowrap}
+.warn{border:1px solid color-mix(in srgb,var(--warn) 55%,var(--line));background:color-mix(in srgb,var(--warn) 10%,var(--surface));border-radius:12px;padding:10px 12px;font-size:14px;margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.warn b{font-weight:600}
+.pill.own{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.pill.ok{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
+.pill.muted{background:var(--surface-2);color:var(--muted)}
+.bcbox{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:14px;background:var(--surface-2)}
+.cand{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);margin-top:6px}
+.selbar{position:sticky;bottom:calc(var(--player-h) + 14px);z-index:5;display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--ink);color:var(--bg);border-radius:12px;padding:8px 8px 8px 14px;margin-top:10px;box-shadow:var(--shadow)}
+.selbar .btn{height:34px}
+label.li{cursor:pointer;grid-template-columns:40px minmax(0,1fr) auto}
+label.li input{width:18px;height:18px;margin:0 11px;accent-color:var(--accent)}
+.plays{margin-top:10px;font-size:13px;color:var(--muted)}
+.plays b{color:var(--ink);font-weight:600}
+.plays ul{margin:6px 0 0;padding-left:18px}
+.stale{color:var(--warn);font-weight:600}
+.dl{margin-top:8px;font-size:12.5px;color:var(--muted);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.giggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.gigcard{border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow)}
+.gigcard b{font-size:18px}
+.gigcard .d{font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
+.gig{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:16px;box-shadow:var(--shadow)}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:14px 0 6px;list-style:none;padding:0;counter-reset:st}
+.steps li{border-top:4px solid var(--line);padding-top:6px;font-size:12.5px;color:var(--muted);counter-increment:st}
+.steps li::before{content:counter(st) " · "}
+.steps li.done{border-color:var(--ok);color:var(--ink)}
+.steps li.on{border-color:var(--accent);color:var(--ink);font-weight:600}
+.check{display:grid;grid-template-columns:30px 44px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 4px;border-bottom:1px solid var(--line)}
+.check input{width:22px;height:22px;accent-color:var(--accent)}
+.check .thumb{width:44px;height:44px}
+.bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.stickers{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--sz,150px),1fr));gap:12px;margin-top:12px}
+.sticker{background:#fff;border-radius:10px;border:1px solid var(--line);padding:6px;display:grid;place-items:center}
+.sticker svg{width:100%;height:auto;display:block}
+#print-sheet{display:none}
+@media print{
+  body{background:#fff!important;padding:0!important}
+  body>*:not(#print-sheet){display:none!important}
+  #print-sheet{display:block!important}
+  #print-sheet svg{width:8.5in;height:11in;display:block;page-break-after:always}
+  @page{size:letter;margin:0}
+}
+
 .foot{margin-top:34px;font-size:12.5px;color:var(--muted);max-width:72ch}
 </style>
 
 <div class="top"><div class="wrap">
   <div class="top-row">
-    <button class="brand" data-act="go-room" aria-label="Crates home">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="3" fill="var(--ink)"/><rect x="5" y="5" width="10" height="10" fill="var(--accent)"/><rect x="17" y="5" width="10" height="10" fill="var(--bg)"/><rect x="5" y="17" width="10" height="10" fill="var(--bg)"/><rect x="17" y="17" width="10" height="10" fill="var(--bg)"/><rect x="7" y="8" width="2" height="7" fill="var(--ink)"/><rect x="10" y="7" width="2" height="8" fill="var(--ink)"/></svg>
-      <b>Crates</b></button>
+    <button class="brand" data-act="go-room" aria-label="Crates home"><svg viewBox="62 48 520 136" aria-hidden="true" class="brandsvg"><g transform="translate(70.09 56) scale(1)"><defs><mask id="brandm" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128"><rect width="128" height="128" fill="#fff"/><rect x="3" y="45" width="80" height="80" rx="9" fill="#000"/></mask></defs><path fill="var(--brand)" fill-rule="evenodd" mask="url(#brandm)" d="M44,46A38,38 0 1 0 120,46A38,38 0 1 0 44,46ZM53,46A29,29 0 1 0 111,46A29,29 0 1 0 53,46ZM55.5,46A26.5,26.5 0 1 0 108.5,46A26.5,26.5 0 1 0 55.5,46ZM67,46A15,15 0 1 0 97,46A15,15 0 1 0 67,46ZM78,46A4,4 0 1 0 86,46A4,4 0 1 0 78,46Z"/><rect fill="var(--ink)" x="8" y="50" width="70" height="70" rx="4"/></g><path fill="none" stroke="var(--ink)" d="M281.12,105.97A25.5,25.5 0 1 0 281.12,142.03M299.45,98.5V149.5M299.45,120.82A22.32,22.32 0 0 1 321.77,98.5H331.81M349.81,124A25.5,25.5 0 1 1 400.81,124A25.5,25.5 0 1 1 349.81,124M400.81,98.5V149.5M427.89,78.66V142.06A8.68,8.68 0 0 0 436.57,149.5H442.53M418.81,98.5H442.53M460.53,124H511.53A25.5,25.5 0 1 0 504.98,141.06M562.37,104.86A17.44,11.98 0 1 0 546.97,122.47A17.44,13.52 0 1 1 531.57,142.33" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <div class="tabs" role="group" aria-label="Sections">
       <button data-act="go-room" id="tab-room">Room</button>
       <button data-act="go-playlists" id="tab-pl">Playlists</button>
+      <button data-act="go-gigs" id="tab-gigs">Gigs</button>
     </div>
     <button class="add-btn" data-act="open-add"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add</button>
     <button class="icon-btn" data-act="open-settings" aria-label="Settings">
@@ -410,7 +459,11 @@ textarea{height:auto;min-height:96px;padding:10px 12px;resize:vertical}
 <div id="yt-host"><div id="yt"></div></div>
 <div id="layer"></div>
 <div id="np"></div>
+<div id="print-sheet" aria-hidden="true"></div>
 
+<script>/*! qrcode-generator 1.4.4 | (c) 2009 Kazuhiko Arase | MIT license */
+var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],f={},c=function(t,r){o=function(t){for(var r=new Array(t),e=0;e<t;e+=1){r[e]=new Array(t);for(var n=0;n<t;n+=1)r[e][n]=null}return r}(i=4*e+17),l(0,0),l(i-7,0),l(0,i-7),s(),h(),d(t,r),e>=7&&v(t),null==a&&(a=p(e,n,u)),w(a,r)},l=function(t,r){for(var e=-1;e<=7;e+=1)if(!(t+e<=-1||i<=t+e))for(var n=-1;n<=7;n+=1)r+n<=-1||i<=r+n||(o[t+e][r+n]=0<=e&&e<=6&&(0==n||6==n)||0<=n&&n<=6&&(0==e||6==e)||2<=e&&e<=4&&2<=n&&n<=4)},h=function(){for(var t=8;t<i-8;t+=1)null==o[t][6]&&(o[t][6]=t%2==0);for(var r=8;r<i-8;r+=1)null==o[6][r]&&(o[6][r]=r%2==0)},s=function(){for(var t=B.getPatternPosition(e),r=0;r<t.length;r+=1)for(var n=0;n<t.length;n+=1){var i=t[r],a=t[n];if(null==o[i][a])for(var u=-2;u<=2;u+=1)for(var f=-2;f<=2;f+=1)o[i+u][a+f]=-2==u||2==u||-2==f||2==f||0==u&&0==f}},v=function(t){for(var r=B.getBCHTypeNumber(e),n=0;n<18;n+=1){var a=!t&&1==(r>>n&1);o[Math.floor(n/3)][n%3+i-8-3]=a}for(n=0;n<18;n+=1){a=!t&&1==(r>>n&1);o[n%3+i-8-3][Math.floor(n/3)]=a}},d=function(t,r){for(var e=n<<3|r,a=B.getBCHTypeInfo(e),u=0;u<15;u+=1){var f=!t&&1==(a>>u&1);u<6?o[u][8]=f:u<8?o[u+1][8]=f:o[i-15+u][8]=f}for(u=0;u<15;u+=1){f=!t&&1==(a>>u&1);u<8?o[8][i-u-1]=f:u<9?o[8][15-u-1+1]=f:o[8][15-u-1]=f}o[i-8][8]=!t},w=function(t,r){for(var e=-1,n=i-1,a=7,u=0,f=B.getMaskFunction(r),c=i-1;c>0;c-=2)for(6==c&&(c-=1);;){for(var g=0;g<2;g+=1)if(null==o[n][c-g]){var l=!1;u<t.length&&(l=1==(t[u]>>>a&1)),f(n,c-g)&&(l=!l),o[n][c-g]=l,-1==(a-=1)&&(u+=1,a=7)}if((n+=e)<0||i<=n){n-=e,e=-e;break}}},p=function(t,r,e){for(var n=A.getRSBlocks(t,r),o=b(),i=0;i<e.length;i+=1){var a=e[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var u=0;for(i=0;i<n.length;i+=1)u+=n[i].dataCount;if(o.getLengthInBits()>8*u)throw"code length overflow. ("+o.getLengthInBits()+">"+8*u+")";for(o.getLengthInBits()+4<=8*u&&o.put(0,4);o.getLengthInBits()%8!=0;)o.putBit(!1);for(;!(o.getLengthInBits()>=8*u||(o.put(236,8),o.getLengthInBits()>=8*u));)o.put(17,8);return function(t,r){for(var e=0,n=0,o=0,i=new Array(r.length),a=new Array(r.length),u=0;u<r.length;u+=1){var f=r[u].dataCount,c=r[u].totalCount-f;n=Math.max(n,f),o=Math.max(o,c),i[u]=new Array(f);for(var g=0;g<i[u].length;g+=1)i[u][g]=255&t.getBuffer()[g+e];e+=f;var l=B.getErrorCorrectPolynomial(c),h=k(i[u],l.getLength()-1).mod(l);for(a[u]=new Array(l.getLength()-1),g=0;g<a[u].length;g+=1){var s=g+h.getLength()-a[u].length;a[u][g]=s>=0?h.getAt(s):0}}var v=0;for(g=0;g<r.length;g+=1)v+=r[g].totalCount;var d=new Array(v),w=0;for(g=0;g<n;g+=1)for(u=0;u<r.length;u+=1)g<i[u].length&&(d[w]=i[u][g],w+=1);for(g=0;g<o;g+=1)for(u=0;u<r.length;u+=1)g<a[u].length&&(d[w]=a[u][g],w+=1);return d}(o,n)};f.addData=function(t,r){var e=null;switch(r=r||"Byte"){case"Numeric":e=M(t);break;case"Alphanumeric":e=x(t);break;case"Byte":e=m(t);break;case"Kanji":e=L(t);break;default:throw"mode:"+r}u.push(e),a=null},f.isDark=function(t,r){if(t<0||i<=t||r<0||i<=r)throw t+","+r;return o[t][r]},f.getModuleCount=function(){return i},f.make=function(){if(e<1){for(var t=1;t<40;t++){for(var r=A.getRSBlocks(t,n),o=b(),i=0;i<u.length;i++){var a=u[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var g=0;for(i=0;i<r.length;i++)g+=r[i].dataCount;if(o.getLengthInBits()<=8*g)break}e=t}c(!1,function(){for(var t=0,r=0,e=0;e<8;e+=1){c(!0,e);var n=B.getLostPoint(f);(0==e||t>n)&&(t=n,r=e)}return r}())},f.createTableTag=function(t,r){t=t||2;var e="";e+='<table style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: "+(r=void 0===r?4*t:r)+"px;",e+='">',e+="<tbody>";for(var n=0;n<f.getModuleCount();n+=1){e+="<tr>";for(var o=0;o<f.getModuleCount();o+=1)e+='<td style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: 0px;",e+=" width: "+t+"px;",e+=" height: "+t+"px;",e+=" background-color: ",e+=f.isDark(n,o)?"#000000":"#ffffff",e+=";",e+='"/>';e+="</tr>"}return e+="</tbody>",e+="</table>"},f.createSvgTag=function(t,r,e,n){var o={};"object"==typeof arguments[0]&&(t=(o=arguments[0]).cellSize,r=o.margin,e=o.alt,n=o.title),t=t||2,r=void 0===r?4*t:r,(e="string"==typeof e?{text:e}:e||{}).text=e.text||null,e.id=e.text?e.id||"qrcode-description":null,(n="string"==typeof n?{text:n}:n||{}).text=n.text||null,n.id=n.text?n.id||"qrcode-title":null;var i,a,u,c,g=f.getModuleCount()*t+2*r,l="";for(c="l"+t+",0 0,"+t+" -"+t+",0 0,-"+t+"z ",l+='<svg version="1.1" xmlns="http://www.w3.org/2000/svg"',l+=o.scalable?"":' width="'+g+'px" height="'+g+'px"',l+=' viewBox="0 0 '+g+" "+g+'" ',l+=' preserveAspectRatio="xMinYMin meet"',l+=n.text||e.text?' role="img" aria-labelledby="'+y([n.id,e.id].join(" ").trim())+'"':"",l+=">",l+=n.text?'<title id="'+y(n.id)+'">'+y(n.text)+"</title>":"",l+=e.text?'<description id="'+y(e.id)+'">'+y(e.text)+"</description>":"",l+='<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>',l+='<path d="',a=0;a<f.getModuleCount();a+=1)for(u=a*t+r,i=0;i<f.getModuleCount();i+=1)f.isDark(a,i)&&(l+="M"+(i*t+r)+","+u+c);return l+='" stroke="transparent" fill="black"/>',l+="</svg>"},f.createDataURL=function(t,r){t=t||2,r=void 0===r?4*t:r;var e=f.getModuleCount()*t+2*r,n=r,o=e-r;return I(e,e,(function(r,e){if(n<=r&&r<o&&n<=e&&e<o){var i=Math.floor((r-n)/t),a=Math.floor((e-n)/t);return f.isDark(a,i)?0:1}return 1}))},f.createImgTag=function(t,r,e){t=t||2,r=void 0===r?4*t:r;var n=f.getModuleCount()*t+2*r,o="";return o+="<img",o+=' src="',o+=f.createDataURL(t,r),o+='"',o+=' width="',o+=n,o+='"',o+=' height="',o+=n,o+='"',e&&(o+=' alt="',o+=y(e),o+='"'),o+="/>"};var y=function(t){for(var r="",e=0;e<t.length;e+=1){var n=t.charAt(e);switch(n){case"<":r+="&lt;";break;case">":r+="&gt;";break;case"&":r+="&amp;";break;case'"':r+="&quot;";break;default:r+=n}}return r};return f.createASCII=function(t,r){if((t=t||1)<2)return function(t){t=void 0===t?2:t;var r,e,n,o,i,a=1*f.getModuleCount()+2*t,u=t,c=a-t,g={"██":"█","█ ":"▀"," █":"▄","  ":" "},l={"██":"▀","█ ":"▀"," █":" ","  ":" "},h="";for(r=0;r<a;r+=2){for(n=Math.floor((r-u)/1),o=Math.floor((r+1-u)/1),e=0;e<a;e+=1)i="█",u<=e&&e<c&&u<=r&&r<c&&f.isDark(n,Math.floor((e-u)/1))&&(i=" "),u<=e&&e<c&&u<=r+1&&r+1<c&&f.isDark(o,Math.floor((e-u)/1))?i+=" ":i+="█",h+=t<1&&r+1>=c?l[i]:g[i];h+="\n"}return a%2&&t>0?h.substring(0,h.length-a-1)+Array(a+1).join("▀"):h.substring(0,h.length-1)}(r);t-=1,r=void 0===r?2*t:r;var e,n,o,i,a=f.getModuleCount()*t+2*r,u=r,c=a-r,g=Array(t+1).join("██"),l=Array(t+1).join("  "),h="",s="";for(e=0;e<a;e+=1){for(o=Math.floor((e-u)/t),s="",n=0;n<a;n+=1)i=1,u<=n&&n<c&&u<=e&&e<c&&f.isDark(o,Math.floor((n-u)/t))&&(i=0),s+=i?g:l;for(o=0;o<t;o+=1)h+=s+"\n"}return h.substring(0,h.length-1)},f.renderTo2dContext=function(t,r){r=r||2;for(var e=f.getModuleCount(),n=0;n<e;n++)for(var o=0;o<e;o++)t.fillStyle=f.isDark(n,o)?"black":"white",t.fillRect(n*r,o*r,r,r)},f};t.stringToBytes=(t.stringToBytesFuncs={default:function(t){for(var r=[],e=0;e<t.length;e+=1){var n=t.charCodeAt(e);r.push(255&n)}return r}}).default,t.createStringToBytes=function(t,r){var e=function(){for(var e=S(t),n=function(){var t=e.read();if(-1==t)throw"eof";return t},o=0,i={};;){var a=e.read();if(-1==a)break;var u=n(),f=n()<<8|n();i[String.fromCharCode(a<<8|u)]=f,o+=1}if(o!=r)throw o+" != "+r;return i}(),n="?".charCodeAt(0);return function(t){for(var r=[],o=0;o<t.length;o+=1){var i=t.charCodeAt(o);if(i<128)r.push(i);else{var a=e[t.charAt(o)];"number"==typeof a?(255&a)==a?r.push(a):(r.push(a>>>8),r.push(255&a)):r.push(n)}}return r}};var r,e,n,o,i,a=1,u=2,f=4,c=8,g={L:1,M:0,Q:3,H:2},l=0,h=1,s=2,v=3,d=4,w=5,p=6,y=7,B=(r=[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],e=1335,n=7973,i=function(t){for(var r=0;0!=t;)r+=1,t>>>=1;return r},(o={}).getBCHTypeInfo=function(t){for(var r=t<<10;i(r)-i(e)>=0;)r^=e<<i(r)-i(e);return 21522^(t<<10|r)},o.getBCHTypeNumber=function(t){for(var r=t<<12;i(r)-i(n)>=0;)r^=n<<i(r)-i(n);return t<<12|r},o.getPatternPosition=function(t){return r[t-1]},o.getMaskFunction=function(t){switch(t){case l:return function(t,r){return(t+r)%2==0};case h:return function(t,r){return t%2==0};case s:return function(t,r){return r%3==0};case v:return function(t,r){return(t+r)%3==0};case d:return function(t,r){return(Math.floor(t/2)+Math.floor(r/3))%2==0};case w:return function(t,r){return t*r%2+t*r%3==0};case p:return function(t,r){return(t*r%2+t*r%3)%2==0};case y:return function(t,r){return(t*r%3+(t+r)%2)%2==0};default:throw"bad maskPattern:"+t}},o.getErrorCorrectPolynomial=function(t){for(var r=k([1],0),e=0;e<t;e+=1)r=r.multiply(k([1,C.gexp(e)],0));return r},o.getLengthInBits=function(t,r){if(1<=r&&r<10)switch(t){case a:return 10;case u:return 9;case f:case c:return 8;default:throw"mode:"+t}else if(r<27)switch(t){case a:return 12;case u:return 11;case f:return 16;case c:return 10;default:throw"mode:"+t}else{if(!(r<41))throw"type:"+r;switch(t){case a:return 14;case u:return 13;case f:return 16;case c:return 12;default:throw"mode:"+t}}},o.getLostPoint=function(t){for(var r=t.getModuleCount(),e=0,n=0;n<r;n+=1)for(var o=0;o<r;o+=1){for(var i=0,a=t.isDark(n,o),u=-1;u<=1;u+=1)if(!(n+u<0||r<=n+u))for(var f=-1;f<=1;f+=1)o+f<0||r<=o+f||0==u&&0==f||a==t.isDark(n+u,o+f)&&(i+=1);i>5&&(e+=3+i-5)}for(n=0;n<r-1;n+=1)for(o=0;o<r-1;o+=1){var c=0;t.isDark(n,o)&&(c+=1),t.isDark(n+1,o)&&(c+=1),t.isDark(n,o+1)&&(c+=1),t.isDark(n+1,o+1)&&(c+=1),0!=c&&4!=c||(e+=3)}for(n=0;n<r;n+=1)for(o=0;o<r-6;o+=1)t.isDark(n,o)&&!t.isDark(n,o+1)&&t.isDark(n,o+2)&&t.isDark(n,o+3)&&t.isDark(n,o+4)&&!t.isDark(n,o+5)&&t.isDark(n,o+6)&&(e+=40);for(o=0;o<r;o+=1)for(n=0;n<r-6;n+=1)t.isDark(n,o)&&!t.isDark(n+1,o)&&t.isDark(n+2,o)&&t.isDark(n+3,o)&&t.isDark(n+4,o)&&!t.isDark(n+5,o)&&t.isDark(n+6,o)&&(e+=40);var g=0;for(o=0;o<r;o+=1)for(n=0;n<r;n+=1)t.isDark(n,o)&&(g+=1);return e+=Math.abs(100*g/r/r-50)/5*10},o),C=function(){for(var t=new Array(256),r=new Array(256),e=0;e<8;e+=1)t[e]=1<<e;for(e=8;e<256;e+=1)t[e]=t[e-4]^t[e-5]^t[e-6]^t[e-8];for(e=0;e<255;e+=1)r[t[e]]=e;var n={glog:function(t){if(t<1)throw"glog("+t+")";return r[t]},gexp:function(r){for(;r<0;)r+=255;for(;r>=256;)r-=255;return t[r]}};return n}();function k(t,r){if(void 0===t.length)throw t.length+"/"+r;var e=function(){for(var e=0;e<t.length&&0==t[e];)e+=1;for(var n=new Array(t.length-e+r),o=0;o<t.length-e;o+=1)n[o]=t[o+e];return n}(),n={getAt:function(t){return e[t]},getLength:function(){return e.length},multiply:function(t){for(var r=new Array(n.getLength()+t.getLength()-1),e=0;e<n.getLength();e+=1)for(var o=0;o<t.getLength();o+=1)r[e+o]^=C.gexp(C.glog(n.getAt(e))+C.glog(t.getAt(o)));return k(r,0)},mod:function(t){if(n.getLength()-t.getLength()<0)return n;for(var r=C.glog(n.getAt(0))-C.glog(t.getAt(0)),e=new Array(n.getLength()),o=0;o<n.getLength();o+=1)e[o]=n.getAt(o);for(o=0;o<t.getLength();o+=1)e[o]^=C.gexp(C.glog(t.getAt(o))+r);return k(e,0).mod(t)}};return n}var A=function(){var t=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12,7,37,13],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],r=function(t,r){var e={};return e.totalCount=t,e.dataCount=r,e},e={};return e.getRSBlocks=function(e,n){var o=function(r,e){switch(e){case g.L:return t[4*(r-1)+0];case g.M:return t[4*(r-1)+1];case g.Q:return t[4*(r-1)+2];case g.H:return t[4*(r-1)+3];default:return}}(e,n);if(void 0===o)throw"bad rs block @ typeNumber:"+e+"/errorCorrectionLevel:"+n;for(var i=o.length/3,a=[],u=0;u<i;u+=1)for(var f=o[3*u+0],c=o[3*u+1],l=o[3*u+2],h=0;h<f;h+=1)a.push(r(c,l));return a},e}(),b=function(){var t=[],r=0,e={getBuffer:function(){return t},getAt:function(r){var e=Math.floor(r/8);return 1==(t[e]>>>7-r%8&1)},put:function(t,r){for(var n=0;n<r;n+=1)e.putBit(1==(t>>>r-n-1&1))},getLengthInBits:function(){return r},putBit:function(e){var n=Math.floor(r/8);t.length<=n&&t.push(0),e&&(t[n]|=128>>>r%8),r+=1}};return e},M=function(t){var r=a,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+2<r.length;)t.put(o(r.substring(n,n+3)),10),n+=3;n<r.length&&(r.length-n==1?t.put(o(r.substring(n,n+1)),4):r.length-n==2&&t.put(o(r.substring(n,n+2)),7))}},o=function(t){for(var r=0,e=0;e<t.length;e+=1)r=10*r+i(t.charAt(e));return r},i=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);throw"illegal char :"+t};return n},x=function(t){var r=u,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+1<r.length;)t.put(45*o(r.charAt(n))+o(r.charAt(n+1)),11),n+=2;n<r.length&&t.put(o(r.charAt(n)),6)}},o=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);if("A"<=t&&t<="Z")return t.charCodeAt(0)-"A".charCodeAt(0)+10;switch(t){case" ":return 36;case"$":return 37;case"%":return 38;case"*":return 39;case"+":return 40;case"-":return 41;case".":return 42;case"/":return 43;case":":return 44;default:throw"illegal char :"+t}};return n},m=function(r){var e=f,n=t.stringToBytes(r),o={getMode:function(){return e},getLength:function(t){return n.length},write:function(t){for(var r=0;r<n.length;r+=1)t.put(n[r],8)}};return o},L=function(r){var e=c,n=t.stringToBytesFuncs.SJIS;if(!n)throw"sjis not supported.";!function(t,r){var e=n("友");if(2!=e.length||38726!=(e[0]<<8|e[1]))throw"sjis not supported."}();var o=n(r),i={getMode:function(){return e},getLength:function(t){return~~(o.length/2)},write:function(t){for(var r=o,e=0;e+1<r.length;){var n=(255&r[e])<<8|255&r[e+1];if(33088<=n&&n<=40956)n-=33088;else{if(!(57408<=n&&n<=60351))throw"illegal char at "+(e+1)+"/"+n;n-=49472}n=192*(n>>>8&255)+(255&n),t.put(n,13),e+=2}if(e<r.length)throw"illegal char at "+(e+1)}};return i},D=function(){var t=[],r={writeByte:function(r){t.push(255&r)},writeShort:function(t){r.writeByte(t),r.writeByte(t>>>8)},writeBytes:function(t,e,n){e=e||0,n=n||t.length;for(var o=0;o<n;o+=1)r.writeByte(t[o+e])},writeString:function(t){for(var e=0;e<t.length;e+=1)r.writeByte(t.charCodeAt(e))},toByteArray:function(){return t},toString:function(){var r="";r+="[";for(var e=0;e<t.length;e+=1)e>0&&(r+=","),r+=t[e];return r+="]"}};return r},S=function(t){var r=t,e=0,n=0,o=0,i={read:function(){for(;o<8;){if(e>=r.length){if(0==o)return-1;throw"unexpected end of file./"+o}var t=r.charAt(e);if(e+=1,"="==t)return o=0,-1;t.match(/^\s$/)||(n=n<<6|a(t.charCodeAt(0)),o+=6)}var i=n>>>o-8&255;return o-=8,i}},a=function(t){if(65<=t&&t<=90)return t-65;if(97<=t&&t<=122)return t-97+26;if(48<=t&&t<=57)return t-48+52;if(43==t)return 62;if(47==t)return 63;throw"c:"+t};return i},I=function(t,r,e){for(var n=function(t,r){var e=t,n=r,o=new Array(t*r),i={setPixel:function(t,r,n){o[r*e+t]=n},write:function(t){t.writeString("GIF87a"),t.writeShort(e),t.writeShort(n),t.writeByte(128),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(255),t.writeByte(255),t.writeByte(255),t.writeString(","),t.writeShort(0),t.writeShort(0),t.writeShort(e),t.writeShort(n),t.writeByte(0);var r=a(2);t.writeByte(2);for(var o=0;r.length-o>255;)t.writeByte(255),t.writeBytes(r,o,255),o+=255;t.writeByte(r.length-o),t.writeBytes(r,o,r.length-o),t.writeByte(0),t.writeString(";")}},a=function(t){for(var r=1<<t,e=1+(1<<t),n=t+1,i=u(),a=0;a<r;a+=1)i.add(String.fromCharCode(a));i.add(String.fromCharCode(r)),i.add(String.fromCharCode(e));var f,c,g,l=D(),h=(f=l,c=0,g=0,{write:function(t,r){if(t>>>r!=0)throw"length over";for(;c+r>=8;)f.writeByte(255&(t<<c|g)),r-=8-c,t>>>=8-c,g=0,c=0;g|=t<<c,c+=r},flush:function(){c>0&&f.writeByte(g)}});h.write(r,n);var s=0,v=String.fromCharCode(o[s]);for(s+=1;s<o.length;){var d=String.fromCharCode(o[s]);s+=1,i.contains(v+d)?v+=d:(h.write(i.indexOf(v),n),i.size()<4095&&(i.size()==1<<n&&(n+=1),i.add(v+d)),v=d)}return h.write(i.indexOf(v),n),h.write(e,n),h.flush(),l.toByteArray()},u=function(){var t={},r=0,e={add:function(n){if(e.contains(n))throw"dup key:"+n;t[n]=r,r+=1},size:function(){return r},indexOf:function(r){return t[r]},contains:function(r){return void 0!==t[r]}};return e};return i}(t,r),o=0;o<r;o+=1)for(var i=0;i<t;i+=1)n.setPixel(i,o,e(i,o));var a=D();n.write(a);for(var u=function(){var t=0,r=0,e=0,n="",o={},i=function(t){n+=String.fromCharCode(a(63&t))},a=function(t){if(t<0);else{if(t<26)return 65+t;if(t<52)return t-26+97;if(t<62)return t-52+48;if(62==t)return 43;if(63==t)return 47}throw"n:"+t};return o.writeByte=function(n){for(t=t<<8|255&n,r+=8,e+=1;r>=6;)i(t>>>r-6),r-=6},o.flush=function(){if(r>0&&(i(t<<6-r),t=0,r=0),e%3!=0)for(var o=3-e%3,a=0;a<o;a+=1)n+="="},o.toString=function(){return n},o}(),f=a.toByteArray(),c=0;c<f.length;c+=1)u.writeByte(f[c]);return u.flush(),"data:image/gif;base64,"+u};return t}();qrcode.stringToBytesFuncs["UTF-8"]=function(t){return function(t){for(var r=[],e=0;e<t.length;e++){var n=t.charCodeAt(e);n<128?r.push(n):n<2048?r.push(192|n>>6,128|63&n):n<55296||n>=57344?r.push(224|n>>12,128|n>>6&63,128|63&n):(e++,n=65536+((1023&n)<<10|1023&t.charCodeAt(e)),r.push(240|n>>18,128|n>>12&63,128|n>>6&63,128|63&n))}return r}(t)},function(t){"function"==typeof define&&define.amd?define([],t):"object"==typeof exports&&(module.exports=t())}((function(){return qrcode}));
+</script>
 <script>
 /* =====================================================================
    PRESET CATALOGS — regenerated from research (furniture.json, bags.json)
@@ -475,7 +528,7 @@ function seed(){
   return {
     v:2,
     units:[
-      {id:'K1',name:'Kallax 1',preset:SEED_K,kind:'shelf',rows:2,cols:4,finish:finishesFor(fpreset(SEED_K))[0],photo:null},
+      {id:'K1',name:'Kallax 1',preset:SEED_K,kind:'shelf',rows:2,cols:4,finish:finishesFor(fpreset(SEED_K))[0],photo:null,labels:{'0-0':'Detroit & Chicago','0-1':'Acid'}},
       {id:'B1',name:'Crater',preset:SEED_B,kind:'bag',rows:1,cols:1,finish:bpreset(SEED_B).colors[0],photo:null},
       {id:'C1',name:'Milk crate',preset:SEED_C,kind:'crate',rows:1,cols:1,finish:finishesFor(fpreset(SEED_C)).find(f=>/blue/i.test(f.name))||finishesFor(fpreset(SEED_C))[0],photo:null},
     ],
@@ -495,17 +548,29 @@ function seed(){
       {id:'p1',name:'Warm-up',color:PL_COLORS[1],items:['r1','r4','r7','r8']},
       {id:'p2',name:'Acid hour',color:PL_COLORS[0],items:['r3','r5','r8','r6']},
     ],
-    settings:{accent:'red'},
-    recent:[]
+    settings:{accent:'red', discogsSync:false},
+    recent:[],
+    gigs:[
+      {id:'g1',name:'Sunday loft session',venue:'Loft session',date:'2026-08-30',bag:'B1',status:'done',items:[{r:'r1',packed:true,played:true,back:true},{r:'r4',packed:true,played:true,back:false},{r:'r7',packed:true,played:true,back:true},{r:'r8',packed:true,played:true,back:true}]},
+      {id:'g2',name:'Halloween warm-up',venue:'Warehouse party',date:'2026-10-31',bag:'B1',status:'planning',items:['r1','r2','r6','r3','r5'].map(r=>({r,packed:false,played:false,back:false}))},
+    ],
+    syncQueue:[]
   };
 }
+function seedExtras(st){
+  const P = (id, plays) => { const r = st.records.find(x=>x.id===id); if(r) r.plays = plays; };
+  ['r1','r4','r7','r8'].forEach(id=>P(id,[{d:'2026-08-30',venue:'Loft session',gig:'g1'}]));
+  P('r2',[{d:'2025-06-14',venue:'Rooftop daytime'}]);
+  st.records.forEach(r=>{ r.plays ||= []; if(st.units.find(u=>u.id===r.loc.u)?.kind!=='shelf' && r.home) r.from = {...r.home}; });
+  return st;
+}
+function migrate(st){
+  st.gigs ||= []; st.syncQueue ||= []; st.settings.discogsSync ??= false;
+  st.units.forEach(u=>{ u.labels ||= {}; });
+  st.records.forEach(r=>{ r.plays ||= []; r.barcode ??= ''; if(r.from===undefined) r.from = null; });
+  return st;
+}
 
-/* ---------- state ---------- */
-const KEY='crates-demo-v3';
-let S; try{ S = JSON.parse(localStorage.getItem(KEY)) }catch(e){}
-if(!S || S.v!==2 || !S.units.every(u=>u.kind==='bag'?bpreset(u.preset):fpreset(u.preset))) S = seed();
-const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(S)) }catch(e){} };
-const V = {view:'unit', unit:'K1', cell:'0-0', dig:0, focus:null, flash:null, pl:null};
 let AI = null, AI_IMAGES = false;
 
 /* ---------- helpers ---------- */
@@ -522,8 +587,9 @@ const cellKeys = u => { const a=[]; for(let r=0;r<u.rows;r++) for(let c=0;c<u.co
 const rowLetter = r => r<26 ? String.fromCharCode(65+r) : 'A'+String.fromCharCode(65+r-26);
 function cellLabel(u, key){ if(!u || u.kind!=='shelf') return ''; const [r,c] = key.split('-').map(Number); return rowLetter(r)+(c+1); }
 function addrShort(loc){ const u=unit(loc?.u); if(!u) return 'Unplaced'; return u.kind==='shelf' ? u.id+'·'+cellLabel(u,loc.c) : u.name; }
+const cellName = (u,k) => (u && u.kind==='shelf' && u.labels?.[k]) || '';
 function addrLong(loc){ const u=unit(loc?.u); if(!u) return 'Unplaced';
-  if(u.kind==='shelf') return u.name+', shelf '+cellLabel(u,loc.c);
+  if(u.kind==='shelf'){ const n = cellName(u,loc.c); return u.name+', shelf '+cellLabel(u,loc.c)+(n?' ('+n+')':''); }
   return (u.kind==='bag'?'Bag':'Crate')+' “'+u.name+'”'; }
 const same = (a,b) => a && b && a.u===b.u && a.c===b.c;
 const hasHome = r => !!(r.home && unit(r.home.u)?.kind==='shelf');
@@ -553,7 +619,8 @@ function locChip(loc, cls=''){
   const ic = u.kind==='shelf'
     ? `<span class="mini" style="grid-template-columns:repeat(${u.cols},5px)">${cellKeys(u).map(k=>`<i class="${k===loc.c?'on':''}"></i>`).join('')}</span>`
     : `<span class="bagdot" style="background:${esc(u.finish?.hex||'#26292D')}"></span>`;
-  return `<span class="loc ${cls}" title="${esc(addrLong(loc))}">${ic}${esc(addrShort(loc))}</span>`;
+  const nm = cellName(u, loc.c);
+  return `<span class="loc ${cls}" title="${esc(addrLong(loc))}">${ic}${esc(addrShort(loc))}${nm?` <span style="font-family:var(--f-body);font-weight:600;opacity:.75">${esc(nm)}</span>`:''}</span>`;
 }
 
 /* ---------- drawing ---------- */
@@ -566,7 +633,7 @@ function drawShelf(u, big=false, opts={}){
   const cls = ['kallax', big?'big':'', p.style==='ledge'?'ledge':'', p.style==='bin'?'bin':'', f.grain?'grain':'', f.gloss?'gloss':''].join(' ');
   return `<div class="${cls}" style="grid-template-columns:repeat(${u.cols},1fr);--fin:${f.hex};max-width:${Math.min(100, u.cols*(big?26:22))}%">${cellKeys(u).map(k=>{
     const list = opts.empty ? [] : inCell(u.id,k);
-    const inner = `<span class="lbl">${esc(cellLabel(u,k))}</span>${list.length?`<span class="cnt">${list.length}</span>`:''}${spines(list)}`;
+    const inner = `<span class="lbl">${esc(cellLabel(u,k))}${cellName(u,k)?`<em>${esc(cellName(u,k))}</em>`:''}</span>${list.length?`<span class="cnt">${list.length}</span>`:''}${spines(list)}`;
     return big ? `<button type="button" class="cube ${V.flash===k?'flash':''}" data-act="pick-cell" data-c="${k}" aria-pressed="${V.cell===k}" aria-label="Shelf ${esc(cellLabel(u,k))}, ${list.length} records">${inner}</button>` : `<div class="cube">${inner}</div>`;
   }).join('')}</div>`;
 }
@@ -607,12 +674,21 @@ function drawUnit(u, big=false, opts={}){
   return drawCrate(u,opts);
 }
 
+/* ---------- state ---------- */
+const KEY='crates-demo-v3';
+let S; try{ S = JSON.parse(localStorage.getItem(KEY)) }catch(e){}
+if(!S || S.v!==2 || !S.units.every(u=>u.kind==='bag'?bpreset(u.preset):fpreset(u.preset))) S = seedExtras(seed());
+S = migrate(S);
+const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(S)) }catch(e){} };
+const V = {view:'unit', unit:'K1', cell:'0-0', dig:0, focus:null, flash:null, pl:null, gig:null, stale:false, sel:null};
+
 /* ---------- render ---------- */
 function render(){
   document.body.dataset.accent = S.settings.accent;
   $('#tab-room').setAttribute('aria-pressed', V.view==='room'||V.view==='unit');
   $('#tab-pl').setAttribute('aria-pressed', V.view==='playlists');
-  $('#main').innerHTML = V.view==='playlists' ? renderPlaylists() : renderRoom();
+  $('#tab-gigs').setAttribute('aria-pressed', V.view==='gigs');
+  $('#main').innerHTML = V.view==='playlists' ? renderPlaylists() : V.view==='gigs' ? renderGigs() : renderRoom();
   if(V.view==='unit') bindSwipe();
   if(V.view==='playlists') bindPlaylist();
   save();
@@ -628,7 +704,7 @@ function renderRoom(){
     </button>`;
   }).join('');
   let html = `<div class="sec-head"><div><div class="kicker">${S.records.length} records in ${S.units.length} places</div><h2>Your room</h2></div>
-    <div class="row"><button class="btn" data-act="play-all"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>Play collection</button></div></div>
+    <div class="row"><button class="btn" data-act="stale-list">Not played in a year <small class="code muted">${S.records.filter(isStale).length}</small></button><button class="btn" data-act="stickers">QR stickers</button><button class="btn" data-act="play-all"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>Play collection</button></div></div>
     <div class="room">${cards}</div>`;
   if(V.view==='unit' && unit(V.unit)) html += renderDetail();
   html += `<p class="foot">Demo collection. Covers are placeholder art; the full app pulls sleeves and metadata from Discogs. ${SRC_NOTE} Changes stay in this browser.</p>`;
@@ -637,14 +713,17 @@ function renderRoom(){
 
 function renderDetail(){
   const u = unit(V.unit);
-  const list = inCell(u.id, V.cell);
+  const list = inCell(u.id, V.cell).filter(r=>!V.stale || isStale(r));
   V.dig = Math.max(0, Math.min(V.dig, list.length-1));
   if(V.focus){ const i = list.findIndex(r=>r.id===V.focus); if(i>=0) V.dig=i; V.focus=null; }
   const cur = list[V.dig];
   const chips = u.kind==='shelf' ? `<div class="chips" role="group" aria-label="Shelves">
       <button class="chip" data-act="pick-cell" data-c="all" aria-pressed="${V.cell==='all'}">All <small>${inCell(u.id,'all').length}</small></button>
-      ${cellKeys(u).map(k=>`<button class="chip code" data-act="pick-cell" data-c="${k}" aria-pressed="${V.cell===k}">${esc(cellLabel(u,k))} <small>${inCell(u.id,k).length}</small></button>`).join('')}</div>` : '';
-  const where = V.cell==='all' ? 'All shelves' : 'Shelf '+cellLabel(u,V.cell);
+      ${cellKeys(u).map(k=>`<button class="chip code" data-act="pick-cell" data-c="${k}" aria-pressed="${V.cell===k}">${esc(cellLabel(u,k))}${cellName(u,k)?` <span class="nm">${esc(cellName(u,k))}</span>`:''} <small>${inCell(u.id,k).length}</small></button>`).join('')}</div>` : '';
+  const where = V.cell==='all' ? 'All shelves' : 'Shelf '+cellLabel(u,V.cell)+(cellName(u,V.cell)?' · '+cellName(u,V.cell):'');
+  const cellTools = u.kind==='shelf' && V.cell!=='all' ? `<div class="subname"><label for="cell-name" class="sr">Subtitle for ${esc(cellLabel(u,V.cell))}</label><input id="cell-name" maxlength="28" value="${esc(cellName(u,V.cell))}" placeholder="Name ${esc(cellLabel(u,V.cell))}, e.g. House">
+      <button class="btn sm" data-act="cubby-move" ${inCell(u.id,V.cell).length?'':'disabled'}>Move whole cubby…</button><button class="btn sm" data-act="cubby-swap">Swap with…</button></div>` : '';
+  const filt = `<div class="row" style="margin-top:10px"><button class="chip" data-act="toggle-stale" aria-pressed="${V.stale}">Not played in a year</button>${list.length?`<button class="chip" data-act="toggle-sel" aria-pressed="${!!V.sel}">${V.sel?'Done selecting':'Select records'}</button>`:''}<button class="chip" data-act="stickers" data-u="${u.id}">QR sticker</button></div>`;
   const bagActs = u.kind==='bag' ? `<button class="btn primary" data-act="scan-bag" data-u="${u.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Scan bag</button>
       <button class="btn" data-act="empty-bag" data-u="${u.id}">Unpack to home slots</button>` : '';
   return `<section class="detail" aria-label="${esc(u.name)}">
@@ -652,10 +731,10 @@ function renderDetail(){
       <h2>${esc(u.name)}</h2><div class="row"><span class="idtag">${esc(u.id)}</span><span class="muted" style="font-size:13px">${esc(presetName(u))} · ${esc(u.finish?.name||'')} · ${esc(presetOf(u).cap||'')}</span></div></div>
       <div class="row">${bagActs}<button class="btn" data-act="play-unit"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>Play ${u.kind==='shelf'&&V.cell!=='all'?esc(cellLabel(u,V.cell)):'all'}</button><button class="btn" data-act="edit-unit" data-u="${u.id}">Look & name</button></div></div>
     <div class="detail-grid">
-      <div>${u.photo?`<img class="photo" src="${u.photo}" alt="Photo of ${esc(u.name)}" style="margin-bottom:12px">`:''}<div style="display:grid;place-items:end center">${drawUnit(u,true)}</div>${chips}</div>
+      <div>${u.photo?`<img class="photo" src="${u.photo}" alt="Photo of ${esc(u.name)}" style="margin-bottom:12px">`:''}<div style="display:grid;place-items:end center">${drawUnit(u,true)}</div>${chips}${cellTools}${filt}</div>
       <div class="dig">
         <div class="row" style="justify-content:space-between"><span class="muted" style="font-size:13px;font-weight:600">${u.kind==='shelf'?esc(where):'Inside '+esc(u.name)}</span><span class="code muted" style="font-size:12px">${list.length?(V.dig+1)+' of '+list.length:'empty'}</span></div>
-        ${list.length ? digView(list, cur) : `<div class="empty"><b>${u.kind==='shelf'?esc(where)+' is empty':'Nothing in '+esc(u.name)}</b>Move a record here from any sleeve, or use Add → Record.</div>`}
+        ${list.length ? digView(list, cur) : V.stale ? `<div class="empty"><b>Everything here was played in the last year</b>Turn off “Not played in a year” to see all records.</div>` : `<div class="empty"><b>${u.kind==='shelf'?esc(where)+' is empty':'Nothing in '+esc(u.name)}</b>Move a record here from any sleeve, or use Add → Record.</div>`}
       </div>
     </div>
   </section>`;
@@ -684,16 +763,23 @@ function digView(list, cur){
       <div class="facts"><span><b>${esc(cur.label)}</b>${dot('label')}</span>${cur.catno?`<span class="code">${esc(cur.catno)}</span>`:''}<span class="code">${esc(cur.year||'—')}${dot('year')}</span><span>${esc(cur.style||'')}</span>${cur.bpm?`<span class="code">${esc(cur.bpm)} BPM</span>`:''}${cur.key?`<span class="code">${esc(cur.key)}</span>`:''}${cur.rating?`<span style="color:var(--accent)">${'★'.repeat(cur.rating)}</span>`:''}${cur.cm?`<span>Media ${esc(cur.cm)}</span>`:''}</div>
       ${cur.tags.length?`<div class="tags">${cur.tags.map(t=>`<span class="tagchip">${esc(t)}</span>`).join('')}</div>`:''}
       ${cur.notes?`<p style="margin:8px 0 0;font-size:14px">${esc(cur.notes)}</p>`:''}
-      <div class="row" style="margin-top:12px">${locChip(cur.loc)}${atHome?'':`<span class="muted" style="font-size:12px">home</span>${locChip(cur.home,'home')}`}${hasHome(cur)?'':`<span class="muted" style="font-size:12px">No home shelf yet. Move it to a shelf to set one.</span>`}</div>
+      <div class="row" style="margin-top:12px">${locChip(cur.loc)}${inBag&&fromOf(cur)?`<span class="from">came from</span>${locChip(fromOf(cur),'home')}`:''}${!inBag&&!atHome?`<span class="muted" style="font-size:12px">home</span>${locChip(cur.home,'home')}`:''}${inBag&&hasHome(cur)&&!same(fromOf(cur),cur.home)?`<span class="muted" style="font-size:12px">home</span>${locChip(cur.home,'home')}`:''}${hasHome(cur)?'':`<span class="muted" style="font-size:12px">No home shelf yet. Move it to a shelf to set one.</span>`}</div>
+      ${playsLine(cur)}${dlLine(cur)}
       <div class="row" style="margin-top:14px">
         <button class="btn ink" data-act="move" data-r="${cur.id}">Move…</button>
         ${!inBag&&bag?`<button class="btn" data-act="to-bag" data-r="${cur.id}">Put in bag</button>`:''}
         ${!atHome?`<button class="btn" data-act="go-home" data-r="${cur.id}">Back to ${esc(addrShort(cur.home))}</button>`:''}
         <button class="btn" data-act="edit-rec" data-r="${cur.id}">Edit details</button>
         <button class="btn" data-act="add-to-pl" data-r="${cur.id}">+ Playlist</button>
+        <button class="btn" data-act="log-play" data-r="${cur.id}">Log a play</button>
         <a class="btn ghost" href="${discogsUrl(cur)}" target="_blank" rel="noopener">Discogs ↗</a>
       </div></div>
-    <div class="list">${list.map((r,i)=>`<button class="li ${i===V.dig?'cur':''}" data-act="dig-to" data-i="${i}">${thumb(r)}<span class="t"><b>${esc(r.title)}</b><span>${esc(r.artist)} · ${esc(r.label)}</span></span>${V.cell==='all'&&unit(r.loc.u)?.kind==='shelf'?locChip(r.loc):''}</button>`).join('')}</div>`;
+    <div class="list">${list.map((r,i)=>{
+      const tail = unit(r.loc.u)?.kind!=='shelf' ? (fromOf(r)?`<span class="from">from ${locChip(fromOf(r),'home')}</span>`:'') : (V.cell==='all'?locChip(r.loc):'');
+      const sub = `${esc(r.artist)} · ${esc(r.label)}${isStale(r)&&V.stale?` · <span class="stale">${lastPlayed(r)?'last played '+fmtDate(lastPlayed(r)):'never logged'}</span>`:''}`;
+      return V.sel ? `<label class="li ${V.sel.has(r.id)?'cur':''}"><input type="checkbox" data-sel="${r.id}" ${V.sel.has(r.id)?'checked':''}><span class="t"><b>${esc(r.title)}</b><span>${sub}</span></span>${tail}</label>`
+        : `<button class="li ${i===V.dig?'cur':''}" data-act="dig-to" data-i="${i}">${thumb(r)}<span class="t"><b>${esc(r.title)}</b><span>${sub}</span></span>${tail}</button>`; }).join('')}</div>
+    ${V.sel?`<div class="selbar"><span>${V.sel.size} selected</span><button class="btn sm" data-act="sel-all">Select all</button><button class="btn sm primary" data-act="sel-move" ${V.sel.size?'':'disabled'}>Move ${V.sel.size||''}…</button>${S.units.some(u=>u.kind==='bag')?`<button class="btn sm" data-act="sel-bag" ${V.sel.size?'':'disabled'}>Put in bag</button>`:''}</div>`:''}`;
 }
 function bindSwipe(){
   const st = $('#stage'); if(!st) return;
@@ -705,13 +791,27 @@ function dig(d){ const list = inCell(V.unit,V.cell); if(!list.length) return; V.
 
 /* ---------- moving ---------- */
 let lastUndo = null;
-function moveRecord(id, to){
-  const r = rec(id); const from = {...r.loc}, fromHome = {...r.home};
-  if(same(from,to)) return;
+function snap(records, extra){
+  const saved = records.map(r=>[r, JSON.stringify({loc:r.loc,home:r.home,from:r.from})]);
+  const q = JSON.stringify(S.syncQueue);
+  return () => { saved.forEach(([r,j])=>Object.assign(r, JSON.parse(j))); S.syncQueue = JSON.parse(q); extra?.(); };
+}
+function place(r, to, opts={}){
+  if(same(r.loc,to)) return false;
+  const toShelf = unit(to.u)?.kind==='shelf';
+  if(!toShelf){ if(unit(r.loc.u)?.kind==='shelf') r.from = {...r.loc}; }
+  else { r.from = null; if(opts.setHome!==false) r.home = {...to}; }
   r.loc = {...to};
-  if(unit(to.u)?.kind==='shelf') r.home = {...to};
+  enqueueSync(r);
+  return true;
+}
+const fromOf = r => r.from && unit(r.from.u) ? r.from : (hasHome(r) ? r.home : null);
+function moveRecord(id, to){
+  const r = rec(id);
+  if(same(r.loc,to)) return;
+  lastUndo = snap([r]);
+  place(r, to);
   S.recent = [to, ...S.recent.filter(l=>!same(l,to))].slice(0,3);
-  lastUndo = () => { r.loc = from; r.home = fromHome; };
   closeSheet(); render(); toast(`Moved to ${addrShort(to)}`, true);
 }
 function targetGrid(u, onAct, dataAttrs, hereLoc, homeLoc, sel){
@@ -796,10 +896,11 @@ function scanReview(){
 function scanApply(){
   const moves = [];
   S.records.forEach(r=>{
-    if(scan.found.has(r.id) && r.loc.u!==scan.u){ moves.push([r,{...r.loc}]); r.loc={u:scan.u,c:'0-0'}; }
-    else if(!scan.found.has(r.id) && r.loc.u===scan.u && hasHome(r)){ moves.push([r,{...r.loc}]); r.loc={...r.home}; }
+    if(scan.found.has(r.id) && r.loc.u!==scan.u) moves.push([r,{u:scan.u,c:'0-0'}]);
+    else if(!scan.found.has(r.id) && r.loc.u===scan.u && hasHome(r)) moves.push([r,{...r.home}]);
   });
-  lastUndo = () => moves.forEach(([r,l])=>r.loc=l);
+  lastUndo = snap(moves.map(m=>m[0]));
+  moves.forEach(([r,to])=>place(r,to,{setHome:false}));
   closeSheet(); render(); toast(`${unit(scan.u).name} updated · ${moves.length} moved`, true);
 }
 
@@ -924,7 +1025,7 @@ function applyCustom(px, fin){
 let addRec = null;
 function openAddRecord(){
   const first = (V.view==='unit'&&unit(V.unit)) ? {u:V.unit,c:V.cell==='all'?'0-0':V.cell} : {u:S.units[0].id,c:'0-0'};
-  addRec = {loc:first, found:[], f:{artist:'',title:'',label:'',year:''}};
+  addRec = {loc:first, found:[], f:{artist:'',title:'',label:'',year:'',catno:'',barcode:''}, cands:null, bcMsg:''};
   renderAddRecord();
 }
 function renderAddRecord(){
@@ -935,22 +1036,31 @@ function renderAddRecord(){
     <p class="muted" style="margin:18px 0 10px;font-size:13px">2. Photograph the records, or type them in</p>
     <div class="row">${AI&&AI_IMAGES?`<label class="btn primary file">Photograph ${esc(addrShort(a.loc))}<input type="file" accept="image/*" capture="environment" id="ar-photo" multiple></label>`:''}</div>
     ${AI&&AI_IMAGES?'':`<div class="notice" style="margin-top:0">Photo recognition runs when this page can ask Claude about images. Here, type records in below.</div>`}
+    <div class="bcbox"><div class="row" style="justify-content:space-between"><b style="font-size:14px">Scan a barcode</b><span class="muted" style="font-size:12.5px">Finds the exact pressing on Discogs</span></div>
+      <form class="row" id="bc-form" style="margin-top:8px"><label for="ar-bc" class="sr">Barcode number</label><input id="ar-bc" inputmode="numeric" autocomplete="off" value="${esc(a.f.barcode)}" placeholder="Type the digits under the barcode" style="flex:1 1 200px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:0 12px;min-width:0"><button class="btn" type="submit">Look up</button><label class="btn file">Photo of barcode<input type="file" accept="image/*" capture="environment" id="ar-bcphoto"></label></form>
+      <div id="ar-bcout">${a.bcMsg?`<p class="muted" style="font-size:13px;margin:8px 0 0">${a.bcMsg}</p>`:''}${a.cands?candList(a.cands):''}</div></div>
     <form class="form" id="ar-form" style="margin-top:12px">
       <label class="f">Artist<input id="ar-artist" value="${esc(a.f.artist)}" required placeholder="Larry Heard"></label>
       <label class="f">Title<input id="ar-title" value="${esc(a.f.title)}" required placeholder="Washing Machine"></label>
       <label class="f">Label<input id="ar-label" value="${esc(a.f.label)}" placeholder="Trax Records"></label>
       <label class="f">Year<input id="ar-year" value="${esc(a.f.year)}" inputmode="numeric" placeholder="1986"></label>
-      <div style="display:flex;align-items:end"><button class="btn primary" type="submit">File into ${esc(addrShort(a.loc))}</button></div>
+      <label class="f">Cat no.<input id="ar-catno" value="${esc(a.f.catno)}" placeholder="TX-117"></label>
+      <div style="display:flex;align-items:end"><button class="btn primary" type="submit" id="ar-submit">File into ${esc(addrShort(a.loc))}</button></div>
     </form>
+    <div id="ar-dupe"></div>
     <div id="ar-out">${a.found.length?foundList():''}</div>`);
   $('#ar-form').onsubmit = e => { e.preventDefault();
-    fileRecords([{artist:$('#ar-artist').value.trim(),title:$('#ar-title').value.trim(),label:$('#ar-label').value.trim(),year:$('#ar-year').value.trim()}]); };
-  ['artist','title','label','year'].forEach(k=>{ const el=$('#ar-'+k); el.oninput=()=>{ a.f[k]=el.value; }; });
+    fileRecords([{artist:$('#ar-artist').value.trim(),title:$('#ar-title').value.trim(),label:$('#ar-label').value.trim(),year:$('#ar-year').value.trim(),catno:$('#ar-catno').value.trim(),barcode:a.f.barcode}]); };
+  ['artist','title','label','year','catno'].forEach(k=>{ const el=$('#ar-'+k); el.oninput=()=>{ a.f[k]=el.value; showDupe(); }; });
+  $('#ar-bc').oninput = e => { a.f.barcode = e.target.value.replace(/\D/g,''); };
+  $('#bc-form').onsubmit = e => { e.preventDefault(); lookupBarcode($('#ar-bc').value); };
+  $('#ar-bcphoto').onchange = e => scanBarcodePhoto(e.target.files[0]);
+  showDupe();
   const ph = $('#ar-photo'); if(ph) ph.onchange = () => identifyShelf(ph.files);
   bindFound();
 }
 function foundList(){
-  return `<div class="pick">${addRec.found.map((f,i)=>`<label><input type="checkbox" data-found="${i}" ${f.keep?'checked':''}><span class="thumb" style="background:var(--surface-2)"></span><span class="t"><b>${esc(f.title)}</b><span>${esc([f.artist,f.label,f.year].filter(Boolean).join(' · '))}${f.confidence?' · '+esc(f.confidence)+' confidence':''}</span></span><a class="btn ghost sm" href="${discogsUrl(f)}" target="_blank" rel="noopener">Discogs ↗</a></label>`).join('')}</div>
+  return `<div class="pick">${addRec.found.map((f,i)=>{ const d = findDupes(f.artist,f.title)[0]; return `<label><input type="checkbox" data-found="${i}" ${f.keep?'checked':''}><span class="thumb" style="background:var(--surface-2)"></span><span class="t"><b>${esc(f.title)}</b><span>${esc([f.artist,f.label,f.year].filter(Boolean).join(' · '))}${f.confidence?' · '+esc(f.confidence)+' confidence':''}</span></span>${d?`<span class="pill own" title="You already own this">Own it · ${esc(addrShort(d.loc))}</span>`:`<a class="btn ghost sm" href="${discogsUrl(f)}" target="_blank" rel="noopener">Discogs ↗</a>`}</label>`; }).join('')}</div>
     <div class="row" style="margin-top:12px"><button class="btn primary" data-act="file-found">Add to ${esc(addrShort(addRec.loc))}</button></div>`;
 }
 function bindFound(){ document.querySelectorAll('[data-found]').forEach(cb=>cb.onchange=()=>{ addRec.found[+cb.dataset.found].keep = cb.checked; }); }
@@ -959,7 +1069,7 @@ async function identifyShelf(files){
   const out = $('#ar-out'); out.innerHTML = `<div class="notice">Reading the sleeves…</div>`;
   try{
     const res = await AI.json(`This photo shows vinyl records on a DJ's shelf, in a crate or in a bag — sleeves, center labels or spines. List every record you can actually read. Reply with only a JSON array like [{"artist":"...","title":"...","label":"...","year":1990,"confidence":"high"}]. Use null for fields you cannot read and "low" confidence when unsure. Never invent records you cannot see.`, {images: files});
-    addRec.found = (Array.isArray(res)?res:[]).filter(x=>x&&x.title).slice(0,40).map(x=>({artist:x.artist||'Unknown artist',title:String(x.title),label:x.label||'',year:x.year||'',confidence:x.confidence||'',keep:x.confidence!=='low'}));
+    addRec.found = (Array.isArray(res)?res:[]).filter(x=>x&&x.title).slice(0,40).map(x=>({artist:x.artist||'Unknown artist',title:String(x.title),label:x.label||'',year:x.year||'',confidence:x.confidence||'',keep:x.confidence!=='low' && !findDupes(x.artist||'',String(x.title)).length}));
     out.innerHTML = addRec.found.length ? foundList() : `<div class="notice">No readable sleeves in that photo. Try straight-on, with more light.</div>`;
     bindFound();
   }catch(e){ out.innerHTML = `<div class="notice"><b>Couldn't read that photo.</b> ${e.code==='not_granted'?'Claude access was declined for this page.':'Try again, or type the record in above.'}</div>`; }
@@ -967,8 +1077,9 @@ async function identifyShelf(files){
 function fileRecords(list){
   const loc = {...addRec.loc};
   list.forEach(f=>{ const h = hash(f.artist+f.title);
-    S.records.push({id:uid('n'), artist:f.artist||'Unknown artist', title:f.title, label:f.label||'', catno:'', year:f.year||'', style:'', yt:[], loc:{...loc}, home:unit(loc.u).kind==='shelf'?{...loc}:null, pal:PAL[h%PAL.length], pat:h%6,
-      bpm:'',key:'',rating:0,cm:'',cs:'',notes:'',tags:[],custom:[],orig:{artist:f.artist||'Unknown artist',title:f.title,label:f.label||'',catno:'',year:f.year||'',style:''}}); });
+    const nr = {id:uid('n'), artist:f.artist||'Unknown artist', title:f.title, label:f.label||'', catno:f.catno||'', barcode:f.barcode||'', year:f.year||'', style:'', yt:[], loc:{...loc}, home:unit(loc.u).kind==='shelf'?{...loc}:null, from:null, plays:[], pal:PAL[h%PAL.length], pat:h%6,
+      bpm:'',key:'',rating:0,cm:'',cs:'',notes:'',tags:[],custom:[],orig:{artist:f.artist||'Unknown artist',title:f.title,label:f.label||'',catno:f.catno||'',year:f.year||'',style:''}};
+    S.records.push(nr); enqueueSync(nr); });
   closeSheet(); V.view='unit'; V.unit=loc.u; V.cell=unit(loc.u).kind==='shelf'?loc.c:'all'; V.dig=inCell(V.unit,V.cell).length-1; render();
   toast(`${list.length} filed into ${addrShort(loc)}`);
 }
@@ -1114,10 +1225,333 @@ function openSettings(){
   openSheet(`<div class="sheet-head"><h2>Settings</h2><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
     <p class="muted" style="margin:0 0 8px;font-size:13px">Accent color</p>
     <div class="swatches">${[['red','Signal red','#D2412C'],['brass','Brass','#B8862F'],['cyan','Booth cyan','#0EA5E9']].map(([k,n,h])=>`<button class="sw" data-act="set-accent" data-a="${k}" aria-pressed="${S.settings.accent===k}"><i style="background:${h}"></i>${n}</button>`).join('')}</div>
-    <p class="muted" style="font-size:13px;margin-top:18px">Shelf slots are named by row letter and column number: A1–A4 on the top row, B1–B4 below, then C, D… Codes always include the unit ID (K1·B2), so they never read like a side-B track number.</p>
+    <div class="bcbox" style="margin-top:18px"><label class="row" style="justify-content:space-between;cursor:pointer;flex-wrap:nowrap"><span><b style="font-size:14px">Save locations to Discogs</b><br><span class="muted" style="font-size:13px">Writes each record's spot (e.g. “K1·A2 (Acid)”) to a “Location” field in your Discogs collection, so you see it in the Discogs app too.</span></span><input type="checkbox" id="set-dsync" ${S.settings.discogsSync?'checked':''} style="width:22px;height:22px;accent-color:var(--accent);flex:0 0 auto"></label>
+      ${S.settings.discogsSync?`<div class="row" style="margin-top:10px;justify-content:space-between"><span class="muted" style="font-size:13px">${S.syncQueue.filter(q=>q.status==='pending').length} updates waiting · ${S.records.filter(r=>r.dl===discogsLocValue(r)).length} of ${S.records.length} saved</span><button class="btn sm" data-act="sync-run">Sync now (demo)</button></div><p class="muted" style="font-size:12px;margin:6px 0 0">This preview can't reach Discogs. In the app, a server job sends these updates within the 60-requests-a-minute limit.</p>`:''}</div>
+    <p class="muted" style="font-size:13px;margin-top:18px">Shelf slots are named by row letter and column number: A1–A4 on the top row, B1–B4 below, then C, D… Codes always include the unit ID (K1·B2), so they never read like a side-B track number. Give any cubby a subtitle like “House” from its shelf view.</p>
     <p class="muted" style="font-size:13px">Each unit's finish or bag color is set from its own page: open it and tap “Look & name”.</p>
     <div class="row" style="margin-top:18px"><button class="btn" data-act="reset">Reset demo collection</button></div><div id="reset-confirm"></div>`);
+  $('#set-dsync').onchange = e => { S.settings.discogsSync = e.target.checked; if(e.target.checked) S.records.forEach(enqueueSync); save(); setTimeout(()=>{ render(); openSettings(); },0); };
 }
+
+
+/* =====================================================================
+   FEATURES: duplicates, barcodes, Discogs location, plays, gigs,
+   cubby subtitles & moves, multi-select, QR stickers, deep links
+   ===================================================================== */
+const norm = s => String(s||'').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g,'').replace(/^the\s+/,'').replace(/[^a-z0-9]+/g,' ').trim();
+function findDupes(artist, title, barcode){
+  const a = norm(artist), t = norm(title), b = String(barcode||'').replace(/\D/g,'');
+  return S.records.filter(r => (b && r.barcode && r.barcode===b) || (t && norm(r.title)===t && (!a || norm(r.artist)===a || norm(r.artist).includes(a) || a.includes(norm(r.artist)))));
+}
+function showDupe(){
+  const box = $('#ar-dupe'); if(!box) return;
+  const f = addRec.f; const d = (f.title||f.barcode) ? findDupes(f.artist, f.title, f.barcode) : [];
+  const btn = $('#ar-submit');
+  if(!d.length){ box.innerHTML=''; if(btn) btn.textContent = 'File into '+addrShort(addRec.loc); return; }
+  box.innerHTML = `<div class="warn" role="status"><span>You already own <b>${esc(d[0].title)}</b>${d.length>1?` (${d.length} copies)`:''}. It's in <b>${esc(addrLong(d[0].loc))}</b>.</span><button class="btn sm" data-act="goto-rec" data-r="${d[0].id}">Show it</button></div>`;
+  if(btn) btn.textContent = 'Add another copy';
+}
+
+/* ---- barcodes ---- */
+function candList(c){
+  return `<p class="muted" style="font-size:12.5px;margin:10px 0 4px">${c.note}</p>${c.items.map((x,i)=>{ const d = findDupes(x.artist,x.title,x.barcode)[0];
+    return `<div class="cand"><span class="t"><b>${esc(x.artist)} – ${esc(x.title)}</b><span>${esc([x.label, x.catno, x.format, x.country, x.year].filter(Boolean).join(' · '))}</span>${d?`<span class="pill own" style="margin-top:4px;display:inline-block">You own a copy · ${esc(addrShort(d.loc))}</span>`:''}</span><button class="btn sm ${i?'':'primary'}" data-act="bc-pick" data-i="${i}">Use this</button></div>`; }).join('')}`;
+}
+function lookupBarcode(raw){
+  const code = String(raw||'').replace(/\D/g,'');
+  const a = addRec; a.f.barcode = code;
+  if(code.length<8){ a.bcMsg = 'Barcodes on records are usually 12 or 13 digits. Check the number and try again.'; a.cands=null; renderAddRecord(); return; }
+  const own = findDupes('', '', code);
+  // Real app: GET /database/search?barcode=<code>&type=release&format=Vinyl on the server (needs a Discogs token).
+  a.bcMsg = own.length ? `You already own a record with barcode ${code}: <b>${esc(own[0].title)}</b>, in ${esc(addrLong(own[0].loc))}.` : '';
+  a.cands = {note:'Example pressings. This preview can’t call Discogs; in the app these are the real Discogs matches for '+code+', so you can pick your exact pressing.', items:[
+    {artist:'Example Artist', title:'Example Track', label:'Example Records', catno:'EX-001', format:'12", 33⅓ RPM', country:'US', year:1992, barcode:code},
+    {artist:'Example Artist', title:'Example Track', label:'Example Records UK', catno:'EXT 1', format:'12", 45 RPM', country:'UK', year:1993, barcode:code},
+    {artist:'Example Artist', title:'Example Track (Remastered)', label:'Example Reissues', catno:'EXR-001', format:'12", Reissue', country:'Europe', year:2015, barcode:code},
+  ]};
+  renderAddRecord();
+}
+let zxingLoading = null;
+function loadZXing(){
+  if(window.ZXing) return Promise.resolve(window.ZXing);
+  return zxingLoading ||= new Promise((res,rej)=>{ const s = document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js'; s.onload=()=>res(window.ZXing); s.onerror=()=>{ zxingLoading=null; rej('blocked'); }; document.head.appendChild(s); setTimeout(()=>rej('timeout'), 12000); });
+}
+async function scanBarcodePhoto(file){
+  if(!file) return;
+  const out = $('#ar-bcout'); out.innerHTML = `<p class="muted" style="font-size:13px;margin:8px 0 0">Reading the barcode…</p>`;
+  const url = URL.createObjectURL(file);
+  let code = '';
+  try{
+    if('BarcodeDetector' in window){
+      const img = await createImageBitmap(file);
+      const det = new BarcodeDetector({formats:['ean_13','upc_a','ean_8','upc_e']});
+      code = (await det.detect(img))[0]?.rawValue || '';
+    }
+  }catch(e){}
+  if(!code){ try{ const Z = await loadZXing(); const r = await new Z.BrowserMultiFormatReader().decodeFromImageUrl(url); code = r?.getText?.() || r?.text || ''; }catch(e){} }
+  if(!code && AI && AI_IMAGES){ try{ const j = await AI.json('This photo shows the barcode on a vinyl record sleeve. Reply with only JSON {"barcode":"digits"} using the digits printed under the bars, or {"barcode":null} if you cannot read them. Never guess digits.', {images:[file], modelTier:'quick'}); code = String(j?.barcode||'').replace(/\D/g,''); }catch(e){} }
+  URL.revokeObjectURL(url);
+  if(code){ $('#ar-bc').value = code; lookupBarcode(code); }
+  else out.innerHTML = `<p class="muted" style="font-size:13px;margin:8px 0 0">Couldn't read a barcode in that photo. Fill the frame with the bars and avoid glare, or type the digits.</p>`;
+}
+
+/* ---- Discogs Location field ---- */
+function discogsLocValue(r){
+  const u = unit(r.loc.u); if(!u) return '';
+  if(u.kind==='shelf'){ const n = cellName(u,r.loc.c); return `${u.id}·${cellLabel(u,r.loc.c)}${n?` (${n})`:''}`; }
+  return `${u.kind==='bag'?'Bag':'Crate'}: ${u.name}`;
+}
+function enqueueSync(r){
+  if(!S.settings?.discogsSync) return;
+  const value = discogsLocValue(r);
+  S.syncQueue = S.syncQueue.filter(q=>q.r!==r.id);
+  if(r.dl!==value) S.syncQueue.push({r:r.id, value, at:Date.now(), status:'pending'});
+}
+function dlLine(r){
+  if(!S.settings.discogsSync) return '';
+  const v = discogsLocValue(r), saved = r.dl===v;
+  return `<div class="dl">Discogs Location: <span class="code">${esc(v)}</span><span class="pill ${saved?'ok':'muted'}">${saved?'Saved':'Waiting to sync'}</span></div>`;
+}
+
+/* ---- plays / set history ---- */
+const DAY = 864e5;
+const lastPlayed = r => (r.plays||[]).map(p=>p.d).sort().pop() || '';
+const isStale = r => { const l = lastPlayed(r); return !l || (Date.now() - new Date(l+'T12:00:00').getTime()) > 365*DAY; };
+const fmtDate = d => d ? new Date(d+'T12:00:00').toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}) : '';
+const todayISO = () => { const d = new Date(); return new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10); };
+function playsLine(r){
+  const ps = (r.plays||[]).slice().sort((a,b)=>b.d.localeCompare(a.d));
+  if(!ps.length) return `<div class="plays">Never logged as played.</div>`;
+  return `<div class="plays">Last played <b>${fmtDate(ps[0].d)}</b>${ps[0].venue?' at '+esc(ps[0].venue):''} · ${ps.length} play${ps.length>1?'s':''}${isStale(r)?' · <span class="stale">over a year ago</span>':''}
+    ${ps.length>1?`<ul>${ps.slice(1,5).map(p=>`<li>${fmtDate(p.d)}${p.venue?' · '+esc(p.venue):''}</li>`).join('')}</ul>`:''}</div>`;
+}
+function openLogPlay(id){
+  const r = rec(id);
+  openSheet(`<div class="sheet-head"><div><div class="kicker">${esc(r.artist)}</div><h2>Log a play</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <form class="form" id="lp-form"><label class="f">Date<input id="lp-date" type="date" value="${todayISO()}" required></label><label class="f">Where<input id="lp-venue" placeholder="Venue or party"></label>
+    <div style="display:flex;align-items:end"><button class="btn primary" type="submit">Log ${esc(r.title)}</button></div></form>`);
+  $('#lp-form').onsubmit = e => { e.preventDefault(); const p = {d:$('#lp-date').value||todayISO(), venue:$('#lp-venue').value.trim()}; r.plays.push(p);
+    lastUndo = () => { r.plays = r.plays.filter(x=>x!==p); }; closeSheet(); render(); toast('Play logged', true); };
+}
+function openStale(){
+  const list = S.records.filter(isStale).sort((a,b)=>(lastPlayed(a)||'0').localeCompare(lastPlayed(b)||'0'));
+  openSheet(`<div class="sheet-head"><div><div class="kicker">Dig list</div><h2>Not played in a year</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    ${list.length?`<div class="pick">${list.map(r=>`<div class="check" style="grid-template-columns:44px minmax(0,1fr) auto">${thumb(r)}<span class="t"><b>${esc(r.title)}</b><span>${esc(r.artist)} · ${lastPlayed(r)?'last played '+fmtDate(lastPlayed(r)):'never logged'}</span></span><button class="btn ghost sm" data-act="goto-rec" data-r="${r.id}">${esc(addrShort(r.loc))}</button></div>`).join('')}</div>
+    <div class="row" style="margin-top:12px"><button class="btn primary" data-act="stale-play">Play these</button><button class="btn" data-act="stale-pl">Save as playlist</button></div>`:`<div class="empty"><b>Everything has been played this year</b>Nice rotation.</div>`}`);
+}
+
+/* ---- cubby subtitle, whole-cubby move, swap, multi-select ---- */
+document.addEventListener('change', e=>{
+  if(e.target.id==='cell-name'){ const u = unit(V.unit); const v = e.target.value.trim(); if(v) u.labels[V.cell]=v; else delete u.labels[V.cell];
+    inCell(u.id,V.cell).forEach(enqueueSync); setTimeout(()=>{ render(); toast(v?`${cellLabel(u,V.cell)} is now “${v}”`:`Subtitle removed from ${cellLabel(u,V.cell)}`); },0); }
+  if(e.target.dataset?.sel){ const id = e.target.dataset.sel; e.target.checked ? V.sel.add(id) : V.sel.delete(id); setTimeout(render,0); }
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Enter' && e.target.id==='cell-name'){ e.preventDefault(); e.target.blur(); } });
+function openCubbyMove(mode){
+  const u = unit(V.unit), src = {u:u.id, c:V.cell}, n = inCell(u.id,V.cell).length;
+  const nm = cellName(u,V.cell);
+  const units = mode==='swap' ? S.units.filter(x=>x.kind==='shelf') : S.units;
+  openSheet(`<div class="sheet-head"><div><div class="kicker">${esc(u.name)} · shelf ${esc(cellLabel(u,V.cell))}${nm?' · '+esc(nm):''} · ${n} record${n===1?'':'s'}</div><h2>${mode==='swap'?'Swap with another cubby':'Move the whole cubby'}</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <p class="muted" style="margin:0 0 10px;font-size:13px">${mode==='swap'?'Both cubbies trade records. Home slots follow the records.':'Every record in this cubby goes to the spot you tap. Moving to a shelf makes it their new home; a bag keeps their home so you can unpack later.'}</p>
+    ${nm||mode==='swap'?`<label class="row" style="margin-bottom:12px;font-size:14px;cursor:pointer"><input type="checkbox" id="cm-label" checked style="width:18px;height:18px;accent-color:var(--accent)"> ${mode==='swap'?'Swap the subtitles too':`Bring the subtitle “${esc(nm)}” along`}</label>`:''}
+    <div class="targets">${units.map(t=>targetGrid(t, mode==='swap'?'swap-to':'cubby-to', '', src, null)).join('')}</div>`);
+}
+function cubbyMove(to){
+  const u = unit(V.unit), from = V.cell, recs = inCell(u.id, from);
+  const keepLabel = $('#cm-label')?.checked !== false;
+  const tu = unit(to.u), lab0 = JSON.stringify(u.labels), lab1 = JSON.stringify(tu.labels||{});
+  lastUndo = snap(recs, ()=>{ u.labels = JSON.parse(lab0); tu.labels = JSON.parse(lab1); });
+  recs.forEach(r=>place(r,to));
+  if(tu.kind==='shelf' && keepLabel && u.labels[from]){ tu.labels[to.c] = u.labels[from]; if(!(tu===u && to.c===from)) delete u.labels[from]; }
+  closeSheet();
+  if(tu.kind==='shelf'){ V.unit = tu.id; V.cell = to.c; V.flash = to.c; } else { V.unit = tu.id; V.cell = 'all'; }
+  render(); setTimeout(()=>{ V.flash=null; }, 2600);
+  toast(`Moved ${recs.length} from ${u.id}·${cellLabel(u,from)} to ${addrShort(to)}`, true);
+}
+function cubbySwap(to){
+  const u = unit(V.unit), a = {u:u.id,c:V.cell}, tu = unit(to.u);
+  const A1 = inCell(a.u,a.c), B1 = inCell(to.u,to.c);
+  const keepLabel = $('#cm-label')?.checked !== false;
+  const lab0 = JSON.stringify(u.labels), lab1 = JSON.stringify(tu.labels);
+  lastUndo = snap([...A1,...B1], ()=>{ u.labels = JSON.parse(lab0); tu.labels = JSON.parse(lab1); });
+  A1.forEach(r=>place(r,to)); B1.forEach(r=>place(r,a));
+  if(keepLabel){ const la = u.labels[a.c], lb = tu.labels[to.c]; if(lb) u.labels[a.c]=lb; else delete u.labels[a.c]; if(la) tu.labels[to.c]=la; else delete tu.labels[to.c]; }
+  closeSheet(); render(); toast(`Swapped ${u.id}·${cellLabel(u,a.c)} and ${addrShort(to)}`, true);
+}
+function openMultiMove(){
+  const ids = [...V.sel];
+  openSheet(`<div class="sheet-head"><div><div class="kicker">${ids.length} selected</div><h2>Move ${ids.length} record${ids.length===1?'':'s'}</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <div class="targets">${S.units.map(t=>targetGrid(t,'multi-to','',null,null)).join('')}</div>`);
+}
+function multiMove(to){
+  const recs = [...V.sel].map(rec).filter(Boolean);
+  lastUndo = snap(recs); let n = 0; recs.forEach(r=>{ if(place(r,to)) n++; });
+  V.sel = null; closeSheet(); render(); toast(`Moved ${n} to ${addrShort(to)}`, true);
+}
+
+/* ---- gigs: packing list, load-out, return ---- */
+const GIG_STEPS = [['planning','Plan'],['packing','Load out'],['out','At the gig'],['return','Back home']];
+const gigStepIdx = g => g.status==='done' ? 4 : GIG_STEPS.findIndex(s=>s[0]===g.status);
+const curGig = () => S.gigs.find(g=>g.id===V.gig);
+function renderGigs(){
+  const g = curGig();
+  const sorted = S.gigs.slice().sort((a,b)=>b.date.localeCompare(a.date));
+  const cards = sorted.map(x=>{ const st = x.status==='done'?'Done':GIG_STEPS[gigStepIdx(x)][1];
+    return `<button class="gigcard" data-act="open-gig" data-g="${x.id}" aria-pressed="${x.id===V.gig}"><span class="d">${fmtDate(x.date)}${x.venue?' · '+esc(x.venue):''}</span><b>${esc(x.name)}</b><span class="row" style="gap:6px"><span class="pill ${x.status==='done'?'ok':'muted'}">${st}</span><span class="muted" style="font-size:13px">${x.items.length} records${unit(x.bag)?' · '+esc(unit(x.bag).name):''}</span></span></button>`; }).join('');
+  return `<div class="sec-head"><div><div class="kicker">Pack, play, bring it all home</div><h2>Gigs</h2></div><button class="btn primary" data-act="new-gig">+ New gig</button></div>
+    <div class="giggrid">${cards||`<div class="empty"><b>No gigs yet</b>Make one to build a packing list and track what you played.</div>`}</div>
+    ${g?renderGig(g):''}`;
+}
+function renderGig(g){
+  const idx = gigStepIdx(g), bag = unit(g.bag);
+  const items = g.items.map(it=>({...it, rec:rec(it.r)})).filter(it=>it.rec);
+  const packed = items.filter(it=>it.packed).length, back = items.filter(it=>it.packed&&it.back).length, played = items.filter(it=>it.played).length;
+  const steps = `<ol class="steps">${GIG_STEPS.map((s,i)=>`<li class="${i<idx?'done':i===idx?'on':''}">${s[1]}</li>`).join('')}</ol>`;
+  let body = '', actions = '';
+  const row = (it, ctl) => `<div class="check">${ctl}${thumb(it.rec)}<span class="t"><b>${esc(it.rec.title)}</b><span>${esc(it.rec.artist)} · now ${esc(addrShort(it.rec.loc))}${hasHome(it.rec)?' · home '+esc(addrShort(it.rec.home)):''}</span></span><span></span></div>`;
+  if(g.status==='planning'){
+    body = items.length ? items.map(it=>`<div class="check"><span></span>${thumb(it.rec)}<span class="t"><b>${esc(it.rec.title)}</b><span>${esc(it.rec.artist)} · ${esc(addrShort(it.rec.loc))}</span></span><button class="mini-btn" data-act="gig-rm" data-r="${it.r}" aria-label="Remove ${esc(it.rec.title)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>`).join('') : `<div class="empty" style="margin-top:12px"><b>No records yet</b>Add records or start from a playlist.</div>`;
+    actions = `<button class="btn" data-act="gig-add">+ Add records</button>${S.playlists.length?`<label class="sr" for="gig-pl">Add a playlist</label><select id="gig-pl" style="height:40px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:0 10px"><option value="">Add a playlist…</option>${S.playlists.map(p=>`<option value="${p.id}">${esc(p.name)} (${p.items.length})</option>`).join('')}</select>`:''}<button class="btn primary" data-act="gig-next" ${items.length&&bag?'':'disabled'}>Start load-out</button>`;
+  } else if(g.status==='packing'){
+    body = `<p class="muted" style="margin:0;font-size:13.5px">Tick each record as it goes into ${esc(bag?.name||'the bag')}. Crates moves it there and remembers where it came from.</p><div class="bar"><i style="width:${items.length?packed/items.length*100:0}%"></i></div><p class="code muted" style="font-size:12px;margin:6px 0 0">${packed} of ${items.length} packed</p>`
+      + items.map(it=>row(it, `<input type="checkbox" data-gig="pack" data-r="${it.r}" ${it.packed?'checked':''} aria-label="Packed ${esc(it.rec.title)}">`)).join('');
+    actions = `<button class="btn" data-act="gig-back">Back to plan</button><button class="btn primary" data-act="gig-next">${packed<items.length?`Head out (${items.length-packed} left behind)`:'All packed, head out'}</button>`;
+  } else if(g.status==='out'){
+    body = `<p class="muted" style="margin:0;font-size:13.5px">Tick what you played tonight. It goes into each record's set history.</p>`
+      + items.filter(it=>it.packed).map(it=>row(it, `<input type="checkbox" data-gig="played" data-r="${it.r}" ${it.played?'checked':''} aria-label="Played ${esc(it.rec.title)}">`)).join('');
+    actions = `<button class="btn primary" data-act="gig-next">I'm home, unpack</button>`;
+  } else if(g.status==='return'){
+    body = `<p class="muted" style="margin:0;font-size:13.5px">Tick each record as it goes back on its shelf. Anything left unticked is flagged as missing.</p><div class="bar"><i style="width:${packed?back/packed*100:0}%"></i></div><p class="code muted" style="font-size:12px;margin:6px 0 0">${back} of ${packed} back home</p>`
+      + items.filter(it=>it.packed).map(it=>row(it, `<input type="checkbox" data-gig="back" data-r="${it.r}" ${it.back?'checked':''} aria-label="Back home ${esc(it.rec.title)}">`)).join('');
+    actions = `<button class="btn primary" data-act="gig-next">Finish</button>`;
+  } else {
+    const missing = items.filter(it=>it.packed && !it.back);
+    body = `<p style="margin:0">Played <b>${played}</b> of ${packed} packed records. ${missing.length?`<span class="stale">${missing.length} not checked back in:</span>`:'Everything came home.'}</p>`
+      + missing.map(it=>row(it, `<span class="pill own" style="justify-self:start">Missing</span>`)).join('')
+      + `<div class="plays"><b>Played</b><ul>${items.filter(it=>it.played).map(it=>`<li>${esc(it.rec.artist)} – ${esc(it.rec.title)}</li>`).join('')||'<li>Nothing logged</li>'}</ul></div>`;
+    actions = missing.length ? `<button class="btn" data-act="gig-reopen">Check in more</button>` : '';
+  }
+  return `<section class="gig" aria-label="${esc(g.name)}">
+    <div class="row" style="justify-content:space-between;align-items:flex-start"><div style="min-width:0"><span class="code muted" style="font-size:12.5px">${fmtDate(g.date)}${g.venue?' · '+esc(g.venue):''}</span><h2 style="margin:4px 0 0;font-family:var(--f-display);font-weight:800;font-size:32px;text-transform:uppercase;letter-spacing:.02em;line-height:1">${esc(g.name)}</h2>
+      <span class="muted" style="font-size:13px">${items.length} records · bag ${bag?esc(bag.name):'not set'}</span></div>
+      <div class="row"><button class="btn sm" data-act="gig-play" ${items.length?'':'disabled'}>Play the list</button><button class="btn sm danger" data-act="gig-del">Delete</button></div></div>
+    ${steps}<div style="margin-top:10px">${body}</div><div class="row" style="margin-top:14px">${actions}</div><div id="gig-confirm"></div></section>`;
+}
+function openNewGig(){
+  const bags = S.units.filter(u=>u.kind!=='shelf');
+  openSheet(`<div class="sheet-head"><h2>New gig</h2><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <form class="form" id="ng-form">
+      <label class="f">Name<input id="ng-name" required placeholder="Friday at the warehouse"></label>
+      <label class="f">Venue<input id="ng-venue" placeholder="Venue or party"></label>
+      <label class="f">Date<input id="ng-date" type="date" value="${todayISO()}" required></label>
+      <label class="f">Bag or crate<select id="ng-bag">${bags.map(b=>`<option value="${b.id}">${esc(b.name)} (${b.id})</option>`).join('')}</select></label>
+      <label class="f">Start from<select id="ng-pl"><option value="">Empty list</option>${S.playlists.map(p=>`<option value="${p.id}">${esc(p.name)} (${p.items.length})</option>`).join('')}</select></label>
+      <div style="display:flex;align-items:end"><button class="btn primary" type="submit" ${bags.length?'':'disabled'}>Create gig</button></div>
+    </form>${bags.length?'':'<div class="notice">Add a record bag or crate first. That is where the gig gets packed.</div>'}`);
+  $('#ng-form').onsubmit = e => { e.preventDefault();
+    const pl = S.playlists.find(p=>p.id===$('#ng-pl').value);
+    const g = {id:uid('g'), name:$('#ng-name').value.trim()||'Gig', venue:$('#ng-venue').value.trim(), date:$('#ng-date').value||todayISO(), bag:$('#ng-bag').value, status:'planning', items:(pl?.items||[]).map(r=>({r,packed:false,played:false,back:false}))};
+    S.gigs.push(g); V.gig = g.id; closeSheet(); render(); toast('Gig created'); };
+}
+function gigCheck(kind, rid, on){
+  const g = curGig(); const it = g?.items.find(x=>x.r===rid); const r = rec(rid); if(!it||!r) return;
+  if(kind==='pack'){ it.packed = on; if(on) place(r,{u:g.bag,c:'0-0'}); else if(fromOf(r)) place(r,{...fromOf(r)},{setHome:false}); }
+  if(kind==='played'){ it.played = on; r.plays = (r.plays||[]).filter(p=>p.gig!==g.id); if(on) r.plays.push({d:g.date, venue:g.venue||g.name, gig:g.id}); }
+  if(kind==='back'){ it.back = on; if(on && hasHome(r)) place(r,{...r.home},{setHome:false}); else if(!on) place(r,{u:g.bag,c:'0-0'}); }
+  setTimeout(render,0);
+}
+document.addEventListener('change', e=>{
+  const k = e.target.dataset?.gig; if(k) gigCheck(k, e.target.dataset.r, e.target.checked);
+  if(e.target.id==='gig-pl' && e.target.value){ const g = curGig(), p = S.playlists.find(x=>x.id===e.target.value); let n=0; p.items.forEach(r=>{ if(!g.items.some(i=>i.r===r)){ g.items.push({r,packed:false,played:false,back:false}); n++; } }); setTimeout(()=>{ render(); toast(`${n} added from ${p.name}`); },0); }
+});
+
+/* ---- QR stickers ---- */
+const ARTIFACT_URL = 'https://claude.ai/artifact/JcYvbywAtZvY3rQvNGj5k2';
+const IN_ARTIFACT = !!window.claude;
+const BASE_URL = (IN_ARTIFACT || location.protocol==='file:' || /^(localhost|127\.)/.test(location.hostname) || /claude/.test(location.hostname)) ? ARTIFACT_URL : location.origin + location.pathname;
+const stickerToken = (u, c) => c==null ? u.id : `${u.id}-${cellLabel(u,c)}`;
+function qrPath(text){
+  if(typeof qrcode!=='function') return null;
+  const q = qrcode(0,'M'); q.addData(text); q.make();
+  const n = q.getModuleCount(); let d = '';
+  for(let r=0;r<n;r++) for(let c=0;c<n;c++) if(q.isDark(r,c)) d += `M${c} ${r}h1v1h-1z`;
+  return {n, d};
+}
+function stickerSVG(it, inches){
+  const S96 = Math.round(inches*96), url = BASE_URL + '#' + it.token, qr = qrPath(url);
+  if(!qr) return '';
+  const pad = S96*0.06, qs = S96*0.70, q0 = (S96-qs)/2, mod = qs/(qr.n+2);
+  const big = inches>=1.4, fs1 = S96*(big?0.105:0.13), fs2 = S96*0.07;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${S96} ${S96}" width="${S96}" height="${S96}"><rect x=".5" y=".5" width="${S96-1}" height="${S96-1}" rx="${S96*0.06}" fill="#fff" stroke="#d8d8d8"/>
+    <g transform="translate(${q0+mod} ${pad}) scale(${mod})"><path d="${qr.d}" fill="#111"/></g>
+    <text x="${S96/2}" y="${pad+qs+fs1*0.95}" text-anchor="middle" font-family="Arial Narrow,Arial,Helvetica,sans-serif" font-weight="700" font-size="${fs1}" fill="#111">${esc(it.code)}</text>
+    ${big&&it.sub?`<text x="${S96/2}" y="${pad+qs+fs1+fs2*1.25}" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="${fs2}" fill="#555">${esc(it.sub.slice(0,26))}</text>`:''}</svg>`;
+}
+const stk = {units:null, cubbies:true, size:1.5};
+function stickerItems(){
+  const out = [];
+  S.units.filter(u=>stk.units.has(u.id)).forEach(u=>{
+    out.push({token:stickerToken(u), code:u.id, sub:u.name});
+    if(u.kind==='shelf' && stk.cubbies) cellKeys(u).forEach(k=>out.push({token:stickerToken(u,k), code:`${u.id}·${cellLabel(u,k)}`, sub:cellName(u,k)||u.name}));
+  });
+  return out;
+}
+function openStickers(uid0){ stk.units = new Set(uid0 ? [uid0] : S.units.map(u=>u.id)); renderStickers(); }
+function renderStickers(){
+  const items = stickerItems(), ok = typeof qrcode==='function', pages = ok ? sheetPages(items).length : 0;
+  openSheet(`<div class="sheet-head"><div><div class="kicker">Scan one with your phone to open that shelf</div><h2>QR stickers</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <div class="chips" style="margin-top:0">${S.units.map(u=>`<button class="chip" data-act="stk-unit" data-u="${u.id}" aria-pressed="${stk.units.has(u.id)}">${esc(u.id)} · ${esc(u.name)}</button>`).join('')}</div>
+    <div class="row" style="margin-top:10px"><button class="chip" data-act="stk-cub" aria-pressed="${stk.cubbies}">One per cubby too</button>
+      <span class="muted" style="font-size:13px;margin-left:6px">Size</span>${[1,1.5,2].map(z=>`<button class="chip code" data-act="stk-size" data-z="${z}" aria-pressed="${stk.size===z}">${z}″</button>`).join('')}</div>
+    ${ok?`<div class="stickers" style="--sz:${stk.size*70}px">${items.map(it=>`<div class="sticker" title="${esc(BASE_URL+'#'+it.token)}">${stickerSVG(it, stk.size)}</div>`).join('')}</div>
+    <p class="muted" style="font-size:12.5px;margin:12px 0 0">${items.length} sticker${items.length===1?'':'s'} on ${pages} letter page${pages===1?'':'s'}, printed at actual size. Each code opens a link like <span class="code">${esc(BASE_URL)}#K1-A2</span>${IN_ARTIFACT?'. Once Crates has its own site, the codes point there.':'.'}</p>
+    <div class="row" style="margin-top:12px">${IN_ARTIFACT?'':`<button class="btn primary" data-act="stk-print">Print</button>`}<button class="btn ${IN_ARTIFACT?'primary':''}" data-act="stk-save" data-f="html">Save print-ready page</button><button class="btn" data-act="stk-save" data-f="svg">Save SVG</button><button class="btn" data-act="stk-save" data-f="png">Save PNG</button></div>
+    <div id="stk-msg"></div>`:`<div class="notice">The QR generator didn't load, so stickers can't be drawn right now.</div>`}`);
+}
+function sheetPages(items){
+  const W = 8.5*96, H = 11*96, M = 0.5*96, G = 0.125*96, s = Math.round(stk.size*96);
+  const cols = Math.max(1, Math.floor((W-2*M+G)/(s+G))), rows = Math.max(1, Math.floor((H-2*M+G)/(s+G))), per = cols*rows;
+  const pages = []; for(let i=0;i<items.length;i+=per) pages.push(items.slice(i,i+per));
+  return pages.map(pg=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><rect width="${W}" height="${H}" fill="#fff"/>${pg.map((it,i)=>`<g transform="translate(${M+(i%cols)*(s+G)} ${M+Math.floor(i/cols)*(s+G)})">${stickerSVG(it,stk.size).replace('<svg xmlns="http://www.w3.org/2000/svg"','<svg')}</g>`).join('')}</svg>`);
+}
+async function saveStickers(fmt){
+  const pages = sheetPages(stickerItems()), msg = $('#stk-msg');
+  const say = t => { if(msg) msg.innerHTML = `<div class="notice">${t}</div>`; };
+  if(!pages.length){ say('Pick at least one unit.'); return; }
+  let dl = null; try{ dl = await window.claude?.use?.('downloads'); }catch(e){}
+  if(!dl){
+    if(!IN_ARTIFACT){ const blob = fmt==='png' ? await svgToPng(pages[0],3) : new Blob([fmt==='html'?printHtml(pages):multiSvg(pages)], {type: fmt==='html'?'text/html':'image/svg+xml'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'crates-qr-stickers.'+fmt; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 4000); say('Saved.'); return; }
+    say('Saving files isn’t available in this view.'); return;
+  }
+  try{
+    if(fmt==='html') await dl.save({filename:'crates-qr-stickers.html', data:printHtml(pages)});
+    else if(fmt==='svg') await dl.save({filename:'crates-qr-stickers.svg', data:multiSvg(pages)});
+    else await dl.save({filename:'crates-qr-stickers.png', data:await svgToPng(pages[0], 3)});
+    say(fmt==='html'?'Saved. Open the file and it brings up your printer dialog at actual size.':'Saved.');
+  }catch(e){ say(e?.code==='declined'?'Save cancelled.':'Couldn’t save that file. Try another format.'); }
+}
+const printHtml = pages => `<!doctype html><html><head><meta charset="utf-8"><title>Crates QR stickers</title><style>@page{size:letter;margin:0}body{margin:0}svg{display:block;width:8.5in;height:11in;page-break-after:always}</style></head><body>${pages.join('')}<script>window.onload=()=>setTimeout(()=>window.print(),300)<\/script></body></html>`;
+function multiSvg(pages){ const W = 8.5*96, H = 11*96;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H*pages.length}" width="${W}" height="${H*pages.length}">${pages.map((p,i)=>`<g transform="translate(0 ${H*i})">${p.replace('<svg xmlns="http://www.w3.org/2000/svg"','<svg')}</g>`).join('')}</svg>`; }
+function svgToPng(svg, scale){
+  return new Promise((res,rej)=>{ const img = new Image(); const url = URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
+    img.onload = () => { const c = document.createElement('canvas'); c.width = img.width*scale; c.height = img.height*scale; const x = c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,c.width,c.height); x.drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(url); c.toBlob(b=>b?res(b):rej('png'),'image/png'); };
+    img.onerror = () => { URL.revokeObjectURL(url); rej('img'); }; img.src = url; });
+}
+function printStickers(){ $('#print-sheet').innerHTML = sheetPages(stickerItems()).join(''); setTimeout(()=>window.print(), 50); }
+
+/* ---- deep links: #K1 or #K1-A2 ---- */
+function routeHash(){
+  const m = decodeURIComponent(location.hash.slice(1)).match(/^([A-Za-z0-9]+?)(?:-([A-Za-z]{1,2})(\d{1,2}))?$/);
+  if(!m) return;
+  const u = unit(m[1].toUpperCase()); if(!u) return;
+  V.view='unit'; V.unit=u.id; V.cell='all'; V.dig=0; V.sel=null; V.stale=false;
+  if(m[2] && u.kind==='shelf'){ const L = m[2].toUpperCase(); const row = L.length===1 ? L.charCodeAt(0)-65 : 26+L.charCodeAt(1)-65; const col = +m[3]-1;
+    if(row>=0 && row<u.rows && col>=0 && col<u.cols){ V.cell = row+'-'+col; V.flash = V.cell; } }
+  closeSheet(); render(); setTimeout(()=>{ V.flash=null; }, 2600);
+}
+window.addEventListener('hashchange', routeHash);
 
 /* ---------- sheets & toast ---------- */
 let sheetKind = null;
@@ -1141,9 +1575,9 @@ function search(q){
   const box = $('#results'); q = q.trim().toLowerCase();
   if(!q){ box.hidden = true; return; }
   const words = q.split(/\s+/);
-  const hits = S.records.filter(r=>{ const hay = `${r.artist} ${r.title} ${r.label} ${r.catno} ${r.year} ${r.style} ${r.bpm} ${r.key} ${r.tags.join(' ')} ${r.notes} ${addrShort(r.loc)}`.toLowerCase(); return words.every(w=>hay.includes(w)); }).slice(0,8);
+  const hits = S.records.filter(r=>{ const hay = `${r.artist} ${r.title} ${r.label} ${r.catno} ${r.year} ${r.style} ${r.bpm} ${r.key} ${r.tags.join(' ')} ${r.notes} ${addrShort(r.loc)} ${cellName(unit(r.loc.u), r.loc.c)}`.toLowerCase(); return words.every(w=>hay.includes(w)); }).slice(0,8);
   const uhits = S.units.filter(u=>(u.name+' '+u.id).toLowerCase().includes(q)).slice(0,3);
-  if(!hits.length && !uhits.length){ box.innerHTML = `<div class="result" style="grid-template-columns:1fr"><span class="t"><b>No match for “${esc(q)}”</b><span>Search covers artist, title, label, year, style, BPM, key, tags and notes.</span></span></div>`; box.hidden=false; return; }
+  if(!hits.length && !uhits.length){ box.innerHTML = `<div class="result" style="grid-template-columns:1fr"><span class="t"><b>No match for “${esc(q)}”</b><span>Search covers artist, title, label, year, style, BPM, key, tags, notes and cubby names.</span></span></div>`; box.hidden=false; return; }
   qActive = 0;
   box.innerHTML = hits.map((r,i)=>`<button class="result ${i===0?'active':''}" data-act="goto-rec" data-r="${r.id}">${thumb(r)}<span class="t"><b>${esc(r.title)}</b><span>${esc(r.artist)} · ${esc(addrLong(r.loc))}</span></span>${locChip(r.loc)}</button>`).join('')
     + uhits.map(u=>`<button class="result" data-act="open-unit" data-u="${u.id}"><span class="idtag" style="justify-self:center">${u.id}</span><span class="t"><b>${esc(u.name)}</b><span>${esc(presetName(u))} · ${inCell(u.id,'all').length} records</span></span><span></span></button>`).join('');
@@ -1158,7 +1592,7 @@ $('#q').addEventListener('keydown', e=>{
 });
 document.addEventListener('click', e=>{ if(!e.target.closest('.search')) $('#results').hidden = true; });
 function gotoRecord(id){
-  const r = rec(id); if(!unit(r.loc.u)) return; V.view='unit'; V.unit=r.loc.u; V.cell = unit(r.loc.u).kind==='shelf' ? r.loc.c : 'all'; V.focus=id; V.flash = V.cell;
+  const r = rec(id); if(!unit(r.loc.u)) return; V.stale=false; V.sel=null; V.view='unit'; V.unit=r.loc.u; V.cell = unit(r.loc.u).kind==='shelf' ? r.loc.c : 'all'; V.focus=id; V.flash = V.cell;
   $('#results').hidden=true; $('#q').value=''; $('#q').blur(); render();
   document.querySelector('.detail')?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth', block:'start'});
   setTimeout(()=>{ V.flash=null; }, 2600);
@@ -1331,15 +1765,15 @@ function dryRun(){
 const A = {
   'go-room':()=>{ V.view = 'room'; V.unit=null; render(); },
   'go-playlists':()=>{ V.view='playlists'; if(!V.pl) V.pl = S.playlists[0]?.id||null; render(); },
-  'open-unit':d=>{ V.view='unit'; V.unit=d.u; V.cell='all'; V.dig=0; $('#results').hidden=true; render(); document.querySelector('.detail')?.scrollIntoView({behavior:'smooth',block:'start'}); },
-  'pick-cell':d=>{ V.cell=d.c; V.dig=0; render(); },
+  'open-unit':d=>{ V.view='unit'; V.unit=d.u; V.cell='all'; V.dig=0; V.sel=null; $('#results').hidden=true; render(); document.querySelector('.detail')?.scrollIntoView({behavior:'smooth',block:'start'}); },
+  'pick-cell':d=>{ V.cell=d.c; V.dig=0; V.sel=null; render(); },
   'dig':d=>dig(+d.d),
   'dig-to':d=>{ V.dig=+d.i; render(); },
   'move':d=>openMove(d.r),
   'move-to':d=>moveRecord(d.r,{u:d.u,c:d.c}),
   'to-bag':d=>{ const bags = S.units.filter(u=>u.kind==='bag'); if(bags.length===1) moveRecord(d.r,{u:bags[0].id,c:'0-0'}); else openMove(d.r); },
-  'go-home':d=>{ const r=rec(d.r); moveRecord(d.r,{...r.home}); },
-  'empty-bag':d=>{ const all = S.records.filter(r=>r.loc.u===d.u); const moved = all.filter(hasHome); const prevL = moved.map(r=>[r,{...r.loc}]); moved.forEach(r=>r.loc={...r.home}); lastUndo=()=>prevL.forEach(([r,l])=>r.loc=l); render(); const left = all.length-moved.length; toast(`Unpacked ${moved.length} to their home slots`+(left?` · ${left} with no home shelf stayed`:''), true); },
+  'go-home':d=>{ const r=rec(d.r); if(!hasHome(r)) return; lastUndo = snap([r]); place(r,{...r.home},{setHome:false}); closeSheet(); render(); toast(`Back in ${addrShort(r.home)}`, true); },
+  'empty-bag':d=>{ const all = S.records.filter(r=>r.loc.u===d.u); const moved = all.filter(hasHome); lastUndo = snap(moved); moved.forEach(r=>place(r,{...r.home},{setHome:false})); render(); const left = all.length-moved.length; toast(`Unpacked ${moved.length} to their home slots`+(left?` · ${left} with no home shelf stayed`:''), true); },
   'scan-bag':d=>openScan(d.u), 'scan-sim':()=>simScan(), 'scan-review':()=>scanReview(), 'scan-apply':()=>scanApply(),
   'undo':()=>{ if(lastUndo){ lastUndo(); lastUndo=null; render(); renderPlayer(); document.querySelector('.toast')?.remove(); } },
   'close':()=>closeSheet(),
@@ -1348,7 +1782,7 @@ const A = {
   'open-settings':()=>openSettings(),
   'set-accent':d=>{ S.settings.accent=d.a; render(); openSettings(); },
   'reset':()=>{ $('#reset-confirm').innerHTML = `<div class="notice">This puts back the 10 demo records and removes anything you added. <div class="row" style="margin-top:8px"><button class="btn danger" data-act="reset-yes">Reset</button><button class="btn" data-act="close">Keep my changes</button></div></div>`; },
-  'reset-yes':()=>{ S = seed(); P.st={}; P.queue=[]; P.i=-1; closeSheet(); V.view='unit'; V.unit='K1'; V.cell='0-0'; render(); renderPlayer(); toast('Demo collection restored'); },
+  'reset-yes':()=>{ S = migrate(seedExtras(seed())); V.sel=null; V.stale=false; P.st={}; P.queue=[]; P.i=-1; closeSheet(); V.view='unit'; V.unit='K1'; V.cell='0-0'; render(); renderPlayer(); toast('Demo collection restored'); },
   'open-add':()=>openAdd(),
   'add-record':()=>openAddRecord(), 'add-furniture':()=>openAddFurniture(), 'add-bag':()=>openAddBag(),
   'af-group':d=>{ const x=FURNITURE.find(x=>x.group===d.g); draft.group=d.g; draft.preset=x.key; draft.rows=x.rows||1; draft.cols=x.cols||1; draft.id=''; renderAddFurniture(); },
@@ -1390,7 +1824,7 @@ const A = {
     openSheet(`<div class="sheet-head"><div><div class="kicker">${p.items.length} records</div><h2>Pack ${esc(p.name)}</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
       <p class="muted" style="margin-top:0">Every record in this playlist moves into the bag you pick. Their home slots stay the same, so unpacking puts them back.</p>
       <div class="targets">${bags.map(b=>`<div class="target"><div class="name">${esc(b.name)} <span class="idtag">${b.id}</span></div><button class="tbag" style="background:${esc(b.finish?.hex)}" data-act="pack-to" data-u="${b.id}">${esc(b.name)}</button></div>`).join('')}</div>`); },
-  'pack-to':d=>{ const p=curPl(); const moves=[]; p.items.map(rec).filter(Boolean).forEach(r=>{ if(r.loc.u!==d.u){ moves.push([r,{...r.loc}]); r.loc={u:d.u,c:'0-0'}; } }); lastUndo=()=>moves.forEach(([r,l])=>r.loc=l); closeSheet(); render(); toast(`${moves.length} packed into ${unit(d.u).name}`, true); },
+  'pack-to':d=>{ const p=curPl(); const moves = p.items.map(rec).filter(r=>r && r.loc.u!==d.u); lastUndo = snap(moves); moves.forEach(r=>place(r,{u:d.u,c:'0-0'})); closeSheet(); render(); toast(`${moves.length} packed into ${unit(d.u).name}`, true); },
   'play-rec':d=>{ const list = inCell(V.unit, V.cell); const i = list.findIndex(r=>r.id===d.r); const u=unit(V.unit); setQueue(list, Math.max(0,i), u.kind==='shelf'&&V.cell!=='all'?u.id+'·'+cellLabel(u,V.cell):u.name); },
   'play-unit':()=>{ const u=unit(V.unit); setQueue(inCell(V.unit,V.cell),0,u.kind==='shelf'&&V.cell!=='all'?u.id+'·'+cellLabel(u,V.cell):u.name); },
   'play-all':()=>setQueue(S.records,0,'Whole collection'),
@@ -1400,6 +1834,49 @@ const A = {
   'np-tab':d=>{ P.tab=d.t; renderNP(); },
   'dry-run':()=>dryRun(),
 };
+
+Object.assign(A, {
+  'go-gigs':()=>{ V.view='gigs'; if(!V.gig) V.gig = S.gigs.slice().sort((a,b)=>a.date.localeCompare(b.date)).find(g=>g.status!=='done')?.id || S.gigs[0]?.id || null; render(); },
+  'open-gig':d=>{ V.gig=d.g; render(); document.querySelector('.gig')?.scrollIntoView({behavior:'smooth',block:'start'}); },
+  'new-gig':()=>openNewGig(),
+  'gig-rm':d=>{ const g=curGig(); g.items = g.items.filter(i=>i.r!==d.r); render(); },
+  'gig-add':()=>{ const g = curGig(); const chosen = new Set();
+    openSheet(`<div class="sheet-head"><div><div class="kicker">${esc(g.name)}</div><h2>Add records</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+      <div class="pick">${S.records.map(r=>{ const inG = g.items.some(i=>i.r===r.id); return `<label><input type="checkbox" data-gpk="${r.id}" ${inG?'checked disabled':''}>${thumb(r)}<span class="t"><b>${esc(r.title)}</b><span>${esc(r.artist)}${inG?' · already on the list':''}</span></span>${locChip(r.loc)}</label>`; }).join('')}</div>
+      <div class="row" style="margin-top:12px"><button class="btn primary" data-act="gpk-done">Add to gig</button></div>`);
+    document.querySelectorAll('[data-gpk]').forEach(cb=>cb.onchange=()=>{ cb.checked?chosen.add(cb.dataset.gpk):chosen.delete(cb.dataset.gpk); });
+    A['gpk-done'] = () => { chosen.forEach(r=>g.items.push({r,packed:false,played:false,back:false})); closeSheet(); render(); toast(`${chosen.size} added to ${g.name}`); }; },
+  'gig-next':()=>{ const g = curGig(); const order = ['planning','packing','out','return','done']; g.status = order[order.indexOf(g.status)+1] || 'done';
+    render(); toast(g.status==='done'?'Gig wrapped up':`Next: ${GIG_STEPS[gigStepIdx(g)]?.[1]||''}`); },
+  'gig-back':()=>{ const g = curGig(); g.status='planning'; render(); },
+  'gig-reopen':()=>{ const g = curGig(); g.status='return'; render(); },
+  'gig-play':()=>{ const g = curGig(); setQueue(g.items.map(i=>rec(i.r)).filter(Boolean),0,g.name); openNP(); },
+  'gig-del':()=>{ $('#gig-confirm').innerHTML = `<div class="notice">Delete “${esc(curGig().name)}”? Records stay where they are and set history is kept. <div class="row" style="margin-top:8px"><button class="btn danger" data-act="gig-del-yes">Delete gig</button><button class="btn" data-act="gig-del-no">Keep it</button></div></div>`; },
+  'gig-del-no':()=>{ $('#gig-confirm').innerHTML=''; },
+  'gig-del-yes':()=>{ const g = curGig(); S.gigs = S.gigs.filter(x=>x!==g); V.gig = S.gigs[0]?.id||null; render(); toast('Gig deleted'); },
+  'log-play':d=>openLogPlay(d.r),
+  'stale-list':()=>openStale(),
+  'stale-play':()=>{ closeSheet(); setQueue(S.records.filter(isStale),0,'Not played in a year'); openNP(); },
+  'stale-pl':()=>{ const p = {id:uid('p'),name:'Not played in a year',color:PL_COLORS[2],items:S.records.filter(isStale).map(r=>r.id)}; S.playlists.push(p); closeSheet(); V.view='playlists'; V.pl=p.id; render(); toast('Playlist made'); },
+  'toggle-stale':()=>{ V.stale = !V.stale; V.dig = 0; render(); },
+  'toggle-sel':()=>{ V.sel = V.sel ? null : new Set(); render(); },
+  'sel-all':()=>{ inCell(V.unit,V.cell).filter(r=>!V.stale||isStale(r)).forEach(r=>V.sel.add(r.id)); render(); },
+  'sel-move':()=>openMultiMove(),
+  'sel-bag':()=>{ const bags = S.units.filter(u=>u.kind==='bag'); if(bags.length===1) multiMove({u:bags[0].id,c:'0-0'}); else openMultiMove(); },
+  'multi-to':d=>multiMove({u:d.u,c:d.c}),
+  'cubby-move':()=>openCubbyMove('move'),
+  'cubby-swap':()=>openCubbyMove('swap'),
+  'cubby-to':d=>cubbyMove({u:d.u,c:d.c}),
+  'swap-to':d=>cubbySwap({u:d.u,c:d.c}),
+  'bc-pick':d=>{ const x = addRec.cands.items[+d.i]; Object.assign(addRec.f, {artist:x.artist,title:x.title,label:x.label,year:String(x.year),catno:x.catno,barcode:x.barcode}); addRec.cands=null; addRec.bcMsg=''; renderAddRecord(); toast('Pressing filled in'); },
+  'sync-run':()=>{ const n = S.syncQueue.length; S.syncQueue.forEach(q=>{ const r = rec(q.r); if(r) r.dl = q.value; }); S.syncQueue = []; render(); openSettings(); toast(`${n} locations marked as saved (demo)`); },
+  'stickers':d=>openStickers(d.u),
+  'stk-unit':d=>{ stk.units.has(d.u) ? stk.units.delete(d.u) : stk.units.add(d.u); renderStickers(); },
+  'stk-cub':()=>{ stk.cubbies = !stk.cubbies; renderStickers(); },
+  'stk-size':d=>{ stk.size = +d.z; renderStickers(); },
+  'stk-save':d=>saveStickers(d.f),
+  'stk-print':()=>printStickers(),
+});
 document.addEventListener('click', e=>{
   const el = e.target.closest('[data-act],[data-spin]'); if(!el) return;
   if(el.tagName==='A'){ if(el.dataset.spin){ P.playing = true; setTimeout(renderPlayer, 50); } return; }
@@ -1420,5 +1897,6 @@ document.addEventListener('keydown', e=>{
 
 /* ---------- boot ---------- */
 render();
+if(location.hash) routeHash();
 P.queue = S.records.map(r=>r.id); P.i = 0; P.src='Whole collection'; renderPlayer();
 </script>

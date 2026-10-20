@@ -43,7 +43,7 @@ def serve():
 
 # ---------------------------------------------------------------- page wrapper
 class App:
-    def __init__(self, browser, url, width=1280, height=900, scheme="light", yt="abort"):
+    def __init__(self, browser, url, width=1280, height=900, scheme="light", yt="abort", legacy=True):
         self.ctx = browser.new_context(viewport={"width": width, "height": height}, color_scheme=scheme)
         self.page = self.ctx.new_page()
         self.url = url
@@ -64,6 +64,9 @@ class App:
         self.page.evaluate("localStorage.clear()")
         self.page.reload(wait_until=wu)
         self.page.wait_for_selector("#main .unit-card")
+        if legacy:
+            # Older tests start inside Kallax 1, cubby A1, with the whole collection queued in the mini player.
+            self.page.evaluate("V.view='unit';V.unit='K1';V.cell='0-0';V.dig=0;render();P.queue=S.records.map(r=>r.id);P.i=0;P.src='Whole collection';renderPlayer();")
 
     # helpers
     def ev(self, js, arg=None):
@@ -1100,6 +1103,138 @@ TESTS += [
     ("X14 Collection thumbnails full size", x14_table_thumbs),
 ]
 BROWSER_LEVEL |= {n13_mobile_no_errors, n14b_collection_layout, n15_readme_shots, x13_cube_label_overlap}
+
+
+# ------------------------------------------------ room fit, zoom, drag, undo, previews (R-series)
+def _drag(a, src_sel, dst_sel):
+    src = a.page.locator(src_sel).first; src.scroll_into_view_if_needed(); a.page.wait_for_timeout(120)
+    sb = src.bounding_box(); db = a.page.locator(dst_sel).first.bounding_box()
+    check(sb and db, f"drag boxes missing: {src_sel} -> {dst_sel}")
+    m = a.page.mouse
+    m.move(sb["x"] + sb["width"] * 0.5, sb["y"] + sb["height"] * 0.5); m.down()
+    m.move(sb["x"] + sb["width"] * 0.5 + 12, sb["y"] + sb["height"] * 0.5 + 12, steps=3)
+    m.move(db["x"] + db["width"] / 2, db["y"] + db["height"] / 2, steps=12); a.page.wait_for_timeout(60)
+    m.up(); a.page.wait_for_timeout(150)
+
+
+def r01_room_fits(browser, url):
+    out = []
+    for w, h in [(1440, 900), (1280, 800), (390, 844)]:
+        a = App(browser, url, w, h, legacy=False)
+        try:
+            check(a.ev("V.view") == "room", f"boot view {a.ev('V.view')} at {w}x{h}")
+            check(a.ev("document.getElementById('player').hidden"), "mini player should stay hidden until something plays")
+            sh, ih = a.ev("document.documentElement.scrollHeight"), a.ev("innerHeight")
+            check(sh <= ih + 2, f"room scrolls at {w}x{h}: {sh} > {ih}")
+            check(a.ev("document.documentElement.scrollWidth") <= w, f"sideways scroll at {w}x{h}")
+            n = a.page.locator(".room .unit-card").count(); check(n == 3, f"{n} unit cards")
+            for i in range(n):
+                b = a.page.locator(".room .unit-card").nth(i).bounding_box()
+                check(b["y"] + b["height"] <= ih + 1, f"card {i} below the fold at {w}x{h}")
+            check(not a.js_errors(), a.js_errors())
+            out.append(f"{w}x{h} ok")
+        finally:
+            a.close()
+    return "; ".join(out)
+
+
+def r02_zoom(a):
+    a.click("[data-act=go-room]"); a.page.wait_for_timeout(100)
+    a.click(".room .unit-card[data-u=K1]"); a.page.wait_for_timeout(150)
+    check(a.ev("V.view") == "unit" and a.ev("V.unit") == "K1", "click did not zoom into K1")
+    check(a.page.locator(".strip .unit-card").count() == 3, "strip of spots missing")
+    check(a.page.locator(".room").count() == 0, "room grid still shown while zoomed")
+    a.click(".strip .unit-card[data-u=B1]"); a.page.wait_for_timeout(150)
+    check(a.ev("V.unit") == "B1", "strip did not switch unit")
+    a.click(".detail [data-act=go-room]"); a.page.wait_for_timeout(150)
+    check(a.ev("V.view") == "room" and a.page.locator(".room .unit-card").count() == 3, "back to room failed")
+
+
+def r03_drag(browser, url):
+    a = App(browser, url, 1280, 1100)
+    try:
+        a.click(".chips .chip[data-c='0-0']")
+        _drag(a, ".list .li", ".detail .cube[data-drop-c='1-2']")
+        check(a.toast() == "Moved to K1·B3", f"toast {a.toast()!r}")
+        check(a.ev("inCell('K1','1-2').length") == 1 and a.ev("inCell('K1','0-0').length") == 4, "record not in B3")
+        a.page.evaluate("window.scrollTo(0,0)")
+        _drag(a, ".list .li", ".strip .unit-card[data-u=B1]")
+        nb = a.ev("inCell('B1','all').length"); check(nb == 4, f"bag count {nb}")
+        moved = a.ev("S.records.filter(r=>r.loc.u==='B1' && r.from && r.from.c==='0-0').length")
+        check(moved >= 3, f"came-from not set on dragged record ({moved})")
+        # a plain click on a row still selects it (no accidental drag)
+        a.click(".list .li >> nth=1"); check(a.ev("V.dig") == 1, "click after drag did not select")
+        check(not a.js_errors(), a.js_errors())
+        return "row → cubby and row → bag in strip"
+    finally:
+        a.close()
+
+
+def r04_multi_undo(a):
+    a.click(".chips .chip[data-c='0-0']")
+    for rid, cell in [("r9", "1-0"), ("r2", "1-1"), ("r1", "1-2")]:
+        a.ev(f"moveRecord('{rid}', {{u:'K1',c:'{cell}'}})")
+    a.page.wait_for_timeout(100)
+    badge = a.page.locator("#undo-btn b").inner_text()
+    check(badge == "3", f"undo badge {badge!r}")
+    check("Moved to K1·B3" in a.page.locator("#undo-btn").get_attribute("title"), "undo title should name the last step")
+    a.page.keyboard.press("Control+z"); a.page.wait_for_timeout(80)
+    check(a.loc("r1") == "K1:0-0" and a.loc("r2") == "K1:1-1", "first undo should only revert the last move")
+    a.click("#undo-btn"); a.page.wait_for_timeout(80)
+    a.page.keyboard.press("Control+z"); a.page.wait_for_timeout(80)
+    check(a.loc("r9") == "K1:0-0" and a.loc("r2") == "K1:0-0", "three undos should restore all")
+    check(a.page.locator("#undo-btn").is_disabled(), "undo button should be disabled when the stack is empty")
+    a.click(".dig-info [data-act=edit-rec]"); a.page.locator("#er-title").fill("Changed"); a.click("#er-form button[type=submit]")
+    check(a.title() == "Changed", "edit not saved")
+    a.click("#undo-btn"); a.page.wait_for_timeout(80)
+    check(a.title() != "Changed", "undo should revert a details edit")
+
+
+def r05_previews(a):
+    a.wait_link_mode()
+    href = a.page.locator(".list .pv").first.get_attribute("href") or ""
+    check("&t=60s" in href, f"link-mode preview href {href!r}")
+    a.ev("""(()=>{ window.__seek=null; P.yt={loadVideoById(){},getPlayerState(){return 1},getDuration(){return 300},seekTo(t){window.__seek=t},
+        pauseVideo(){},playVideo(){},getCurrentTime(){return 0}}; P.mode='yt'; render(); renderPlayer(); })()""")
+    before = a.ev("P.queue.length")
+    a.click(".list .pv[data-act=preview] >> nth=1")
+    check(a.ev("!!P.preview") and a.ev("P.queue.length") == 1, "preview did not start")
+    a.ev("onYTState(1)")
+    seek = a.ev("window.__seek"); check(seek and 90 <= seek <= 110, f"preview should start about a third in, seek={seek}")
+    check("Preview" in a.page.locator("#player .pinfo").inner_text(), "mini player should say Preview")
+    a.click(".list .pv.on")
+    check(not a.ev("!!P.preview") and a.ev("P.queue.length") == before, "stopping should restore the queue")
+
+
+def r06_player_slides_in(browser, url):
+    a = App(browser, url, 1280, 900, legacy=False)
+    try:
+        check(a.ev("document.getElementById('player').hidden"), "player visible before playing")
+        a.click("[data-act=play-all]"); a.page.wait_for_timeout(500)
+        check(not a.ev("document.getElementById('player').hidden"), "player should appear after Play")
+        tr = a.ev("getComputedStyle(document.getElementById('player')).translate")
+        check(tr in ("none", "0px", "0px 0px"), f"player should finish sliding in, translate={tr}")
+        return "hidden until play, then slides in"
+    finally:
+        a.close()
+
+
+def r07_bag_default_names(a):
+    for n in (1, 2):
+        a.click("[data-act=open-add]"); a.click(".sheet [data-act=add-bag]")
+        v = a.page.locator("#ab-name").input_value(); check(v == f"Bag {n}", f"default name {v!r}")
+        a.click("#ab-form button[type=submit]"); a.page.wait_for_timeout(100)
+    names = a.ev("S.units.filter(u=>u.kind==='bag').map(u=>u.name)")
+    check(names[-2:] == ["Bag 1", "Bag 2"], f"bag names {names}")
+
+
+TESTS += [
+    ("R01 Room fits the screen", r01_room_fits), ("R02 Zoom into a unit", r02_zoom),
+    ("R03 Drag and drop", r03_drag), ("R04 Multi-step undo", r04_multi_undo),
+    ("R05 Audio previews", r05_previews), ("R06 Player slides in", r06_player_slides_in),
+    ("R07 New bags are Bag 1, Bag 2", r07_bag_default_names),
+]
+BROWSER_LEVEL |= {r01_room_fits, r03_drag, r06_player_slides_in}
 
 
 def main():

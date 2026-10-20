@@ -496,6 +496,91 @@ select.ce{appearance:auto;cursor:pointer}
   .sec-head .kicker{display:none}
 }
 
+/* ---------- depth: shadows ---------- */
+.unit-card{transition:border-color .15s, box-shadow .2s, translate .2s}
+.unit-card:hover{box-shadow:0 2px 4px rgba(18,21,24,.08),0 18px 40px rgba(18,21,24,.16);translate:0 -2px}
+.stage-box{position:relative}
+.stage-box::after{content:"";position:absolute;left:12%;right:12%;bottom:-6px;height:16px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.28),rgba(0,0,0,0));z-index:0;pointer-events:none}
+.stage-box>*{position:relative;z-index:1}
+.kallax{box-shadow:0 1px 0 rgba(255,255,255,.4) inset,0 -3px 0 color-mix(in srgb,var(--fin) 70%,#000) inset,0 3px 0 color-mix(in srgb,var(--fin) 60%,#000),0 14px 22px -10px rgba(0,0,0,.45),0 30px 40px -24px rgba(0,0,0,.35)}
+.kallax.big{box-shadow:0 1px 0 rgba(255,255,255,.4) inset,0 -4px 0 color-mix(in srgb,var(--fin) 70%,#000) inset,0 4px 0 color-mix(in srgb,var(--fin) 60%,#000),0 22px 34px -14px rgba(0,0,0,.5),0 48px 60px -36px rgba(0,0,0,.4)}
+.cube{box-shadow:inset 0 12px 16px -6px rgba(0,0,0,.6),inset 9px 0 14px -8px rgba(0,0,0,.5),inset -6px 0 10px -8px rgba(0,0,0,.35)}
+.spine{box-shadow:1px 0 0 rgba(0,0,0,.35),2px 0 3px rgba(0,0,0,.25)}
+.bag{box-shadow:inset 0 -5px 0 rgba(0,0,0,.35),0 16px 22px -10px rgba(0,0,0,.6),0 34px 40px -26px rgba(0,0,0,.45)}
+.crate-face{box-shadow:0 16px 22px -10px rgba(0,0,0,.55),0 34px 40px -26px rgba(0,0,0,.4)}
+.sleeve{box-shadow:0 2px 4px rgba(0,0,0,.2),0 18px 36px rgba(0,0,0,.32),0 40px 70px -30px rgba(0,0,0,.45)}
+.thumb{box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.vinyl{box-shadow:0 0 0 2px #0a0a0a,0 10px 20px rgba(0,0,0,.35),0 30px 60px rgba(0,0,0,.4)}
+.toast{box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.detail,.pledit,.gig{box-shadow:0 1px 2px rgba(18,21,24,.06),0 16px 40px rgba(18,21,24,.10)}
+
+/* ---------- room fits the screen ---------- */
+.room.fit{grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));grid-auto-rows:var(--card-h,auto)}
+.room.fit .unit-card{min-height:0;overflow:hidden}
+.room.fit .stage-box{flex:1 1 auto;min-height:0;height:var(--art-h,150px);display:grid;place-items:end center}
+.room.fit .photo{flex:1 1 auto;min-height:0;aspect-ratio:auto;height:var(--art-h,150px)}
+.art{width:100%;margin:0 auto;display:grid;place-items:end center}
+.room.fit .kallax{max-width:100%!important}
+.room.fit .bagwrap,.room.fit .bag{width:min(78%,420px)}
+.room.fit .cratewrap{width:80%!important;margin-inline:auto}
+.room.fit .cratewrap{width:100%}
+.unit-card .meta{min-width:0}
+.unit-card h3{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.unit-card .sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.room-tools{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:600px){
+  .top-row{row-gap:8px}
+  .tabs{order:2;flex:1 1 100%;justify-content:space-between}
+  .tabs button{flex:1 1 auto;padding:6px 8px}
+  .search{order:3}
+  .room.fit .unit-card{padding:10px 10px 8px;gap:8px}
+  .room.fit .unit-card h3{font-size:18px}
+}
+@media (max-width:600px){ .room-tools{flex-wrap:nowrap;overflow-x:auto;margin-inline:calc(-1 * max(16px, env(safe-area-inset-left,0px)));padding-inline:max(16px, env(safe-area-inset-left,0px));scrollbar-width:none} .room-tools .btn{flex:0 0 auto} .sec-head{margin-top:14px} }
+.strip{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 12px;margin:-4px 0 8px;scroll-snap-type:x proximity}
+.strip .unit-card{flex:0 0 auto;width:150px;padding:8px 10px 8px;gap:6px;scroll-snap-align:start}
+.strip .unit-card h3{font-size:15px}
+.strip .unit-card .stage-box{height:74px;min-height:0}
+.strip .unit-card[aria-current="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.detail-title:focus{outline:none}
+::view-transition-group(unit-zoom){animation-duration:.38s;animation-timing-function:cubic-bezier(.2,.8,.2,1)}
+::view-transition-old(unit-zoom),::view-transition-new(unit-zoom){height:100%;object-fit:contain}
+@media (prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
+
+/* ---------- drag and drop ---------- */
+[data-drag]{-webkit-user-select:none;user-select:none}
+[data-drag].li,.sleeve[data-drag]{cursor:grab}
+body.dragging,body.dragging *{cursor:grabbing!important;-webkit-user-select:none;user-select:none}
+.ghost{position:fixed;left:0;top:0;z-index:90;pointer-events:none;display:flex;gap:8px;align-items:center;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:6px 10px 6px 6px;box-shadow:0 18px 40px rgba(0,0,0,.35);font-size:13px;font-weight:600;max-width:240px;translate:-20px -20px;rotate:-3deg}
+.ghost .thumb{width:36px;height:36px}
+.ghost span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drop-on{outline:3px solid var(--accent)!important;outline-offset:-3px;filter:brightness(1.12)}
+[data-drop-u]{transition:filter .1s}
+.dragsrc{opacity:.45}
+.drag-hint{font-size:12.5px;color:var(--muted);margin-top:6px}
+body:has(#player[hidden]){padding-bottom:24px}
+@media (min-width:781px){ .detail-grid>div:first-child{position:sticky;top:calc(env(safe-area-inset-top,0px) + 132px);align-self:start} }
+@media (min-width:781px) and (max-height:560px){ .detail-grid>div:first-child{position:static} }
+
+/* ---------- undo ---------- */
+.undo-btn{position:relative}
+.undo-btn:disabled{opacity:.35;cursor:default}
+.undo-btn b{position:absolute;top:-4px;right:-4px;min-width:17px;height:17px;border-radius:9px;background:var(--accent);color:var(--accent-ink);font:600 10.5px/17px var(--f-mono);text-align:center;padding:0 4px}
+
+/* ---------- previews ---------- */
+.pv{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:inline-grid;place-items:center;color:var(--ink);text-decoration:none;flex:0 0 auto;position:relative}
+.pv svg{width:15px;height:15px}
+.pv.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.pv.on::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--accent);opacity:.5;animation:pulse 1.2s infinite}
+.li{grid-template-columns:40px minmax(0,1fr) auto auto}
+.pv-left{font-family:var(--f-mono);font-size:11px;color:var(--accent);margin-left:4px}
+
+/* ---------- player slides in ---------- */
+.player{translate:0 0;transition:translate .38s cubic-bezier(.2,.85,.2,1),display .38s;transition-behavior:allow-discrete}
+@starting-style{.player{translate:0 100%}}
+.player[hidden]{display:none;translate:0 100%}
+@media (prefers-reduced-motion:reduce){.player{transition:none}}
+
 .foot{margin-top:34px;font-size:12.5px;color:var(--muted);max-width:72ch}
 </style>
 
@@ -509,6 +594,7 @@ select.ce{appearance:auto;cursor:pointer}
       <button data-act="go-gigs" id="tab-gigs">Gigs</button>
     </div>
     <button class="add-btn" data-act="open-add"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add</button>
+    <button class="icon-btn undo-btn" id="undo-btn" data-act="undo" aria-label="Undo" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
     <button class="icon-btn" data-act="open-settings" aria-label="Settings">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/></svg>
     </button>
@@ -702,7 +788,7 @@ function drawShelf(u, big=false, opts={}){
   return `<div class="${cls}" style="grid-template-columns:repeat(${u.cols},1fr);--fin:${f.hex};max-width:${Math.min(100, u.cols*(big?26:22))}%">${cellKeys(u).map(k=>{
     const list = opts.empty ? [] : inCell(u.id,k);
     const inner = `<span class="lbl">${esc(cellLabel(u,k))}${cellName(u,k)?`<em>${esc(cellName(u,k))}</em>`:''}</span>${list.length?`<span class="cnt">${list.length}</span>`:''}${spines(list)}`;
-    return big ? `<button type="button" class="cube ${V.flash===k?'flash':''}" data-act="pick-cell" data-c="${k}" aria-pressed="${V.cell===k}" aria-label="Shelf ${esc(cellLabel(u,k))}, ${list.length} records">${inner}</button>` : `<div class="cube">${inner}</div>`;
+    return big ? `<button type="button" class="cube ${V.flash===k?'flash':''}" data-act="pick-cell" data-c="${k}" data-drop-u="${u.id}" data-drop-c="${k}" aria-pressed="${V.cell===k}" aria-label="Shelf ${esc(cellLabel(u,k))}, ${list.length} records">${inner}</button>` : `<div class="cube"${opts.drop?` data-drop-u="${u.id}" data-drop-c="${k}"`:''}>${inner}</div>`;
   }).join('')}</div>`;
 }
 function drawBag(u, opts={}){
@@ -750,7 +836,7 @@ if(!S || S.v!==2 || !Array.isArray(S.units) || !Array.isArray(S.records)) S = se
 S.units.forEach(u=>{ if(u.kind==='bag' ? !bpreset(u.preset) : !fpreset(u.preset)) u.preset = u.kind==='bag' ? BAGS[0].key : (u.kind==='shelf' ? (FURNITURE.find(x=>x.kind==='shelf'&&x.custom)||FURNITURE.find(x=>x.kind==='shelf')).key : (FURNITURE.find(x=>x.kind==='crate')||FURNITURE[0]).key); });
 S = migrate(S);
 const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(S)) }catch(e){} };
-const V = {view:'unit', unit:'K1', cell:'0-0', dig:0, focus:null, flash:null, pl:null, gig:null, stale:false, sel:null};
+const V = {view:'room', unit:'K1', cell:'all', dig:0, focus:null, flash:null, pl:null, gig:null, stale:false, sel:null};
 
 /* ---------- render ---------- */
 function render(){
@@ -761,24 +847,28 @@ function render(){
   $('#tab-table').setAttribute('aria-pressed', V.view==='table');
   $('#main').innerHTML = V.view==='playlists' ? renderPlaylists() : V.view==='gigs' ? renderGigs() : V.view==='table' ? renderTable() : renderRoom();
   if(V.view==='unit') bindSwipe();
+  fitRoom(); fitStrip();
   if(V.view==='playlists') bindPlaylist();
   save();
 }
 
-function renderRoom(){
-  const cards = S.units.map(u=>{
-    const n = inCell(u.id,'all').length;
-    return `<button class="unit-card" data-act="open-unit" data-u="${u.id}">
+function artAspect(u){ if(u.kind==='shelf') return (u.cols*1.0+0.12)/(u.rows*1.0+0.12); if(u.kind==='bag') return 1.15; return 1.35; }
+function unitCard(u, strip){
+  const n = inCell(u.id,'all').length;
+  const zoom = V.zoomId===u.id && !strip ? ' style="view-transition-name:unit-zoom"' : '';
+  const drop = u.kind!=='shelf' ? ` data-drop-u="${u.id}" data-drop-c="0-0"` : '';
+  return `<button class="unit-card${strip?' strip-card':''}" data-act="open-unit" data-u="${u.id}"${strip&&V.unit===u.id?' aria-current="true"':''}${drop}>
       <div class="meta"><h3>${esc(u.name)}</h3><span class="idtag">${esc(u.id)}</span></div>
-      ${u.photo?`<img class="photo" src="${u.photo}" alt="Photo of ${esc(u.name)}">`:`<div class="stage-box">${drawUnit(u)}</div>`}
-      <div class="meta"><span class="sub">${esc(presetName(u))} · ${esc(u.finish?.name||'')}</span><span class="sub code">${n} ${n===1?'record':'records'}</span></div>
+      ${u.photo&&!strip?`<img class="photo" src="${u.photo}" alt="Photo of ${esc(u.name)}"${zoom}>`:`<div class="stage-box" data-aspect="${artAspect(u)}"><div class="art"${zoom}>${drawUnit(u,false,{drop:strip})}</div></div>`}
+      ${strip?'':`<div class="meta"><span class="sub">${esc(presetName(u))} · ${esc(u.finish?.name||'')}</span><span class="sub code">${n} ${n===1?'record':'records'}</span></div>`}
     </button>`;
-  }).join('');
+}
+function renderRoom(){
+  if(V.view==='unit' && unit(V.unit)) return renderDetail();
+  const cards = S.units.map(u=>unitCard(u,false)).join('');
   let html = `<div class="sec-head"><div><div class="kicker">${S.records.length} records in ${S.units.length} places</div><h2>Your room</h2></div>
-    <div class="row"><button class="btn" data-act="stale-list">Not played in a year <small class="code muted">${S.records.filter(isStale).length}</small></button><button class="btn" data-act="stickers">QR stickers</button><button class="btn" data-act="play-all"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>Play collection</button></div></div>
-    <div class="room">${cards}</div>`;
-  if(V.view==='unit' && unit(V.unit)) html += renderDetail();
-  html += `<p class="foot">Demo collection. Covers are placeholder art; the full app pulls sleeves and metadata from Discogs. ${SRC_NOTE} Changes stay in this browser.</p>`;
+    <div class="room-tools"><button class="btn" data-act="stale-list">Not played in a year <small class="code muted">${S.records.filter(isStale).length}</small></button><button class="btn" data-act="stickers">QR stickers</button><button class="btn" data-act="play-all"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>Play collection</button></div></div>
+    <div class="room fit">${cards}</div>`;
   return html;
 }
 
@@ -797,12 +887,14 @@ function renderDetail(){
   const filt = `<div class="row" style="margin-top:10px"><button class="chip" data-act="toggle-stale" aria-pressed="${V.stale}">Not played in a year</button>${list.length?`<button class="chip" data-act="toggle-sel" aria-pressed="${!!V.sel}">${V.sel?'Done selecting':'Select records'}</button>`:''}<button class="chip" data-act="stickers" data-u="${u.id}">QR sticker</button></div>`;
   const bagActs = u.kind==='bag' ? `<button class="btn primary" data-act="scan-bag" data-u="${u.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Scan bag</button>
       <button class="btn" data-act="empty-bag" data-u="${u.id}">Unpack to home slots</button>` : '';
-  return `<section class="detail" aria-label="${esc(u.name)}">
+  return `<div class="strip" aria-label="Your spots. Drop a record on one to move it there.">${S.units.map(x=>unitCard(x,true)).join('')}</div>
+  <section class="detail" aria-label="${esc(u.name)}">
     <div class="detail-head"><div><button class="back" data-act="go-room">← Room</button>
-      <h2>${esc(u.name)}</h2><div class="row"><span class="idtag">${esc(u.id)}</span><span class="muted" style="font-size:13px">${esc(presetName(u))} · ${esc(u.finish?.name||'')} · ${esc(presetOf(u).cap||'')}</span></div></div>
+      <h2 class="detail-title" tabindex="-1">${esc(u.name)}</h2><div class="row"><span class="idtag">${esc(u.id)}</span><span class="muted" style="font-size:13px">${esc(presetName(u))} · ${esc(u.finish?.name||'')} · ${esc(presetOf(u).cap||'')}</span></div></div>
       <div class="row">${bagActs}<button class="btn" data-act="play-unit"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>Play ${u.kind==='shelf'&&V.cell!=='all'?esc(cellLabel(u,V.cell)):'all'}</button><button class="btn" data-act="edit-unit" data-u="${u.id}">Look & name</button></div></div>
     <div class="detail-grid">
-      <div>${u.photo?`<img class="photo" src="${u.photo}" alt="Photo of ${esc(u.name)}" style="margin-bottom:12px">`:''}<div style="display:grid;place-items:end center">${drawUnit(u,true)}</div>${chips}${cellTools}${filt}</div>
+      <div>${u.photo?`<img class="photo" src="${u.photo}" alt="Photo of ${esc(u.name)}" style="margin-bottom:12px">`:''}<div style="display:grid;place-items:end center"><div class="art" style="view-transition-name:${V.zoomId===u.id?'unit-zoom':'none'};width:100%;display:grid;place-items:end center"${u.kind!=='shelf'?` data-drop-u="${u.id}" data-drop-c="0-0"`:''}>${drawUnit(u,true)}</div></div>${chips}${cellTools}${filt}
+        <p class="drag-hint">Drag a record from the list or the sleeve onto any cubby or bag to move it.</p></div>
       <div class="dig">
         <div class="row" style="justify-content:space-between"><span class="muted" style="font-size:13px;font-weight:600">${u.kind==='shelf'?esc(where):'Inside '+esc(u.name)}</span><span class="code muted" style="font-size:12px">${list.length?(V.dig+1)+' of '+list.length:'empty'}</span></div>
         ${list.length ? digView(list, cur) : V.stale ? `<div class="empty"><b>Everything here was played in the last year</b>Turn off “Not played in a year” to see all records.</div>` : `<div class="empty"><b>${u.kind==='shelf'?esc(where)+' is empty':'Nothing in '+esc(u.name)}</b>Move a record here from any sleeve, or use Add → Record.</div>`}
@@ -817,7 +909,7 @@ function digView(list, cur){
   const sleeves = list.map((r,i)=>{
     const d = i - V.dig; if(Math.abs(d)>2) return '';
     const x = d*26, s = 1 - Math.abs(d)*0.1, z = 10-Math.abs(d), o = Math.abs(d)>1?0.35:1;
-    return `<div class="sleeve" style="transform:translateX(calc(-50% + ${x}%)) scale(${s}) rotate(${d*2}deg);z-index:${z};opacity:${o}" ${d?`data-act="dig-to" data-i="${i}"`:''}>${cover(r)}<div class="txt"><span>${esc(r.artist)}</span><b>${esc(r.title)}</b></div></div>`;
+    return `<div class="sleeve" style="transform:translateX(calc(-50% + ${x}%)) scale(${s}) rotate(${d*2}deg);z-index:${z};opacity:${o}" ${d?`data-act="dig-to" data-i="${i}"`:`data-drag="${r.id}"`}>${cover(r)}<div class="txt"><span>${esc(r.artist)}</span><b>${esc(r.title)}</b></div></div>`;
   }).join('');
   const atHome = !hasHome(cur) || same(cur.loc, cur.home);
   const bag = S.units.find(u=>u.kind==='bag');
@@ -828,6 +920,7 @@ function digView(list, cur){
     <div class="dig-nav">
       <button class="round" data-act="dig" data-d="-1" aria-label="Previous record" ${V.dig===0?'disabled':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m15 18-6-6 6-6"/></svg></button>
       <button class="round main" data-act="play-rec" data-r="${cur.id}" aria-label="Play ${esc(cur.title)}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg></button>
+      ${previewBtn(cur, true)}
       <button class="round" data-act="dig" data-d="1" aria-label="Next record" ${V.dig===list.length-1?'disabled':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m9 18 6-6-6-6"/></svg></button>
     </div>
     <div class="dig-info"><h3>${esc(cur.title)}${dot('title')}</h3><div class="by">${esc(cur.artist)}${dot('artist')}</div>
@@ -849,7 +942,7 @@ function digView(list, cur){
       const tail = unit(r.loc.u)?.kind!=='shelf' ? (fromOf(r)?`<span class="from">from ${locChip(fromOf(r),'home')}</span>`:'') : (V.cell==='all'?locChip(r.loc):'');
       const sub = `${esc(r.artist)} · ${esc(r.label)}${isStale(r)&&V.stale?` · <span class="stale">${lastPlayed(r)?'last played '+fmtDate(lastPlayed(r)):'never logged'}</span>`:''}`;
       return V.sel ? `<label class="li ${V.sel.has(r.id)?'cur':''}"><input type="checkbox" data-sel="${r.id}" ${V.sel.has(r.id)?'checked':''}><span class="t"><b>${esc(r.title)}</b><span>${sub}</span></span>${tail}</label>`
-        : `<button class="li ${i===V.dig?'cur':''}" data-act="dig-to" data-i="${i}">${thumb(r)}<span class="t"><b>${esc(r.title)}</b><span>${sub}</span></span>${tail}</button>`; }).join('')}</div>
+        : `<div class="li ${i===V.dig?'cur':''}" role="button" tabindex="0" data-act="dig-to" data-i="${i}" data-drag="${r.id}">${thumb(r)}<span class="t"><b>${esc(r.title)}</b><span>${sub}</span></span>${tail}${previewBtn(r)}</div>`; }).join('')}</div>
     ${V.sel?`<div class="selbar"><span>${V.sel.size} selected</span><button class="btn sm" data-act="sel-all">Select all</button><button class="btn sm primary" data-act="sel-move" ${V.sel.size?'':'disabled'}>Move ${V.sel.size||''}…</button>${S.units.some(u=>u.kind==='bag')?`<button class="btn sm" data-act="sel-bag" ${V.sel.size?'':'disabled'}>Put in bag</button>`:''}</div>`:''}`;
 }
 function bindSwipe(){
@@ -861,7 +954,28 @@ function bindSwipe(){
 function dig(d){ const list = inCell(V.unit,V.cell); if(!list.length) return; V.dig = Math.max(0, Math.min(list.length-1, V.dig+d)); render(); }
 
 /* ---------- moving ---------- */
-let lastUndo = null;
+/* Multi-step undo. Code assigns `lastUndo = fn` to push a step (the global setter below). */
+const UNDO = [];
+Object.defineProperty(window, 'lastUndo', { configurable:true,
+  get(){ return UNDO.length ? UNDO[UNDO.length-1].fn : null; },
+  set(fn){ if(typeof fn==='function'){ UNDO.push({fn, label:''}); if(UNDO.length>50) UNDO.shift(); updateUndoBtn(); } } });
+function undoStep(){
+  const step = UNDO.pop(); if(!step) return;
+  try{ step.fn(); }catch(e){ console.error('Undo failed', e); }
+  render(); renderPlayer(); updateUndoBtn();
+  document.querySelector('.toast')?.remove();
+  toast(step.label ? `Undid: ${step.label}` : 'Undone');
+}
+function updateUndoBtn(){
+  const b = document.getElementById('undo-btn'); if(!b) return;
+  const top = UNDO[UNDO.length-1];
+  b.disabled = !top; b.title = top ? `Undo: ${top.label||'last change'} (${UNDO.length} step${UNDO.length>1?'s':''})` : 'Nothing to undo';
+  b.setAttribute('aria-label', b.title);
+  b.querySelector('b')?.remove(); if(UNDO.length>1) b.insertAdjacentHTML('beforeend', `<b>${UNDO.length}</b>`);
+}
+document.addEventListener('keydown', e=>{
+  if((e.metaKey||e.ctrlKey) && !e.shiftKey && e.key.toLowerCase()==='z' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName||'')){ e.preventDefault(); undoStep(); }
+});
 function snap(records, extra){
   const saved = records.map(r=>[r, JSON.stringify({loc:r.loc,home:r.home,from:r.from})]);
   const q = JSON.stringify(S.syncQueue);
@@ -1019,7 +1133,8 @@ function renderAddFurniture(){
   bindDraftForm('af');
 }
 function openAddBag(){
-  draft = {kind:'bag', preset:BAGS[0].key, brand:'All', finish:null, name:'', id:'', photo:null};
+  let n = 1; while(S.units.some(u=>u.kind==='bag' && u.name.toLowerCase()==='bag '+n)) n++;
+  draft = {kind:'bag', preset:BAGS[0].key, brand:'All', finish:null, name:'Bag '+n, id:'', photo:null};
   renderAddBag();
 }
 function renderAddBag(){
@@ -1035,7 +1150,7 @@ function renderAddBag(){
       <div class="preview">${drawBag(sample,{empty:true})}</div>
       <div><div class="swatches">${p.colors.map(f=>`<button class="sw" data-act="ab-finish" data-n="${esc(f.name)}" aria-pressed="${draft.finish.name===f.name}"><i style="background:${esc(f.hex)}"></i>${esc(f.name)}</button>`).join('')}${customSwatch('ab', draft.finish)}</div>
         <form class="form" id="ab-form" style="margin-top:16px">
-          <label class="f">Bag name<input id="ab-name" value="${esc(draft.name)}" placeholder="e.g. Crater"></label>
+          <label class="f">Bag name<input id="ab-name" value="${esc(draft.name)}" placeholder="Bag 1"></label>
           <label class="f">ID<input id="ab-id" maxlength="6" value="${esc(draft.id||nextId('B'))}"></label>
           <label class="f">Photo (becomes the cover)<span class="btn file" style="justify-content:flex-start">${draft.photo?'Photo added ✓':'Take or choose…'}<input type="file" accept="image/*" capture="environment" id="ab-photo"></span></label>
           <div style="display:flex;align-items:end"><button class="btn primary" type="submit">Add bag</button></div>
@@ -1187,10 +1302,11 @@ function renderKV(){
 }
 function saveRecordEdit(){
   const r = rec(editing.id);
+  const before = JSON.stringify(r); lastUndo = () => Object.assign(r, JSON.parse(before));
   ['artist','title','label','catno','year','style','bpm','key','cm','cs','notes'].forEach(k=>{ const el=$('#er-'+k); if(el) r[k]=el.value.trim(); });
   r.tags = $('#er-tags').value.split(',').map(s=>s.trim()).filter(Boolean);
   r.rating = editing.rating; r.custom = editing.custom.filter(x=>x.k||x.v);
-  closeSheet(); render(); toast('Details saved'); if(cur()?.id===r.id) renderPlayer();
+  closeSheet(); render(); toast('Details saved', true); if(cur()?.id===r.id) renderPlayer();
 }
 
 /* ---------- playlists ---------- */
@@ -1301,6 +1417,7 @@ function openSettings(){
       ${S.settings.discogsSync?`<div class="row" style="margin-top:10px;justify-content:space-between"><span class="muted" style="font-size:13px">${S.syncQueue.filter(q=>q.status==='pending').length} updates waiting · ${S.records.filter(r=>r.dl===discogsLocValue(r)).length} of ${S.records.length} saved</span><button class="btn sm" data-act="sync-run">Sync now (demo)</button></div><p class="muted" style="font-size:12px;margin:6px 0 0">This preview can't reach Discogs. In the app, a server job sends these updates within the 60-requests-a-minute limit.</p>`:''}</div>
     <p class="muted" style="font-size:13px;margin-top:18px">Shelf slots are named by row letter and column number: A1–A4 on the top row, B1–B4 below, then C, D… Codes always include the unit ID (K1·B2), so they never read like a side-B track number. Give any cubby a subtitle like “House” from its shelf view.</p>
     <p class="muted" style="font-size:13px">Each unit's finish or bag color is set from its own page: open it and tap “Look & name”.</p>
+    <p class="muted" style="font-size:12.5px">Demo collection. Covers are placeholder art; the full app pulls sleeves and metadata from Discogs. ${SRC_NOTE} Changes stay in this browser.</p>
     <div class="row" style="margin-top:18px"><button class="btn" data-act="reset">Reset demo collection</button></div><div id="reset-confirm"></div>`);
   $('#set-dsync').onchange = e => { S.settings.discogsSync = e.target.checked; if(e.target.checked) S.records.forEach(enqueueSync); save(); setTimeout(()=>{ render(); openSettings(); },0); };
 }
@@ -1638,7 +1755,8 @@ let toastT;
 function toast(msg, undo){
   document.querySelector('.toast')?.remove();
   const t = document.createElement('div'); t.className='toast'; t.setAttribute('role','status');
-  t.innerHTML = `<span>${esc(msg)}</span>${undo?'<button data-act="undo">Undo</button>':''}`;
+  if(undo && UNDO.length && !UNDO[UNDO.length-1].label){ UNDO[UNDO.length-1].label = msg; updateUndoBtn(); }
+  t.innerHTML = `<span>${esc(msg)}</span>${undo&&UNDO.length?'<button data-act="undo">Undo</button>':''}`;
   document.body.appendChild(t); clearTimeout(toastT); toastT = setTimeout(()=>t.remove(), 5000);
 }
 
@@ -1698,7 +1816,7 @@ loadYT().then(()=>{
   setTimeout(()=>{ if(!P.ready){ P.mode='link'; renderPlayer(); } }, 6000);
 }).catch(why=>{ P.mode='link'; plog('Inline playback unavailable ('+why+'), using YouTube links'); renderPlayer(); });
 
-function setQueue(list, start=0, src=''){ if(!list.length) return; P.queue = list.map(r=>r.id); P.src = src; playAt(start); }
+function setQueue(list, start=0, src=''){ if(!list.length) return; if(P.preview){ clearTimeout(P.preview.timer); P.preview = null; } P.queue = list.map(r=>r.id); P.src = src; playAt(start); }
 function cur(){ return rec(P.queue[P.i]); }
 function playAt(i){
   if(!P.queue.length) return;
@@ -1725,9 +1843,10 @@ function onYTState(s){
     const d = P.yt.getDuration?.()||0;
     if(d>0 && d<30){ failCandidate('only '+Math.round(d)+'s long, likely a teaser'); return; }
     if(st.state!=='working'){ st.state='working'; plog(`${r.title}: playing`); clearTimers(); }
+    if(P.preview) previewOnPlaying();
     tick(); }
   if(s===2){ P.playing=false; }
-  if(s===0){ next(); return; }
+  if(s===0){ if(P.preview){ stopPreview(); return; } next(); return; }
   renderPlayer();
 }
 function failCandidate(reason){
@@ -1755,7 +1874,7 @@ function statusText(r){
   if(P.mode==='loading') return 'Connecting to YouTube…';
   if(P.mode==='link') return r.yt.length ? 'Opens on YouTube here' : 'No saved link · search YouTube';
   if(st.state==='trying') return `Trying link ${st.cand+1} of ${r.yt.length}…`;
-  if(st.state==='working') return P.playing?'Playing':'Paused';
+  if(st.state==='working') return P.preview ? `Preview · ${Math.max(0,Math.ceil(((P.preview.end||Date.now()+PREVIEW_SECS*1000)-Date.now())/1000))}s left` : (P.playing?'Playing':'Paused');
   if(st.state==='non_working') return 'Not working · skipped';
   return 'Ready';
 }
@@ -1835,11 +1954,161 @@ function dryRun(){
   stepf();
 }
 
+
+/* =====================================================================
+   ROOM FIT, ZOOM, DRAG & DROP, PREVIEWS
+   ===================================================================== */
+function fitRoom(){
+  const room = document.querySelector('.room.fit'); if(!room) return;
+  const cards = room.children.length; if(!cards) return;
+  const W = room.clientWidth, gap = 16;
+  const top = room.getBoundingClientRect().top + window.scrollY;
+  const playerH = document.getElementById('player')?.hidden ? 0 : (document.getElementById('player').offsetHeight||0);
+  const H = Math.max(260, window.innerHeight - (top - window.scrollY) - playerH - 56);
+  let best = {cols:1, size:0};
+  for(let c=1;c<=cards;c++){
+    const rows = Math.ceil(cards/c), cw = (W-gap*(c-1))/c, ch = (H-gap*(rows-1))/rows;
+    if(cw < 150 || ch < 140) continue;
+    const chc = Math.min(ch, cw*1.0 + 70);          // don't let cards get taller than they need
+    const art = Math.min(cw-28, (chc-84)*1.25);
+    if(art > best.size + 2) best = {cols:c, size:art, ch:chc};
+  }
+  if(!best.size){ room.classList.remove('fit'); room.style.cssText=''; return; }
+  room.style.setProperty('--cols', best.cols);
+  room.style.setProperty('--card-h', Math.floor(best.ch)+'px');
+  room.style.setProperty('--art-h', Math.floor(best.ch-84)+'px');
+  room.querySelectorAll('.stage-box').forEach(fitArt);
+}
+function fitArt(box){
+  const art = box.firstElementChild; if(!art) return;
+  const a = +box.dataset.aspect || 1, bw = box.clientWidth, bh = box.clientHeight;
+  if(!bw || !bh) return;
+  art.style.width = Math.max(40, Math.min(bw, bh * a)) + 'px';
+}
+function fitStrip(){ document.querySelectorAll('.strip .stage-box').forEach(fitArt); }
+let fitRaf = 0;
+window.addEventListener('resize', ()=>{ cancelAnimationFrame(fitRaf); fitRaf = requestAnimationFrame(()=>{ fitRoom(); fitStrip(); }); });
+
+/* zoom room <-> unit with a shared-element view transition (falls back to an instant swap) */
+function zoomTo(view, uid){
+  const apply = () => {
+    if(view==='unit'){ V.view='unit'; V.unit=uid; V.cell='all'; V.dig=0; V.sel=null; V.stale=false; }
+    else { V.view='room'; }
+    render();
+  };
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const from = view==='unit' ? uid : V.unit;
+  if(!document.startViewTransition || reduce || navigator.webdriver || V.view==='playlists' || V.view==='gigs' || V.view==='table' || (view==='unit' && V.view==='unit')){
+    V.zoomId = null; apply(); window.scrollTo({top:0}); focusTitle(view); return;
+  }
+  V.zoomId = from;
+  const old = document.querySelector(view==='unit' ? `.room .unit-card[data-u="${from}"] .art, .room .unit-card[data-u="${from}"] .photo` : '.detail .art');
+  if(old) old.style.viewTransitionName = 'unit-zoom';
+  const t = document.startViewTransition(()=>{ if(old) old.style.viewTransitionName=''; apply(); window.scrollTo({top:0}); });
+  t.finished.finally(()=>{ V.zoomId = null; document.querySelectorAll('[style*="view-transition-name"]').forEach(el=>{ if(el.style.viewTransitionName==='unit-zoom') el.style.viewTransitionName='none'; }); focusTitle(view); });
+}
+function focusTitle(view){ (view==='unit' ? document.querySelector('.detail-title') : document.querySelector('.sec-head h2'))?.focus?.({preventScroll:true}); }
+
+/* drag a record (list row or front sleeve) onto any cubby, bag or crate */
+let drag = null, dragJustEnded = false;
+document.addEventListener('pointerdown', e=>{
+  const src = e.target.closest('[data-drag]');
+  if(!src || e.button!==0 || e.target.closest('a, input, select, textarea, .pv')) return;
+  drag = {rid:src.dataset.drag, src, x:e.clientX, y:e.clientY, id:e.pointerId, on:false, touch:e.pointerType!=='mouse', timer:null, target:null, isSleeve:src.classList.contains('sleeve')};
+  if(drag.touch) drag.timer = setTimeout(()=>{ if(drag && !drag.on) startDrag(e.clientX, e.clientY); }, 380);
+});
+function startDrag(x, y){
+  const r = rec(drag.rid); if(!r){ drag=null; return; }
+  drag.on = true; document.body.classList.add('dragging'); drag.src.classList.add('dragsrc');
+  const g = document.createElement('div'); g.className='ghost'; g.innerHTML = `${thumb(r)}<span>${esc(r.title)}</span>`;
+  document.body.appendChild(g); drag.ghost = g; moveGhost(x, y);
+  navigator.vibrate?.(12);
+}
+let autoScrollRaf = 0;
+function autoScroll(){
+  cancelAnimationFrame(autoScrollRaf);
+  if(!drag?.on) return;
+  const y = drag.lastY, edge = 70, H = window.innerHeight;
+  const v = y < edge ? -(edge-y)/4 : y > H-edge ? (y-(H-edge))/4 : 0;
+  if(v){ window.scrollBy(0, v); moveGhost(drag.lastX, drag.lastY); autoScrollRaf = requestAnimationFrame(autoScroll); }
+}
+function moveGhost(x, y){
+  if(!drag?.ghost) return;
+  drag.lastX = x; drag.lastY = y;
+  drag.ghost.style.transform = `translate(${x}px, ${y}px)`;
+  drag.ghost.hidden = true; const el = document.elementFromPoint(x, y); drag.ghost.hidden = false;
+  const t = el?.closest('[data-drop-u]');
+  if(t !== drag.target){ drag.target?.classList.remove('drop-on'); drag.target = t; t?.classList.add('drop-on'); }
+}
+document.addEventListener('pointermove', e=>{
+  if(!drag || e.pointerId!==drag.id) return;
+  const dx = e.clientX-drag.x, dy = e.clientY-drag.y, dist = Math.hypot(dx,dy);
+  if(!drag.on){
+    if(drag.touch){ if(dist>8){ clearTimeout(drag.timer); drag=null; } return; }   // a moving finger means scroll
+    if(drag.isSleeve && Math.abs(dx) > Math.abs(dy)) return;                       // horizontal on the sleeve = flip
+    if(dist>6) startDrag(e.clientX, e.clientY); else return;
+  }
+  moveGhost(e.clientX, e.clientY); autoScroll();
+});
+document.addEventListener('touchmove', e=>{ if(drag?.on) e.preventDefault(); }, {passive:false});
+function endDrag(drop){
+  if(!drag) return;
+  clearTimeout(drag.timer);
+  const d = drag; drag = null;
+  if(!d.on) return;
+  document.body.classList.remove('dragging'); d.src.classList.remove('dragsrc'); d.ghost?.remove(); d.target?.classList.remove('drop-on');
+  dragJustEnded = true; setTimeout(()=>{ dragJustEnded = false; }, 60);
+  if(drop && d.target){ const to = {u:d.target.dataset.dropU, c:d.target.dataset.dropC}; const r = rec(d.rid);
+    if(same(r.loc,to)){ toast(`Already in ${addrShort(to)}`); return; }
+    moveRecord(d.rid, to); }
+}
+document.addEventListener('pointerup', e=>{ if(drag && e.pointerId===drag.id) endDrag(true); });
+document.addEventListener('pointercancel', e=>{ if(drag && e.pointerId===drag.id) endDrag(false); });
+document.addEventListener('click', e=>{ if(dragJustEnded){ e.stopPropagation(); e.preventDefault(); } }, true);
+document.addEventListener('contextmenu', e=>{ if(drag) e.preventDefault(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && drag?.on) endDrag(false); if((e.key==='Enter'||e.key===' ') && e.target.matches?.('.li[role=button]')){ e.preventDefault(); e.target.click(); } });
+
+/* previews: 30 seconds of audio from the record's YouTube link, no video (like discogs-stream) */
+const PREVIEW_SECS = 30;
+function previewBtn(r, big){
+  const on = P.preview?.rid===r.id;
+  const icon = on ? '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 6h10v12H7z"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="5" height="7" rx="1.5"/><rect x="16" y="14" width="5" height="7" rx="1.5"/></svg>';
+  const cls = `pv ${on?'on':''}`, style = big ? ' style="width:44px;height:44px"' : '';
+  const label = on ? `Stop preview of ${r.title}` : `Preview ${r.title} (${PREVIEW_SECS} seconds, audio only)`;
+  if(P.mode!=='yt'){
+    const href = r.yt.length ? `https://www.youtube.com/watch?v=${r.yt[0]}&t=60s` : ytSearch(r);
+    return `<a class="${cls}"${style} href="${href}" target="_blank" rel="noopener" aria-label="${esc(label)}" title="Preview on YouTube">${icon}</a>`;
+  }
+  return `<button class="${cls}"${style} data-act="preview" data-r="${r.id}" aria-label="${esc(label)}" title="${esc(label)}">${icon}</button>`;
+}
+function startPreview(rid){
+  const r = rec(rid); if(!r) return;
+  if(P.preview?.rid===rid){ stopPreview(); return; }
+  if(P.preview) stopPreview(true);
+  P.preview = {rid, saved:{queue:[...P.queue], i:P.i, src:P.src}, seeked:false, end:0};
+  P.queue = [rid]; P.src = 'Preview'; playAt(0); render();
+}
+function stopPreview(silent){
+  const pv = P.preview; if(!pv) return;
+  clearTimeout(pv.timer); P.preview = null;
+  try{ P.yt?.pauseVideo?.(); }catch(e){}
+  P.playing = false; P.queue = pv.saved.queue; P.i = pv.saved.i; P.src = pv.saved.src;
+  clearTimers(); renderPlayer(); if(!silent) render();
+}
+function previewOnPlaying(){
+  const pv = P.preview; if(!pv || pv.seeked) return;
+  pv.seeked = true;
+  const d = P.yt.getDuration?.()||0;
+  if(d > 120) P.yt.seekTo(Math.min(d*0.33, d-PREVIEW_SECS-5), true);
+  pv.end = Date.now() + PREVIEW_SECS*1000;
+  pv.timer = setTimeout(()=>stopPreview(), PREVIEW_SECS*1000);
+}
+
 /* ---------- actions ---------- */
 const A = {
-  'go-room':()=>{ V.view = 'room'; V.unit=null; render(); },
+  'go-room':()=>zoomTo('room'),
   'go-playlists':()=>{ V.view='playlists'; if(!V.pl) V.pl = S.playlists[0]?.id||null; render(); },
-  'open-unit':d=>{ V.view='unit'; V.unit=d.u; V.cell='all'; V.dig=0; V.sel=null; $('#results').hidden=true; render(); document.querySelector('.detail')?.scrollIntoView({behavior:'smooth',block:'start'}); },
+  'open-unit':(d,e)=>{ if(dragJustEnded) return; $('#results').hidden=true; zoomTo('unit', d.u); },
   'pick-cell':d=>{ V.cell=d.c; V.dig=0; V.sel=null; render(); },
   'dig':d=>dig(+d.d),
   'dig-to':d=>{ V.dig=+d.i; render(); },
@@ -1849,7 +2118,7 @@ const A = {
   'go-home':d=>{ const r=rec(d.r); if(!hasHome(r)) return; lastUndo = snap([r]); place(r,{...r.home},{setHome:false}); closeSheet(); render(); toast(`Back in ${addrShort(r.home)}`, true); },
   'empty-bag':d=>{ const all = S.records.filter(r=>r.loc.u===d.u); const moved = all.filter(hasHome); lastUndo = snap(moved); moved.forEach(r=>place(r,{...r.home},{setHome:false})); render(); const left = all.length-moved.length; toast(`Unpacked ${moved.length} to their home slots`+(left?` · ${left} with no home shelf stayed`:''), true); },
   'scan-bag':d=>openScan(d.u), 'scan-sim':()=>simScan(), 'scan-review':()=>scanReview(), 'scan-apply':()=>scanApply(),
-  'undo':()=>{ if(lastUndo){ lastUndo(); lastUndo=null; render(); renderPlayer(); document.querySelector('.toast')?.remove(); } },
+  'undo':()=>undoStep(),
   'close':()=>closeSheet(),
   'scrim':(d,e)=>{ if(e.target.classList.contains('scrim')) closeSheet(); },
   'goto-rec':d=>{ closeNP(); closeSheet(); gotoRecord(d.r); },
@@ -1910,6 +2179,7 @@ const A = {
 };
 
 Object.assign(A, {
+  'preview':d=>startPreview(d.r),
   'go-gigs':()=>{ V.view='gigs'; if(!V.gig) V.gig = S.gigs.slice().sort((a,b)=>a.date.localeCompare(b.date)).find(g=>g.status!=='done')?.id || S.gigs[0]?.id || null; render(); },
   'open-gig':d=>{ V.gig=d.g; render(); document.querySelector('.gig')?.scrollIntoView({behavior:'smooth',block:'start'}); },
   'new-gig':()=>openNewGig(),
@@ -2028,6 +2298,8 @@ function renderTable(){
 function tCommit(el){
   const r = rec(el.dataset.r); if(!r) return;
   const f = el.dataset.tedit; let v = el.value;
+  const before = f==='tags' ? r.tags.join(', ') : String(r[f]??''); if(before===v.trim()) return;
+  const prev = f==='tags' ? [...r.tags] : r[f]; lastUndo = () => { r[f] = prev; }; if(UNDO.length) UNDO[UNDO.length-1].label = `Edited ${f} of ${r.title}`;
   if(f==='tags') r.tags = v.split(',').map(x=>x.trim()).filter(Boolean);
   else if(f==='rating') r.rating = +v||0;
   else r[f] = v.trim();
@@ -2090,5 +2362,6 @@ Object.assign(A, {
 /* ---------- boot ---------- */
 render();
 if(location.hash) routeHash();
-P.queue = S.records.map(r=>r.id); P.i = 0; P.src='Whole collection'; renderPlayer();
+renderPlayer();  // hidden until something plays, then it slides in from the bottom
+updateUndoBtn();
 </script>

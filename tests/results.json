@@ -4,56 +4,56 @@
     "status": "PASS",
     "note": "link mode after 0.0s; K1 preset=ikea-kallax-2-4-77-147-cm",
     "js_errors": [],
-    "secs": 0.9
+    "secs": 0.8
   },
   {
     "test": "02 Search",
     "status": "PASS",
     "note": "acid -> 4 results; ArrowDown+Enter ok=True",
     "js_errors": [],
-    "secs": 1.2
+    "secs": 1.1
   },
   {
     "test": "03 Flip-through",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 2.0
+    "secs": 1.9
   },
   {
     "test": "04 Move one record",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 1.7
+    "secs": 1.0
   },
   {
     "test": "05 Put in bag / Back home",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 1.6
+    "secs": 1.0
   },
   {
     "test": "06 Bag scan + unpack",
     "status": "PASS",
     "note": "FOUND 4 IN CRATER; 3 moves; counts {'K1': 7, 'B1': 3, 'C1': 0} -> {'K1': 6, 'B1': 4, 'C1': 0}",
     "js_errors": [],
-    "secs": 1.8
+    "secs": 1.6
   },
   {
     "test": "07 Add furniture",
     "status": "PASS",
     "note": "new unit K2 3x5 custom #ff00aa",
     "js_errors": [],
-    "secs": 4.1
+    "secs": 3.8
   },
   {
     "test": "08 Add bag",
     "status": "PASS",
     "note": "41 bags, UDG=9 Magma=10; last named color 'Black / orange inside'",
     "js_errors": [],
-    "secs": 4.4
+    "secs": 4.3
   },
   {
     "test": "09 Add record",
@@ -67,63 +67,63 @@
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 2.3
+    "secs": 2.0
   },
   {
     "test": "11 Playlists",
     "status": "PASS",
     "note": "4 packed into Crater",
     "js_errors": [],
-    "secs": 3.0
+    "secs": 2.6
   },
   {
     "test": "12 Player",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 7.8
+    "secs": 7.7
   },
   {
     "test": "13 Settings",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 3.3
+    "secs": 3.1
   },
   {
     "test": "14 Layout + screenshots",
     "status": "PASS",
     "note": "light: max scrollWidth 390; dark: max scrollWidth 390",
     "js_errors": [],
-    "secs": 7.5
+    "secs": 6.5
   },
   {
     "test": "15 Persistence",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 1.4
+    "secs": 1.5
   },
   {
     "test": "X1 Empty cell arrow, then Undo",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 1.1
+    "secs": 1.0
   },
   {
     "test": "X2 Homeless bag record stays on unpack",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 2.2
+    "secs": 2.1
   },
   {
     "test": "X3 Removing a unit that is a home",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 3.6
+    "secs": 3.2
   },
   {
     "test": "X4 Add record keeps typing on slot change",
@@ -137,21 +137,21 @@
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 1.9
+    "secs": 1.8
   },
   {
     "test": "X6 Picker blocks duplicates",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 1.4
+    "secs": 1.3
   },
   {
     "test": "X7 YouTube API hang -> link mode",
     "status": "PASS",
     "note": "link mode after 5.9s with hanging iframe_api",
     "js_errors": [],
-    "secs": 6.4
+    "secs": 6.5
   },
   {
     "test": "X8 Look & name custom color",
@@ -165,14 +165,14 @@
     "status": "PASS",
     "note": "You already own a record with barcode 123456789012: No UFO's, in Kallax 1, shelf A1 (Detro",
     "js_errors": [],
-    "secs": 2.4
+    "secs": 2.6
   },
   {
     "test": "N02 Barcode lookup",
     "status": "PASS",
     "note": "photo fallback after 0.1s; BarcodeDetector=False",
     "js_errors": [],
-    "secs": 2.2
+    "secs": 2.5
   },
   {
     "test": "N03 Discogs Location sync",
@@ -193,7 +193,7 @@
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 1.9
+    "secs": 2.0
   },
   {
     "test": "N06 Swap cubbies",
@@ -207,35 +207,35 @@
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 2.3
+    "secs": 2.0
   },
   {
     "test": "N08 Came-from",
     "status": "PASS",
     "note": "Good Life|from K1\u00b7A2 Acid; Voodoo Ray|from K1\u00b7A1 Detroit & Chicago; Around The World|from K1\u00b7A2 Acid",
     "js_errors": [],
-    "secs": 1.4
+    "secs": 1.1
   },
   {
     "test": "N09 Set history + stale",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 3.0
+    "secs": 3.1
   },
   {
     "test": "N10 Gigs",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 2.2
+    "secs": 2.1
   },
   {
     "test": "N11 QR stickers",
     "status": "PASS",
     "note": "html: download:crates-qr-stickers.html msg=Saved.; svg: download:crates-qr-stickers.svg msg=Saved.; png: download:crates-qr-stickers.png msg=Saved.",
     "js_errors": [],
-    "secs": 5.3
+    "secs": 5.2
   },
   {
     "test": "N12 Deep links",
@@ -256,21 +256,21 @@
     "status": "PASS",
     "note": "years desc [1997, 1995, 1990, 1989]\u2026",
     "js_errors": [],
-    "secs": 3.7
+    "secs": 3.4
   },
   {
     "test": "N14b Collection 390px + 844x390",
     "status": "PASS",
     "note": "{'390x844': 390, '390x844-selbar': 390, '844x390': 844, '844x390-selbar': 844}",
     "js_errors": [],
-    "secs": 2.3
+    "secs": 2.0
   },
   {
     "test": "N15 README screenshots",
     "status": "PASS",
     "note": "14 files (player-desktop at 1440x900)",
     "js_errors": [],
-    "secs": 13.3
+    "secs": 11.9
   },
   {
     "test": "X9 Subtitle on a just-added shelf",
@@ -284,84 +284,84 @@
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 3.4
+    "secs": 3.2
   },
   {
     "test": "X11 Subtitle toast after blur-by-click",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 1.2
+    "secs": 1.1
   },
   {
     "test": "X12 Same sticker link twice",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 1.4
+    "secs": 1.2
   },
   {
     "test": "X13 Cube subtitle vs count overlap",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 1.4
+    "secs": 1.2
   },
   {
     "test": "X14 Collection thumbnails full size",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 1.0
+    "secs": 0.8
   },
   {
     "test": "R01 Room fits the screen",
     "status": "PASS",
     "note": "1440x900 ok; 1280x800 ok; 390x844 ok",
     "js_errors": [],
-    "secs": 2.1
+    "secs": 1.8
   },
   {
     "test": "R02 Zoom into a unit",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 1.6
+    "secs": 3.0
   },
   {
     "test": "R03 Drag and drop",
     "status": "PASS",
     "note": "row \u2192 cubby and row \u2192 bag in strip",
     "js_errors": [],
-    "secs": 2.4
+    "secs": 2.3
   },
   {
     "test": "R04 Multi-step undo",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 2.2
+    "secs": 2.0
   },
   {
     "test": "R05 Audio previews",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 1.2
+    "secs": 0.9
   },
   {
     "test": "R06 Player slides in",
     "status": "PASS",
     "note": "hidden until play, then slides in",
     "js_errors": [],
-    "secs": 1.3
+    "secs": 1.2
   },
   {
     "test": "R07 New bags are Bag 1, Bag 2",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 3.0
+    "secs": 2.7
   },
   {
     "test": "R08 Looks + cue bar",
@@ -369,5 +369,19 @@
     "note": "",
     "js_errors": [],
     "secs": 1.2
+  },
+  {
+    "test": "R09 Backups + Discogs import",
+    "status": "PASS",
+    "note": "records now 16; backups 4",
+    "js_errors": [],
+    "secs": 4.0
+  },
+  {
+    "test": "R10 Density, sheet snaps, phone columns",
+    "status": "PASS",
+    "note": "compact rows, sheet snaps, push/pop",
+    "js_errors": [],
+    "secs": 2.9
   }
 ]

@@ -441,7 +441,7 @@ label.li input{width:18px;height:18px;margin:0 11px;accent-color:var(--accent)}
 .ctable tr:hover td{background:color-mix(in srgb,var(--surface-2) 70%,transparent)}
 .ctable tr.sel td{background:color-mix(in srgb,var(--accent) 9%,var(--surface))}
 .ctable .stick{position:sticky;left:0;z-index:1;background:var(--surface)}
-.ctable .stick2{position:sticky;left:36px;z-index:1;background:var(--surface)}
+.ctable .stick2{position:sticky;left:36px;z-index:1;background:var(--surface);white-space:nowrap}
 .ctable th.stick,.ctable th.stick2{z-index:3;background:var(--surface-2)}
 .ctable td.stick,.ctable td.stick2{box-shadow:1px 0 0 var(--line)}
 .ctable .cb{width:36px;text-align:center}
@@ -606,6 +606,208 @@ body:has(#player[hidden]){padding-bottom:24px}
 .cuebar .sep{flex:0 0 1px;background:var(--line);margin:6px 2px}
 
 .foot{margin-top:34px;font-size:12.5px;color:var(--muted);max-width:72ch}
+
+/* ---------- app shell: the page never scrolls; each view scrolls inside itself ---------- */
+html,body{height:100%}
+body{display:flex;flex-direction:column;height:100dvh;overflow:hidden;padding-block:0}
+body::before{display:none}
+.top{position:relative;top:auto;flex:0 0 auto;padding-block:calc(8px + env(safe-area-inset-top,0px)) 8px}
+.top .wrap{max-width:none}
+#main{flex:1 1 auto;min-height:0;width:100%;max-width:none;margin:0;display:flex;flex-direction:column}
+#main.scrollpane{display:block;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:28px}
+#main.scrollpane>.inner{max-width:1320px;margin:0 auto}
+#main.shell{overflow:hidden}
+.player{position:relative;left:auto;right:auto;bottom:auto;flex:0 0 auto;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px))) calc(-1 * max(16px,env(safe-area-inset-right,0px)))}
+.player-in{max-width:none;padding-inline:4px}
+body:has(#player[hidden]){padding-bottom:0}
+.toast{bottom:calc(var(--bottom-ui,76px) + 14px)}
+.selbar{bottom:0}
+.cuebar{position:static;margin:0 0 8px}
+.scrollpane .cuebar{position:sticky;top:0;z-index:15;background:var(--bg)}
+:root{--row-h:50px;--pad:12px;--bottom-ui:0px}
+@media (min-width:900px){
+  .top-row{flex-wrap:nowrap}
+  .search{order:0;flex:1 1 260px;max-width:560px;margin-inline:6px}
+  .search input{height:40px}
+  .brand{margin-right:0}
+}
+
+/* bottom tab bar on phones */
+.tabbar{display:none;flex:0 0 auto;grid-template-columns:repeat(5,minmax(0,1fr));align-items:center;height:calc(60px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);border-top:1px solid var(--line);background:var(--bg);margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px))) calc(-1 * max(16px,env(safe-area-inset-right,0px)))}
+.tabbar button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;color:var(--muted);height:100%;padding:6px 0 4px}
+.tabbar button svg{width:22px;height:22px}
+.tabbar button[aria-pressed="true"]{color:var(--accent)}
+.tabbar .tb-add{justify-self:center;width:48px;height:48px;border-radius:14px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;padding:0;align-self:center}
+.tabbar .tb-add svg{width:24px;height:24px}
+@media (max-width:600px){
+  .tabbar{display:grid}
+  .top .tabs,.top .add-btn{display:none}
+  .top-row{flex-wrap:nowrap}
+  .brand .brandsvg{height:26px}
+  .search{order:0;flex:1 1 auto;min-width:0}
+  .search input{height:40px;font-size:15px;padding-left:38px}
+  .search>svg{top:11px;left:12px}
+  .top .icon-btn{width:34px;height:34px}
+  .top .look-btn{display:none}
+  .sec-head h2{font-size:22px}
+}
+
+/* density */
+html[data-density="compact"]{--row-h:40px;--pad:8px}
+html[data-density="compact"] body{font-size:14px}
+html[data-density="compact"] .li{padding:5px 4px}
+html[data-density="compact"] .thumb{width:34px;height:34px}
+html[data-density="compact"] .li{grid-template-columns:34px minmax(0,1fr) auto auto}
+html[data-density="compact"] .btn{height:34px;font-size:13px;padding:0 11px}
+html[data-density="compact"] .chip{padding:4px 9px;font-size:12.5px}
+html[data-density="compact"] .cue{height:46px;min-width:92px}
+html[data-density="compact"] .cue .nm{display:none}
+html[data-density="compact"] .tabbar{height:calc(52px + env(safe-area-inset-bottom,0px))}
+html[data-density="compact"] .spot-row{height:36px}
+html[data-density="compact"] .ctable td{padding:0 3px}
+html[data-density="compact"] .ce{padding:3px 5px}
+html[data-density="compact"] .top{padding-block:calc(4px + env(safe-area-inset-top,0px)) 4px}
+
+/* ---------- view bar + segmented control ---------- */
+.viewbar{display:flex;align-items:center;gap:10px;padding:8px 0 8px;flex:0 0 auto;flex-wrap:wrap}
+.viewbar .kicker{margin:0}
+.viewbar h2{font-family:var(--f-display);font-weight:800;font-size:24px;text-transform:uppercase;letter-spacing:.02em;margin:0;line-height:1}
+.seg{display:inline-flex;gap:2px;padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);flex:0 0 auto}
+.seg button{border:0;background:none;border-radius:8px;height:30px;padding:0 10px;font-weight:600;font-size:13px;color:var(--muted);display:inline-flex;gap:6px;align-items:center}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.seg button svg{width:15px;height:15px}
+.seg.icons button{padding:0 8px}
+@media (max-width:600px){.viewbar{padding:6px 0 4px;row-gap:6px}.viewbar h2{font-size:20px}.viewbar .kicker{display:none}.viewbar .tools-r{flex:1 1 100%;margin-left:0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.viewbar .tools-r .btn{height:32px;font-size:12.5px;padding:0 10px;flex:0 0 auto}}
+.tools-r{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+
+/* ---------- Map view ---------- */
+.mapwrap{flex:1 1 auto;min-height:0;display:flex;gap:14px;position:relative;margin-bottom:10px}
+.map{flex:1 1 auto;min-width:0;position:relative;overflow:hidden;border:1px solid var(--line);border-radius:16px;touch-action:none;-webkit-user-select:none;user-select:none;cursor:grab;
+  background-color:color-mix(in srgb,var(--bg) 70%,var(--surface));
+  background-image:linear-gradient(color-mix(in srgb,var(--line) 55%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--line) 55%,transparent) 1px,transparent 1px);background-size:40px 40px}
+.map.panning{cursor:grabbing}
+.map.live .world{transition:none}
+.world{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform;transition:transform .36s cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion:reduce){.world{transition:none}}
+.plate{position:absolute;display:flex;flex-direction:column;align-items:center;gap:10px}
+.plate .plate-art{width:100%;display:grid;place-items:end center}
+.plate .kallax{max-width:100%!important;width:100%}
+.plate .kallax.big{--g:10px}
+.plate .bagwrap,.plate .cratewrap{width:100%}
+.plate .bag{width:100%;max-width:none}
+.plate-name{display:flex;align-items:center;gap:8px;max-width:100%}
+.plate-name .pn{border:0;background:none;padding:0;font-family:var(--f-display);font-weight:800;font-size:24px;text-transform:uppercase;letter-spacing:.02em;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;cursor:zoom-in}
+.plate-name .n{font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.plate.sel .plate-name .pn{color:var(--accent)}
+.unitbtn{border:0;background:none;padding:0;width:100%;display:block;cursor:pointer;border-radius:12px}
+.unitbtn[aria-pressed="true"]{outline:3px solid var(--accent);outline-offset:6px}
+.unitbtn.drop-on{outline:3px solid var(--accent);outline-offset:6px}
+.map-tools{position:absolute;left:12px;bottom:12px;display:flex;gap:2px;padding:4px;border-radius:12px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);z-index:3}
+.map-tools button{width:40px;height:40px;border:0;border-radius:9px;background:none;display:grid;place-items:center;color:var(--ink)}
+.map-tools button.txt{width:auto;padding:0 12px;font-weight:600;font-size:13px;background:var(--surface-2)}
+.map-tools button svg{width:18px;height:18px}
+.map-hint{position:absolute;right:14px;bottom:18px;font-family:var(--f-mono);font-size:11.5px;color:var(--muted);pointer-events:none;z-index:3}
+.map-empty{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.map-empty>div{pointer-events:auto;border:1.5px dashed var(--line);border-radius:14px;padding:22px;background:var(--surface);text-align:center;color:var(--muted)}
+
+/* spot panel (desktop side panel / phone bottom sheet) */
+.spot-panel{flex:0 0 clamp(340px,34%,460px);display:flex;flex-direction:column;min-height:0;border:1px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden;box-shadow:var(--shadow)}
+.spot-head{padding:12px 16px 10px;border-bottom:1px solid var(--line);flex:0 0 auto;display:flex;flex-direction:column;gap:8px}
+.spot-title{display:flex;align-items:baseline;gap:10px;min-width:0}
+.spot-title .code-big{font-family:var(--f-display);font-weight:800;font-size:30px;line-height:1;letter-spacing:.01em;white-space:nowrap}
+.spot-title .sub{flex:1;min-width:0;color:var(--muted);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spot-title .cnt{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);white-space:nowrap}
+.spot-tools{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.spot-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 10px 10px}
+.spot-body .list{border-top:0}
+.grabber{display:none}
+.rec-x{padding:10px 6px 14px 56px;border-bottom:1px solid var(--line);background:var(--surface-2);animation:fadein .2s ease}
+@keyframes fadein{from{opacity:0;translate:0 -4px}}
+@media (prefers-reduced-motion:reduce){.rec-x{animation:none}}
+.rec-x .dig-info h3{font-size:19px}
+.spot-foot{padding:8px 12px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);flex:0 0 auto}
+@media (max-width:780px){
+  .mapwrap{display:block;margin-bottom:0;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px))) calc(-1 * max(16px,env(safe-area-inset-right,0px)))}
+  .map{position:absolute;inset:0;border-radius:0;border-width:1px 0 0}
+  .spot-panel{position:absolute;left:0;right:0;bottom:0;height:var(--sheet-h,46%);border-radius:20px 20px 0 0;border-bottom:0;box-shadow:0 -16px 40px rgba(0,0,0,.35);transition:height .32s cubic-bezier(.2,.8,.2,1);z-index:4}
+  .spot-panel.dragging{transition:none}
+  .spot-panel[data-snap="peek"] .spot-body,.spot-panel[data-snap="peek"] .spot-tools{display:none}
+  .spot-head{touch-action:none;cursor:grab;padding-top:6px}
+  .grabber{display:block;width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 6px}
+  .map-tools{bottom:auto;top:10px;left:auto;right:10px;padding:2px}
+  .map-tools button{width:34px;height:34px}.map-tools button.txt{padding:0 9px;font-size:12px}
+  .map-hint{display:none}
+  @media (prefers-reduced-motion:reduce){.spot-panel{transition:none}}
+}
+
+/* ---------- Columns view ---------- */
+.cols{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(230px,290px) minmax(0,1fr) minmax(320px,420px);gap:0;border:1px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden;margin-bottom:10px;box-shadow:var(--shadow)}
+.col{display:flex;flex-direction:column;min-height:0;min-width:0;border-right:1px solid var(--line)}
+.col:last-child{border-right:0}
+.col-head{padding:12px 14px 10px;border-bottom:1px solid var(--line);flex:0 0 auto;display:flex;flex-direction:column;gap:8px}
+.col-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.col-spots .col-body{padding:6px 8px 12px}
+.col-recs .col-body{padding:0 10px 10px}
+.col-rec .col-body{padding:16px 18px 24px}
+.ugrp{margin-top:8px}
+.uhead{display:flex;align-items:center;gap:8px;padding:8px 8px 6px;min-width:0}
+.uhead .uh{border:0;background:none;padding:0;font-family:var(--f-display);font-weight:800;font-size:19px;text-transform:uppercase;letter-spacing:.02em;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;text-align:left;flex:1}
+.uhead .n{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.spot-row{width:100%;height:var(--row-h,44px);display:flex;align-items:center;gap:10px;padding:0 10px;border:0;border-radius:9px;background:none;text-align:left;color:var(--ink)}
+.spot-row:hover{background:var(--surface-2)}
+.spot-row[aria-current="true"]{background:color-mix(in srgb,var(--accent) 16%,var(--surface));box-shadow:inset 0 0 0 1px var(--accent)}
+.spot-row .led{width:8px;height:8px;border-radius:50%;background:var(--line);flex:0 0 auto}
+.spot-row.lit .led{background:#F5A524;box-shadow:0 0 8px rgba(245,165,36,.75)}
+.spot-row.bag .led{border-radius:2px}
+.spot-row b{font-family:var(--f-mono);font-weight:500;font-size:13px;width:28px;flex:0 0 auto}
+.spot-row.bag b{width:auto}
+.spot-row .nm{flex:1;min-width:0;font-size:13.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spot-row .n{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.spot-row.drop-on{outline:3px solid var(--accent);outline-offset:-3px}
+.col-nav{display:none;align-items:center;gap:6px}
+.col-nav .round{width:40px;height:40px}
+.bigcover{width:min(100%,260px);aspect-ratio:1;border-radius:4px;overflow:hidden;box-shadow:0 2px 4px rgba(0,0,0,.3),0 18px 36px rgba(0,0,0,.35);background:var(--surface-2);margin:0 auto 14px}
+.bigcover svg{width:100%;height:100%;display:block}
+.col-rec .dig-nav{margin:0 0 12px}
+.backlink{border:0;background:none;padding:0;color:var(--accent);font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:2px}
+.backlink svg{width:18px;height:18px}
+.step{display:flex;align-items:center;gap:4px;margin-left:auto}
+.step .round{width:36px;height:36px}
+.step .round svg{width:16px;height:16px}
+@media (max-width:780px){
+  .cols{display:block;position:relative;border-radius:0;border-width:1px 0 0;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px))) calc(-1 * max(16px,env(safe-area-inset-right,0px)));margin-bottom:0;box-shadow:none}
+  .col{position:absolute;inset:0;border-right:0;display:none;background:var(--surface)}
+  .cols[data-col="spots"] .col-spots,.cols[data-col="records"] .col-recs,.cols[data-col="record"] .col-rec{display:flex}
+  .col-nav{display:flex}
+  .col-rec .col-body{padding:14px 16px 24px}
+  .cols .col{view-transition-name:col}
+  .cols[data-col="spots"] .col-recs,.cols[data-col="spots"] .col-rec,.cols[data-col="records"] .col-spots,.cols[data-col="records"] .col-rec,.cols[data-col="record"] .col-spots,.cols[data-col="record"] .col-recs{view-transition-name:none}
+}
+::view-transition-group(col){animation-duration:.3s;animation-timing-function:cubic-bezier(.2,.8,.2,1)}
+html[data-navdir="push"]::view-transition-old(col){animation:col-out-l .3s cubic-bezier(.2,.8,.2,1) both}
+html[data-navdir="push"]::view-transition-new(col){animation:col-in-r .3s cubic-bezier(.2,.8,.2,1) both}
+html[data-navdir="pop"]::view-transition-old(col){animation:col-out-r .3s cubic-bezier(.2,.8,.2,1) both}
+html[data-navdir="pop"]::view-transition-new(col){animation:col-in-l .3s cubic-bezier(.2,.8,.2,1) both}
+@keyframes col-out-l{to{transform:translateX(-30%);opacity:0}}
+@keyframes col-in-r{from{transform:translateX(100%)}}
+@keyframes col-out-r{to{transform:translateX(100%)}}
+@keyframes col-in-l{from{transform:translateX(-30%);opacity:0}}
+
+/* ---------- Collection: full height, container bar on top ---------- */
+.tbl-shell{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+.tbl-shell>*{flex:0 0 auto}
+.tbl-shell .tbl-wrap{flex:1 1 auto;min-height:170px;max-height:none;margin-bottom:8px}
+#main.shell{overflow:auto}
+.mapwrap,.cols{min-height:280px}
+@media (max-height:560px){.tbl-shell .tbl-foot,.viewbar .kicker{display:none}.viewbar{padding:4px 0}}
+.tbl-shell .tbl-tools{margin-bottom:8px}
+.tbl-shell .tbl-foot{margin:0 0 8px;flex:0 0 auto}
+.cuebar.tight .cue{min-width:0;height:44px;padding:6px 9px 6px 10px;grid-template-rows:auto}
+.cuebar.tight .cue .nm{display:none}
+.cue{flex:0 0 auto}
+.cue.all b{font-family:var(--f-body);font-weight:700}
+.ctable .dragh{cursor:grab;color:var(--muted);font-size:14px;letter-spacing:-2px;padding:0 4px;display:inline-block;touch-action:none}
+@media (max-width:600px){.tbl-shell .tbl-tools{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.tbl-shell .tbl-tools input[type=search]{flex:0 0 200px}.tbl-shell .tbl-tools .chip{flex:0 0 auto}.tbl-shell .tbl-foot{display:none}}
 </style>
 
 <div class="top"><div class="wrap">
@@ -635,7 +837,14 @@ body:has(#player[hidden]){padding-bottom:24px}
 <main class="wrap" id="main"></main>
 
 <div class="player" id="player" hidden></div>
-<div id="yt-host"><div id="yt"></div></div>
+<nav class="tabbar" id="tabbar" aria-label="Sections">
+  <button data-act="go-room" data-tab="room"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg>Room</button>
+  <button data-act="go-table" data-tab="table"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>Collection</button>
+  <button class="tb-add" data-act="open-add" aria-label="Add a record, furniture or bag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+  <button data-act="go-playlists" data-tab="playlists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>Playlists</button>
+  <button data-act="go-gigs" data-tab="gigs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Gigs</button>
+</nav>
+<div id="yt-host"><div id="yt"></div><div id="yt2"></div></div>
 <div id="layer"></div>
 <div id="np"></div>
 <div id="print-sheet" aria-hidden="true"></div>
@@ -727,7 +936,7 @@ function seed(){
       {id:'p1',name:'Warm-up',color:PL_COLORS[1],items:['r1','r4','r7','r8']},
       {id:'p2',name:'Acid hour',color:PL_COLORS[0],items:['r3','r5','r8','r6']},
     ],
-    settings:{accent:'red', discogsSync:false, look:'booth'},
+    settings:{accent:'red', discogsSync:false, look:'booth', view:'map', density:'regular'},
     recent:[],
     gigs:[
       {id:'g1',name:'Sunday loft session',venue:'Loft session',date:'2026-08-30',bag:'B1',status:'done',items:[{r:'r1',packed:true,played:true,back:true},{r:'r4',packed:true,played:true,back:false},{r:'r7',packed:true,played:true,back:true},{r:'r8',packed:true,played:true,back:true}]},
@@ -744,7 +953,7 @@ function seedExtras(st){
   return st;
 }
 function migrate(st){
-  st.gigs ||= []; st.syncQueue ||= []; st.settings.discogsSync ??= false; st.settings.look ||= 'booth';
+  st.gigs ||= []; st.syncQueue ||= []; st.settings.discogsSync ??= false; st.settings.look ||= 'booth'; st.settings.view ||= 'map'; st.settings.density ||= 'regular';
   st.units.forEach(u=>{ u.labels ||= {}; });
   st.records.forEach(r=>{ r.plays ||= []; r.barcode ??= ''; if(r.from===undefined) r.from = null; });
   return st;
@@ -813,7 +1022,7 @@ function drawShelf(u, big=false, opts={}){
   return `<div class="${cls}" style="grid-template-columns:repeat(${u.cols},1fr);--fin:${f.hex};max-width:${Math.min(100, u.cols*(big?26:22))}%">${cellKeys(u).map(k=>{
     const list = opts.empty ? [] : inCell(u.id,k);
     const inner = `<span class="lbl">${esc(cellLabel(u,k))}${cellName(u,k)?`<em>${esc(cellName(u,k))}</em>`:''}</span>${list.length?`<span class="cnt">${list.length}</span>`:''}${spines(list)}`;
-    return big ? `<button type="button" class="cube ${V.flash===k?'flash':''} ${list.length?'lit':''}" data-act="pick-cell" data-c="${k}" data-drop-u="${u.id}" data-drop-c="${k}" aria-pressed="${V.cell===k}" aria-label="Shelf ${esc(cellLabel(u,k))}, ${list.length} records">${inner}</button>` : `<div class="cube"${opts.drop?` data-drop-u="${u.id}" data-drop-c="${k}"`:''}>${inner}</div>`;
+    return big ? `<button type="button" class="cube ${V.flash===k?'flash':''} ${list.length?'lit':''}" data-act="${opts.act||'pick-cell'}" data-u="${u.id}" data-c="${k}" data-drop-u="${u.id}" data-drop-c="${k}" aria-pressed="${V.unit===u.id&&V.cell===k}" aria-label="${esc(u.id)}·${esc(cellLabel(u,k))}${cellName(u,k)?', '+esc(cellName(u,k)):''}, ${list.length} records">${inner}</button>` : `<div class="cube"${opts.drop?` data-drop-u="${u.id}" data-drop-c="${k}"`:''}>${inner}</div>`;
   }).join('')}</div>`;
 }
 function drawBag(u, opts={}){
@@ -861,24 +1070,42 @@ if(!S || S.v!==2 || !Array.isArray(S.units) || !Array.isArray(S.records)) S = se
 S.units.forEach(u=>{ if(u.kind==='bag' ? !bpreset(u.preset) : !fpreset(u.preset)) u.preset = u.kind==='bag' ? BAGS[0].key : (u.kind==='shelf' ? (FURNITURE.find(x=>x.kind==='shelf'&&x.custom)||FURNITURE.find(x=>x.kind==='shelf')).key : (FURNITURE.find(x=>x.kind==='crate')||FURNITURE[0]).key); });
 S = migrate(S);
 const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(S)) }catch(e){} };
-const V = {view:'room', unit:'K1', cell:'all', dig:0, focus:null, flash:null, pl:null, gig:null, stale:false, sel:null};
+const V = {view:'map', unit:'K1', cell:'0-0', dig:0, focus:null, flash:null, pl:null, gig:null, stale:false, sel:null, col:'spots'};
+const roomView = () => S.settings.view==='columns' ? 'columns' : 'map';
+V.view = roomView();
 
 /* ---------- render ---------- */
 function render(){
   document.body.dataset.accent = S.settings.accent;
-  applyLook();
-  $('#tab-room').setAttribute('aria-pressed', V.view==='room'||V.view==='unit');
+  applyLook(); applyDensity();
+  if(V.view==='room') V.view = roomView();
+  const isRoom = V.view==='map'||V.view==='columns'||V.view==='unit';
+  $('#tab-room').setAttribute('aria-pressed', isRoom);
   $('#tab-pl').setAttribute('aria-pressed', V.view==='playlists');
   $('#tab-gigs').setAttribute('aria-pressed', V.view==='gigs');
   $('#tab-table').setAttribute('aria-pressed', V.view==='table');
-  $('#main').innerHTML = V.view==='playlists' ? renderPlaylists() : V.view==='gigs' ? renderGigs() : V.view==='table' ? renderTable() : renderRoom();
+  document.querySelectorAll('#tabbar [data-tab]').forEach(b=>b.setAttribute('aria-pressed', b.dataset.tab==='room' ? isRoom : V.view===b.dataset.tab));
+  const main = $('#main');
+  const shell = V.view==='map'||V.view==='columns'||V.view==='table';
+  main.className = shell ? 'shell' : 'scrollpane';
+  const html = V.view==='playlists' ? renderPlaylists() : V.view==='gigs' ? renderGigs() : V.view==='table' ? renderTable() : V.view==='map' ? renderMap() : V.view==='columns' ? renderColumns() : renderRoom();
+  main.innerHTML = shell ? html : `<div class="inner">${html}</div>`;
   if(V.view==='unit') bindSwipe();
+  if(V.view==='map') mapMount();
+  if(V.view==='table') fitCue();
   const tb = document.querySelector('.top'); if(tb) document.documentElement.style.setProperty('--top-h', tb.offsetHeight+'px');
-  const cb = document.querySelector('.cuebar'); if(cb) document.documentElement.style.setProperty('--cue-h', cb.offsetHeight+'px');
+  layoutVars();
   fitRoom(); fitStrip();
   if(V.view==='playlists') bindPlaylist();
   save();
 }
+function layoutVars(){
+  const pl = document.getElementById('player'), tb = document.getElementById('tabbar');
+  const h = (pl && !pl.hidden ? pl.offsetHeight : 0) + (tb && getComputedStyle(tb).display!=='none' ? tb.offsetHeight : 0);
+  document.documentElement.style.setProperty('--bottom-ui', h+'px');
+}
+function applyDensity(){ document.documentElement.dataset.density = S.settings.density==='compact' ? 'compact' : 'regular'; }
+const isPhone = () => matchMedia('(max-width:780px)').matches;
 
 function artAspect(u){ if(u.kind==='shelf') return (u.cols*1.0+0.12)/(u.rows*1.0+0.12); if(u.kind==='bag') return 1.15; return 1.35; }
 function unitCard(u, strip){
@@ -951,7 +1178,21 @@ function digView(list, cur){
       ${previewBtn(cur, true)}
       <button class="round" data-act="dig" data-d="1" aria-label="Next record" ${V.dig===list.length-1?'disabled':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m9 18 6-6-6-6"/></svg></button>
     </div>
-    <div class="dig-info"><h3>${esc(cur.title)}${dot('title')}</h3><div class="by">${esc(cur.artist)}${dot('artist')}</div>
+    ${recInfo(cur)}
+    <div class="list">${recordRows(list, {act:'dig-to'})}</div>
+    ${selBar()}`;
+}
+function selBar(){
+  return V.sel ? `<div class="selbar"><span>${V.sel.size} selected</span><button class="btn sm" data-act="sel-all">Select all</button><button class="btn sm primary" data-act="sel-move" ${V.sel.size?'':'disabled'}>Move ${V.sel.size||''}…</button>${S.units.some(u=>u.kind==='bag')?`<button class="btn sm" data-act="sel-bag" ${V.sel.size?'':'disabled'}>Put in bag</button>`:''}</div>` : '';
+}
+/* one record's facts and actions; shared by the Flip page, the Map sheet and the Columns detail */
+function recInfo(cur){
+  const atHome = !hasHome(cur) || same(cur.loc, cur.home);
+  const bag = S.units.find(u=>u.kind==='bag');
+  const inBag = unit(cur.loc.u)?.kind==='bag';
+  const ed = editedSet(cur);
+  const dot = k => ed.has(k)?'<i class="edited" title="Edited by you"></i>':'';
+  return `<div class="dig-info"><h3>${esc(cur.title)}${dot('title')}</h3><div class="by">${esc(cur.artist)}${dot('artist')}</div>
       <div class="facts"><span><b>${esc(cur.label)}</b>${dot('label')}</span>${cur.catno?`<span class="code">${esc(cur.catno)}</span>`:''}<span class="code">${esc(cur.year||'—')}${dot('year')}</span><span>${esc(cur.style||'')}</span>${cur.bpm?`<span class="code">${esc(cur.bpm)} BPM</span>`:''}${cur.key?`<span class="code">${esc(cur.key)}</span>`:''}${cur.rating?`<span style="color:var(--accent)">${'★'.repeat(cur.rating)}</span>`:''}${cur.cm?`<span>Media ${esc(cur.cm)}</span>`:''}</div>
       ${cur.tags.length?`<div class="tags">${cur.tags.map(t=>`<span class="tagchip">${esc(t)}</span>`).join('')}</div>`:''}
       ${cur.notes?`<p style="margin:8px 0 0;font-size:14px">${esc(cur.notes)}</p>`:''}
@@ -965,13 +1206,18 @@ function digView(list, cur){
         <button class="btn" data-act="add-to-pl" data-r="${cur.id}">+ Playlist</button>
         <button class="btn" data-act="log-play" data-r="${cur.id}">Log a play</button>
         <a class="btn ghost" href="${discogsUrl(cur)}" target="_blank" rel="noopener">Discogs ↗</a>
-      </div></div>
-    <div class="list">${list.map((r,i)=>{
-      const tail = unit(r.loc.u)?.kind!=='shelf' ? (fromOf(r)?`<span class="from">from ${locChip(fromOf(r),'home')}</span>`:'') : (V.cell==='all'?locChip(r.loc):'');
-      const sub = `${esc(r.artist)} · ${esc(r.label)}${isStale(r)&&V.stale?` · <span class="stale">${lastPlayed(r)?'last played '+fmtDate(lastPlayed(r)):'never logged'}</span>`:''}`;
-      return V.sel ? `<label class="li ${V.sel.has(r.id)?'cur':''}"><input type="checkbox" data-sel="${r.id}" ${V.sel.has(r.id)?'checked':''}><span class="t"><b>${esc(r.title)}</b><span>${sub}</span></span>${tail}</label>`
-        : `<div class="li ${i===V.dig?'cur':''}" role="button" tabindex="0" data-act="dig-to" data-i="${i}" data-drag="${r.id}">${thumb(r)}<span class="t"><b>${esc(r.title)}</b><span>${sub}</span></span>${tail}${previewBtn(r)}</div>`; }).join('')}</div>
-    ${V.sel?`<div class="selbar"><span>${V.sel.size} selected</span><button class="btn sm" data-act="sel-all">Select all</button><button class="btn sm primary" data-act="sel-move" ${V.sel.size?'':'disabled'}>Move ${V.sel.size||''}…</button>${S.units.some(u=>u.kind==='bag')?`<button class="btn sm" data-act="sel-bag" ${V.sel.size?'':'disabled'}>Put in bag</button>`:''}</div>`:''}`;
+      </div></div>`;
+}
+/* rows for a spot's records. opts.act = what a click does; opts.inline = expand the current record under its row */
+function recordRows(list, opts={}){
+  return list.map((r,i)=>{
+    const tail = unit(r.loc.u)?.kind!=='shelf' ? (fromOf(r)?`<span class="from">from ${locChip(fromOf(r),'home')}</span>`:'') : (V.cell==='all'?locChip(r.loc):'');
+    const sub = `${esc(r.artist)} · ${esc(r.label)}${isStale(r)&&V.stale?` · <span class="stale">${lastPlayed(r)?'last played '+fmtDate(lastPlayed(r)):'never logged'}</span>`:''}`;
+    if(V.sel) return `<label class="li ${V.sel.has(r.id)?'cur':''}"><input type="checkbox" data-sel="${r.id}" ${V.sel.has(r.id)?'checked':''}><span class="t"><b>${esc(r.title)}</b><span>${sub}</span></span>${tail}</label>`;
+    const cur = i===V.dig;
+    return `<div class="li ${cur?'cur':''}" role="button" tabindex="0" data-act="${opts.act||'dig-to'}" data-i="${i}" data-drag="${r.id}" ${cur?'aria-current="true"':''}>${thumb(r)}<span class="t"><b>${esc(r.title)}</b><span>${sub}</span></span>${tail}${previewBtn(r)}</div>`
+      + (opts.inline && cur ? `<div class="rec-x">${recInfo(r)}</div>` : '');
+  }).join('');
 }
 function bindSwipe(){
   const st = $('#stage'); if(!st) return;
@@ -1441,6 +1687,10 @@ function openSettings(){
   openSheet(`<div class="sheet-head"><h2>Settings</h2><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
     <p class="muted" style="margin:0 0 8px;font-size:13px">Look</p>
     <div class="row" style="margin-bottom:16px">${LOOKS.map(([k,n])=>`<button class="chip" data-act="set-look" data-l="${k}" aria-pressed="${(S.settings.look||'booth')===k}">${n}</button>`).join('')}</div>
+    <p class="muted" style="margin:0 0 8px;font-size:13px">Room layout</p>
+    <div class="row" style="margin-bottom:16px"><button class="chip" data-act="set-view" data-v="map" aria-pressed="${S.settings.view!=='columns'}">Map</button><button class="chip" data-act="set-view" data-v="columns" aria-pressed="${S.settings.view==='columns'}">Columns</button></div>
+    <p class="muted" style="margin:0 0 8px;font-size:13px">Density</p>
+    <div class="row" style="margin-bottom:16px"><button class="chip" data-act="set-density" data-d="regular" aria-pressed="${S.settings.density!=='compact'}">Regular</button><button class="chip" data-act="set-density" data-d="compact" aria-pressed="${S.settings.density==='compact'}">Compact</button></div>
     <p class="muted" style="margin:0 0 8px;font-size:13px">Accent color</p>
     <div class="swatches">${[['red','Signal red','#D2412C'],['brass','Brass','#B8862F'],['cyan','Booth cyan','#0EA5E9']].map(([k,n,h])=>`<button class="sw" data-act="set-accent" data-a="${k}" aria-pressed="${S.settings.accent===k}"><i style="background:${h}"></i>${n}</button>`).join('')}</div>
     <div class="bcbox" style="margin-top:18px"><label class="row" style="justify-content:space-between;cursor:pointer;flex-wrap:nowrap"><span><b style="font-size:14px">Save locations to Discogs</b><br><span class="muted" style="font-size:13px">Writes each record's spot (e.g. “K1·A2 (Acid)”) to a “Location” field in your Discogs collection, so you see it in the Discogs app too.</span></span><input type="checkbox" id="set-dsync" ${S.settings.discogsSync?'checked':''} style="width:22px;height:22px;accent-color:var(--accent);flex:0 0 auto"></label>
@@ -1448,7 +1698,8 @@ function openSettings(){
     <p class="muted" style="font-size:13px;margin-top:18px">Shelf slots are named by row letter and column number: A1–A4 on the top row, B1–B4 below, then C, D… Codes always include the unit ID (K1·B2), so they never read like a side-B track number. Give any cubby a subtitle like “House” from its shelf view.</p>
     <p class="muted" style="font-size:13px">Each unit's finish or bag color is set from its own page: open it and tap “Look & name”.</p>
     <p class="muted" style="font-size:12.5px">Demo collection. Covers are placeholder art; the full app pulls sleeves and metadata from Discogs. ${SRC_NOTE} Changes stay in this browser.</p>
-    <div class="row" style="margin-top:18px"><button class="btn" data-act="reset">Reset demo collection</button></div><div id="reset-confirm"></div>`);
+    <p class="muted" style="margin:18px 0 8px;font-size:13px">Your collection</p>
+    <div class="row"><button class="btn" data-act="bk-open">Backups (${backups().length}/${BK_MAX})</button><button class="btn" data-act="col-save">Save to file</button><button class="btn" data-act="dg-import">Import from Discogs…</button><button class="btn" data-act="reset">Reset demo collection</button></div><div id="reset-confirm"></div>`);
   $('#set-dsync').onchange = e => { S.settings.discogsSync = e.target.checked; if(e.target.checked) S.records.forEach(enqueueSync); save(); setTimeout(()=>{ render(); openSettings(); },0); };
 }
 
@@ -1765,10 +2016,10 @@ function routeHash(){
   let h=''; try{ h = decodeURIComponent(location.hash.slice(1)); }catch(e){ return; } const m = h.match(/^([A-Za-z0-9]+?)(?:-([A-Za-z]{1,2})(\d{1,2}))?$/);
   if(!m) return;
   const u = unit(m[1].toUpperCase()); if(!u) return;
-  V.view='unit'; V.unit=u.id; V.cell='all'; V.dig=0; V.sel=null; V.stale=false;
+  let cell = 'all';
   if(m[2] && u.kind==='shelf'){ const L = m[2].toUpperCase(); const row = L.length===1 ? L.charCodeAt(0)-65 : 26+L.charCodeAt(1)-65; const col = +m[3]-1;
-    if(row>=0 && row<u.rows && col>=0 && col<u.cols){ V.cell = row+'-'+col; V.flash = V.cell; } }
-  closeSheet(); render(); setTimeout(()=>{ V.flash=null; }, 2600);
+    if(row>=0 && row<u.rows && col>=0 && col<u.cols){ cell = row+'-'+col; V.flash = cell; } }
+  closeSheet(); V.view = roomView(); selectSpot(u.id, cell, {reveal:true}); setTimeout(()=>{ V.flash=null; }, 2600);
   try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){}
 }
 window.addEventListener('hashchange', routeHash);
@@ -1801,7 +2052,7 @@ function search(q){
   if(!hits.length && !uhits.length){ box.innerHTML = `<div class="result" style="grid-template-columns:1fr"><span class="t"><b>No match for “${esc(q)}”</b><span>Search covers artist, title, label, year, style, BPM, key, tags, notes and cubby names.</span></span></div>`; box.hidden=false; return; }
   qActive = 0;
   box.innerHTML = hits.map((r,i)=>`<button class="result ${i===0?'active':''}" data-act="goto-rec" data-r="${r.id}">${thumb(r)}<span class="t"><b>${esc(r.title)}</b><span>${esc(r.artist)} · ${esc(addrLong(r.loc))}</span></span>${locChip(r.loc)}</button>`).join('')
-    + uhits.map(u=>`<button class="result" data-act="open-unit" data-u="${u.id}"><span class="idtag" style="justify-self:center">${u.id}</span><span class="t"><b>${esc(u.name)}</b><span>${esc(presetName(u))} · ${inCell(u.id,'all').length} records</span></span><span></span></button>`).join('');
+    + uhits.map(u=>`<button class="result" data-act="go-spot" data-u="${u.id}" data-c="all"><span class="idtag" style="justify-self:center">${u.id}</span><span class="t"><b>${esc(u.name)}</b><span>${esc(presetName(u))} · ${inCell(u.id,'all').length} records</span></span><span></span></button>`).join('');
   box.hidden = false;
 }
 $('#q').addEventListener('input', e=>search(e.target.value));
@@ -1813,9 +2064,11 @@ $('#q').addEventListener('keydown', e=>{
 });
 document.addEventListener('click', e=>{ if(!e.target.closest('.search')) $('#results').hidden = true; });
 function gotoRecord(id){
-  const r = rec(id); if(!unit(r.loc.u)) return; V.stale=false; V.sel=null; V.view='unit'; V.unit=r.loc.u; V.cell = unit(r.loc.u).kind==='shelf' ? r.loc.c : 'all'; V.focus=id; V.flash = V.cell;
-  $('#results').hidden=true; $('#q').value=''; $('#q').blur(); render();
-  document.querySelector('.detail')?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth', block:'start'});
+  const r = rec(id); if(!unit(r.loc.u)) return; V.stale=false; V.sel=null; V.flash = unit(r.loc.u).kind==='shelf' ? r.loc.c : null;
+  $('#results').hidden=true; $('#q').value=''; $('#q').blur();
+  if(V.view==='unit'){ V.unit=r.loc.u; V.cell = unit(r.loc.u).kind==='shelf' ? r.loc.c : 'all'; V.focus=id; render(); }
+  else { const c = unit(r.loc.u).kind==='shelf' ? r.loc.c : 'all'; const i = inCell(r.loc.u, c).findIndex(x=>x.id===id); selectSpot(r.loc.u, c, {dig:Math.max(0,i), reveal:true}); if(V.view==='columns' && isPhone()) colGo('record','push'); }
+  document.querySelector('.li[aria-current="true"]')?.scrollIntoView({block:'nearest'});
   setTimeout(()=>{ V.flash=null; }, 2600);
 }
 
@@ -1838,11 +2091,14 @@ function loadYT(){
     document.head.appendChild(s);
   });
 }
+const YT_VARS = {autoplay:0,controls:0,disablekb:1,modestbranding:1,rel:0,iv_load_policy:3,playsinline:1,origin:location.origin};
 loadYT().then(()=>{
-  P.yt = new YT.Player('yt', {height:'180', width:'320', host:'https://www.youtube-nocookie.com',
-    playerVars:{autoplay:0,controls:0,disablekb:1,modestbranding:1,rel:0,iv_load_policy:3,playsinline:1,origin:location.origin},
-    events:{ onReady:()=>{ P.ready=true; P.mode='yt'; renderPlayer(); },
-             onStateChange:e=>onYTState(e.data), onError:e=>failCandidate('YouTube error '+e.data) }});
+  /* Two players: #yt plays, #yt2 holds the next record's link cued and ready (prefetch). Events are routed by which player fired them. */
+  const mk = (el, onReady) => new YT.Player(el, {height:'180', width:'320', host:'https://www.youtube-nocookie.com', playerVars:YT_VARS,
+    events:{ onReady, onStateChange:e=>{ if(e.target===P.yt) onYTState(e.data); },
+             onError:e=>{ if(e.target===P.yt) failCandidate('YouTube error '+e.data); else if(P.cued){ plog(`prefetch of ${rec(P.cued.rid)?.title||'next'} failed (${e.data})`); P.cued=null; } } }});
+  P.yt = mk('yt', ()=>{ P.ready=true; P.mode='yt'; renderPlayer(); prefetchNext(); });
+  P.yt2 = mk('yt2', ()=>{ P.standby=true; prefetchNext(); });
   setTimeout(()=>{ if(!P.ready){ P.mode='link'; renderPlayer(); } }, 6000);
 }).catch(why=>{ P.mode='link'; plog('Inline playback unavailable ('+why+'), using YouTube links'); renderPlayer(); });
 
@@ -1859,10 +2115,24 @@ function playAt(i){
   if(!r.yt.length){ st.state='non_working'; st.step=4; plog(`${r.title}: no saved link, search on YouTube, skipping in 3s`); renderPlayer(); P.timers.push(setTimeout(()=>next(), 3000)); return; }
   loadCandidate();
 }
+const PREFETCH_AHEAD = 4;   // discogs-stream: MobilePlayer.tsx prefetches the next 4
+function prefetchNext(){
+  if(P.mode!=='yt' || !P.standby || !P.yt2?.cueVideoById || P.preview || !P.queue.length) return;
+  const ahead = []; for(let k=1; k<=PREFETCH_AHEAD && k<P.queue.length; k++) ahead.push(rec(P.queue[(P.i+k)%P.queue.length]));
+  ahead.filter(Boolean).forEach(r=>{ const st = stOf(r); if(!r.yt.length && !st.pf){ st.pf = true; plog(`${r.title}: no saved link; the full app searches YouTube here (prefetch)`); } });
+  const n = ahead[0]; if(!n || !n.yt.length){ P.cued = null; return; }
+  const id = n.yt[stOf(n).cand||0]; if(P.cued?.id===id) return;
+  try{ P.yt2.cueVideoById(id); P.cued = {rid:n.id, id}; plog(`${n.title}: next link cued in the standby player`); }catch(e){ P.cued = null; }
+}
 function loadCandidate(){
   const r = cur(), st = stOf(r), id = r.yt[st.cand];
   st.state='trying'; plog(`${r.title}: link ${st.cand+1}/${r.yt.length} (${id})`);
-  P.yt.loadVideoById(id);
+  if(P.cued && P.cued.rid===r.id && P.cued.id===id && P.yt2){
+    try{ P.yt.stopVideo?.(); }catch(e){}
+    [P.yt, P.yt2] = [P.yt2, P.yt]; P.cued = null; plog(`${r.title}: swapped in the prefetched player`);
+    P.yt.playVideo();
+  } else P.yt.loadVideoById(id);
+  setTimeout(prefetchNext, 1200);
   st.step = st.cand===0?1:2; renderPlayer();
   P.timers.push(setTimeout(()=>{ const s = P.yt.getPlayerState?.(); if(s===1||s===3) return; failCandidate('no signal within 3s'); }, 3000));
   P.timers.push(setTimeout(()=>{ if(P.yt.getPlayerState?.()===3) failCandidate('stalled while buffering'); }, 12000));
@@ -1924,6 +2194,7 @@ function vinyl(r, opts={}){
       <span class="lab">${cover(r)}</span><span class="hole"></span></div><span class="sheen"></span></div>`;
 }
 function renderPlayer(){
+  setTimeout(layoutVars, 0); setTimeout(layoutVars, 420);
   const el = $('#player'), r = cur();
   if(!r){ el.hidden = true; return; }
   el.hidden = false;
@@ -2017,18 +2288,18 @@ function fitArt(box){
 }
 function fitStrip(){ document.querySelectorAll('.strip .stage-box').forEach(fitArt); }
 let fitRaf = 0;
-window.addEventListener('resize', ()=>{ cancelAnimationFrame(fitRaf); fitRaf = requestAnimationFrame(()=>{ fitRoom(); fitStrip(); }); });
+window.addEventListener('resize', ()=>{ cancelAnimationFrame(fitRaf); fitRaf = requestAnimationFrame(()=>{ fitRoom(); fitStrip(); layoutVars(); if(V.view==='map'){ const m = mapEl(); if(m){ M.vw=m.clientWidth; M.vh=m.clientHeight; if(!M.moved){ M.layout = mapLayout(M.vw,M.vh); render(); } else mapClamp(), mapApply(false); } } if(V.view==='table') fitCue(); }); });
 
 /* zoom room <-> unit with a shared-element view transition (falls back to an instant swap) */
 function zoomTo(view, uid, cell){
   const apply = () => {
     if(view==='unit'){ V.view='unit'; V.unit=uid; V.cell=cell||'all'; V.dig=0; V.sel=null; V.stale=false; }
-    else { V.view='room'; }
+    else { V.view=roomView(); }
     render();
   };
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const from = view==='unit' ? uid : V.unit;
-  if(!document.startViewTransition || reduce || navigator.webdriver || V.view==='playlists' || V.view==='gigs' || V.view==='table' || (view==='unit' && V.view==='unit')){
+  if(!document.startViewTransition || reduce || navigator.webdriver || !((view==='unit' && V.view==='room') || (view==='room' && V.view==='unit' && false))){
     V.zoomId = null; apply(); window.scrollTo({top:0}); focusTitle(view); return;
   }
   V.zoomId = from;
@@ -2058,9 +2329,11 @@ let autoScrollRaf = 0;
 function autoScroll(){
   cancelAnimationFrame(autoScrollRaf);
   if(!drag?.on) return;
-  const y = drag.lastY, edge = 70, H = window.innerHeight;
-  const v = y < edge ? -(edge-y)/4 : y > H-edge ? (y-(H-edge))/4 : 0;
-  if(v){ window.scrollBy(0, v); moveGhost(drag.lastX, drag.lastY); autoScrollRaf = requestAnimationFrame(autoScroll); }
+  const y = drag.lastY, edge = 70;
+  const pane = drag.src.closest('.spot-body, .col-body, .scrollpane, .tbl-wrap') || document.scrollingElement;
+  const r = pane===document.scrollingElement ? {top:0, bottom:window.innerHeight} : pane.getBoundingClientRect();
+  const v = y < r.top+edge ? -(r.top+edge-y)/4 : y > r.bottom-edge ? (y-(r.bottom-edge))/4 : 0;
+  if(v){ pane.scrollBy(0, v); moveGhost(drag.lastX, drag.lastY); autoScrollRaf = requestAnimationFrame(autoScroll); }
 }
 function moveGhost(x, y){
   if(!drag?.ghost) return;
@@ -2142,28 +2415,347 @@ function applyLook(){
   if(look==='auto') delete document.documentElement.dataset.look; else document.documentElement.dataset.look = look;
   const b = document.getElementById('look-btn'); if(b){ const n = LOOKS.find(l=>l[0]===look)?.[1]; b.title = `Look: ${n}. Click to switch.`; b.setAttribute('aria-label', b.title); }
 }
-function cueBar(){
+function cueBar(mode){
   const pads = [];
+  const act = mode==='table' ? 't-spot' : 'go-spot';
+  const isHere = (u,k) => mode==='table' ? (T.spot && T.spot.u===u.id && (k==='all' ? !T.spot.c : T.spot.c===k)) : (V.view==='unit' && V.unit===u.id && (k==='all' || V.cell===k));
+  if(mode==='table') pads.push(`<button class="cue all" data-act="t-spot" data-u="all" ${T.spot?'':'aria-current="true"'} aria-label="All spots"><span class="led"></span><b>All</b><span class="n">${S.records.length}</span><span class="nm">Every spot</span></button>`);
   S.units.forEach((u, ui)=>{
-    if(ui) pads.push('<span class="sep" aria-hidden="true"></span>');
-    if(u.kind==='shelf') cellKeys(u).forEach(k=>{ const n = inCell(u.id,k).length, nm = cellName(u,k), here = V.view==='unit' && V.unit===u.id && V.cell===k;
-      pads.push(`<button class="cue ${n?'lit':''}" data-act="go-spot" data-u="${u.id}" data-c="${k}" data-drop-u="${u.id}" data-drop-c="${k}" ${here?'aria-current="true"':''} aria-label="${esc(u.id)}·${esc(cellLabel(u,k))}${nm?', '+esc(nm):''}, ${n} records"><span class="led"></span><b>${esc(u.id)}·${esc(cellLabel(u,k))}</b><span class="n">${n}</span><span class="nm">${esc(nm||u.name)}</span></button>`); });
-    else { const n = inCell(u.id,'all').length, here = V.view==='unit' && V.unit===u.id;
-      pads.push(`<button class="cue bag ${n?'lit':''}" data-act="go-spot" data-u="${u.id}" data-c="all" data-drop-u="${u.id}" data-drop-c="0-0" ${here?'aria-current="true"':''} aria-label="${esc(u.name)}, ${n} records"><span class="led"></span><b>${esc(u.name)}</b><span class="n">${n}</span><span class="nm">${u.kind==='bag'?'Bag':'Crate'} ${esc(u.id)}</span></button>`); }
+    if(ui || mode==='table') pads.push('<span class="sep" aria-hidden="true"></span>');
+    if(u.kind==='shelf') cellKeys(u).forEach(k=>{ const n = inCell(u.id,k).length, nm = cellName(u,k), here = isHere(u,k);
+      pads.push(`<button class="cue ${n?'lit':''}" data-act="${act}" data-u="${u.id}" data-c="${k}" data-drop-u="${u.id}" data-drop-c="${k}" ${here?'aria-current="true"':''} aria-label="${esc(u.id)}·${esc(cellLabel(u,k))}${nm?', '+esc(nm):''}, ${n} records"><span class="led"></span><b>${esc(u.id)}·${esc(cellLabel(u,k))}</b><span class="n">${n}</span><span class="nm">${esc(nm||u.name)}</span></button>`); });
+    else { const n = inCell(u.id,'all').length, here = isHere(u,'all');
+      pads.push(`<button class="cue bag ${n?'lit':''}" data-act="${act}" data-u="${u.id}" data-c="all" data-drop-u="${u.id}" data-drop-c="0-0" ${here?'aria-current="true"':''} aria-label="${esc(u.name)}, ${n} records"><span class="led"></span><b>${esc(u.name)}</b><span class="n">${n}</span><span class="nm">${u.kind==='bag'?'Bag':'Crate'} ${esc(u.id)}</span></button>`); }
   });
   return `<div class="cuebar" role="toolbar" aria-label="Every spot. Tap to open it, or drop a record on it.">${pads.join('')}</div>`;
 }
 function goSpot(u, c){
-  if(V.view==='room'){ zoomTo('unit', u, c); return; }
-  V.view='unit'; V.unit=u; V.cell=c; V.dig=0; V.sel=null; V.stale=false; render();
-  const cur = document.querySelector('.cue[aria-current="true"]'); cur?.scrollIntoView({block:'nearest', inline:'nearest'});
+  if(V.view==='table'){ T.spot = c==='all' ? {u} : {u,c}; render(); return; }
+  if(V.view==='unit'){ V.unit=u; V.cell=c; V.dig=0; V.sel=null; V.stale=false; render(); const cur = document.querySelector('.cue[aria-current="true"]'); cur?.scrollIntoView({block:'nearest', inline:'nearest'}); return; }
+  selectSpot(u, c, {reveal:true});
+}
+/* select a spot in the Map or Columns view (switches to the room view if needed) */
+function selectSpot(u, c, opts={}){
+  const un = unit(u); if(!un) return;
+  if(un.kind==='shelf' && (c==null || c==='all')) c = cellKeys(un).find(k=>inCell(u,k).length) || '0-0';
+  if(un.kind!=='shelf') c = 'all';
+  if(V.view!=='map' && V.view!=='columns') V.view = roomView();
+  const changed = V.unit!==u || V.cell!==c;
+  V.unit=u; V.cell=c; if(changed || opts.dig==null) V.dig = opts.dig??0; else V.dig = opts.dig; V.sel=null; V.stale=false;
+  if(V.view==='columns'){ if(isPhone()) colGo('records', 'push'); else render(); }
+  else { if(M.sheet==='peek') M.sheet='half'; render(); if(opts.reveal) mapReveal(u); }
+}
+
+
+/* =====================================================================
+   MAP VIEW — the room as a pannable, pinch-zoomable canvas; a spot's
+   records in a side panel (desktop) or bottom sheet (phone)
+   ===================================================================== */
+const M = {x:0, y:0, s:1, fitted:false, moved:false, ptrs:new Map(), vx:0, vy:0, raf:0, sheet:'half', lastTap:0, layout:null, hist:[]};
+const ICON_MAP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/></svg>';
+const ICON_COLS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M15 4v16"/></svg>';
+function viewSeg(){
+  return `<div class="seg icons" role="group" aria-label="Room layout"><button data-act="set-view" data-v="map" aria-pressed="${V.view==='map'}" title="Map">${ICON_MAP}<span>Map</span></button><button data-act="set-view" data-v="columns" aria-pressed="${V.view==='columns'}" title="Columns">${ICON_COLS}<span>Columns</span></button></div>`;
+}
+function roomBar(){
+  const unp = S.records.filter(isUnplaced).length;
+  return `<div class="viewbar"><div><div class="kicker">${S.records.length} records in ${S.units.length} places${unp?` · <button class="revert" data-act="go-unplaced">${unp} unplaced</button>`:''}</div><h2>Your room</h2></div>${viewSeg()}
+    <div class="tools-r"><button class="btn" data-act="stale-list">Not played in a year <small class="code muted">${S.records.filter(isStale).length}</small></button><button class="btn" data-act="stickers">QR stickers</button><button class="btn" data-act="play-all"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>Play collection</button></div></div>`;
+}
+/* every spot in order: each shelf cubby, then bags and crates */
+function spotList(){ const out=[]; S.units.forEach(u=>{ if(u.kind==='shelf') cellKeys(u).forEach(c=>out.push({u:u.id,c})); else out.push({u:u.id,c:'all'}); }); return out; }
+function spotStep(d){
+  const list = spotList(); if(!list.length) return;
+  const i = list.findIndex(s=>s.u===V.unit && s.c===V.cell);
+  const n = list[(i<0?0:i+d+list.length)%list.length];
+  selectSpot(n.u, n.c, {reveal:true});
+}
+function plateSize(u){
+  if(u.kind==='shelf') return {w:u.cols*100+(u.cols+1)*10, h:u.rows*100+(u.rows+1)*10+44};
+  if(u.kind==='bag') return {w:250, h:222+44};
+  return {w:250, h:186+44};
+}
+function mapLayout(vw, vh){
+  const items = S.units.map(u=>({u, ...plateSize(u)}));
+  if(!items.length) return {items:[], W:400, H:300};
+  const gap = 72, aspect = Math.max(.4, Math.min(3, (vw||1200)/(vh||700)));
+  const total = items.reduce((a,i)=>a+i.w+gap,0)-gap;
+  let best = null;
+  for(let rows=1; rows<=items.length; rows++){
+    const target = total/rows, lines=[[]]; let cur=0;
+    items.forEach(it=>{ const line = lines[lines.length-1]; if(line.length && cur+it.w > target+it.w*.35 && lines.length<rows){ lines.push([it]); cur = it.w+gap; } else { line.push(it); cur += it.w+gap; } });
+    const W = Math.max(...lines.map(l=>l.reduce((a,i)=>a+i.w+gap,0)-gap)), H = lines.reduce((a,l)=>a+Math.max(...l.map(i=>i.h))+gap,0)-gap;
+    const score = Math.abs(Math.log((W/H)/aspect)) + rows*0.04;
+    if(!best || score < best.score) best = {score, lines, W, H};
+  }
+  const out=[]; let y=0;
+  best.lines.forEach(l=>{ const lw = l.reduce((a,i)=>a+i.w+gap,0)-gap, lh = Math.max(...l.map(i=>i.h)); let x=(best.W-lw)/2; l.forEach(it=>{ out.push({...it, x, y:y+lh-it.h}); x += it.w+gap; }); y += lh+gap; });
+  return {items:out, W:best.W, H:best.H};
+}
+function renderMap(){
+  const u = unit(V.unit);
+  if(u && (V.unit!==V._lastUnit || V.cell==='all') && u.kind==='shelf' && V.cell==='all') V.cell = '0-0';
+  const lay = M.layout = mapLayout(M.vw, M.vh);
+  const plates = lay.items.map(({u,x,y,w})=>{
+    const n = inCell(u.id,'all').length, sel = V.unit===u.id;
+    const art = u.kind==='shelf' ? drawShelf(u,true,{act:'map-spot'}) : `<button class="unitbtn" data-act="map-spot" data-u="${u.id}" data-c="all" data-drop-u="${u.id}" data-drop-c="0-0" aria-pressed="${sel}" aria-label="${esc(u.name)}, ${n} records">${drawUnit(u,false)}</button>`;
+    return `<div class="plate ${u.kind} ${sel?'sel':''}" data-plate="${u.id}" style="left:${x}px;top:${y}px;width:${w}px"><div class="plate-art">${art}</div>
+      <div class="plate-name"><button class="pn" data-act="map-unit" data-u="${u.id}" title="Zoom to ${esc(u.name)}">${esc(u.name)}</button><span class="idtag">${esc(u.id)}</span><span class="n">${n}</span></div></div>`;
+  }).join('');
+  return `${roomBar()}<div class="mapwrap">
+    <div class="map" id="map" role="region" aria-label="Room map. Drag to pan, pinch or scroll to zoom, tap a cubby to open it.">
+      <div class="world" id="world" style="width:${lay.W}px;height:${lay.H}px">${plates}</div>
+      ${S.units.length?'':'<div class="map-empty"><div><b style="display:block;color:var(--ink)">Your room is empty</b>Add a Kallax, a crate or a record bag to start.<div class="row" style="margin-top:10px;justify-content:center"><button class="btn primary" data-act="open-add">Add</button></div></div></div>'}
+      <div class="map-tools" role="group" aria-label="Zoom"><button data-act="map-zoom" data-z="out" aria-label="Zoom out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"/></svg></button><button class="txt" data-act="map-zoom" data-z="fit">Fit room</button><button data-act="map-zoom" data-z="in" aria-label="Zoom in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <span class="map-hint">scroll to zoom · drag to pan · double-click a unit</span>
+    </div>
+    ${spotPanel()}
+  </div>`;
+}
+function spotPanel(){
+  const u = unit(V.unit);
+  if(!u) return `<aside class="spot-panel" data-snap="${M.sheet}"><div class="spot-head"><div class="grabber"></div><div class="spot-title"><span class="sub">Tap a cubby, bag or crate on the map</span></div></div><div class="spot-body"></div></aside>`;
+  const list = inCell(u.id, V.cell).filter(r=>!V.stale || isStale(r));
+  V.dig = Math.max(0, Math.min(V.dig, list.length-1));
+  return `<aside class="spot-panel" data-snap="${M.sheet}" aria-label="${esc(addrLong({u:u.id,c:V.cell}))}">
+    ${spotHead(u, list)}
+    <div class="spot-body">${list.length ? `<div class="list">${recordRows(list,{act:'map-rec', inline:true})}</div>${selBar()}` : emptySpot(u)}</div>
+    <div class="spot-foot">${isPhone()?'Press and hold a record to drag it onto the map.':'Drag a record onto any cubby or bag on the map to move it.'}</div>
+  </aside>`;
+}
+function emptySpot(u){
+  const where = u.kind==='shelf' ? `${u.id}·${cellLabel(u,V.cell)}` : u.name;
+  return V.stale ? `<div class="empty" style="margin:12px 4px"><b>Everything here was played in the last year</b>Turn off “Not played in a year” to see all records.</div>`
+    : `<div class="empty" style="margin:12px 4px"><b>${esc(where)} is empty</b>Drop a record here, or use Add → Record.</div>`;
+}
+function spotHead(u, list, opts={}){
+  const shelf = u.kind==='shelf';
+  const code = shelf ? `${u.id}·${cellLabel(u,V.cell)}` : u.name;
+  const sub = shelf ? (cellName(u,V.cell) || u.name) : `${u.kind==='bag'?'Bag':'Crate'} ${u.id} · ${presetName(u)}`;
+  const all = inCell(u.id, V.cell).length;
+  const nav = opts.nav ? `<div class="col-nav"><button class="backlink" data-act="col-back" data-to="spots"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>Spots</button><div class="step"><button class="round" data-act="spot-step" data-d="-1" aria-label="Previous spot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m15 18-6-6 6-6"/></svg></button><button class="round" data-act="spot-step" data-d="1" aria-label="Next spot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m9 18 6-6-6-6"/></svg></button></div></div>` : '';
+  const bagActs = u.kind==='bag' ? `<button class="chip" data-act="scan-bag" data-u="${u.id}">Scan bag</button><button class="chip" data-act="empty-bag" data-u="${u.id}">Unpack</button>` : '';
+  return `<div class="spot-head"><div class="grabber" aria-hidden="true"></div>${nav}
+    <div class="spot-title"><span class="code-big" tabindex="-1">${esc(code)}</span><span class="sub" title="${esc(sub)}">${esc(sub)}</span><span class="cnt">${all} ${all===1?'record':'records'}</span></div>
+    <div class="spot-tools"><button class="chip" data-act="play-unit" aria-label="Play ${esc(code)}"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M7 5v14l12-7z"/></svg> Play</button>
+      <button class="chip" data-act="toggle-stale" aria-pressed="${V.stale}">Not played in a year</button>
+      ${all?`<button class="chip" data-act="toggle-sel" aria-pressed="${!!V.sel}">${V.sel?'Done':'Select'}</button>`:''}${bagActs}
+      <button class="chip" data-act="spot-tools" aria-label="More for ${esc(code)}">More…</button></div></div>`;
+}
+function openSpotTools(){
+  const u = unit(V.unit); if(!u) return; const shelf = u.kind==='shelf';
+  const code = shelf ? `${u.id}·${cellLabel(u,V.cell)}` : u.name;
+  openSheet(`<div class="sheet-head"><div><div class="kicker">${esc(u.name)}</div><h2>${esc(code)}</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    ${shelf?`<div class="subname"><label for="cell-name" class="sr">Subtitle for ${esc(cellLabel(u,V.cell))}</label><input id="cell-name" maxlength="28" value="${esc(cellName(u,V.cell))}" placeholder="Name ${esc(cellLabel(u,V.cell))}, e.g. House"></div>`:''}
+    <div class="row" style="margin-top:14px">
+      <button class="btn" data-act="open-unit" data-u="${u.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16"/></svg>Flip through</button>
+      <button class="btn" data-act="play-whole" data-u="${u.id}">Play all of ${esc(u.name)}</button>
+      ${shelf?`<button class="btn" data-act="cubby-move" ${inCell(u.id,V.cell).length?'':'disabled'}>Move whole cubby…</button><button class="btn" data-act="cubby-swap">Swap with…</button>`:''}
+      <button class="btn" data-act="stickers" data-u="${u.id}">QR sticker</button>
+      <button class="btn" data-act="edit-unit" data-u="${u.id}">Look &amp; name</button>
+    </div>`);
+}
+/* map geometry */
+function mapEl(){ return document.getElementById('map'); }
+function mapApply(anim){
+  const w = document.getElementById('world'); if(!w) return;
+  const m = mapEl(); if(m) m.classList.toggle('live', !anim);
+  w.style.transform = `translate(${M.x}px, ${M.y}px) scale(${M.s})`;
+}
+function mapFit(anim){
+  const m = mapEl(); if(!m || !M.layout) return;
+  const vw = m.clientWidth, vh = m.clientHeight, pad = isPhone()?16:40;
+  const sheetH = isPhone() && M.sheet!=='peek' ? vh*(M.sheet==='full'?.5:.46) : 0;
+  const s = Math.max(.08, Math.min(2.5, Math.min((vw-pad*2)/M.layout.W, (vh-sheetH-pad*2)/M.layout.H)));
+  M.s = s; M.x = (vw - M.layout.W*s)/2; M.y = (vh - sheetH - M.layout.H*s)/2; M.fitted = true; M.moved = false;
+  mapApply(anim);
+}
+function mapZoomUnit(uid, anim=true){
+  const m = mapEl(), it = M.layout?.items.find(i=>i.u.id===uid); if(!m || !it) return;
+  const vw = m.clientWidth, vh = m.clientHeight;
+  const sheetH = isPhone() && M.sheet!=='peek' ? vh*.46 : 0;
+  const s = Math.max(.08, Math.min(2.5, Math.min(vw*.82/it.w, (vh-sheetH)*.8/it.h)));
+  M.s = s; M.x = vw/2 - (it.x+it.w/2)*s; M.y = (vh-sheetH)/2 - (it.y+it.h/2)*s; M.moved = true;
+  mapApply(anim);
+}
+/* bring a unit into view without moving the map if it's already visible */
+function mapReveal(uid){
+  const m = mapEl(), it = M.layout?.items.find(i=>i.u.id===uid); if(!m || !it) return;
+  const vw = m.clientWidth, vh = m.clientHeight - (isPhone() && M.sheet!=='peek' ? vh0(vh)*0 + vh*.46 : 0);
+  const x0 = M.x + it.x*M.s, y0 = M.y + it.y*M.s, x1 = x0 + it.w*M.s, y1 = y0 + it.h*M.s;
+  if(x0 >= 0 && y0 >= 0 && x1 <= vw && y1 <= vh) return;
+  mapZoomUnit(uid, true);
+}
+function vh0(v){ return v; }
+function mapZoomAt(factor, cx, cy, anim){
+  const s = Math.max(.08, Math.min(2.5, M.s*factor)); const k = s/M.s;
+  M.x = cx - (cx - M.x)*k; M.y = cy - (cy - M.y)*k; M.s = s; M.moved = true;
+  mapClamp(); mapApply(anim);
+}
+function mapClamp(soft){
+  const m = mapEl(); if(!m || !M.layout) return;
+  const vw = m.clientWidth, vh = m.clientHeight, keep = 90;
+  const minX = keep - M.layout.W*M.s, maxX = vw - keep, minY = keep - M.layout.H*M.s, maxY = vh - keep;
+  const cx = Math.max(minX, Math.min(maxX, M.x)), cy = Math.max(minY, Math.min(maxY, M.y));
+  if(soft){ M.x += (cx-M.x)*.25; M.y += (cy-M.y)*.25; } else { M.x = cx; M.y = cy; }
+}
+let mapJustPanned = false;
+function mapMount(){
+  const m = mapEl(); if(!m) return;
+  M.vw = m.clientWidth; M.vh = m.clientHeight;
+  if(!M.fitted || !M.moved){ M.layout = mapLayout(M.vw, M.vh); mapFit(false); }
+  else mapApply(false);
+  const pt = e => ({x:e.clientX - m.getBoundingClientRect().left, y:e.clientY - m.getBoundingClientRect().top});
+  m.onpointerdown = e => {
+    if(drag || e.button===1 || e.button===2) return;
+    if(e.target.closest('.map-tools')) return;
+    cancelAnimationFrame(M.raf);
+    M.ptrs.set(e.pointerId, pt(e));   // capture only once a pan starts, so a plain tap still clicks the cubby under it
+    if(M.ptrs.size===1){ const p = pt(e); M.start = {x:p.x, y:p.y, mx:M.x, my:M.y, t:performance.now()}; M.panning=false; M.vx=M.vy=0; M.samples=[{x:p.x,y:p.y,t:performance.now()}]; }
+    if(M.ptrs.size===2){ const [a,b] = [...M.ptrs.values()]; M.pinch = {d:Math.hypot(a.x-b.x,a.y-b.y), cx:(a.x+b.x)/2, cy:(a.y+b.y)/2, s:M.s, x:M.x, y:M.y}; M.panning=true; }
+  };
+  m.onpointermove = e => {
+    if(!M.ptrs.has(e.pointerId)) return;
+    if(drag?.on){ M.ptrs.clear(); return; }
+    const p = pt(e); M.ptrs.set(e.pointerId, p);
+    if(M.ptrs.size>=2 && M.pinch){
+      const [a,b] = [...M.ptrs.values()]; const d = Math.hypot(a.x-b.x,a.y-b.y), cx=(a.x+b.x)/2, cy=(a.y+b.y)/2;
+      const s = Math.max(.08, Math.min(2.5, M.pinch.s * d/M.pinch.d)); const k = s/M.pinch.s;
+      M.x = cx - (M.pinch.cx - M.pinch.x)*k; M.y = cy - (M.pinch.cy - M.pinch.y)*k; M.s = s; M.moved = true;
+      if(!m.hasPointerCapture(e.pointerId)){ try{ M.ptrs.forEach((v,id)=>m.setPointerCapture(id)); }catch(x){} }
+      m.classList.add('panning'); mapApply(false); return;
+    }
+    if(M.ptrs.size===1 && M.start){
+      const dx = p.x - M.start.x, dy = p.y - M.start.y;
+      if(!M.panning && Math.hypot(dx,dy) < 6) return;
+      if(!M.panning){ M.panning = true; m.classList.add('panning'); try{ m.setPointerCapture(e.pointerId); }catch(x){} }
+      M.x = M.start.mx + dx; M.y = M.start.my + dy; M.moved = true;
+      mapClamp(true);
+      M.samples.push({x:p.x,y:p.y,t:performance.now()}); if(M.samples.length>6) M.samples.shift();
+      mapApply(false);
+    }
+  };
+  const up = e => {
+    if(!M.ptrs.has(e.pointerId)) return;
+    M.ptrs.delete(e.pointerId); try{ m.releasePointerCapture(e.pointerId); }catch(x){}
+    if(M.ptrs.size===1){ const [p] = [...M.ptrs.values()]; M.start = {x:p.x, y:p.y, mx:M.x, my:M.y, t:performance.now()}; M.pinch=null; M.samples=[]; return; }
+    if(M.ptrs.size) return;
+    m.classList.remove('panning'); M.pinch = null;
+    if(M.panning){
+      mapJustPanned = true; setTimeout(()=>{ mapJustPanned=false; }, 80);
+      const sm = M.samples||[]; const a = sm[0], b = sm[sm.length-1];
+      if(a && b && b.t>a.t && e.pointerType!=='mouse'){ M.vx = (b.x-a.x)/(b.t-a.t)*16; M.vy = (b.y-a.y)/(b.t-a.t)*16; mapInertia(); }
+      else { mapClamp(); mapApply(true); }
+    } else if(e.pointerType!=='mouse'){
+      const now = performance.now(); if(now - M.lastTap < 320){ const pl = e.target.closest('.plate'); if(pl) mapZoomUnit(pl.dataset.plate); else mapFit(true); M.lastTap = 0; } else M.lastTap = now;
+    }
+    M.panning = false;
+  };
+  m.onpointerup = up; m.onpointercancel = up;
+  m.ondblclick = e => { if(e.target.closest('.map-tools')) return; const pl = e.target.closest('.plate'); if(pl) mapZoomUnit(pl.dataset.plate); else mapFit(true); };
+  m.onwheel = e => {
+    e.preventDefault();
+    const p = pt(e);
+    const pinch = e.ctrlKey || e.metaKey;
+    const wheelMouse = e.deltaMode===1 || (Math.abs(e.deltaY) >= 100 && !e.deltaX);
+    if(pinch || wheelMouse){ const f = Math.exp(-(pinch ? e.deltaY*.01 : Math.sign(e.deltaY)*.18)); mapZoomAt(f, p.x, p.y, false); }
+    else { M.x -= e.deltaX; M.y -= e.deltaY; M.moved = true; mapClamp(true); mapApply(false); }
+  };
+  bindSheetDrag();
+}
+function mapInertia(){
+  cancelAnimationFrame(M.raf);
+  const step = () => {
+    M.vx *= .92; M.vy *= .92; M.x += M.vx; M.y += M.vy; mapClamp(true); mapApply(false);
+    if(Math.abs(M.vx) > .3 || Math.abs(M.vy) > .3) M.raf = requestAnimationFrame(step); else { mapClamp(); mapApply(true); }
+  };
+  M.raf = requestAnimationFrame(step);
+}
+/* phone: the records sheet snaps to peek / half / full */
+const SNAPS = {peek:.14, half:.46, full:.92};
+function sheetSet(snap, anim=true){
+  M.sheet = snap; const p = document.querySelector('.spot-panel'); if(!p) return;
+  p.dataset.snap = snap; p.classList.toggle('dragging', !anim); p.style.setProperty('--sheet-h', (SNAPS[snap]*100)+'%');
+}
+function bindSheetDrag(){
+  const p = document.querySelector('.spot-panel'); if(!p || !isPhone()) return;
+  p.style.setProperty('--sheet-h', (SNAPS[M.sheet]*100)+'%');
+  const head = p.querySelector('.spot-head'); if(!head) return;
+  let st = null;
+  head.onpointerdown = e => { if(e.target.closest('button,input,a')) return; const H = p.parentElement.clientHeight; st = {y:e.clientY, h:p.offsetHeight, H, t:performance.now(), moved:false}; head.setPointerCapture(e.pointerId); p.classList.add('dragging'); };
+  head.onpointermove = e => { if(!st) return; const dy = st.y - e.clientY; if(Math.abs(dy)>4) st.moved=true; const h = Math.max(st.H*.1, Math.min(st.H*.94, st.h+dy)); p.style.setProperty('--sheet-h', h+'px'); st.last = {y:e.clientY, t:performance.now()}; };
+  const end = e => { if(!st) return; const s = st; st = null; p.classList.remove('dragging');
+    const h = p.offsetHeight / s.H; const v = s.last ? (s.y - s.last.y)/Math.max(1, s.last.t - s.t) : 0;
+    let snap;
+    if(!s.moved){ snap = M.sheet==='peek' ? 'half' : M.sheet==='half' ? 'full' : 'half'; }
+    else if(Math.abs(v) > .4) snap = v>0 ? (M.sheet==='peek'?'half':'full') : (M.sheet==='full'?'half':'peek');
+    else snap = Object.keys(SNAPS).reduce((a,k)=>Math.abs(SNAPS[k]-h) < Math.abs(SNAPS[a]-h) ? k : a, 'half');
+    sheetSet(snap, true); navigator.vibrate?.(6); };
+  head.onpointerup = end; head.onpointercancel = end;
+}
+
+/* =====================================================================
+   COLUMNS VIEW — spots → records → record (one column at a time on phones)
+   ===================================================================== */
+function spotRows(){
+  return S.units.map(u=>{
+    const n = inCell(u.id,'all').length;
+    const rows = u.kind==='shelf'
+      ? cellKeys(u).map(k=>{ const c = inCell(u.id,k).length, here = V.unit===u.id && V.cell===k;
+          return `<button class="spot-row ${c?'lit':''}" data-act="col-spot" data-u="${u.id}" data-c="${k}" data-drop-u="${u.id}" data-drop-c="${k}" ${here?'aria-current="true"':''} aria-label="${esc(u.id)}·${esc(cellLabel(u,k))}${cellName(u,k)?', '+esc(cellName(u,k)):''}, ${c} records"><span class="led"></span><b>${esc(cellLabel(u,k))}</b><span class="nm">${esc(cellName(u,k))}</span><span class="n">${c}</span></button>`; }).join('')
+      : `<button class="spot-row bag ${n?'lit':''}" data-act="col-spot" data-u="${u.id}" data-c="all" data-drop-u="${u.id}" data-drop-c="0-0" ${V.unit===u.id?'aria-current="true"':''} aria-label="${esc(u.name)}, ${n} records"><span class="led"></span><b>${u.kind==='bag'?'Bag':'Crate'}</b><span class="nm">${esc(presetName(u))}</span><span class="n">${n}</span></button>`;
+    return `<div class="ugrp"><div class="uhead"><button class="uh" data-act="col-unit" data-u="${u.id}" title="Open ${esc(u.name)}">${esc(u.name)}</button><span class="idtag">${esc(u.id)}</span><span class="n">${n}</span></div>${rows}</div>`;
+  }).join('') + `<div class="row" style="padding:12px 8px 4px"><button class="btn sm ghost" data-act="open-add" style="border-style:dashed;width:100%">+ Add furniture or bag</button></div>`;
+}
+function renderColumns(){
+  const u = unit(V.unit);
+  if(u && u.kind==='shelf' && V.cell==='all') V.cell = '0-0';
+  const list = u ? inCell(u.id, V.cell).filter(r=>!V.stale || isStale(r)) : [];
+  V.dig = Math.max(0, Math.min(V.dig, list.length-1));
+  const cur = list[V.dig];
+  const recs = u ? `${spotHead(u, list, {nav:true})}<div class="col-body">${list.length ? `<div class="list">${recordRows(list,{act:'col-rec'})}</div>${selBar()}` : emptySpot(u)}</div><div class="spot-foot">${isPhone()?'Press and hold a record to drag it to another spot.':'Drag a record onto any spot on the left to move it.'}</div>`
+    : `<div class="col-head"><div class="spot-title"><span class="sub">Pick a spot</span></div></div><div class="col-body"></div>`;
+  const det = cur ? `<div class="col-head"><div class="col-nav"><button class="backlink" data-act="col-back" data-to="records"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>${esc(u.kind==='shelf'?u.id+'·'+cellLabel(u,V.cell):u.name)}</button><span class="code muted" style="margin-left:auto;font-size:12px">${V.dig+1} of ${list.length}</span></div>
+      <div class="spot-title" style="display:${isPhone()?'none':'flex'}"><span class="sub">Record</span><span class="cnt">${V.dig+1} of ${list.length}</span></div></div>
+    <div class="col-body"><div class="bigcover" data-drag="${cur.id}">${cover(cur)}</div>
+      <div class="dig-nav"><button class="round" data-act="dig" data-d="-1" aria-label="Previous record" ${V.dig===0?'disabled':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m15 18-6-6 6-6"/></svg></button><button class="round main" data-act="play-rec" data-r="${cur.id}" aria-label="Play ${esc(cur.title)}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg></button>${previewBtn(cur,true)}<button class="round" data-act="dig" data-d="1" aria-label="Next record" ${V.dig===list.length-1?'disabled':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m9 18 6-6-6-6"/></svg></button></div>
+      ${recInfo(cur)}</div>`
+    : `<div class="col-head"><div class="col-nav"><button class="backlink" data-act="col-back" data-to="records"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>Back</button></div><div class="spot-title"><span class="sub">Record</span></div></div><div class="col-body"><div class="empty"><b>Nothing picked</b>Choose a record from the middle column.</div></div>`;
+  return `${roomBar()}<div class="cols" data-col="${V.col}">
+    <section class="col col-spots" aria-label="Spots"><div class="col-head"><div class="spot-title"><span class="code-big" style="font-size:22px">Spots</span><span class="cnt">${spotList().length}</span></div></div><div class="col-body">${spotRows()}</div></section>
+    <section class="col col-recs" aria-label="Records in the spot">${recs}</section>
+    <section class="col col-rec" aria-label="Record">${det}</section>
+  </div>`;
+}
+/* phone push/pop between columns with a same-document view transition */
+function colGo(col, dir){
+  if(!isPhone()){ V.col = col; render(); return; }
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.documentElement.dataset.navdir = dir;
+  const apply = () => { V.col = col; render(); };
+  if(!document.startViewTransition || reduce || navigator.webdriver || V.view!=='columns'){ apply(); return; }
+  document.startViewTransition(apply).finished.finally(()=>{ delete document.documentElement.dataset.navdir; });
+  if(dir==='push') try{ history.pushState({crates:col}, ''); }catch(e){}
+}
+window.addEventListener('popstate', e=>{
+  if(V.view==='columns' && isPhone() && V.col!=='spots'){ colGo(V.col==='record' ? 'records' : 'spots', 'pop'); }
+});
+
+/* ---------- cue bar widths: size pads to their text, drop the names when tight ---------- */
+function fitCue(){
+  const bar = document.querySelector('.cuebar'); if(!bar) return;
+  bar.classList.remove('tight');
+  const pads = [...bar.querySelectorAll('.cue')];
+  const need = pads.reduce((a,p)=>a + Math.max(88, (p.querySelector('b')?.textContent.length||4)*8.2 + (p.querySelector('.nm')?.textContent.length||0)*0 + 48), 0) + (pads.length-1)*8;
+  const W = bar.clientWidth;
+  if(need > W) bar.classList.add('tight');
 }
 
 /* ---------- actions ---------- */
 const A = {
-  'go-room':()=>zoomTo('room'),
+  'go-room':()=>{ if(V.view==='unit'){ zoomTo('room'); return; } V.view = roomView(); V.sel=null; V.stale=false; render(); },
   'go-playlists':()=>{ V.view='playlists'; if(!V.pl) V.pl = S.playlists[0]?.id||null; render(); },
-  'open-unit':(d,e)=>{ if(dragJustEnded) return; $('#results').hidden=true; zoomTo('unit', d.u); },
+  'open-unit':(d,e)=>{ if(dragJustEnded) return; $('#results').hidden=true; closeSheet(); zoomTo('unit', d.u); },
   'pick-cell':d=>{ V.cell=d.c; V.dig=0; V.sel=null; render(); },
   'dig':d=>dig(+d.d),
   'dig-to':d=>{ V.dig=+d.i; render(); },
@@ -2181,7 +2773,7 @@ const A = {
   'set-look':d=>{ S.settings.look = d.l; applyLook(); save(); openSettings(); },
   'set-accent':d=>{ S.settings.accent=d.a; render(); openSettings(); },
   'reset':()=>{ $('#reset-confirm').innerHTML = `<div class="notice">This puts back the 10 demo records and removes anything you added. <div class="row" style="margin-top:8px"><button class="btn danger" data-act="reset-yes">Reset</button><button class="btn" data-act="close">Keep my changes</button></div></div>`; },
-  'reset-yes':()=>{ S = migrate(seedExtras(seed())); V.sel=null; V.stale=false; P.st={}; P.queue=[]; P.i=-1; closeSheet(); V.view='unit'; V.unit='K1'; V.cell='0-0'; render(); renderPlayer(); toast('Demo collection restored'); },
+  'reset-yes':()=>{ backupNow('Before resetting the demo', 'reset'); S = migrate(seedExtras(seed())); V.sel=null; V.stale=false; P.st={}; P.queue=[]; P.i=-1; closeSheet(); V.view='unit'; V.unit='K1'; V.cell='0-0'; render(); renderPlayer(); toast('Demo collection restored'); },
   'open-add':()=>openAdd(),
   'add-record':()=>openAddRecord(), 'add-furniture':()=>openAddFurniture(), 'add-bag':()=>openAddBag(),
   'af-group':d=>{ const x=FURNITURE.find(x=>x.group===d.g); draft.group=d.g; draft.preset=x.key; draft.rows=x.rows||1; draft.cols=x.cols||1; draft.id=''; renderAddFurniture(); },
@@ -2236,7 +2828,21 @@ const A = {
 
 Object.assign(A, {
   'preview':d=>startPreview(d.r),
-  'go-spot':d=>{ if(dragJustEnded) return; goSpot(d.u, d.c); },
+  'go-spot':d=>{ if(dragJustEnded) return; $('#results').hidden=true; goSpot(d.u, d.c); },
+  'set-view':d=>{ S.settings.view = d.v==='columns' ? 'columns' : 'map'; V.view = S.settings.view; V.col = 'spots'; render(); },
+  'set-density':d=>{ S.settings.density = d.d==='compact' ? 'compact' : 'regular'; applyDensity(); save(); render(); if(sheetKind) openSettings(); },
+  'map-spot':d=>{ if(dragJustEnded || mapJustPanned) return; selectSpot(d.u, d.c); },
+  'map-unit':d=>{ if(mapJustPanned) return; mapZoomUnit(d.u); selectSpot(d.u, V.unit===d.u ? V.cell : null); mapZoomUnit(d.u, true); },
+  'map-zoom':d=>{ const m = mapEl(); if(!m) return; if(d.z==='fit') mapFit(true); else mapZoomAt(d.z==='in'?1.35:1/1.35, m.clientWidth/2, m.clientHeight/2, true); },
+  'map-rec':d=>{ if(dragJustEnded) return; V.dig = +d.i; render(); if(isPhone() && M.sheet==='peek') sheetSet('half'); },
+  'col-spot':d=>{ if(dragJustEnded) return; selectSpot(d.u, d.c); },
+  'col-unit':d=>{ if(dragJustEnded) return; selectSpot(d.u, null); },
+  'col-rec':d=>{ if(dragJustEnded) return; V.dig = +d.i; if(isPhone()) colGo('record','push'); else render(); },
+  'col-back':d=>colGo(d.to, 'pop'),
+  'spot-step':d=>spotStep(+d.d),
+  'spot-tools':()=>openSpotTools(),
+  'play-whole':d=>{ const u = unit(d.u); closeSheet(); setQueue(inCell(u.id,'all'), 0, u.name); },
+  'sheet-snap':()=>sheetSet(M.sheet==='full'?'half':'full'),
   'toggle-look':()=>{ const order = ['booth','shop','auto']; const cur = S.settings.look||'booth'; S.settings.look = order[(order.indexOf(cur)+1)%order.length]; applyLook(); save(); toast(`Look: ${LOOKS.find(l=>l[0]===S.settings.look)[1]}`); fitRoom(); },
   'go-gigs':()=>{ V.view='gigs'; if(!V.gig) V.gig = S.gigs.slice().sort((a,b)=>a.date.localeCompare(b.date)).find(g=>g.status!=='done')?.id || S.gigs[0]?.id || null; render(); },
   'open-gig':d=>{ V.gig=d.g; render(); document.querySelector('.gig')?.scrollIntoView({behavior:'smooth',block:'start'}); },
@@ -2287,8 +2893,9 @@ document.addEventListener('click', e=>{
 });
 document.addEventListener('keydown', e=>{
   if(e.key==='Escape'){ if(P.open){ closeNP(); return; } if(sheetKind){ closeSheet(); return; } }
-  if(V.view==='unit' && !sheetKind && !P.open && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){
-    if(e.key==='ArrowRight') dig(1); if(e.key==='ArrowLeft') dig(-1);
+  if((V.view==='unit'||V.view==='map'||V.view==='columns') && !sheetKind && !P.open && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){
+    if(e.key==='ArrowRight'){ e.preventDefault(); dig(1); } if(e.key==='ArrowLeft'){ e.preventDefault(); dig(-1); }
+    if(V.view!=='unit' && (e.key==='ArrowDown'||e.key==='ArrowUp')){ e.preventDefault(); spotStep(e.key==='ArrowDown'?1:-1); }
   }
 });
 
@@ -2296,16 +2903,19 @@ document.addEventListener('keydown', e=>{
 /* =====================================================================
    COLLECTION TABLE: spreadsheet view, inline edits, bag & home columns
    ===================================================================== */
-const T = {sort:'artist', dir:1, q:'', filt:'all', sel:new Set()};
-const T_FILTERS = [['all','All'],['bag','In a bag'],['away','Away from home'],['stale','Not played in a year'],['edited','Edited by me'],['nohome','No home spot']];
+const T = {sort:'artist', dir:1, q:'', filt:'all', sel:new Set(), spot:null};
+const T_FILTERS = [['all','All'],['bag','In a bag'],['away','Away from home'],['stale','Not played in a year'],['edited','Edited by me'],['nohome','No home spot'],['unplaced','Unplaced']];
+const isUnplaced = r => !unit(r.loc?.u);
 const inBagNow = r => unit(r.loc.u) && unit(r.loc.u).kind!=='shelf';
 const awayFromHome = r => hasHome(r) && !same(r.loc, r.home);
 function tFilter(r){
+  if(T.spot && (r.loc.u!==T.spot.u || (T.spot.c && r.loc.c!==T.spot.c))) return false;
   if(T.filt==='bag' && !inBagNow(r)) return false;
   if(T.filt==='away' && !awayFromHome(r)) return false;
   if(T.filt==='stale' && !isStale(r)) return false;
   if(T.filt==='edited' && !editedSet(r).size) return false;
   if(T.filt==='nohome' && hasHome(r)) return false;
+  if(T.filt==='unplaced' && !isUnplaced(r)) return false;
   if(T.q){ const hay = `${r.artist} ${r.title} ${r.label} ${r.catno} ${r.year} ${r.style} ${r.bpm} ${r.key} ${r.tags.join(' ')} ${r.notes} ${addrShort(r.loc)} ${hasHome(r)?addrShort(r.home):''} ${cellName(unit(r.loc.u),r.loc.c)}`.toLowerCase(); if(!T.q.toLowerCase().split(/\s+/).every(w=>hay.includes(w))) return false; }
   return true;
 }
@@ -2328,7 +2938,7 @@ function renderTable(){
     const homeVal = hasHome(r) ? r.home.u+'|'+r.home.c : '';
     return `<tr class="${T.sel.has(r.id)?'sel':''}">
       <td class="cb stick"><input type="checkbox" data-tsel="${r.id}" ${T.sel.has(r.id)?'checked':''} aria-label="Select ${esc(r.title)}"></td>
-      <td class="stick2"><button class="mini-btn" style="width:auto;height:auto;padding:0" data-act="goto-rec" data-r="${r.id}" aria-label="Show ${esc(r.title)} on its shelf">${thumb(r)}</button></td>
+      <td class="stick2"><span class="dragh" data-drag="${r.id}" title="Drag to a spot above" aria-hidden="true">⋮⋮</span><button class="mini-btn" style="width:auto;height:auto;padding:0;display:inline-grid;vertical-align:middle" data-act="goto-rec" data-r="${r.id}" aria-label="Show ${esc(r.title)} on its shelf">${thumb(r)}</button></td>
       ${txt(r,'artist','w-artist')}${txt(r,'title','w-title')}
       <td><div class="spot"><select class="ce" data-tbag="${r.id}" aria-label="Bag for ${esc(r.title)}"><option value="">${inBagNow(r)?'Take out':'—'}</option>${bags.map(b=>`<option value="${b.id}" ${bagSel===b.id?'selected':''}>${esc(b.name)}</option>`).join('')}</select>${inBagNow(r)&&hasHome(r)?`<button class="btn sm" data-act="t-back" data-r="${r.id}">Put back</button>`:''}</div></td>
       <td><select class="ce" data-thome="${r.id}" aria-label="Home spot for ${esc(r.title)}"><option value="">No home yet</option>${shelfOptions(homeVal)}</select></td>
@@ -2340,8 +2950,9 @@ function renderTable(){
     </tr>`;
   }).join('');
   const nsel = T.sel.size;
-  return `<div class="sec-head"><div><div class="kicker">${S.records.length} records · click any cell to edit</div><h2>Collection</h2></div>
-      <div class="row">${away?`<button class="btn primary" data-act="t-back-all">Put ${away} back home</button>`:''}<button class="btn" data-act="t-csv">Export CSV</button></div></div>
+  return `<div class="tbl-shell"><div class="viewbar"><div><div class="kicker">${S.records.length} records · click any cell to edit</div><h2>Collection</h2></div>
+      <div class="tools-r">${away?`<button class="btn primary" data-act="t-back-all">Put ${away} back home</button>`:''}<button class="btn" data-act="t-csv">Export CSV</button></div></div>
+    ${cueBar('table')}
     <div class="tbl-tools">
       <label for="t-q" class="sr">Filter the collection</label><input id="t-q" type="search" value="${esc(T.q)}" placeholder="Filter by anything: artist, tag, K1·A2, Crater…">
       ${T_FILTERS.map(([k,n])=>`<button class="chip" data-act="t-filt" data-f="${k}" aria-pressed="${T.filt===k}">${n}</button>`).join('')}
@@ -2351,7 +2962,7 @@ function renderTable(){
       <thead><tr><th class="cb stick"><input type="checkbox" data-tsel="all" ${rows.length&&rows.every(r=>T.sel.has(r.id))?'checked':''} aria-label="Select all shown"></th><th class="stick2"></th>
         ${head('artist','Artist')}${head('title','Title')}${head('bag','Bag')}${head('home','Home spot')}${head('label','Label')}${head('catno','Cat no.')}${head('year','Year')}${head('style','Style')}${head('bpm','BPM')}${head('key','Key')}${head('rating','Rating')}${head('tags','Tags')}<th><span style="display:block;padding:10px 8px">Now</span></th>${head('played','Last played')}</tr></thead>
       <tbody>${body||`<tr><td colspan="16" style="padding:28px;text-align:center;color:var(--muted)">No records match. Clear the filter to see everything.</td></tr>`}</tbody></table></div>
-    <div class="tbl-foot"><span>${rows.length} of ${S.records.length} shown · edited cells have a red edge · your edits never overwrite the Discogs original</span><span>Tab and Shift+Tab move between cells. Enter saves.</span></div>`;
+    <div class="tbl-foot"><span>${rows.length} of ${S.records.length} shown · edited cells have a red edge · your edits never overwrite the Discogs original</span><span>Drag the ⋮⋮ handle onto a spot above to move a record. Tab moves between cells, Enter saves.</span></div></div>`;
 }
 function tCommit(el){
   const r = rec(el.dataset.r); if(!r) return;
@@ -2397,6 +3008,8 @@ async function exportCSV(){
 }
 Object.assign(A, {
   'go-table':()=>{ V.view='table'; render(); },
+  'go-unplaced':()=>{ V.view='table'; T.filt='unplaced'; T.spot=null; render(); },
+  't-spot':d=>{ if(dragJustEnded) return; T.spot = d.u==='all' ? null : (d.c==='all' ? {u:d.u} : {u:d.u, c:d.c}); render(); },
   't-sort':d=>{ if(T.sort===d.k) T.dir = -T.dir; else { T.sort = d.k; T.dir = 1; } render(); },
   't-filt':d=>{ T.filt = d.f; render(); },
   't-back':d=>{ const n = putBack([rec(d.r)]); render(); if(n) toast(`Back in ${addrShort(rec(d.r).home)}`, true); },
@@ -2410,6 +3023,119 @@ Object.assign(A, {
     if(!p){ p = {id:uid('p'),name:'New playlist',color:PL_COLORS[S.playlists.length%PL_COLORS.length],items:[]}; S.playlists.push(p); }
     ids.forEach(id=>{ if(!p.items.includes(id)) p.items.push(id); }); T.sel.clear(); closeSheet(); render(); toast(`Added to ${p.name}`); },
   't-csv':()=>exportCSV(),
+});
+
+
+/* =====================================================================
+   COLLECTION FILES: save/load locally, import from Discogs (CSV export or demo),
+   upload to Discogs (queued), and 4 rolling backups with a picker
+   ===================================================================== */
+const BK_KEY = 'crates-backups', BK_MAX = 4;
+function backups(){ try{ const b = JSON.parse(localStorage.getItem(BK_KEY)||'[]'); return Array.isArray(b) ? b : []; }catch(e){ return []; } }
+function backupNow(label, kind='manual'){
+  const list = backups();
+  const entry = {id:uid('b'), at:new Date().toISOString(), label, kind, records:S.records.length, units:S.units.length, state:JSON.parse(JSON.stringify(S))};
+  list.unshift(entry); while(list.length > BK_MAX) list.pop();
+  try{ localStorage.setItem(BK_KEY, JSON.stringify(list)); }catch(e){ toast('Couldn’t store the backup (storage is full)'); return null; }
+  return entry;
+}
+function restoreBackup(id){
+  const b = backups().find(x=>x.id===id); if(!b) return;
+  backupNow('Before restoring “'+b.label+'”', 'restore');
+  S = migrate(b.state); V.sel=null; V.stale=false; P.st={}; closeSheet(); V.view = roomView(); M.moved = false; render(); renderPlayer();
+  toast(`Restored “${b.label}” (${b.records} records)`);
+}
+function deleteBackup(id){ const list = backups().filter(x=>x.id!==id); localStorage.setItem(BK_KEY, JSON.stringify(list)); openBackups(); }
+const fmtWhen = iso => { const d = new Date(iso); return d.toLocaleDateString([], {month:'short', day:'numeric'}) + ' ' + d.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}); };
+function openBackups(){
+  const list = backups();
+  openSheet(`<div class="sheet-head"><div><div class="kicker">${list.length} of ${BK_MAX} slots used · newest first</div><h2>Backups</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <p class="muted" style="margin:0 0 12px;font-size:13.5px">A backup is made automatically before every import, restore and reset. The oldest is dropped when all ${BK_MAX} slots are used. Backups live in this browser; use <b>Save to file</b> for a copy you can keep.</p>
+    <div class="row" style="margin-bottom:14px"><button class="btn primary" data-act="bk-now">Back up now</button><button class="btn" data-act="col-save">Save to file</button><label class="btn file">Load from file<input type="file" id="col-load" accept=".json,application/json"></label><button class="btn" data-act="dg-import">Import from Discogs…</button></div>
+    ${list.length ? `<div class="links">${list.map(b=>`<div class="link" style="grid-template-columns:minmax(0,1fr) auto"><span class="t"><b>${esc(b.label)}</b><span>${fmtWhen(b.at)} · ${b.records} records in ${b.units} places · ${b.kind}</span></span><span class="row" style="flex-wrap:nowrap"><button class="btn sm" data-act="bk-restore" data-b="${b.id}">Restore</button><button class="btn sm ghost danger" data-act="bk-del" data-b="${b.id}" aria-label="Delete backup ${esc(b.label)}">✕</button></span></div>`).join('')}</div>`
+      : `<div class="empty"><b>No backups yet</b>Back up now, or import a collection and one is made for you.</div>`}
+    <div id="bk-confirm"></div>`);
+  $('#col-load').onchange = e => loadCollectionFile(e.target.files[0]);
+}
+async function saveCollectionFile(){
+  const data = JSON.stringify({app:'crates', v:S.v, savedAt:new Date().toISOString(), state:S}, null, 1);
+  const filename = `crates-${todayISO()}.json`;
+  let dl = null; try{ dl = await window.claude?.use?.('downloads'); }catch(e){}
+  try{
+    if(dl) await dl.save({filename, data});
+    else if(!IN_ARTIFACT){ const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([data],{type:'application/json'})); a.download = filename; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 4000); }
+    else { toast('Saving files isn’t available in this view'); return; }
+    toast('Collection saved to '+filename);
+  }catch(e){ toast(e?.code==='declined' ? 'Save cancelled' : 'Couldn’t save the file'); }
+}
+function loadCollectionFile(file){
+  if(!file) return;
+  const rd = new FileReader();
+  rd.onload = () => {
+    let j; try{ j = JSON.parse(rd.result); }catch(e){ toast('That file isn’t a Crates collection'); return; }
+    const st = j?.state || j;
+    if(!st || st.v!==2 || !Array.isArray(st.units) || !Array.isArray(st.records)){ toast('That file isn’t a Crates collection'); return; }
+    backupNow('Before loading '+file.name, 'import');
+    S = migrate(st); V.sel=null; V.stale=false; P.st={}; closeSheet(); V.view = roomView(); M.moved = false; render(); renderPlayer();
+    toast(`Loaded ${S.records.length} records from ${file.name} (backup made)`, false);
+  };
+  rd.readAsText(file);
+}
+/* Discogs import. Real path: the user's CSV export from discogs.com (Collection → Export), parsed here. Demo path: a sample. API import needs the server (see research/discogs-api.md). */
+function parseCSV(text){
+  const rows=[]; let row=[], cell='', q=false;
+  for(let i=0;i<text.length;i++){ const ch=text[i];
+    if(q){ if(ch==='"'){ if(text[i+1]==='"'){ cell+='"'; i++; } else q=false; } else cell+=ch; }
+    else if(ch==='"') q=true; else if(ch===','){ row.push(cell); cell=''; } else if(ch==='\n'||ch==='\r'){ if(ch==='\r'&&text[i+1]==='\n') i++; row.push(cell); rows.push(row); row=[]; cell=''; } else cell+=ch; }
+  if(cell.length||row.length){ row.push(cell); rows.push(row); }
+  return rows.filter(r=>r.length>1 || (r[0]||'').trim());
+}
+const PALS = [['#E4572E','#F1E4CC','#1F4FA8'],['#2C8C7A','#F5A524','#1E1E1E'],['#7A2B5C','#F2E3C6','#D9283C'],['#1F5FBF','#F2F2F2','#F5A524'],['#B9E05A','#121212','#E8706F'],['#4B2A8C','#FFD166','#06D6A0']];
+function recordFromDiscogsRow(h, r){
+  const g = k => { const i = h.findIndex(x=>x.trim().toLowerCase()===k); return i>=0 ? (r[i]||'').trim() : ''; };
+  const artist = g('artist'), title = g('title'); if(!artist && !title) return null;
+  const n = hash(artist+title);
+  return {id:uid('r'), artist, title, label:g('label').split(',')[0].trim(), year:g('released').slice(0,4), style:g('genre')||g('style')||'', catno:g('catalog#')||g('catno'), barcode:'', bpm:'', key:'', rating:+g('rating')||0, cm:g('collection media condition')||'', notes:g('collection notes')||g('notes')||'', tags:[], yt:[], pal:PALS[n%PALS.length], pat:n%6, loc:{u:null,c:null}, home:null, from:null, plays:[], orig:{artist,title}, releaseId:+g('release_id')||null, folder:g('collectionfolder')||''};
+}
+const DEMO_DISCOGS = [['Underground Resistance','The Final Frontier','Underground Resistance','1991','Techno'],['Larry Heard','Alien','Black Market International','1996','Deep House'],['Kraftwerk','Tour De France','EMI','1983','Electro'],['Jeff Mills','The Bells','Purpose Maker','1996','Techno'],['Armand Van Helden','Witch Doktor','Strictly Rhythm','1994','House'],['Aphex Twin','Didgeridoo','R&S Records','1992','Techno']];
+function openDiscogsImport(){
+  openSheet(`<div class="sheet-head"><div><div class="kicker">Collection → Export on discogs.com gives you a CSV</div><h2>Import from Discogs</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <p class="muted" style="margin:0 0 10px;font-size:13.5px">A backup of your current collection is made first. Imported records land as <b>Unplaced</b>; file them from the Collection tab or by dragging. Records you already own (same artist and title) are skipped.</p>
+    <div class="row" style="margin-bottom:14px"><label class="btn primary file">Load Discogs CSV export<input type="file" id="dg-csv" accept=".csv,text/csv"></label><button class="btn" data-act="dg-demo">Import a demo collection (6 records)</button></div>
+    <div class="bcbox"><b style="font-size:14px">Upload to your Discogs collection</b><p class="muted" style="margin:6px 0 10px;font-size:13px">Adds records that aren’t in your Discogs collection yet, and writes each one’s spot to the “Location” field. Queued here; the full app sends them from the server within the 60 requests/minute limit.</p>
+      <div class="row"><button class="btn" data-act="dg-upload">Queue upload (${S.records.length} records)</button><span class="muted" style="font-size:13px">${S.syncQueue.filter(q=>q.kind==='add').length} adds waiting</span></div></div>
+    <p class="muted" style="font-size:12.5px;margin-top:12px">Importing straight from the Discogs API needs a server-side token (research/discogs-api.md), so the prototype reads the CSV export instead.</p>`);
+  $('#dg-csv').onchange = e => { const f = e.target.files[0]; if(!f) return; const rd = new FileReader(); rd.onload = () => importDiscogsRows(parseCSV(rd.result), f.name); rd.readAsText(f); };
+}
+function importDiscogsRows(rows, label){
+  if(!rows.length){ toast('Nothing to import'); return; }
+  const h = rows[0], recs = rows.slice(1).map(r=>recordFromDiscogsRow(h,r)).filter(Boolean);
+  const have = new Set(S.records.map(r=>norm(r.artist)+'|'+norm(r.title)));
+  const fresh = recs.filter(r=>!have.has(norm(r.artist)+'|'+norm(r.title)));
+  if(!recs.length){ toast('No records found in that file'); return; }
+  backupNow('Before importing '+label, 'import');
+  S.records.push(...fresh); S.imports ||= []; S.imports.push({at:new Date().toISOString(), label, added:fresh.length, skipped:recs.length-fresh.length});
+  closeSheet(); V.view='table'; T.filt='unplaced'; T.spot=null; render();
+  toast(`Imported ${fresh.length} records${recs.length-fresh.length?` · ${recs.length-fresh.length} already owned`:''} · backup made`);
+}
+function importDemoDiscogs(){
+  const h = ['Artist','Title','Label','Released','Genre'];
+  importDiscogsRows([h, ...DEMO_DISCOGS], 'the demo Discogs collection');
+}
+function queueDiscogsUpload(){
+  let n=0; S.records.forEach(r=>{ if(!S.syncQueue.some(q=>q.kind==='add'&&q.r===r.id)){ S.syncQueue.push({kind:'add', r:r.id, value:discogsLocValue(r), status:'pending', at:Date.now()}); n++; } });
+  save(); closeSheet(); toast(`${n} records queued for Discogs · Settings → Sync now (demo)`);
+}
+Object.assign(A, {
+  'bk-open':()=>openBackups(),
+  'bk-now':()=>{ const b = backupNow('Manual backup'); if(b){ toast('Backed up '+b.records+' records'); openBackups(); } },
+  'bk-restore':d=>{ const b = backups().find(x=>x.id===d.b); if(!b) return; $('#bk-confirm').innerHTML = `<div class="notice">Replace the current collection with “${esc(b.label)}” (${b.records} records)? The current one is backed up first. <div class="row" style="margin-top:8px"><button class="btn danger" data-act="bk-restore-yes" data-b="${b.id}">Restore</button><button class="btn" data-act="bk-open">Cancel</button></div></div>`; },
+  'bk-restore-yes':d=>restoreBackup(d.b),
+  'bk-del':d=>deleteBackup(d.b),
+  'col-save':()=>saveCollectionFile(),
+  'dg-import':()=>openDiscogsImport(),
+  'dg-demo':()=>importDemoDiscogs(),
+  'dg-upload':()=>queueDiscogsUpload(),
 });
 
 /* ---------- Claude photo recognition (optional) ---------- */

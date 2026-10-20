@@ -172,7 +172,7 @@ Steps are written against the existing `App` helper. "Expect" is the pass condit
 
 ## 3. Error-checking audit
 
-`BUGS.md` does not yet list rows #1, #2, #3, #5, #18, #21, #25 and #26 below. The owning work package should add them as B-1xx when it starts. Also, two `BUGS.md` Fixed rows cite the wrong test: B-003 (malformed deep link) is guarded by **N12**, and B-006 (subtitle toast) by **X11**.
+`BUGS.md` does not yet list rows #1, #2, #3, #5, #18, #21, #25 and #26 below. The owning work package should add them as B-1xx when it starts. (The B-003/B-006 test references have been corrected. The highest-risk items are now logged as B-110 to B-114.)
 
 | # | Failure point (where) | Current behavior (verified = probe or test) | Risk | Recommended fix |
 |---|---|---|---|---|

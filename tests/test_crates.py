@@ -905,24 +905,29 @@ def n14_readme_shots(browser, url):
     for label, (w, h) in (("desktop", (1280, 900)), ("mobile", (390, 844))):
         a = App(browser, url, w, h, "light")
         try:
-            shot = lambda name, full=False: (a.page.screenshot(animations="disabled", full_page=full,
-                                              path=str(SHOTS / f"readme-{name}-{label}.png")), made.append(f"readme-{name}-{label}.png"))
+            def shot(name, full=False):
+                # full-page captures: put the fixed mini player at the end of the page instead of mid-image
+                if full: a.ev("document.body.insertAdjacentHTML('beforeend','<style id=shotfix>.player{position:static!important;margin:24px -16px 0}body{padding-bottom:0!important}</style>')")
+                a.page.screenshot(animations="disabled", full_page=full, path=str(SHOTS / f"readme-{name}-{label}.png"))
+                if full: a.ev("document.getElementById('shotfix')?.remove()")
+                made.append(f"readme-{name}-{label}.png")
             a.wait_link_mode()
-            a.click(".chips .chip[data-c='0-1']"); a.page.mouse.move(0, 0); shot("room", True)
-            a.click("#tab-gigs"); a.click(".gig [data-act=gig-next]")
-            a.page.locator("input[data-gig=pack][data-r=r1]").click(); _settle(a)
-            a.page.locator("input[data-gig=pack][data-r=r6]").click(); _settle(a)
-            a.ev("document.querySelector('.toast')?.remove()"); shot("gigs", True)
-            a.click("#tab-room"); a.click(".sec-head [data-act=stickers]"); _settle(a, 350); shot("stickers")
-            a.click(".sheet [data-act=close]")
+            top = lambda: (a.ev("window.scrollTo(0,0)"), a.ev("document.querySelector('.toast')?.remove()"), a.page.mouse.move(0, 0), _settle(a, 150))
+            a.click(".chips .chip[data-c='0-1']"); top(); shot("room", True)
             _open_add_record(a)
             a.page.locator("#ar-artist").fill("Mr Fingers"); a.page.locator("#ar-title").fill("Can You Feel It")
             a.page.locator("#ar-bc").fill("724384960650"); a.click("#bc-form button[type=submit]")
             a.ev("document.querySelector('.bcbox').scrollIntoView({block:'start'})"); _settle(a, 350); shot("add-record-dupe")
             a.click(".sheet [data-act=close]")
+            a.click(".sec-head [data-act=stickers]"); _settle(a, 350); shot("stickers")
+            a.click(".sheet [data-act=close]")
+            a.click("#tab-gigs"); a.click(".gig [data-act=gig-next]")
+            a.page.locator("input[data-gig=pack][data-r=r1]").click(); _settle(a)
+            a.page.locator("input[data-gig=pack][data-r=r6]").click(); _settle(a)
+            top(); shot("gigs", True)
             a.click("#player .pinfo"); a.page.wait_for_selector("#np-sheet"); _settle(a, 450); shot("player")
             a.page.keyboard.press("Escape")
-            a.click("#tab-pl"); a.ev("document.querySelector('.toast')?.remove()"); shot("playlists", True)
+            a.click("#tab-pl"); top(); shot("playlists", True)
             check(not a.js_errors(), f"errors: {a.js_errors()[:2]}")
         finally:
             a.close()
@@ -970,6 +975,20 @@ def x12_hash_cleared_after_nav(a):
     check(a.ev("V.unit") == "K1", f"re-opening the same sticker link after navigating away does nothing (hash still {a.ev('location.hash')!r})")
 
 
+def x13_cube_label_overlap(browser, url):
+    hits = {}
+    for w, h in ((1280, 900), (390, 844)):
+        a = App(browser, url, w, h)
+        try:
+            hits[w] = a.ev("""[...document.querySelectorAll('.kallax.big .cube')].filter(c=>c.querySelector('.cnt')).filter(c=>{
+                const l=c.querySelector('.lbl').getBoundingClientRect(), n=c.querySelector('.cnt').getBoundingClientRect();
+                return l.right>n.left && l.left<n.right && l.bottom>n.top && l.top<n.bottom }).map(c=>c.querySelector('.lbl').textContent)""")
+        finally:
+            a.close()
+    bad = {k: v for k, v in hits.items() if v}
+    check(not bad, f"cubby subtitle overlaps the record count on the big shelf: {bad}")
+
+
 TESTS += [
     ("N01 Duplicate warning", n01_dupes), ("N02 Barcode lookup", n02_barcode),
     ("N03 Discogs Location sync", n03_discogs_sync), ("N04 Cubby subtitle", n04_cubby_subtitle),
@@ -982,8 +1001,9 @@ TESTS += [
     ("X10 Named cubby into a just-added shelf", x10_cubby_move_into_new_shelf),
     ("X11 Subtitle toast after blur-by-click", x11_subtitle_toast_names_right_cubby),
     ("X12 Same sticker link twice", x12_hash_cleared_after_nav),
+    ("X13 Cube subtitle vs count overlap", x13_cube_label_overlap),
 ]
-BROWSER_LEVEL |= {n13_mobile_no_errors, n14_readme_shots}
+BROWSER_LEVEL |= {n13_mobile_no_errors, n14_readme_shots, x13_cube_label_overlap}
 
 
 def main():

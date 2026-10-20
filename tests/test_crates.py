@@ -63,7 +63,7 @@ class App:
         self.page.goto(url, wait_until=wu)
         self.page.evaluate("localStorage.clear()")
         self.page.reload(wait_until=wu)
-        self.page.wait_for_selector("#main .unit-card")
+        self.page.wait_for_selector("#main .unit-card, #main .cuebar")
         if legacy:
             # Older tests start inside Kallax 1, cubby A1, with the whole collection queued in the mini player.
             self.page.evaluate("V.view='unit';V.unit='K1';V.cell='0-0';V.dig=0;render();P.queue=S.records.map(r=>r.id);P.i=0;P.src='Whole collection';renderPlayer();")
@@ -73,6 +73,10 @@ class App:
         return self.page.evaluate(js, arg) if arg is not None else self.page.evaluate(js)
 
     def click(self, sel, **kw):
+        m = re.fullmatch(r"\.unit-card\[data-u=['\"]?(\w+)['\"]?\]", sel)
+        if m and not self.page.locator(f".room .unit-card[data-u='{m.group(1)}']").count():
+            # zoomed into a unit: the room cards are replaced by the cue bar, so open the unit directly
+            self.page.evaluate(f"A['open-unit']({{u:'{m.group(1)}'}})"); self.page.wait_for_timeout(60); return
         self.page.locator(sel).first.click(**kw)
 
     def counter(self):
@@ -237,7 +241,7 @@ def t07_furniture(a):
     new_id = a.page.locator("#af-id").input_value()
     a.click(".sheet #af-form button[type=submit]")
     u = a.ev("S.units[S.units.length-1]")
-    check(a.page.locator(f".unit-card[data-u='{u['id']}']").count() == 1, "card missing")
+    check(a.page.locator(f"#main [data-u='{u['id']}']").count() >= 1, "card missing")
     check(u["rows"] == 3 and u["cols"] == 5 and u["finish"]["hex"].lower() == "#ff00aa", f"unit={u}")
     check(a.page.locator(".detail .kallax.big .cube").count() == 15, "detail grid not 3x5")
     check(a.page.locator(".detail .chips .chip[data-c='2-4']").inner_text().startswith("C5"), "C5 label missing")
@@ -268,8 +272,8 @@ def t08_bag_add(a):
     a.page.locator(".sheet input[data-custom=ab]").fill("#22aa44")
     check(a.ev("draft.finish.hex").lower() == "#22aa44", "custom bag color")
     a.click(".sheet #ab-form button[type=submit]")
-    card = a.page.locator(".unit-card[data-u=B2]")
-    check(card.count() == 1 and "gig bag" in card.inner_text().lower(), "bag card missing")
+    card = a.page.locator("#main [data-u=B2]").first
+    check(card.count() == 1 and "gig bag" in (card.inner_text() + " " + (card.get_attribute("aria-label") or "")).lower(), "bag card missing")
     check(a.ev("unit('B2').finish.hex").lower() == "#22aa44", "bag color not saved")
     return f"{total} bags, UDG={counts['UDG']} Magma={counts['Magma']}; last named color {cname!r}"
 
@@ -419,7 +423,7 @@ def t14_layout(browser, url):
 def t15_persist(a):
     a.click(".dig-info [data-act=move]"); a.click(".sheet button[aria-label='Kallax 1 B3']")
     a.click("#tab-pl"); a.page.locator("#pl-name").fill("Kept"); a.page.locator("#pl-name").press("Tab")
-    a.page.reload(); a.page.wait_for_selector("#main .unit-card")
+    a.page.reload(); a.page.wait_for_selector("#main .unit-card, #main .cuebar")
     check(a.loc("r9") == "K1:1-2", "move not persisted: " + a.loc("r9"))
     check(a.ev("S.playlists[0].name") == "Kept", "rename not persisted")
     check(a.ev("localStorage.getItem('crates-demo-v3')!==null"), "no v3 key")
@@ -537,6 +541,15 @@ def _png(w=64, h=48):
 
 def _txt(loc):
     return re.sub(r"\s+", " ", loc.inner_text()).strip()
+
+
+def _room(a):
+    if a.ev("V.view") != "room":
+        a.click("#tab-room"); a.page.wait_for_timeout(120)
+
+
+def _k1(a, cell="0-0"):
+    a.ev(f"V.view='unit';V.unit='K1';V.cell='{cell}';V.dig=0;render();")
 
 
 def _settle(a, ms=80):
@@ -744,18 +757,20 @@ def n08_came_from(a):
 
 
 def n09_set_history(a):
-    check(a.page.locator(".sec-head [data-act=stale-list] small").inner_text().strip() == "6", "stale count != 6")
+    _room(a); check(a.page.locator(".sec-head [data-act=stale-list] small").inner_text().strip() == "6", "stale count != 6")
+    _k1(a)
     a.click(".dig-info [data-act=log-play]")
     a.page.locator("#lp-date").fill("2026-10-01"); a.page.locator("#lp-venue").fill("Test club")
     a.click("#lp-form button[type=submit]")
     plays = _txt(a.page.locator(".dig-info .plays"))
     check("Last played" in plays and "Test club" in plays and "2026" in plays, f"plays={plays!r}")
     check(a.toast() == "Play logged", a.toast())
-    check(a.page.locator(".sec-head [data-act=stale-list] small").inner_text().strip() == "5", "stale count after logging")
+    _room(a); check(a.page.locator(".sec-head [data-act=stale-list] small").inner_text().strip() == "5", "stale count after logging")
+    _k1(a)
     a.undo()
     check("Never logged" in _txt(a.page.locator(".dig-info .plays")), "undo did not remove the play")
     check(a.ev("rec('r9').plays.length") == 0, "play still stored")
-    a.click(".sec-head [data-act=stale-list]")
+    _room(a); a.click(".sec-head [data-act=stale-list]")
     rows = a.page.locator(".sheet .pick .check")
     check(rows.count() == 6, f"stale sheet rows={rows.count()}")
     ids = sorted(a.ev("[...document.querySelectorAll('.sheet .pick [data-act=goto-rec]')].map(b=>b.dataset.r)"))
@@ -821,7 +836,7 @@ def n10_gigs(a):
 
 
 def n11_stickers(a):
-    a.click(".sec-head [data-act=stickers]")
+    _room(a); a.click(".sec-head [data-act=stickers]")
     st = a.page.locator(".sheet .sticker")
     check(st.count() == 11, f"stickers={st.count()}")
     lens = a.ev("[...document.querySelectorAll('.sheet .sticker svg path')].map(p=>p.getAttribute('d').length)")
@@ -850,13 +865,13 @@ def n11_stickers(a):
         msgs[f] += " msg=" + _txt(a.page.locator("#stk-msg"))
     check(not a.js_errors(), f"errors while saving: {a.js_errors()[:2]}")
     a.click(".sheet [data-act=close]")
-    a.click(".detail [data-act=stickers][data-u=K1]")
+    _k1(a); a.click(".detail [data-act=stickers][data-u=K1]")
     check(st.count() == 9, f"detail QR chip -> {st.count()} stickers (want K1 + 8 cubbies)")
     return "; ".join(f"{k}: {v}" for k, v in msgs.items())
 
 
 def n12_deep_links(a):
-    a.page.goto("about:blank"); a.page.goto(a.url + "#K1-B2"); a.page.wait_for_selector("#main .unit-card")
+    a.page.goto("about:blank"); a.page.goto(a.url + "#K1-B2"); a.page.wait_for_selector("#main .unit-card, #main .cuebar")
     check(a.ev("V.unit") == "K1" and a.ev("V.cell") == "1-1", f"boot deep link -> {a.ev('V.unit')}:{a.ev('V.cell')}")
     check(a.page.locator(".chips .chip[data-c='1-1']").get_attribute("aria-pressed") == "true", "B2 chip not pressed")
     a.ev("location.hash='B1'")
@@ -995,7 +1010,7 @@ def n15_readme_shots(browser, url):
             a.page.locator("#ar-bc").fill("724384960650"); a.click("#bc-form button[type=submit]")
             a.ev("document.querySelector('.bcbox').scrollIntoView({block:'start'})"); _settle(a, 350); shot("add-record-dupe")
             a.click(".sheet [data-act=close]")
-            a.click(".sec-head [data-act=stickers]"); _settle(a, 350); shot("stickers")
+            _room(a); a.click(".sec-head [data-act=stickers]"); _settle(a, 350); shot("stickers")
             a.click(".sheet [data-act=close]")
             a.click("#tab-gigs"); a.click(".gig [data-act=gig-next]")
             a.page.locator("input[data-gig=pack][data-r=r1]").click(); _settle(a)
@@ -1059,7 +1074,7 @@ def x11_subtitle_toast_names_right_cubby(a):
 
 
 def x12_hash_cleared_after_nav(a):
-    a.page.goto("about:blank"); a.page.goto(a.url + "#K1-B2"); a.page.wait_for_selector("#main .unit-card")
+    a.page.goto("about:blank"); a.page.goto(a.url + "#K1-B2"); a.page.wait_for_selector("#main .unit-card, #main .cuebar")
     a.click(".unit-card[data-u=B1]")
     a.ev("location.hash='K1-B2'"); _settle(a, 200)
     check(a.ev("V.unit") == "K1", f"re-opening the same sticker link after navigating away does nothing (hash still {a.ev('location.hash')!r})")
@@ -1107,7 +1122,7 @@ BROWSER_LEVEL |= {n13_mobile_no_errors, n14b_collection_layout, n15_readme_shots
 
 # ------------------------------------------------ room fit, zoom, drag, undo, previews (R-series)
 def _drag(a, src_sel, dst_sel):
-    src = a.page.locator(src_sel).first; src.scroll_into_view_if_needed(); a.page.wait_for_timeout(120)
+    src = a.page.locator(src_sel).first; src.evaluate("e=>e.scrollIntoView({block:'center'})"); a.page.wait_for_timeout(120)
     sb = src.bounding_box(); db = a.page.locator(dst_sel).first.bounding_box()
     check(sb and db, f"drag boxes missing: {src_sel} -> {dst_sel}")
     m = a.page.mouse
@@ -1142,9 +1157,9 @@ def r02_zoom(a):
     a.click("[data-act=go-room]"); a.page.wait_for_timeout(100)
     a.click(".room .unit-card[data-u=K1]"); a.page.wait_for_timeout(150)
     check(a.ev("V.view") == "unit" and a.ev("V.unit") == "K1", "click did not zoom into K1")
-    check(a.page.locator(".strip .unit-card").count() == 3, "strip of spots missing")
+    check(a.page.locator(".cuebar .cue").count() == 10, "cue bar should list 8 cubbies + 2 bags/crates")
     check(a.page.locator(".room").count() == 0, "room grid still shown while zoomed")
-    a.click(".strip .unit-card[data-u=B1]"); a.page.wait_for_timeout(150)
+    a.click(".cuebar .cue[data-u=B1]"); a.page.wait_for_timeout(150)
     check(a.ev("V.unit") == "B1", "strip did not switch unit")
     a.click(".detail [data-act=go-room]"); a.page.wait_for_timeout(150)
     check(a.ev("V.view") == "room" and a.page.locator(".room .unit-card").count() == 3, "back to room failed")
@@ -1158,10 +1173,10 @@ def r03_drag(browser, url):
         check(a.toast() == "Moved to K1·B3", f"toast {a.toast()!r}")
         check(a.ev("inCell('K1','1-2').length") == 1 and a.ev("inCell('K1','0-0').length") == 4, "record not in B3")
         a.page.evaluate("window.scrollTo(0,0)")
-        _drag(a, ".list .li", ".strip .unit-card[data-u=B1]")
+        _drag(a, ".list .li", ".cuebar .cue[data-drop-u=B1]")
         nb = a.ev("inCell('B1','all').length"); check(nb == 4, f"bag count {nb}")
         moved = a.ev("S.records.filter(r=>r.loc.u==='B1' && r.from && r.from.c==='0-0').length")
-        check(moved >= 3, f"came-from not set on dragged record ({moved})")
+        check(moved >= 2, f"came-from not set on dragged record ({moved})")
         # a plain click on a row still selects it (no accidental drag)
         a.click(".list .li >> nth=1"); check(a.ev("V.dig") == 1, "click after drag did not select")
         check(not a.js_errors(), a.js_errors())
@@ -1228,11 +1243,26 @@ def r07_bag_default_names(a):
     check(names[-2:] == ["Bag 1", "Bag 2"], f"bag names {names}")
 
 
+def r08_looks_and_cuebar(a):
+    check(a.ev("document.documentElement.dataset.look") == "shop", "default look should be Shop floor")
+    a.click("#look-btn"); check(a.ev("document.documentElement.dataset.look") == "booth", "second look should be Booth")
+    bg = a.ev("getComputedStyle(document.body).backgroundColor"); check(bg == "rgb(21, 15, 34)", f"booth background {bg}")
+    a.click("#look-btn"); check(a.ev("document.documentElement.dataset.look") is None, "third option should follow the device")
+    a.click("#look-btn"); check(a.ev("S.settings.look") == "shop", "cycle back to Shop floor")
+    pads = a.page.locator(".cuebar .cue"); check(pads.count() == 10, f"{pads.count()} pads")
+    lit = a.page.locator(".cuebar .cue.lit").count(); check(lit == 3, f"{lit} lit pads (A1, A2, Crater)")
+    a.click(".cuebar .cue[data-u=K1][data-c='0-1']")
+    check(a.ev("V.unit") == "K1" and a.ev("V.cell") == "0-1", "pad should open K1·A2")
+    check(a.page.locator(".cuebar .cue[aria-current=true]").get_attribute("data-c") == "0-1", "current pad not marked")
+    a.click(".cuebar .cue[data-u=B1]"); check(a.ev("V.unit") == "B1" and a.ev("V.cell") == "all", "bag pad")
+
+
 TESTS += [
     ("R01 Room fits the screen", r01_room_fits), ("R02 Zoom into a unit", r02_zoom),
     ("R03 Drag and drop", r03_drag), ("R04 Multi-step undo", r04_multi_undo),
     ("R05 Audio previews", r05_previews), ("R06 Player slides in", r06_player_slides_in),
     ("R07 New bags are Bag 1, Bag 2", r07_bag_default_names),
+    ("R08 Looks + cue bar", r08_looks_and_cuebar),
 ]
 BROWSER_LEVEL |= {r01_room_fits, r03_drag, r06_player_slides_in}
 

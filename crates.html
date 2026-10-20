@@ -551,15 +551,16 @@ select.ce{appearance:auto;cursor:pointer}
 [data-drag]{-webkit-user-select:none;user-select:none}
 [data-drag].li,.sleeve[data-drag]{cursor:grab}
 body.dragging,body.dragging *{cursor:grabbing!important;-webkit-user-select:none;user-select:none}
-.ghost{position:fixed;left:0;top:0;z-index:90;pointer-events:none;display:flex;gap:8px;align-items:center;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:6px 10px 6px 6px;box-shadow:0 18px 40px rgba(0,0,0,.35);font-size:13px;font-weight:600;max-width:240px;translate:-20px -20px;rotate:-3deg}
-.ghost .thumb{width:36px;height:36px}
-.ghost span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drag-ghost{position:fixed;left:0;top:0;z-index:90;pointer-events:none;display:flex;gap:8px;align-items:center;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:6px 10px 6px 6px;box-shadow:0 18px 40px rgba(0,0,0,.35);font-size:13px;font-weight:600;max-width:240px;translate:-20px -20px;rotate:-3deg}
+.drag-ghost .thumb{width:36px;height:36px}
+.drag-ghost span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .drop-on{outline:3px solid var(--accent)!important;outline-offset:-3px;filter:brightness(1.12)}
 [data-drop-u]{transition:filter .1s}
 .dragsrc{opacity:.45}
 .drag-hint{font-size:12.5px;color:var(--muted);margin-top:6px}
 body:has(#player[hidden]){padding-bottom:24px}
-@media (min-width:781px){ .detail-grid>div:first-child{position:sticky;top:calc(env(safe-area-inset-top,0px) + 132px);align-self:start} }
+@media (min-width:781px){ .detail-grid>div:first-child{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--top-h,122px) + var(--cue-h,84px) + 8px);align-self:start} }
+@media (max-height:560px){ .cuebar{position:static} }
 @media (min-width:781px) and (max-height:560px){ .detail-grid>div:first-child{position:static} }
 
 /* ---------- undo ---------- */
@@ -581,6 +582,29 @@ body:has(#player[hidden]){padding-bottom:24px}
 .player[hidden]{display:none;translate:0 100%}
 @media (prefers-reduced-motion:reduce){.player{transition:none}}
 
+/* ---------- looks: Shop floor (light) and Booth (dark) ---------- */
+:root[data-look="shop"]{--bg:#E8E4DE;--surface:#FFFFFF;--surface-2:#F4F1EC;--ink:#1E1530;--muted:#5E566B;--line:#D8D2C8;--accent:#D1323E;--accent-ink:#FFFFFF;--brand:#E5404A;color-scheme:light}
+:root[data-look="booth"]{--bg:#150F22;--surface:#1E1530;--surface-2:#281D3E;--ink:#EEEBF3;--muted:#AFA7C2;--line:#3A2E54;--accent:#FF7077;--accent-ink:#1E1530;--brand:#FF7077;--ok:#3CC47A;--warn:#F5A524;--bad:#FF7077;--shadow:0 1px 2px rgba(0,0,0,.5),0 14px 34px rgba(0,0,0,.45);color-scheme:dark}
+:root[data-look="booth"] .cube.lit{box-shadow:inset 0 12px 16px -6px rgba(0,0,0,.6),inset 9px 0 14px -8px rgba(0,0,0,.5),inset 0 -3px 0 #F5A524,inset 0 -14px 18px -12px rgba(245,165,36,.55)}
+:root[data-look="booth"] .deck{background:radial-gradient(circle at 50% 45%,#2b2140,#170f26);border-color:#3A2E54}
+:root[data-look="booth"] .deck::before{content:"";position:absolute;inset:10px;border-radius:50%;border:3px solid var(--accent);opacity:.55;box-shadow:0 0 18px rgba(255,112,119,.35);pointer-events:none}
+:root[data-look="booth"] .unit-card,:root[data-look="booth"] .detail,:root[data-look="booth"] .pledit,:root[data-look="booth"] .gig{border-color:#3A2E54}
+.look-btn svg{width:18px;height:18px}
+
+/* ---------- cue bar: every spot along the top ---------- */
+.cuebar{display:flex;gap:8px;overflow-x:auto;padding:10px 2px 12px;margin:2px 0 6px;position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--top-h,122px));z-index:15;background:var(--bg);scrollbar-width:thin;scroll-snap-type:x proximity}
+.cue{flex:0 0 auto;scroll-snap-align:start;min-width:112px;height:58px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);text-align:left;padding:7px 10px 7px 12px;display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;column-gap:8px;align-items:center;position:relative;box-shadow:0 1px 2px rgba(0,0,0,.08),0 6px 14px rgba(0,0,0,.06)}
+.cue .led{grid-row:1/3;width:8px;height:8px;border-radius:50%;background:var(--line)}
+.cue.lit .led{background:#F5A524;box-shadow:0 0 8px rgba(245,165,36,.8)}
+.cue.bag .led{border-radius:2px}
+.cue b{font-family:var(--f-mono);font-size:12.5px;font-weight:500;white-space:nowrap}
+.cue .n{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.cue .nm{grid-column:2/4;font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px}
+.cue[aria-current="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.cue:hover{border-color:var(--accent)}
+:root[data-look="booth"] .cue{background:linear-gradient(180deg,#2a1f40,#1e1530);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 4px 10px rgba(0,0,0,.4)}
+.cuebar .sep{flex:0 0 1px;background:var(--line);margin:6px 2px}
+
 .foot{margin-top:34px;font-size:12.5px;color:var(--muted);max-width:72ch}
 </style>
 
@@ -594,6 +618,7 @@ body:has(#player[hidden]){padding-bottom:24px}
       <button data-act="go-gigs" id="tab-gigs">Gigs</button>
     </div>
     <button class="add-btn" data-act="open-add"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add</button>
+    <button class="icon-btn look-btn" id="look-btn" data-act="toggle-look" aria-label="Switch look"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
     <button class="icon-btn undo-btn" id="undo-btn" data-act="undo" aria-label="Undo" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
     <button class="icon-btn" data-act="open-settings" aria-label="Settings">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/></svg>
@@ -719,7 +744,7 @@ function seedExtras(st){
   return st;
 }
 function migrate(st){
-  st.gigs ||= []; st.syncQueue ||= []; st.settings.discogsSync ??= false;
+  st.gigs ||= []; st.syncQueue ||= []; st.settings.discogsSync ??= false; st.settings.look ||= 'shop';
   st.units.forEach(u=>{ u.labels ||= {}; });
   st.records.forEach(r=>{ r.plays ||= []; r.barcode ??= ''; if(r.from===undefined) r.from = null; });
   return st;
@@ -788,7 +813,7 @@ function drawShelf(u, big=false, opts={}){
   return `<div class="${cls}" style="grid-template-columns:repeat(${u.cols},1fr);--fin:${f.hex};max-width:${Math.min(100, u.cols*(big?26:22))}%">${cellKeys(u).map(k=>{
     const list = opts.empty ? [] : inCell(u.id,k);
     const inner = `<span class="lbl">${esc(cellLabel(u,k))}${cellName(u,k)?`<em>${esc(cellName(u,k))}</em>`:''}</span>${list.length?`<span class="cnt">${list.length}</span>`:''}${spines(list)}`;
-    return big ? `<button type="button" class="cube ${V.flash===k?'flash':''}" data-act="pick-cell" data-c="${k}" data-drop-u="${u.id}" data-drop-c="${k}" aria-pressed="${V.cell===k}" aria-label="Shelf ${esc(cellLabel(u,k))}, ${list.length} records">${inner}</button>` : `<div class="cube"${opts.drop?` data-drop-u="${u.id}" data-drop-c="${k}"`:''}>${inner}</div>`;
+    return big ? `<button type="button" class="cube ${V.flash===k?'flash':''} ${list.length?'lit':''}" data-act="pick-cell" data-c="${k}" data-drop-u="${u.id}" data-drop-c="${k}" aria-pressed="${V.cell===k}" aria-label="Shelf ${esc(cellLabel(u,k))}, ${list.length} records">${inner}</button>` : `<div class="cube"${opts.drop?` data-drop-u="${u.id}" data-drop-c="${k}"`:''}>${inner}</div>`;
   }).join('')}</div>`;
 }
 function drawBag(u, opts={}){
@@ -841,12 +866,15 @@ const V = {view:'room', unit:'K1', cell:'all', dig:0, focus:null, flash:null, pl
 /* ---------- render ---------- */
 function render(){
   document.body.dataset.accent = S.settings.accent;
+  applyLook();
   $('#tab-room').setAttribute('aria-pressed', V.view==='room'||V.view==='unit');
   $('#tab-pl').setAttribute('aria-pressed', V.view==='playlists');
   $('#tab-gigs').setAttribute('aria-pressed', V.view==='gigs');
   $('#tab-table').setAttribute('aria-pressed', V.view==='table');
   $('#main').innerHTML = V.view==='playlists' ? renderPlaylists() : V.view==='gigs' ? renderGigs() : V.view==='table' ? renderTable() : renderRoom();
   if(V.view==='unit') bindSwipe();
+  const tb = document.querySelector('.top'); if(tb) document.documentElement.style.setProperty('--top-h', tb.offsetHeight+'px');
+  const cb = document.querySelector('.cuebar'); if(cb) document.documentElement.style.setProperty('--cue-h', cb.offsetHeight+'px');
   fitRoom(); fitStrip();
   if(V.view==='playlists') bindPlaylist();
   save();
@@ -868,7 +896,7 @@ function renderRoom(){
   const cards = S.units.map(u=>unitCard(u,false)).join('');
   let html = `<div class="sec-head"><div><div class="kicker">${S.records.length} records in ${S.units.length} places</div><h2>Your room</h2></div>
     <div class="room-tools"><button class="btn" data-act="stale-list">Not played in a year <small class="code muted">${S.records.filter(isStale).length}</small></button><button class="btn" data-act="stickers">QR stickers</button><button class="btn" data-act="play-all"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>Play collection</button></div></div>
-    <div class="room fit">${cards}</div>`;
+    ${cueBar()}<div class="room fit">${cards}</div>`;
   return html;
 }
 
@@ -887,7 +915,7 @@ function renderDetail(){
   const filt = `<div class="row" style="margin-top:10px"><button class="chip" data-act="toggle-stale" aria-pressed="${V.stale}">Not played in a year</button>${list.length?`<button class="chip" data-act="toggle-sel" aria-pressed="${!!V.sel}">${V.sel?'Done selecting':'Select records'}</button>`:''}<button class="chip" data-act="stickers" data-u="${u.id}">QR sticker</button></div>`;
   const bagActs = u.kind==='bag' ? `<button class="btn primary" data-act="scan-bag" data-u="${u.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Scan bag</button>
       <button class="btn" data-act="empty-bag" data-u="${u.id}">Unpack to home slots</button>` : '';
-  return `<div class="strip" aria-label="Your spots. Drop a record on one to move it there.">${S.units.map(x=>unitCard(x,true)).join('')}</div>
+  return `${cueBar()}
   <section class="detail" aria-label="${esc(u.name)}">
     <div class="detail-head"><div><button class="back" data-act="go-room">← Room</button>
       <h2 class="detail-title" tabindex="-1">${esc(u.name)}</h2><div class="row"><span class="idtag">${esc(u.id)}</span><span class="muted" style="font-size:13px">${esc(presetName(u))} · ${esc(u.finish?.name||'')} · ${esc(presetOf(u).cap||'')}</span></div></div>
@@ -1411,6 +1439,8 @@ function sortPl(pl, how){
 /* ---------- settings ---------- */
 function openSettings(){
   openSheet(`<div class="sheet-head"><h2>Settings</h2><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <p class="muted" style="margin:0 0 8px;font-size:13px">Look</p>
+    <div class="row" style="margin-bottom:16px">${LOOKS.map(([k,n])=>`<button class="chip" data-act="set-look" data-l="${k}" aria-pressed="${(S.settings.look||'shop')===k}">${n}</button>`).join('')}</div>
     <p class="muted" style="margin:0 0 8px;font-size:13px">Accent color</p>
     <div class="swatches">${[['red','Signal red','#D2412C'],['brass','Brass','#B8862F'],['cyan','Booth cyan','#0EA5E9']].map(([k,n,h])=>`<button class="sw" data-act="set-accent" data-a="${k}" aria-pressed="${S.settings.accent===k}"><i style="background:${h}"></i>${n}</button>`).join('')}</div>
     <div class="bcbox" style="margin-top:18px"><label class="row" style="justify-content:space-between;cursor:pointer;flex-wrap:nowrap"><span><b style="font-size:14px">Save locations to Discogs</b><br><span class="muted" style="font-size:13px">Writes each record's spot (e.g. “K1·A2 (Acid)”) to a “Location” field in your Discogs collection, so you see it in the Discogs app too.</span></span><input type="checkbox" id="set-dsync" ${S.settings.discogsSync?'checked':''} style="width:22px;height:22px;accent-color:var(--accent);flex:0 0 auto"></label>
@@ -1990,9 +2020,9 @@ let fitRaf = 0;
 window.addEventListener('resize', ()=>{ cancelAnimationFrame(fitRaf); fitRaf = requestAnimationFrame(()=>{ fitRoom(); fitStrip(); }); });
 
 /* zoom room <-> unit with a shared-element view transition (falls back to an instant swap) */
-function zoomTo(view, uid){
+function zoomTo(view, uid, cell){
   const apply = () => {
-    if(view==='unit'){ V.view='unit'; V.unit=uid; V.cell='all'; V.dig=0; V.sel=null; V.stale=false; }
+    if(view==='unit'){ V.view='unit'; V.unit=uid; V.cell=cell||'all'; V.dig=0; V.sel=null; V.stale=false; }
     else { V.view='room'; }
     render();
   };
@@ -2020,7 +2050,7 @@ document.addEventListener('pointerdown', e=>{
 function startDrag(x, y){
   const r = rec(drag.rid); if(!r){ drag=null; return; }
   drag.on = true; document.body.classList.add('dragging'); drag.src.classList.add('dragsrc');
-  const g = document.createElement('div'); g.className='ghost'; g.innerHTML = `${thumb(r)}<span>${esc(r.title)}</span>`;
+  const g = document.createElement('div'); g.className='drag-ghost'; g.innerHTML = `${thumb(r)}<span>${esc(r.title)}</span>`;
   document.body.appendChild(g); drag.ghost = g; moveGhost(x, y);
   navigator.vibrate?.(12);
 }
@@ -2104,6 +2134,31 @@ function previewOnPlaying(){
   pv.timer = setTimeout(()=>stopPreview(), PREVIEW_SECS*1000);
 }
 
+
+/* ---------- looks + cue bar ---------- */
+const LOOKS = [['shop','Shop floor'],['booth','Booth'],['auto','Match my device']];
+function applyLook(){
+  const look = S.settings.look || 'shop';
+  if(look==='auto') delete document.documentElement.dataset.look; else document.documentElement.dataset.look = look;
+  const b = document.getElementById('look-btn'); if(b){ const n = LOOKS.find(l=>l[0]===look)?.[1]; b.title = `Look: ${n}. Click to switch.`; b.setAttribute('aria-label', b.title); }
+}
+function cueBar(){
+  const pads = [];
+  S.units.forEach((u, ui)=>{
+    if(ui) pads.push('<span class="sep" aria-hidden="true"></span>');
+    if(u.kind==='shelf') cellKeys(u).forEach(k=>{ const n = inCell(u.id,k).length, nm = cellName(u,k), here = V.view==='unit' && V.unit===u.id && V.cell===k;
+      pads.push(`<button class="cue ${n?'lit':''}" data-act="go-spot" data-u="${u.id}" data-c="${k}" data-drop-u="${u.id}" data-drop-c="${k}" ${here?'aria-current="true"':''} aria-label="${esc(u.id)}·${esc(cellLabel(u,k))}${nm?', '+esc(nm):''}, ${n} records"><span class="led"></span><b>${esc(u.id)}·${esc(cellLabel(u,k))}</b><span class="n">${n}</span><span class="nm">${esc(nm||u.name)}</span></button>`); });
+    else { const n = inCell(u.id,'all').length, here = V.view==='unit' && V.unit===u.id;
+      pads.push(`<button class="cue bag ${n?'lit':''}" data-act="go-spot" data-u="${u.id}" data-c="all" data-drop-u="${u.id}" data-drop-c="0-0" ${here?'aria-current="true"':''} aria-label="${esc(u.name)}, ${n} records"><span class="led"></span><b>${esc(u.name)}</b><span class="n">${n}</span><span class="nm">${u.kind==='bag'?'Bag':'Crate'} ${esc(u.id)}</span></button>`); }
+  });
+  return `<div class="cuebar" role="toolbar" aria-label="Every spot. Tap to open it, or drop a record on it.">${pads.join('')}</div>`;
+}
+function goSpot(u, c){
+  if(V.view==='room'){ zoomTo('unit', u, c); return; }
+  V.view='unit'; V.unit=u; V.cell=c; V.dig=0; V.sel=null; V.stale=false; render();
+  const cur = document.querySelector('.cue[aria-current="true"]'); cur?.scrollIntoView({block:'nearest', inline:'nearest'});
+}
+
 /* ---------- actions ---------- */
 const A = {
   'go-room':()=>zoomTo('room'),
@@ -2123,6 +2178,7 @@ const A = {
   'scrim':(d,e)=>{ if(e.target.classList.contains('scrim')) closeSheet(); },
   'goto-rec':d=>{ closeNP(); closeSheet(); gotoRecord(d.r); },
   'open-settings':()=>openSettings(),
+  'set-look':d=>{ S.settings.look = d.l; applyLook(); save(); openSettings(); },
   'set-accent':d=>{ S.settings.accent=d.a; render(); openSettings(); },
   'reset':()=>{ $('#reset-confirm').innerHTML = `<div class="notice">This puts back the 10 demo records and removes anything you added. <div class="row" style="margin-top:8px"><button class="btn danger" data-act="reset-yes">Reset</button><button class="btn" data-act="close">Keep my changes</button></div></div>`; },
   'reset-yes':()=>{ S = migrate(seedExtras(seed())); V.sel=null; V.stale=false; P.st={}; P.queue=[]; P.i=-1; closeSheet(); V.view='unit'; V.unit='K1'; V.cell='0-0'; render(); renderPlayer(); toast('Demo collection restored'); },
@@ -2180,6 +2236,8 @@ const A = {
 
 Object.assign(A, {
   'preview':d=>startPreview(d.r),
+  'go-spot':d=>{ if(dragJustEnded) return; goSpot(d.u, d.c); },
+  'toggle-look':()=>{ const order = ['shop','booth','auto']; const cur = S.settings.look||'shop'; S.settings.look = order[(order.indexOf(cur)+1)%order.length]; applyLook(); save(); toast(`Look: ${LOOKS.find(l=>l[0]===S.settings.look)[1]}`); fitRoom(); },
   'go-gigs':()=>{ V.view='gigs'; if(!V.gig) V.gig = S.gigs.slice().sort((a,b)=>a.date.localeCompare(b.date)).find(g=>g.status!=='done')?.id || S.gigs[0]?.id || null; render(); },
   'open-gig':d=>{ V.gig=d.g; render(); document.querySelector('.gig')?.scrollIntoView({behavior:'smooth',block:'start'}); },
   'new-gig':()=>openNewGig(),

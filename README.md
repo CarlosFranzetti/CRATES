@@ -15,9 +15,11 @@ Photograph your racks and record bags, then the records in each cubby. Crates fi
 
 ## Screenshots
 
-| Room and shelf | Collection spreadsheet |
+| Room (Shop floor look): every spot on one screen | Booth look: zoomed into Kallax 1 with the cue bar |
 |---|---|
-| ![Room with Kallax 1 open on cubby A2](docs/screenshots/readme-room-desktop.png) | ![Collection table with Bag and Home spot columns](docs/screenshots/readme-collection-desktop.png) |
+| ![Room fitted to the screen with the cue bar of every spot](docs/screenshots/readme-shop-room-desktop.png) | ![Dark Booth look, Kallax 1 open on A1](docs/screenshots/readme-booth-unit-desktop.png) |
+| **Collection spreadsheet** | **Player (Booth)** |
+| ![Collection table with Bag and Home spot columns](docs/screenshots/readme-collection-desktop.png) | ![Two-column player in the Booth look](docs/screenshots/readme-booth-player-desktop.png) |
 | **Slide-up player** | **Gig packing list** |
 | ![Two-column player with spinning record and queue](docs/screenshots/readme-player-desktop.png) | ![Gig load-out checklist](docs/screenshots/readme-gigs-desktop.png) |
 | **Add a record: barcode + duplicate warning** | **QR stickers** |
@@ -33,6 +35,9 @@ Photograph your racks and record bags, then the records in each cubby. Crates fi
 
 ## What it does
 
+- **Two looks.** Shop floor (light) and Booth (dark), or follow your device. A cue bar along the top lists every spot: tap one to open it, or drop a record on it.
+- **Room on one screen.** Every rack, bag and crate fits on screen; click one and it zooms in. Drag records between cubbies and bags. Undo goes back step by step (Ctrl/⌘+Z).
+- **Previews.** 30 seconds of audio from YouTube, no video, like discogs-stream. The player slides in from the bottom when something plays.
 - **Spots, not folders.** Each unit has an ID (K1, B1, C1). Cubbies are rows A, B, C… by columns 1, 2, 3… (`K1·B2`). Give any cubby a subtitle such as "A2 (House)".
 - **64 furniture presets and 41 record bags.** Every Kallax/Expedit size, other IKEA, Glorious, Zomo, Pro-Ject, Wax Stacks, crates and boxes; UDG, Magma, Zomo, Odyssey, Reloop, Gator and more. Each has its finishes or colors plus a custom color.
 - **Search to shelf.** Artist, title, label, cat no., BPM, key, tags, notes or cubby name, then jump straight to the spot.
@@ -68,7 +73,7 @@ node scripts/build.mjs        # wraps crates.html into dist/index.html
 npx serve dist                # open http://localhost:3000
 
 pip install --break-system-packages playwright
-CRATES_NO_PATCH=1 python3 tests/test_crates.py   # 45 Playwright tests
+CRATES_NO_PATCH=1 python3 tests/test_crates.py   # 53 Playwright tests
 ```
 
 The prototype keeps its data in your browser (localStorage). The database schema lives in `app/db/` (Neon Postgres, run 001–004 in order).

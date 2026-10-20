@@ -29,9 +29,13 @@ def check(cond, msg):
 
 
 # ---------------------------------------------------------------- server
+class _QuietHandler(http.server.SimpleHTTPRequestHandler):
+    def log_message(self, *a, **k):
+        pass
+
+
 def serve():
-    h = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(HERE))
-    h.log_message = lambda *a, **k: None
+    h = functools.partial(_QuietHandler, directory=str(HERE))
     srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), h)
     threading.Thread(target=srv.serve_forever, daemon=True).start()
     return srv, f"http://127.0.0.1:{srv.server_address[1]}/harness.html"
@@ -515,6 +519,471 @@ TESTS = [
     ("X8 Look & name custom color", x08_eu_custom_color),
 ]
 BROWSER_LEVEL = {t14_layout, x07_yt_hang_timeout}
+
+
+# ------------------------------------------------ new features (N-series)
+def _png(w=64, h=48):
+    """A tiny valid PNG with no barcode in it."""
+    import struct, zlib
+    raw = b"".join(b"\x00" + bytes([200, 60, 40]) * w for _ in range(h))
+    def chunk(t, d):
+        return struct.pack(">I", len(d)) + t + d + struct.pack(">I", zlib.crc32(t + d) & 0xFFFFFFFF)
+    return (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 2, 0, 0, 0))
+            + chunk(b"IDAT", zlib.compress(raw)) + chunk(b"IEND", b""))
+
+
+def _txt(loc):
+    return re.sub(r"\s+", " ", loc.inner_text()).strip()
+
+
+def _settle(a, ms=80):
+    a.page.wait_for_timeout(ms)
+
+
+def _cell_count(a, key):
+    return int(a.page.locator(f".chips .chip[data-c='{key}'] small").inner_text())
+
+
+def _open_add_record(a):
+    a.click("[data-act=open-add]"); a.click(".sheet [data-act=add-record]")
+    a.page.wait_for_selector("#ar-form")
+
+
+def n01_dupes(a):
+    _open_add_record(a)
+    check(a.page.locator("#ar-submit").inner_text().strip() == "File into K1·A1", "submit label before typing")
+    a.page.locator("#ar-artist").fill("Mr Fingers"); a.page.locator("#ar-title").fill("Can You Feel It")
+    txt = _txt(a.page.locator("#ar-dupe"))
+    check("You already own" in txt, f"#ar-dupe = {txt!r}")
+    check("Kallax 1, shelf A1 (Detroit & Chicago)" in txt, f"#ar-dupe location: {txt!r}")
+    sub = a.page.locator("#ar-submit").inner_text().strip()
+    check(sub == "Add another copy", f"submit reads {sub!r}")
+    a.page.locator("#ar-title").fill("Can You Feel It (Remix)")
+    check(_txt(a.page.locator("#ar-dupe")) == "", "warning stays after title changed")
+    a.page.locator("#ar-title").fill("can you feel it")
+    check("You already own" in _txt(a.page.locator("#ar-dupe")), "case-insensitive dupe")
+    a.click("#ar-dupe [data-act=goto-rec]")
+    check(a.page.locator(".sheet").count() == 0, "Show it left the sheet open")
+    check(a.ev("V.unit") == "K1" and a.ev("V.cell") == "0-0", f"Show it -> {a.ev('V.unit')}:{a.ev('V.cell')}")
+    check(a.title() == "Can You Feel It", f"Show it focused {a.title()!r}")
+    # barcode duplicate
+    a.ev("S.records[0].barcode='123456789012'")
+    _open_add_record(a)
+    a.page.locator("#ar-bc").fill("123456789012"); a.click("#bc-form button[type=submit]")
+    out = _txt(a.page.locator("#ar-bcout"))
+    check("already own" in out and "No UFO's" in out, f"barcode dupe msg: {out!r}")
+    check(a.page.locator("#ar-bcout .cand .pill.own").count() == 3, "candidates should carry 'You own a copy'")
+    check("You already own" in _txt(a.page.locator("#ar-dupe")), "dupe banner missing for barcode match")
+    return out[:90]
+
+
+def n02_barcode(a):
+    _open_add_record(a)
+    a.page.locator("#ar-bc").fill("724384960650"); a.click("#bc-form button[type=submit]")
+    cands = a.page.locator("#ar-bcout .cand")
+    check(cands.count() == 3, f"candidates={cands.count()}")
+    check("Example pressings" in _txt(a.page.locator("#ar-bcout")), "candidates not labelled as examples")
+    check(a.page.locator("#ar-bc").input_value() == "724384960650", "barcode field lost after lookup")
+    cands.nth(1).locator("[data-act=bc-pick]").click()
+    got = {k: a.page.locator(f"#ar-{k}").input_value() for k in ("artist", "title", "label", "year", "catno")}
+    want = {"artist": "Example Artist", "title": "Example Track", "label": "Example Records UK", "year": "1993", "catno": "EXT 1"}
+    check(got == want, f"Use this filled {got}")
+    check(a.toast() == "Pressing filled in", a.toast())
+    check(a.page.locator("#ar-bcout .cand").count() == 0, "candidates still shown after pick")
+    check(a.ev("addRec.f.barcode") == "724384960650", "barcode not kept on the draft")
+    a.page.locator("#ar-bc").fill("12345"); a.click("#bc-form button[type=submit]")
+    msg = _txt(a.page.locator("#ar-bcout"))
+    check("usually 12 or 13 digits" in msg, f"short barcode msg: {msg!r}")
+    check(a.page.locator("#ar-artist").input_value() == "Example Artist", "typed fields lost after short-barcode re-render")
+    t0 = time.time()
+    a.page.locator("#ar-bcphoto").set_input_files(files=[{"name": "sleeve.png", "mimeType": "image/png", "buffer": _png()}])
+    a.page.wait_for_function("document.querySelector('#ar-bcout')?.innerText.includes(\"Couldn't read a barcode\")", timeout=15000)
+    dt = time.time() - t0
+    bd = a.ev("'BarcodeDetector' in window")
+    return f"photo fallback after {dt:.1f}s; BarcodeDetector={bd}"
+
+
+def n03_discogs_sync(a):
+    a.click("[data-act=open-settings]")
+    a.click("#set-dsync")
+    a.page.wait_for_selector(".sheet [data-act=sync-run]")
+    box = _txt(a.page.locator(".sheet .bcbox"))
+    check("10 updates waiting" in box, f"settings: {box!r}")
+    a.click(".sheet [data-act=close]")
+    dl = _txt(a.page.locator(".dig-info .dl"))
+    check("Discogs Location:" in dl and "K1·A1 (Detroit & Chicago)" in dl and "Waiting to sync" in dl, f"dl={dl!r}")
+    a.click("[data-act=open-settings]"); a.click(".sheet [data-act=sync-run]")
+    t = a.toast(); check("10 locations marked as saved" in t, t)
+    check("0 updates waiting" in _txt(a.page.locator(".sheet .bcbox")), "queue not emptied")
+    a.click(".sheet [data-act=close]")
+    pill = a.page.locator(".dig-info .dl .pill").inner_text().strip()
+    check(pill == "Saved", f"pill={pill!r}")
+    a.click(".dig-info [data-act=move]"); a.click(".sheet button[aria-label='Kallax 1 B3']")
+    a.click(".chips .chip[data-c='1-2']")
+    check(a.title() == "No UFO's", a.title())
+    dl = _txt(a.page.locator(".dig-info .dl"))
+    check("K1·B3" in dl and "Waiting to sync" in dl, f"after move dl={dl!r}")
+    q = a.ev("S.syncQueue.map(x=>x.r+'='+x.value)")
+    check(q == ["r9=K1·B3"], f"queue={q}")
+    a.undo()
+    check(a.ev("S.syncQueue.length") == 0, "undo did not restore the sync queue")
+    return f"queue after move {q}"
+
+
+def n04_cubby_subtitle(a):
+    a.click(".dig-info [data-act=move]"); a.click(".sheet button[aria-label='Kallax 1 B2']")
+    a.click(".chips .chip[data-c='1-1']")
+    inp = a.page.locator("#cell-name")
+    check(inp.input_value() == "" and "Name B2" in (inp.get_attribute("placeholder") or ""), "empty subtitle field")
+    inp.fill("House"); inp.press("Enter")
+    a.page.wait_for_function("unit('K1').labels['1-1']==='House'", timeout=2000)
+    _settle(a)
+    chip = _txt(a.page.locator(".chips .chip[data-c='1-1']"))
+    check(chip.startswith("B2 House"), f"chip={chip!r}")
+    em = a.page.locator(".kallax.big .cube[data-c='1-1'] .lbl em").inner_text().strip()
+    check(em == "House", f"cube label em={em!r}")
+    check(a.toast() == "B2 is now “House”", a.toast())
+    a.page.locator("#q").fill("house")
+    hit = a.page.locator("#results .result[data-r=r9]")
+    check(hit.count() == 1, "search 'house' did not find the record filed in B2 (matches only via subtitle)")
+    check("Kallax 1, shelf B2 (House)" in _txt(hit), f"result={_txt(hit)!r}")
+    a.page.locator("#q").fill("")
+    inp = a.page.locator("#cell-name"); inp.fill(""); inp.press("Enter")
+    a.page.wait_for_function("!('1-1' in unit('K1').labels)", timeout=2000)
+    _settle(a)
+    check("House" not in _txt(a.page.locator(".chips .chip[data-c='1-1']")), "chip still shows House")
+    check(a.page.locator(".kallax.big .cube[data-c='1-1'] .lbl em").count() == 0, "cube still labelled")
+    check(a.toast() == "Subtitle removed from B2", a.toast())
+
+
+def n05_cubby_move(a):
+    ids = sorted(a.ev("inCell('K1','0-0').map(r=>r.id)"))
+    a.click(".detail [data-act=cubby-move]")
+    check(a.page.locator("#cm-label").is_checked(), "keep-subtitle checkbox not checked by default")
+    check("Detroit & Chicago" in _txt(a.page.locator(".sheet")), "subtitle not named in sheet")
+    a.click(".sheet button[aria-label='Kallax 1 B1']")
+    check(sorted(a.ev("inCell('K1','1-0').map(r=>r.id)")) == ids, "not all 5 records moved to B1")
+    check(a.ev("inCell('K1','1-0').every(r=>r.home.u==='K1'&&r.home.c==='1-0')"), "homes not updated to B1")
+    check(a.ev("unit('K1').labels['1-0']") == "Detroit & Chicago", "subtitle did not move to B1")
+    check(a.ev("unit('K1').labels['0-0']") is None, "A1 still has the subtitle")
+    check(a.ev("inCell('K1','0-0').length") == 0, "A1 not empty")
+    check(a.ev("V.cell") == "1-0", "view did not follow to B1")
+    t = a.toast(); check(t == "Moved 5 from K1·A1 to K1·B1", t)
+    a.undo()
+    check(sorted(a.ev("inCell('K1','0-0').map(r=>r.id)")) == ids, "undo records")
+    check(a.ev("inCell('K1','0-0').every(r=>r.home.c==='0-0')"), "undo homes")
+    labs = a.ev("JSON.stringify(unit('K1').labels)")
+    check(labs == '{"0-0":"Detroit & Chicago","0-1":"Acid"}', f"undo labels {labs}")
+    # whole cubby into the bag
+    a.click(".chips .chip[data-c='0-0']")
+    a.click(".detail [data-act=cubby-move]"); a.click(".sheet .tbag[data-u=B1]")
+    nb = a.ev("inCell('B1','all').length")
+    check(nb == 8, f"bag has {nb}")
+    bad = a.ev(f"{json.dumps(ids)}.map(rec).filter(r=>!(r.loc.u==='B1'&&r.home.u==='K1'&&r.home.c==='0-0'&&r.from&&r.from.u==='K1'&&r.from.c==='0-0')).map(r=>r.id)")
+    check(not bad, f"home/from wrong for {bad}")
+    check(a.ev("unit('K1').labels['0-0']") == "Detroit & Chicago", "subtitle should stay on A1 (bags have no subtitles)")
+    check(a.ev("V.unit") == "B1", "view did not follow to the bag")
+
+
+def n06_cubby_swap(a):
+    a.click(".detail [data-act=cubby-swap]")
+    check("Swap the subtitles too" in _txt(a.page.locator(".sheet")) and a.page.locator("#cm-label").is_checked(), "swap checkbox")
+    check(a.page.locator(".sheet .tbag").count() == 0, "swap should only offer shelves")
+    a.click(".sheet button[aria-label='Kallax 1 A2']")
+    check(_cell_count(a, "0-0") == 2 and _cell_count(a, "0-1") == 5, f"A1={_cell_count(a,'0-0')} A2={_cell_count(a,'0-1')}")
+    check(a.ev("unit('K1').labels['0-0']") == "Acid" and a.ev("unit('K1').labels['0-1']") == "Detroit & Chicago", "labels not swapped")
+    check("Acid" in _txt(a.page.locator(".chips .chip[data-c='0-0']")), "A1 chip label")
+    check(a.ev("rec('r8').home.c") == "0-0" and a.ev("rec('r9').home.c") == "0-1", "homes did not follow")
+    t = a.toast(); check(t == "Swapped K1·A1 and K1·A2", t)
+    a.undo()
+    check(_cell_count(a, "0-0") == 5 and _cell_count(a, "0-1") == 2, "undo counts")
+    check(a.ev("unit('K1').labels['0-0']") == "Detroit & Chicago" and a.ev("unit('K1').labels['0-1']") == "Acid", "undo labels")
+    check(a.ev("rec('r8').home.c") == "0-1" and a.ev("rec('r9').home.c") == "0-0", "undo homes")
+
+
+def n07_multi_select(a):
+    a.click(".chips .chip[data-c=all]")
+    a.click("[data-act=toggle-sel]")
+    check(a.page.locator(".list input[data-sel]").count() == 7, "checkbox rows")
+    a.page.locator("input[data-sel=r9]").click(); _settle(a)
+    a.page.locator("input[data-sel=r8]").click(); _settle(a)
+    check(a.ev("[...V.sel].sort().join()") == "r8,r9", f"sel={a.ev('[...V.sel].join()')}")
+    btn = a.page.locator(".selbar [data-act=sel-move]")
+    check(btn.inner_text().strip() == "Move 2…", btn.inner_text())
+    btn.click()
+    a.click(".sheet .tbag[data-u=C1]")
+    check(a.loc("r9") == "C1:0-0" and a.loc("r8") == "C1:0-0", (a.loc("r9"), a.loc("r8")))
+    check(a.ev("rec('r9').from.c") == "0-0" and a.ev("rec('r8').from.c") == "0-1", "came-from not set")
+    t = a.toast(); check(t == "Moved 2 to Milk crate", t)
+    check(a.ev("V.sel") is None, "selection mode not closed")
+    a.undo()
+    check(a.loc("r9") == "K1:0-0" and a.loc("r8") == "K1:0-1", "undo")
+    a.click("[data-act=toggle-sel]"); a.click(".selbar [data-act=sel-all]")
+    check(a.ev("V.sel.size") == 7, "select all")
+
+
+def n08_came_from(a):
+    a.click(".unit-card[data-u=B1]")
+    rows = a.ev("[...document.querySelectorAll('.list .li')].map(li=>li.querySelector('.t b').textContent+'|'+(li.querySelector('.from')?.textContent||'').replace(/\\s+/g,' ').trim())")
+    want = {"Good Life": "from K1·A2", "Voodoo Ray": "from K1·A1", "Around The World": "from K1·A2"}
+    got = dict(r.split("|", 1) for r in rows)
+    for k, v in want.items():
+        check(got.get(k, "").startswith(v), f"{k}: {got.get(k)!r}")
+    check("came from" in _txt(a.page.locator(".dig-info")), "dig info lacks 'came from'")
+    a.click(".unit-card[data-u=K1]"); a.click(".chips .chip[data-c='0-1']")
+    check(a.title() == "Higher State Of Consciousness", a.title())
+    a.click(".dig-info [data-act=to-bag]")
+    check(a.toast() == "Moved to Crater", a.toast())
+    a.click(".unit-card[data-u=B1]")
+    row = a.page.locator(".list .li:has-text('Higher State')")
+    check(row.count() == 1 and _txt(row.locator(".from")).startswith("from K1·A2"), f"row: {_txt(row) if row.count() else None}")
+    return "; ".join(rows)
+
+
+def n09_set_history(a):
+    check(a.page.locator(".sec-head [data-act=stale-list] small").inner_text().strip() == "6", "stale count != 6")
+    a.click(".dig-info [data-act=log-play]")
+    a.page.locator("#lp-date").fill("2026-10-01"); a.page.locator("#lp-venue").fill("Test club")
+    a.click("#lp-form button[type=submit]")
+    plays = _txt(a.page.locator(".dig-info .plays"))
+    check("Last played" in plays and "Test club" in plays and "2026" in plays, f"plays={plays!r}")
+    check(a.toast() == "Play logged", a.toast())
+    check(a.page.locator(".sec-head [data-act=stale-list] small").inner_text().strip() == "5", "stale count after logging")
+    a.undo()
+    check("Never logged" in _txt(a.page.locator(".dig-info .plays")), "undo did not remove the play")
+    check(a.ev("rec('r9').plays.length") == 0, "play still stored")
+    a.click(".sec-head [data-act=stale-list]")
+    rows = a.page.locator(".sheet .pick .check")
+    check(rows.count() == 6, f"stale sheet rows={rows.count()}")
+    ids = sorted(a.ev("[...document.querySelectorAll('.sheet .pick [data-act=goto-rec]')].map(b=>b.dataset.r)"))
+    check(ids == sorted(["r9", "r2", "r6", "r3", "r5", "r10"]), f"stale ids {ids}")
+    check("last played" in _txt(rows.filter(has_text="Strings Of Life")), "r2 should say last played")
+    a.click(".sheet [data-act=stale-pl]")
+    check(a.ev("V.view") == "playlists" and a.ev("curPl().items.length") == 6, "playlist not made with 6")
+    check(a.page.locator("#pl-name").input_value() == "Not played in a year", "playlist name")
+    a.click("#tab-room"); a.click(".unit-card[data-u=K1]"); a.click(".chips .chip[data-c='0-1']")
+    a.click("[data-act=toggle-stale]")
+    check(a.counter() == "empty", a.counter())
+    e = _txt(a.page.locator(".dig .empty"))
+    check("played in the last year" in e, f"empty state: {e!r}")
+    a.click(".chips .chip[data-c='0-0']")
+    check(a.counter() == "1 of 4", f"A1 with stale filter: {a.counter()}")
+
+
+def n10_gigs(a):
+    a.click("#tab-gigs")
+    check(a.ev("V.gig") == "g2", f"V.gig={a.ev('V.gig')}")
+    check(a.page.locator(".gig h2").inner_text().strip().lower() == "halloween warm-up", "g2 not shown")
+    check(a.page.locator(".gig .steps li.on").inner_text().strip() == "Plan", "not in planning")
+    check(a.page.locator(".gig .check").count() == 5, "5 records in plan")
+    a.click(".gig [data-act=gig-next]")
+    check(a.ev("curGig().status") == "packing", "not packing")
+    prev = {r: a.ev(f"JSON.stringify(rec('{r}').loc)") for r in ("r1", "r2")}
+    for r in ("r1", "r2"):
+        a.page.locator(f"input[data-gig=pack][data-r={r}]").click(); _settle(a)
+    for r in ("r1", "r2"):
+        check(a.loc(r) == "B1:0-0", f"{r} not in Crater: {a.loc(r)}")
+        fr = a.ev(f"JSON.stringify(rec('{r}').from)")
+        check(fr == prev[r], f"{r} came-from {fr} != {prev[r]}")
+    nxt = a.page.locator(".gig [data-act=gig-next]")
+    check(nxt.inner_text().strip() == "Head out (3 left behind)", nxt.inner_text())
+    nxt.click()
+    check(a.page.locator(".gig input[data-gig=played]").count() == 2, "out step should list packed records only")
+    a.page.locator("input[data-gig=played][data-r=r2]").click(); _settle(a)
+    check(a.ev("rec('r2').plays.some(p=>p.d==='2026-10-31'&&p.gig==='g2')"), "play not logged on 2026-10-31")
+    nxt = a.page.locator(".gig [data-act=gig-next]")
+    check(nxt.inner_text().strip() == "I'm home, unpack", nxt.inner_text())
+    nxt.click()
+    a.page.locator("input[data-gig=back][data-r=r2]").click(); _settle(a)
+    check(a.ev("same(rec('r2').loc, rec('r2').home)"), f"r2 not home: {a.loc('r2')}")
+    check(a.loc("r1") == "B1:0-0", "r1 should still be in the bag")
+    a.page.locator(".gig [data-act=gig-next]").click()
+    body = _txt(a.page.locator(".gig"))
+    check("1 not checked back in" in body, f"summary: {body[:200]!r}")
+    check(a.page.locator(".gig .pill.own").inner_text().strip() == "Missing", "Missing pill")
+    check(a.ev("curGig().status") == "done", "not done")
+    # new gig from a playlist
+    a.click("[data-act=new-gig]")
+    a.page.locator("#ng-name").fill("Test night"); a.page.select_option("#ng-pl", "p1")
+    a.click("#ng-form button[type=submit]")
+    g = a.ev("curGig()")
+    check(g["name"] == "Test night" and len(g["items"]) == 4 and g["status"] == "planning" and g["bag"] == "B1", f"new gig {g}")
+    check(a.toast() == "Gig created", a.toast())
+    n = a.ev("S.gigs.length")
+    a.click(".gig [data-act=gig-del]")
+    check(a.page.locator("#gig-confirm .notice").is_visible(), "no in-page confirm")
+    check(a.ev("S.gigs.length") == n, "deleted before confirm")
+    a.click("[data-act=gig-del-yes]")
+    check(a.ev("S.gigs.length") == n - 1 and not a.ev("S.gigs.some(g=>g.name==='Test night')"), "not deleted")
+
+
+def n11_stickers(a):
+    a.click(".sec-head [data-act=stickers]")
+    st = a.page.locator(".sheet .sticker")
+    check(st.count() == 11, f"stickers={st.count()}")
+    lens = a.ev("[...document.querySelectorAll('.sheet .sticker svg path')].map(p=>p.getAttribute('d').length)")
+    check(len(lens) == 11 and min(lens) > 500, f"QR path lengths {lens}")
+    titles = a.ev("[...document.querySelectorAll('.sheet .sticker')].map(s=>s.title)")
+    check(any(t.endswith("#K1-A2") for t in titles), f"no #K1-A2 title in {titles[:3]}")
+    w = lambda: a.page.locator(".sheet .sticker svg").first.get_attribute("width")
+    check(w() == "144", f"1.5in width={w()}")
+    a.click(".sheet [data-act=stk-size][data-z='2']"); check(w() == "192", f"2in width={w()}")
+    a.click(".sheet [data-act=stk-size][data-z='1']"); check(w() == "96", f"1in width={w()}")
+    check(a.page.locator(".sheet [data-act=stk-size][data-z='1']").get_attribute("aria-pressed") == "true", "size chip pressed")
+    a.click(".sheet [data-act=stk-cub]")
+    check(st.count() == 3, f"no-cubby stickers={st.count()}")
+    a.click(".sheet [data-act=stk-cub]"); check(st.count() == 11, "cubbies back")
+    a.click(".sheet [data-act=stk-unit][data-u=C1]"); check(st.count() == 10, "unit toggle")
+    msgs = {}
+    for f in ("html", "svg", "png"):
+        a.page.evaluate("document.querySelector('#stk-msg') && (document.querySelector('#stk-msg').innerHTML='')")
+        try:
+            with a.page.expect_download(timeout=6000) as d:
+                a.click(f".sheet [data-act=stk-save][data-f={f}]")
+            msgs[f] = "download:" + d.value.suggested_filename
+        except Exception as e:
+            msgs[f] = "no-download"
+        _settle(a, 300)
+        msgs[f] += " msg=" + _txt(a.page.locator("#stk-msg"))
+    check(not a.js_errors(), f"errors while saving: {a.js_errors()[:2]}")
+    a.click(".sheet [data-act=close]")
+    a.click(".detail [data-act=stickers][data-u=K1]")
+    check(st.count() == 9, f"detail QR chip -> {st.count()} stickers (want K1 + 8 cubbies)")
+    return "; ".join(f"{k}: {v}" for k, v in msgs.items())
+
+
+def n12_deep_links(a):
+    a.page.goto("about:blank"); a.page.goto(a.url + "#K1-B2"); a.page.wait_for_selector("#main .unit-card")
+    check(a.ev("V.unit") == "K1" and a.ev("V.cell") == "1-1", f"boot deep link -> {a.ev('V.unit')}:{a.ev('V.cell')}")
+    check(a.page.locator(".chips .chip[data-c='1-1']").get_attribute("aria-pressed") == "true", "B2 chip not pressed")
+    a.ev("location.hash='B1'")
+    a.page.wait_for_function("V.unit==='B1'", timeout=2000)
+    check(a.page.locator(".detail h2").inner_text().strip().lower() == "crater", "bag view not shown")
+    a.ev("location.hash='ZZ9'"); _settle(a, 200)
+    check(a.ev("V.unit") == "B1", "invalid hash changed the view")
+    a.ev("location.hash='k1-a2'"); a.page.wait_for_function("V.unit==='K1'", timeout=2000)
+    check(a.ev("V.cell") == "0-1", f"lowercase k1-a2 -> {a.ev('V.cell')}")
+    a.ev("location.hash='K1-Z9'"); _settle(a, 200)
+    check(a.ev("V.unit") == "K1" and a.ev("V.cell") == "all", f"out-of-range cubby -> {a.ev('V.cell')}")
+    a.ev("location.hash='%E0%A4%A'"); _settle(a, 200)  # malformed escape
+    check(not a.errors, f"malformed hash threw: {a.errors[:1]}")
+
+
+def n13_mobile_no_errors(browser, url):
+    a = App(browser, url, 390, 844)
+    try:
+        widths = {}
+        def sw(name, sheet=False):
+            w = a.ev("document.documentElement.scrollWidth")
+            if sheet:
+                w = max(w, a.ev("(()=>{const s=document.querySelector('.sheet');return s?390+(s.scrollWidth-s.clientWidth):0})()"))
+            widths[name] = w
+        a.click("#tab-gigs"); sw("gigs-plan")
+        a.click(".gig [data-act=gig-next]"); a.page.locator("input[data-gig=pack][data-r=r1]").click(); _settle(a); sw("gigs-loadout")
+        a.click("[data-act=new-gig]"); sw("new-gig", True); a.click(".sheet [data-act=close]")
+        a.click("#tab-room"); a.click(".sec-head [data-act=stickers]"); sw("stickers", True)
+        a.click(".sheet [data-act=stk-size][data-z='2']"); sw("stickers-2in", True); a.click(".sheet [data-act=close]")
+        _open_add_record(a)
+        a.page.locator("#ar-artist").fill("Mr Fingers"); a.page.locator("#ar-title").fill("Can You Feel It")
+        a.page.locator("#ar-bc").fill("724384960650"); a.click("#bc-form button[type=submit]"); sw("add-record", True)
+        a.click(".sheet [data-act=close]")
+        a.click(".sec-head [data-act=stale-list]"); sw("stale", True); a.click(".sheet [data-act=close]")
+        a.click(".unit-card[data-u=K1]"); a.click(".chips .chip[data-c='0-1']"); sw("cubby-tools")
+        a.click(".detail [data-act=cubby-move]"); sw("cubby-move", True); a.click(".sheet [data-act=close]")
+        a.click("[data-act=toggle-sel]"); a.page.locator("input[data-sel=r8]").click(); _settle(a); sw("selbar")
+        a.click("[data-act=open-settings]"); a.click("#set-dsync"); a.page.wait_for_selector(".sheet [data-act=sync-run]"); sw("settings-sync", True)
+        bad = {k: v for k, v in widths.items() if v > 390}
+        check(not bad, f"horizontal overflow at 390px: {bad}")
+        check(not a.js_errors(), f"console/page errors: {a.js_errors()[:3]}")
+        return f"max width {max(widths.values())} over {len(widths)} states"
+    finally:
+        a.close()
+
+
+def n14_readme_shots(browser, url):
+    made = []
+    for label, (w, h) in (("desktop", (1280, 900)), ("mobile", (390, 844))):
+        a = App(browser, url, w, h, "light")
+        try:
+            shot = lambda name, full=False: (a.page.screenshot(animations="disabled", full_page=full,
+                                              path=str(SHOTS / f"readme-{name}-{label}.png")), made.append(f"readme-{name}-{label}.png"))
+            a.wait_link_mode()
+            a.click(".chips .chip[data-c='0-1']"); a.page.mouse.move(0, 0); shot("room", True)
+            a.click("#tab-gigs"); a.click(".gig [data-act=gig-next]")
+            a.page.locator("input[data-gig=pack][data-r=r1]").click(); _settle(a)
+            a.page.locator("input[data-gig=pack][data-r=r6]").click(); _settle(a)
+            a.ev("document.querySelector('.toast')?.remove()"); shot("gigs", True)
+            a.click("#tab-room"); a.click(".sec-head [data-act=stickers]"); _settle(a, 350); shot("stickers")
+            a.click(".sheet [data-act=close]")
+            _open_add_record(a)
+            a.page.locator("#ar-artist").fill("Mr Fingers"); a.page.locator("#ar-title").fill("Can You Feel It")
+            a.page.locator("#ar-bc").fill("724384960650"); a.click("#bc-form button[type=submit]")
+            a.ev("document.querySelector('.bcbox').scrollIntoView({block:'start'})"); _settle(a, 350); shot("add-record-dupe")
+            a.click(".sheet [data-act=close]")
+            a.click("#player .pinfo"); a.page.wait_for_selector("#np-sheet"); _settle(a, 450); shot("player")
+            a.page.keyboard.press("Escape")
+            a.click("#tab-pl"); a.ev("document.querySelector('.toast')?.remove()"); shot("playlists", True)
+            check(not a.js_errors(), f"errors: {a.js_errors()[:2]}")
+        finally:
+            a.close()
+    return f"{len(made)} files"
+
+
+# ---- probes for bugs found while writing the N-series
+def _add_k7(a):
+    a.click("[data-act=open-add]"); a.click(".sheet [data-act=add-furniture]")
+    a.click(".sheet .chip[data-g='IKEA Kallax']"); a.click(".sheet .preset[data-k='ikea-kallax-2-2-77-77-cm']")
+    a.page.locator("#af-id").fill("K7"); a.click(".sheet #af-form button[type=submit]")
+    check(a.ev("V.unit") == "K7", "K7 not added")
+
+
+def x09_subtitle_on_new_shelf(a):
+    _add_k7(a)
+    a.click(".chips .chip[data-c='0-0']")
+    inp = a.page.locator("#cell-name"); inp.fill("Disco"); inp.press("Enter"); _settle(a, 150)
+    check(not a.errors, f"naming a cubby on a just-added shelf threw: {a.errors[:1]}")
+    check(a.ev("unit('K7').labels?.['0-0']") == "Disco", "subtitle not saved")
+
+
+def x10_cubby_move_into_new_shelf(a):
+    _add_k7(a)
+    a.click(".unit-card[data-u=K1]"); a.click(".chips .chip[data-c='0-0']")
+    a.click(".detail [data-act=cubby-move]"); a.click(".sheet button[data-u=K7][data-c='0-0']"); _settle(a, 150)
+    nk = a.ev("inCell('K7','0-0').length"); open_ = a.page.locator('.sheet').count() == 1
+    check(not a.errors, f"moving a named cubby into a just-added shelf threw: {a.errors[:1]} (records moved: {nk}, sheet still open: {open_})")
+
+
+def x11_subtitle_toast_names_right_cubby(a):
+    a.click(".chips .chip[data-c='1-1']")
+    a.page.locator("#cell-name").fill("House")
+    a.click(".chips .chip[data-c='0-1']")  # blur commits the subtitle, click switches cubby
+    _settle(a, 150)
+    check(a.ev("unit('K1').labels['1-1']") == "House", "subtitle not saved on blur")
+    t = a.toast()
+    check(t == "B2 is now “House”", f"toast after blur-by-click names the wrong cubby: {t!r}")
+
+
+def x12_hash_cleared_after_nav(a):
+    a.page.goto("about:blank"); a.page.goto(a.url + "#K1-B2"); a.page.wait_for_selector("#main .unit-card")
+    a.click(".unit-card[data-u=B1]")
+    a.ev("location.hash='K1-B2'"); _settle(a, 200)
+    check(a.ev("V.unit") == "K1", f"re-opening the same sticker link after navigating away does nothing (hash still {a.ev('location.hash')!r})")
+
+
+TESTS += [
+    ("N01 Duplicate warning", n01_dupes), ("N02 Barcode lookup", n02_barcode),
+    ("N03 Discogs Location sync", n03_discogs_sync), ("N04 Cubby subtitle", n04_cubby_subtitle),
+    ("N05 Whole-cubby move", n05_cubby_move), ("N06 Swap cubbies", n06_cubby_swap),
+    ("N07 Multi-select move", n07_multi_select), ("N08 Came-from", n08_came_from),
+    ("N09 Set history + stale", n09_set_history), ("N10 Gigs", n10_gigs),
+    ("N11 QR stickers", n11_stickers), ("N12 Deep links", n12_deep_links),
+    ("N13 390px + no errors on new flows", n13_mobile_no_errors), ("N14 README screenshots", n14_readme_shots),
+    ("X9 Subtitle on a just-added shelf", x09_subtitle_on_new_shelf),
+    ("X10 Named cubby into a just-added shelf", x10_cubby_move_into_new_shelf),
+    ("X11 Subtitle toast after blur-by-click", x11_subtitle_toast_names_right_cubby),
+    ("X12 Same sticker link twice", x12_hash_cleared_after_nav),
+]
+BROWSER_LEVEL |= {n13_mobile_no_errors, n14_readme_shots}
 
 
 def main():

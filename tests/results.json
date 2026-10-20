@@ -1,163 +1,134 @@
 [
   {
-    "test": "01 Boot",
+    "test": "N01 Duplicate warning",
     "status": "PASS",
-    "note": "link mode after 0.0s; K1 preset=ikea-kallax-2-4-77-147-cm",
+    "note": "You already own a record with barcode 123456789012: No UFO's, in Kallax 1, shelf A1 (Detro",
     "js_errors": [],
-    "secs": 0.7
+    "secs": 2.6
   },
   {
-    "test": "02 Search",
+    "test": "N02 Barcode lookup",
     "status": "PASS",
-    "note": "acid -> 4 results; ArrowDown+Enter ok=True",
+    "note": "photo fallback after 0.1s; BarcodeDetector=False",
     "js_errors": [],
-    "secs": 0.9
+    "secs": 2.4
   },
   {
-    "test": "03 Flip-through",
+    "test": "N03 Discogs Location sync",
+    "status": "PASS",
+    "note": "queue after move ['r9=K1\u00b7B3']",
+    "js_errors": [],
+    "secs": 3.1
+  },
+  {
+    "test": "N04 Cubby subtitle",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 1.5
+    "secs": 1.6
   },
   {
-    "test": "04 Move one record",
-    "status": "PASS",
-    "note": "",
-    "js_errors": [],
-    "secs": 1.3
-  },
-  {
-    "test": "05 Put in bag / Back home",
-    "status": "FAIL",
-    "note": "K1:0-0",
-    "js_errors": [],
-    "secs": 1.2
-  },
-  {
-    "test": "06 Bag scan + unpack",
-    "status": "PASS",
-    "note": "FOUND 4 IN CRATER; 3 moves; counts {'K1': 7, 'B1': 3, 'C1': 0} -> {'K1': 6, 'B1': 4, 'C1': 0}",
-    "js_errors": [],
-    "secs": 2.3
-  },
-  {
-    "test": "07 Add furniture",
-    "status": "PASS",
-    "note": "new unit K2 3x5 custom #ff00aa",
-    "js_errors": [],
-    "secs": 3.9
-  },
-  {
-    "test": "08 Add bag",
-    "status": "PASS",
-    "note": "41 bags, UDG=9 Magma=10; last named color 'Black / orange inside'",
-    "js_errors": [],
-    "secs": 4.0
-  },
-  {
-    "test": "09 Add record",
+    "test": "N05 Whole-cubby move",
     "status": "PASS",
     "note": "",
     "js_errors": [],
     "secs": 1.9
   },
   {
-    "test": "10 Edit details",
-    "status": "PASS",
-    "note": "",
-    "js_errors": [],
-    "secs": 1.7
-  },
-  {
-    "test": "11 Playlists",
-    "status": "PASS",
-    "note": "4 packed into Crater",
-    "js_errors": [],
-    "secs": 2.5
-  },
-  {
-    "test": "12 Player",
-    "status": "PASS",
-    "note": "",
-    "js_errors": [],
-    "secs": 6.6
-  },
-  {
-    "test": "13 Settings",
-    "status": "PASS",
-    "note": "",
-    "js_errors": [],
-    "secs": 3.0
-  },
-  {
-    "test": "14 Layout + screenshots",
-    "status": "PASS",
-    "note": "light: max scrollWidth 390; dark: max scrollWidth 390",
-    "js_errors": [],
-    "secs": 6.9
-  },
-  {
-    "test": "15 Persistence",
+    "test": "N06 Swap cubbies",
     "status": "PASS",
     "note": "",
     "js_errors": [],
     "secs": 1.4
   },
   {
-    "test": "X1 Empty cell arrow, then Undo",
+    "test": "N07 Multi-select move",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 1.7
+    "secs": 1.9
   },
   {
-    "test": "X2 Homeless bag record stays on unpack",
+    "test": "N08 Came-from",
     "status": "PASS",
-    "note": "",
+    "note": "Good Life|from K1\u00b7A2 Acid; Voodoo Ray|from K1\u00b7A1 Detroit & Chicago; Around The World|from K1\u00b7A2 Acid",
     "js_errors": [],
-    "secs": 2.0
+    "secs": 2.9
   },
   {
-    "test": "X3 Removing a unit that is a home",
+    "test": "N09 Set history + stale",
     "status": "PASS",
     "note": "",
     "js_errors": [],
-    "secs": 6.8
+    "secs": 3.4
   },
   {
-    "test": "X4 Add record keeps typing on slot change",
+    "test": "N10 Gigs",
     "status": "PASS",
     "note": "",
     "js_errors": [],
+    "secs": 2.1
+  },
+  {
+    "test": "N11 QR stickers",
+    "status": "PASS",
+    "note": "html: download:crates-qr-stickers.html msg=Saved.; svg: download:crates-qr-stickers.svg msg=Saved.; png: download:crates-qr-stickers.png msg=Saved.",
+    "js_errors": [],
+    "secs": 4.9
+  },
+  {
+    "test": "N12 Deep links",
+    "status": "FAIL",
+    "note": "malformed hash threw: ['URI malformed']",
+    "js_errors": [
+      "URI malformed"
+    ],
     "secs": 1.5
   },
   {
-    "test": "X5 Undo edit keeps unsaved fields",
-    "status": "PASS",
-    "note": "",
+    "test": "N13 390px + no errors on new flows",
+    "status": "FAIL",
+    "note": "horizontal overflow at 390px: {'stickers': 417, 'stickers-2in': 417}",
     "js_errors": [],
-    "secs": 1.5
+    "secs": 6.5
   },
   {
-    "test": "X6 Picker blocks duplicates",
+    "test": "N14 README screenshots",
     "status": "PASS",
-    "note": "",
+    "note": "12 files",
     "js_errors": [],
-    "secs": 1.2
+    "secs": 8.8
   },
   {
-    "test": "X7 YouTube API hang -> link mode",
-    "status": "PASS",
-    "note": "link mode after 5.9s with hanging iframe_api",
-    "js_errors": [],
-    "secs": 6.4
+    "test": "X9 Subtitle on a just-added shelf",
+    "status": "FAIL",
+    "note": "naming a cubby on a just-added shelf threw: [\"Cannot set properties of undefined (setting '0-0')\"]",
+    "js_errors": [
+      "Cannot set properties of undefined (setting '0-0')"
+    ],
+    "secs": 2.6
   },
   {
-    "test": "X8 Look & name custom color",
-    "status": "PASS",
-    "note": "",
+    "test": "X10 Named cubby into a just-added shelf",
+    "status": "FAIL",
+    "note": "moving a named cubby into a just-added shelf threw: [\"Cannot set properties of undefined (setting '0-0')\"] (records moved: 5, sheet still open: True)",
+    "js_errors": [
+      "Cannot set properties of undefined (setting '0-0')"
+    ],
+    "secs": 4.6
+  },
+  {
+    "test": "X11 Subtitle toast after blur-by-click",
+    "status": "FAIL",
+    "note": "toast after blur-by-click names the wrong cubby: 'A2 is now \u201cHouse\u201d'",
     "js_errors": [],
-    "secs": 0.6
+    "secs": 1.0
+  },
+  {
+    "test": "X12 Same sticker link twice",
+    "status": "FAIL",
+    "note": "re-opening the same sticker link after navigating away does nothing (hash still '#K1-B2')",
+    "js_errors": [],
+    "secs": 1.1
   }
 ]

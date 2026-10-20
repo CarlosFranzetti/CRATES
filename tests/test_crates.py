@@ -358,7 +358,7 @@ def t12_player(a):
     sh = a.page.locator("#np-sheet"); sh.wait_for()
     h3 = lambda: a.page.locator(".np-meta h3").inner_text().strip()
     check(h3() == "No UFO's", h3())
-    a.click(".np-tabs [data-t=links]"); check(a.page.locator(".links .link").count() == 4, "links count")
+    a.click(".np-tabs .np-more"); a.click(".np-tabs [data-t=links]"); check(a.page.locator(".links .link").count() == 4, "links count")
     a.click(".np-tabs [data-t=chain]"); check(a.page.locator(".chain li").count() == 5, "chain count")
     a.click("[data-act=dry-run]")
     a.page.wait_for_selector(".chain li.on", timeout=2000)

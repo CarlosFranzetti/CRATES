@@ -607,6 +607,49 @@ body:has(#player[hidden]){padding-bottom:24px}
 
 .foot{margin-top:34px;font-size:12.5px;color:var(--muted);max-width:72ch}
 
+/* ---------- tighter chrome (0.8b): icons -7%, smaller Add with a border, smaller mini vinyl, shorter container bar ---------- */
+.top .icon-btn{width:35px;height:35px}
+.top .icon-btn svg{width:16px;height:16px}
+.add-btn{height:34px;padding:0 12px;font-size:13.5px;border:1px solid color-mix(in srgb,var(--accent-ink) 25%,transparent);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.add-btn svg{width:14px;height:14px}
+.mini-vinyl{width:46px;height:46px}
+.player-in{grid-template-columns:46px minmax(0,1fr) auto;gap:10px}
+.player{padding-block:7px calc(7px + env(safe-area-inset-bottom,0px))}
+.player .round{width:40px;height:40px}.player .round.main{width:46px;height:46px}
+:root{--player-h:62px}
+.cuebar{gap:6px;padding:6px 2px 8px}
+.cue{height:49px;min-width:100px;padding:5px 9px 5px 10px}
+.cue .nm{font-size:11px}
+/* the now-playing sheet: only Up next shows; links and the fallback chain hide behind a small toggle */
+.np-tabs{align-items:center}
+.np-tabs .np-more{margin-left:auto;border:0;background:none;color:var(--muted);font-size:12.5px;font-weight:600;padding:8px 6px}
+.np-tabs button[data-t="links"],.np-tabs button[data-t="chain"]{display:none}
+.np-right.more .np-tabs button[data-t="links"],.np-right.more .np-tabs button[data-t="chain"]{display:inline-block}
+/* phone: a spot's records open as a full overlay and the top bar slides out of the way */
+@media (max-width:780px){
+  body.overlay .top{display:none}
+}
+
+/* ---------- now playing: slide out, drag to seek, pinch the record ---------- */
+.np-sheet{touch-action:pan-y;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.np-sheet.out{animation:slide-out .3s cubic-bezier(.4,0,.8,.4) forwards}
+.np-scrim.out{animation:fade-out .3s ease forwards}
+@keyframes slide-out{to{transform:translateY(100%)}}
+@keyframes fade-out{to{opacity:0}}
+.np-sheet.dragging{transition:none}
+.grab{height:22px;width:72px;padding:0;background:none;display:grid;place-items:center;margin:0 auto 4px;cursor:grab;touch-action:none}
+.grab::before{content:"";width:44px;height:5px;border-radius:3px;background:var(--line)}
+.deck{touch-action:none;-webkit-user-select:none;user-select:none;overflow:visible}
+.deck .vinyl{transform:scale(var(--zoom,1));transform-origin:50% 50%;transition:transform .32s cubic-bezier(.2,.8,.2,1);position:relative;z-index:2}
+.deck.pinching .vinyl{transition:none}
+.deck.zoomed .arm{opacity:0;transition:opacity .2s}
+.scrub{height:6px;cursor:pointer;touch-action:none;position:relative;overflow:visible;border-radius:3px}
+.scrub::before{content:"";position:absolute;inset:-14px 0;}
+.scrub i{position:relative;border-radius:3px}
+.scrub i::after{content:"";position:absolute;right:-7px;top:50%;width:14px;height:14px;border-radius:50%;background:var(--accent);transform:translateY(-50%) scale(var(--knob,0));transition:transform .15s;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.scrub:hover i::after,.scrub.live i::after{--knob:1}
+@media (prefers-reduced-motion:reduce){.np-sheet.out,.np-scrim.out{animation-duration:.01s}.deck .vinyl{transition:none}}
+
 /* ---------- app shell: the page never scrolls; each view scrolls inside itself ---------- */
 html,body{height:100%}
 body{display:flex;flex-direction:column;height:100dvh;overflow:hidden;padding-block:0}
@@ -1120,6 +1163,7 @@ function drawUnit(u, big=false, opts={}){
 }
 
 /* ---------- state ---------- */
+const APP_VERSION = '0.8b';
 const KEY='crates-demo-v3';
 let S; try{ S = JSON.parse(localStorage.getItem(KEY)) }catch(e){}
 if(!S || S.v!==2 || !Array.isArray(S.units) || !Array.isArray(S.records)) S = seedExtras(seed());
@@ -1164,6 +1208,7 @@ function render(){
   const main = $('#main');
   const shell = V.view==='map'||V.view==='columns'||V.view==='table';
   main.className = shell ? 'shell' : 'scrollpane';
+  document.body.classList.toggle('overlay', isPhone() && V.view==='map' && M.sheet==='full');
   const html = V.view==='playlists' ? renderPlaylists() : V.view==='gigs' ? renderGigs() : V.view==='table' ? renderTable() : V.view==='map' ? renderMap() : V.view==='columns' ? renderColumns() : renderRoom();
   main.innerHTML = shell ? html : `<div class="inner">${html}</div>`;
   if(V.view==='unit') bindSwipe();
@@ -1777,7 +1822,8 @@ function openSettings(){
     <p class="muted" style="font-size:13px">Each unit's finish or bag color is set from its own page: open it and tap “Look & name”.</p>
     <p class="muted" style="font-size:12.5px">Demo collection. Covers are placeholder art; the full app pulls sleeves and metadata from Discogs. ${SRC_NOTE} Changes stay in this browser.</p>
     <p class="muted" style="margin:18px 0 8px;font-size:13px">Your collection</p>
-    <div class="row"><button class="btn" data-act="bk-open">Backups (${backups().length}/${BK_MAX})</button><button class="btn" data-act="col-save">Save to file</button><button class="btn" data-act="dg-import">Import from Discogs…</button><button class="btn" data-act="reset">Reset demo collection</button></div><div id="reset-confirm"></div>`);
+    <div class="row"><button class="btn" data-act="bk-open">Backups (${backups().length}/${BK_MAX})</button><button class="btn" data-act="col-save">Save to file</button><button class="btn" data-act="dg-import">Import from Discogs…</button><button class="btn" data-act="reset">Reset demo collection</button></div><div id="reset-confirm"></div>
+    <p class="muted" style="font-size:12.5px;margin-top:22px;border-top:1px solid var(--line);padding-top:12px"><b>Crates ${APP_VERSION}</b> · Thought up by Carlos Franzetti · Put into motion by Claude and the Crates crew</p>`);
   $('#set-dsync').onchange = e => { S.settings.discogsSync = e.target.checked; if(e.target.checked) S.records.forEach(enqueueSync); save(); setTimeout(()=>{ render(); openSettings(); },0); };
 }
 
@@ -2231,7 +2277,7 @@ function onYTState(s){
   if(s===1){ P.playing = true;
     const d = P.yt.getDuration?.()||0;
     if(d>0 && d<30){ failCandidate('only '+Math.round(d)+'s long, likely a teaser'); return; }
-    if(st.state!=='working'){ st.state='working'; plog(`${r.title}: playing`); clearTimers(); }
+    if(st.state!=='working'){ st.state='working'; plog(`${r.title}: playing`); clearTimers(); saveWorkingLink(r, st); }
     if(P.preview) previewOnPlaying();
     tick(); }
   if(s===2){ P.playing=false; }
@@ -2244,8 +2290,16 @@ function failCandidate(reason){
   st.cand++;
   if(st.cand < r.yt.length){ loadCandidate(); return; }
   st.step = 4; st.state='non_working';
+  r.ytStatus = 'non_working'; r.ytChecked = todayISO(); save();
   plog(`${r.title}: all links failed, marked not working, skipping`);
   renderPlayer(); P.timers.push(setTimeout(()=>next(), 1500));
+}
+/* the link that played becomes the record's primary link; the others stay as alternates, in order */
+function saveWorkingLink(r, st){
+  const id = r.yt[st.cand]; if(!id) return;
+  if(st.cand>0){ r.yt.splice(st.cand,1); r.yt.unshift(id); st.cand = 0; st.fails = {}; }
+  r.ytStatus = 'working'; r.ytChecked = todayISO(); save();
+  if(P.open) renderNP();
 }
 function next(){ playAt(P.i+1); }
 function prev(){ playAt(P.i-1); }
@@ -2255,7 +2309,7 @@ function toggle(){
   if(P.playing){ P.yt.pauseVideo(); P.playing=false; } else { P.yt.playVideo(); P.playing=true; }
   renderPlayer();
 }
-function tick(){ clearInterval(P.progT); P.progT = setInterval(()=>{ if(!P.yt?.getDuration) return; const d=P.yt.getDuration(), t=P.yt.getCurrentTime(); document.querySelectorAll('.pbar').forEach(b=>b.style.width = d?(t/d*100)+'%':'0'); const tl=$('#ptime'); if(tl) tl.textContent = fmt(t)+' / '+fmt(d); }, 500); }
+function tick(){ clearInterval(P.progT); P.progT = setInterval(()=>{ if(!P.yt?.getDuration || P.scrubbing) return; const d=P.yt.getDuration(), t=P.yt.getCurrentTime(); document.querySelectorAll('.pbar').forEach(b=>b.style.width = d?(t/d*100)+'%':'0'); const tl=$('#ptime'); if(tl) tl.textContent = fmt(t)+' / '+fmt(d); }, 500); }
 const fmt = s => isFinite(s)&&s>0 ? Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0') : '0:00';
 
 function statusText(r){
@@ -2295,11 +2349,74 @@ function renderPlayer(){
   if(P.open) renderNP();
 }
 function openNP(){ P.open = true; $('#np').innerHTML = `<div class="np-scrim" data-act="close-np"></div><div class="np-sheet" role="dialog" aria-modal="true" aria-label="Now playing" id="np-sheet"></div>`; renderNP(); bindNPSwipe(); }
-function closeNP(){ P.open = false; $('#np').innerHTML=''; }
+function closeNP(){
+  if(!P.open) return; P.open = false;
+  const sh = $('#np-sheet'), sc = document.querySelector('.np-scrim');
+  if(!sh || navigator.webdriver){ $('#np').innerHTML=''; return; }
+  sh.classList.remove('dragging'); sh.style.transform=''; sh.classList.add('out'); sc?.classList.add('out');
+  let done = false; const fin = () => { if(done) return; done = true; if(!P.open) $('#np').innerHTML=''; };
+  sh.addEventListener('animationend', fin, {once:true}); setTimeout(fin, 400);
+}
+/* the grab tab and the deck drag the sheet down; a flick or more than a third of the way closes it */
 function bindNPSwipe(){
-  const sh = $('#np-sheet'); let y0=null;
-  sh.addEventListener('pointerdown', e=>{ if(sh.scrollTop<=0 && e.target.closest('.grab,.deck')) y0=e.clientY; });
-  sh.addEventListener('pointerup', e=>{ if(y0!=null && e.clientY-y0>90) closeNP(); y0=null; });
+  const sh = $('#np-sheet'); let st = null;
+  sh.addEventListener('pointerdown', e=>{
+    if(sh.scrollTop>0 || !e.target.closest('.grab,.deck,.np-top') || e.target.closest('button:not(.grab)')) return;
+    if(e.target.closest('.deck') && P.pinch) return;
+    st = {y:e.clientY, t:performance.now(), moved:false, id:e.pointerId, lastY:e.clientY, lastT:performance.now()};
+  });
+  sh.addEventListener('pointermove', e=>{
+    if(!st || e.pointerId!==st.id || P.pinch) return;
+    const dy = e.clientY - st.y;
+    if(!st.moved && dy < 8) return;
+    if(!st.moved){ st.moved = true; sh.classList.add('dragging'); try{ sh.setPointerCapture(e.pointerId); }catch(x){} }
+    sh.style.transform = `translateY(${Math.max(0, dy)}px)`;
+    st.v = (e.clientY - st.lastY)/Math.max(1, performance.now()-st.lastT); st.lastY = e.clientY; st.lastT = performance.now();
+  });
+  const end = e => {
+    if(!st || e.pointerId!==st.id) return; const d = st; st = null;
+    sh.classList.remove('dragging'); try{ sh.releasePointerCapture(e.pointerId); }catch(x){}
+    if(!d.moved) return;
+    const dy = e.clientY - d.y;
+    if(dy > sh.clientHeight/3 || (d.v||0) > .6) closeNP(); else sh.style.transform = '';
+  };
+  sh.addEventListener('pointerup', end); sh.addEventListener('pointercancel', end);
+}
+/* pinch on the deck grows the record around its label; pinching back out returns it to the deck. A double tap toggles. */
+function bindDeck(){
+  const deck = document.querySelector('#np-sheet .deck'); if(!deck) return;
+  const pts = new Map(); let base = null, lastTap = 0;
+  const apply = (z, anim) => { P.zoom = z; deck.classList.toggle('pinching', !anim); deck.classList.toggle('zoomed', z>1.05); deck.style.setProperty('--zoom', z.toFixed(3)); };
+  deck.addEventListener('pointerdown', e=>{
+    pts.set(e.pointerId, {x:e.clientX, y:e.clientY});
+    if(pts.size===2){ const [a,b] = [...pts.values()]; base = {d:Math.hypot(a.x-b.x, a.y-b.y), z:P.zoom||1}; P.pinch = true; try{ pts.forEach((v,id)=>deck.setPointerCapture(id)); }catch(x){} }
+  });
+  deck.addEventListener('pointermove', e=>{
+    if(!pts.has(e.pointerId)) return; pts.set(e.pointerId, {x:e.clientX, y:e.clientY});
+    if(pts.size===2 && base){ const [a,b] = [...pts.values()]; const z = Math.max(.9, Math.min(2.0, base.z * Math.hypot(a.x-b.x, a.y-b.y)/base.d)); apply(z, false); }
+  });
+  const up = e => {
+    if(!pts.has(e.pointerId)) return; pts.delete(e.pointerId); try{ deck.releasePointerCapture(e.pointerId); }catch(x){}
+    if(pts.size<2 && base){ base = null; setTimeout(()=>{ P.pinch = false; }, 80); apply((P.zoom||1) < 1.3 ? 1 : Math.min(2.0, P.zoom), true); return; }
+    if(!pts.size && e.pointerType!=='mouse'){ const now = performance.now(); if(now-lastTap < 320){ apply((P.zoom||1)>1.05 ? 1 : 2.0, true); lastTap = 0; } else lastTap = now; }
+  };
+  deck.addEventListener('pointerup', up); deck.addEventListener('pointercancel', up);
+  deck.addEventListener('dblclick', ()=>apply((P.zoom||1)>1.05 ? 1 : 2.0, true));
+  deck.addEventListener('wheel', e=>{ if(!(e.ctrlKey||e.metaKey)) return; e.preventDefault(); apply(Math.max(1, Math.min(2.0, (P.zoom||1)*Math.exp(-e.deltaY*.01))), false); }, {passive:false});
+  if(P.zoom>1) apply(P.zoom, true);
+}
+/* drag or tap the progress bar to seek */
+function bindScrub(){
+  const sc = document.querySelector('#np-sheet .scrub'); if(!sc) return;
+  let on = false;
+  const frac = e => { const r = sc.getBoundingClientRect(); return Math.max(0, Math.min(1, (e.clientX - r.left)/r.width)); };
+  const show = f => { sc.querySelector('.pbar').style.width = (f*100)+'%'; const d = P.yt?.getDuration?.()||0; const tl = $('#ptime'); if(tl && d) tl.textContent = fmt(f*d)+' / '+fmt(d); };
+  sc.addEventListener('pointerdown', e=>{ if(P.mode!=='yt') return; on = true; P.scrubbing = true; sc.classList.add('live'); try{ sc.setPointerCapture(e.pointerId); }catch(x){} show(frac(e)); });
+  sc.addEventListener('pointermove', e=>{ if(on) show(frac(e)); });
+  const end = e => { if(!on) return; on = false; sc.classList.remove('live'); const f = frac(e); const d = P.yt?.getDuration?.()||0;
+    if(d){ try{ P.yt.seekTo(f*d, true); if(!P.playing){ P.yt.playVideo(); P.playing = true; } }catch(x){} }
+    setTimeout(()=>{ P.scrubbing = false; }, 250); };
+  sc.addEventListener('pointerup', end); sc.addEventListener('pointercancel', end);
 }
 function renderNP(){
   const sh = $('#np-sheet'); const r = cur(); if(!sh||!r) return; const st = stOf(r);
@@ -2314,13 +2431,14 @@ function renderNP(){
       return `<button class="pli ${i===P.i?'cur':''} ${s.state==='non_working'?'bad':''}" data-act="p-at" data-i="${i}"><span class="dot ${d}"></span>${thumb(x)}<span class="t"><b>${esc(x.title)}</b><span>${esc(x.artist)} · ${esc(addrShort(x.loc))}</span></span></button>`;}).join('')}</div>`;
   if(P.tab==='links') body = `<div class="links">${r.yt.map((id,i)=>{ const f = st.fails[i]; const cls = f?'bad':(P.mode==='yt'&&st.cand===i)?(st.state==='working'?'ok':'try'):'pend';
       return `<div class="link"><span class="dot ${cls}"></span><span class="code" style="min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:13px">${i===0?'Primary':'Alternate '+i} · ${id}${f?` <span style="color:var(--bad)">${esc(f)}</span>`:''}</span><a class="btn ghost sm" href="${ytUrl(id)}" target="_blank" rel="noopener">Open ↗</a></div>`;}).join('')}
+      ${r.ytChecked?`<p class="muted" style="margin:6px 0 0;font-size:12.5px">${r.ytStatus==='working'?'Working link saved as primary':'Marked not working'} on ${fmtDate(r.ytChecked)}. Links that play are kept, like discogs-stream’s link database.</p>`:''}
       <div class="link"><span class="dot pend"></span><span>Search YouTube for “${esc(r.artist)} ${esc(r.title)}”</span><a class="btn ghost sm" href="${ytSearch(r)}" target="_blank" rel="noopener">Search ↗</a></div></div>`;
   if(P.tab==='chain') body = `<div class="row" style="justify-content:space-between"><p class="muted" style="margin:0;font-size:13.5px">Each step has its own timeout, so a dead link never stalls the set.</p>${P.mode!=='yt'?`<button class="btn sm" data-act="dry-run">${P.dry?'Running…':'Dry run'}</button>`:''}</div>
       <ol class="chain">${CHAIN.map((c,i)=>`<li class="${chainCls(i)}"><span>${esc(c)}</span></li>`).join('')}</ol>${P.log.length?`<div class="log">${esc(P.log.join('\n'))}</div>`:''}`;
   sh.innerHTML = `<button class="grab" data-act="close-np" aria-label="Close player"></button>
     <div class="np-wrap">
       <div class="row np-top" style="justify-content:space-between"><span class="muted" style="font-size:13px">${esc(P.src||'Now playing')} · ${P.i+1} of ${P.queue.length}</span><button class="icon-btn" data-act="close-np" aria-label="Close player"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></button></div>
-      <div class="np-left"><div class="deck">${vinyl(r)}${arm}</div>
+      <div class="np-left"><div class="deck ${P.zoom>1.05?'zoomed':''}" style="--zoom:${(P.zoom||1).toFixed(3)}">${vinyl(r)}${arm}</div>
       <div class="np-meta"><h3>${esc(r.title)}</h3><div class="by">${esc(r.artist)}</div>
         <div class="facts" style="justify-content:center"><span><b>${esc(r.label)}</b></span><span class="code">${esc(r.year||'—')}</span>${r.bpm?`<span class="code">${esc(r.bpm)} BPM</span>`:''}${locChip(r.loc)}</div>
         ${P.mode==='yt'?`<div class="scrub"><i class="pbar"></i></div><div class="code muted" id="ptime" style="font-size:12px">0:00 / 0:00</div>`:''}
@@ -2330,10 +2448,10 @@ function renderNP(){
       </div>
       ${P.mode==='link'?`<div class="notice"><b>Inline playback is blocked inside this preview.</b> The play button opens the track on YouTube. On Crates' own site the same player plays inline and runs the full fallback chain.</div>`:''}
       </div>
-      <div class="np-right"><div class="np-tabs" role="tablist">${tabs.map(([k,n])=>`<button role="tab" data-act="np-tab" data-t="${k}" aria-pressed="${P.tab===k}">${n}</button>`).join('')}</div>
+      <div class="np-right ${P.more?'more':''}"><div class="np-tabs" role="tablist">${tabs.map(([k,n])=>`<button role="tab" data-act="np-tab" data-t="${k}" aria-pressed="${P.tab===k}">${n}</button>`).join('')}<button class="np-more" data-act="np-more" aria-expanded="${!!P.more}">${P.more?'Less':'Links & chain'}</button></div>
       ${body}</div>
     </div>`;
-  sh.scrollTop = y;
+  sh.scrollTop = y; bindDeck(); bindScrub();
 }
 function dryRun(){
   const r = cur(); if(!r||P.dry) return;
@@ -2532,7 +2650,7 @@ function selectSpot(u, c, opts={}){
   const changed = V.unit!==u || V.cell!==c;
   V.unit=u; V.cell=c; if(changed || opts.dig==null) V.dig = opts.dig??0; else V.dig = opts.dig; V.sel=null; V.stale=false;
   if(V.view==='columns'){ if(isPhone()) colGo('records', 'push'); else render(); }
-  else { if(M.sheet==='peek') M.sheet='half'; render(); if(opts.reveal) mapReveal(u); }
+  else { if(isPhone() && opts.tap) M.sheet='full'; else if(M.sheet==='peek') M.sheet='half'; render(); if(opts.reveal) mapReveal(u); }
 }
 
 
@@ -2762,7 +2880,7 @@ function mapInertia(){
 /* phone: the records sheet snaps to peek / half / full */
 const SNAPS = {peek:.14, half:.46, full:.92};
 function sheetSet(snap, anim=true){
-  M.sheet = snap; const p = document.querySelector('.spot-panel'); if(!p) return;
+  M.sheet = snap; document.body.classList.toggle('overlay', isPhone() && V.view==='map' && snap==='full'); const p = document.querySelector('.spot-panel'); if(!p) return;
   p.dataset.snap = snap; p.classList.toggle('dragging', !anim); p.style.setProperty('--sheet-h', (SNAPS[snap]*100)+'%');
 }
 function bindSheetDrag(){
@@ -2913,6 +3031,7 @@ const A = {
   'p-at':d=>playAt(+d.i),
   'open-player':()=>openNP(), 'close-np':()=>closeNP(),
   'np-tab':d=>{ P.tab=d.t; renderNP(); },
+  'np-more':()=>{ P.more = !P.more; if(!P.more) P.tab='queue'; renderNP(); },
   'dry-run':()=>dryRun(),
 };
 
@@ -2921,7 +3040,7 @@ Object.assign(A, {
   'go-spot':d=>{ if(dragJustEnded) return; $('#results').hidden=true; goSpot(d.u, d.c); },
   'set-view':d=>{ S.settings.view = d.v==='columns' ? 'columns' : 'map'; V.view = S.settings.view; V.col = 'spots'; render(); },
   'set-density':d=>{ S.settings.density = d.d==='compact' ? 'compact' : 'regular'; applyDensity(); save(); render(); if(sheetKind) openSettings(); },
-  'map-spot':d=>{ if(dragJustEnded || mapJustPanned) return; selectSpot(d.u, d.c); },
+  'map-spot':d=>{ if(dragJustEnded || mapJustPanned) return; selectSpot(d.u, d.c, {tap:true}); },
   'map-unit':d=>{ if(mapJustPanned) return; mapZoomUnit(d.u); selectSpot(d.u, V.unit===d.u ? V.cell : null); mapZoomUnit(d.u, true); },
   'map-zoom':d=>{ const m = mapEl(); if(!m) return; if(d.z==='fit') mapFit(true); else mapZoomAt(d.z==='in'?1.35:1/1.35, m.clientWidth/2, m.clientHeight/2, true); },
   'map-rec':d=>{ if(dragJustEnded) return; V.dig = +d.i; render(); if(isPhone() && M.sheet==='peek') sheetSet('half'); },

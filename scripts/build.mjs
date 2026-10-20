@@ -11,6 +11,11 @@ const html = `<!doctype html>
 <meta name="theme-color" content="#E8EBED" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0F1113" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="/logos/mark-3.svg" type="image/svg+xml">
+<!-- Vercel Web Analytics + Speed Insights (plain-HTML setup; served from this site's /_vercel path) -->
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script>window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };</script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}img{max-width:100%}</style>
 </head>
 <body>

@@ -429,6 +429,73 @@ label.li input{width:18px;height:18px;margin:0 11px;accent-color:var(--accent)}
   @page{size:letter;margin:0}
 }
 
+/* ---------- collection table ---------- */
+.tbl-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.tbl-tools input[type=search]{height:38px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:0 12px;min-width:0;flex:1 1 220px;font-size:14px}
+.tbl-wrap{overflow:auto;max-height:calc(100vh - 230px);border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:var(--shadow)}
+.ctable{border-collapse:separate;border-spacing:0;width:100%;min-width:1480px;font-size:13.5px}
+.ctable th{position:sticky;top:0;z-index:2;background:var(--surface-2);text-align:left;font-weight:600;font-size:12.5px;color:var(--muted);padding:0;border-bottom:1px solid var(--line);white-space:nowrap}
+.ctable th button{border:0;background:none;padding:10px 8px;font:inherit;color:inherit;width:100%;text-align:left;display:flex;gap:4px;align-items:center}
+.ctable th button[aria-sort="ascending"],.ctable th button[aria-sort="descending"]{color:var(--ink)}
+.ctable td{padding:2px 4px;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}
+.ctable tr:hover td{background:color-mix(in srgb,var(--surface-2) 70%,transparent)}
+.ctable tr.sel td{background:color-mix(in srgb,var(--accent) 9%,var(--surface))}
+.ctable .stick{position:sticky;left:0;z-index:1;background:var(--surface)}
+.ctable .stick2{position:sticky;left:36px;z-index:1;background:var(--surface)}
+.ctable th.stick,.ctable th.stick2{z-index:3;background:var(--surface-2)}
+.ctable td.stick,.ctable td.stick2{box-shadow:1px 0 0 var(--line)}
+.ctable .cb{width:36px;text-align:center}
+.ctable .cb input{width:16px;height:16px;accent-color:var(--accent)}
+.ctable .thumb{width:32px;height:32px}
+.ce{border:1px solid transparent;background:none;border-radius:6px;padding:5px 6px;font:inherit;color:inherit;width:100%;min-width:0}
+.ce:hover{border-color:var(--line)}
+.ce:focus{border-color:var(--accent);background:var(--surface);outline:none}
+.ce.edited{box-shadow:inset 3px 0 0 var(--accent)}
+.ce.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+select.ce{appearance:auto;cursor:pointer}
+.w-artist{width:160px}.w-title{width:200px}.w-label{width:140px}.w-catno{width:90px}.w-year{width:66px}.w-style{width:120px}.w-bpm{width:64px}.w-key{width:56px}.w-tags{width:150px}.w-rating{width:64px}
+.spot{display:flex;gap:6px;align-items:center}
+.spot select{min-width:118px;max-width:150px}
+.ctable select[data-thome]{min-width:160px}
+.ctable td:has(.spot){min-width:210px}
+.tbl-foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:13px;color:var(--muted)}
+
+/* ---------- landscape & wide screens ---------- */
+@media (min-width:1200px){
+  .wrap{max-width:1320px}
+  .player-in{max-width:1320px}
+  .room{grid-template-columns:repeat(auto-fill,minmax(270px,1fr))}
+}
+@media (min-width:1000px) and (orientation:landscape){
+  .np-sheet{top:max(28px,env(safe-area-inset-top,0px))}
+  .np-wrap{max-width:1240px;display:grid;grid-template-columns:minmax(340px,440px) minmax(0,1fr);gap:8px 40px;align-items:start}
+  .np-wrap>.np-top{grid-column:1/-1}
+  .np-wrap>.np-left{position:sticky;top:0}
+  .np-wrap>.np-right .np-tabs{margin-top:0}
+  .deck{width:100%;max-width:420px}
+}
+@media (orientation:landscape) and (max-height:560px){
+  .top{position:static;padding-block:8px}
+  .brand .brandsvg{height:26px}
+  .search input{height:40px}
+  .stage{height:200px}
+  .sleeve{width:190px}
+  .np-wrap{display:grid;grid-template-columns:minmax(200px,38%) minmax(0,1fr);gap:8px 22px;align-items:start}
+  .np-wrap>.np-top{grid-column:1/-1}
+  .deck{width:100%;max-width:260px;padding:10px}
+  .np-meta h3{font-size:20px}
+  .np-ctrl{margin-top:10px}
+  .tbl-wrap{max-height:calc(100vh - 150px)}
+  .sheet{max-height:94vh}
+  :root{--player-h:56px}
+  .player{padding-block:6px calc(6px + env(safe-area-inset-bottom,0px))}
+  .player-in{grid-template-columns:42px minmax(0,1fr) auto}
+  .mini-vinyl{width:42px;height:42px}
+  .player .round{width:38px;height:38px}.player .round.main{width:42px;height:42px}
+  .sec-head{margin:12px 0 8px}
+  .sec-head .kicker{display:none}
+}
+
 .foot{margin-top:34px;font-size:12.5px;color:var(--muted);max-width:72ch}
 </style>
 
@@ -437,6 +504,7 @@ label.li input{width:18px;height:18px;margin:0 11px;accent-color:var(--accent)}
     <button class="brand" data-act="go-room" aria-label="Crates home"><svg viewBox="62 48 520 136" aria-hidden="true" class="brandsvg"><g transform="translate(70.09 56) scale(1)"><defs><mask id="brandm" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128"><rect width="128" height="128" fill="#fff"/><rect x="3" y="45" width="80" height="80" rx="9" fill="#000"/></mask></defs><path fill="var(--brand)" fill-rule="evenodd" mask="url(#brandm)" d="M44,46A38,38 0 1 0 120,46A38,38 0 1 0 44,46ZM53,46A29,29 0 1 0 111,46A29,29 0 1 0 53,46ZM55.5,46A26.5,26.5 0 1 0 108.5,46A26.5,26.5 0 1 0 55.5,46ZM67,46A15,15 0 1 0 97,46A15,15 0 1 0 67,46ZM78,46A4,4 0 1 0 86,46A4,4 0 1 0 78,46Z"/><rect fill="var(--ink)" x="8" y="50" width="70" height="70" rx="4"/></g><path fill="none" stroke="var(--ink)" d="M281.12,105.97A25.5,25.5 0 1 0 281.12,142.03M299.45,98.5V149.5M299.45,120.82A22.32,22.32 0 0 1 321.77,98.5H331.81M349.81,124A25.5,25.5 0 1 1 400.81,124A25.5,25.5 0 1 1 349.81,124M400.81,98.5V149.5M427.89,78.66V142.06A8.68,8.68 0 0 0 436.57,149.5H442.53M418.81,98.5H442.53M460.53,124H511.53A25.5,25.5 0 1 0 504.98,141.06M562.37,104.86A17.44,11.98 0 1 0 546.97,122.47A17.44,13.52 0 1 1 531.57,142.33" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <div class="tabs" role="group" aria-label="Sections">
       <button data-act="go-room" id="tab-room">Room</button>
+      <button data-act="go-table" id="tab-table">Collection</button>
       <button data-act="go-playlists" id="tab-pl">Playlists</button>
       <button data-act="go-gigs" id="tab-gigs">Gigs</button>
     </div>
@@ -688,7 +756,8 @@ function render(){
   $('#tab-room').setAttribute('aria-pressed', V.view==='room'||V.view==='unit');
   $('#tab-pl').setAttribute('aria-pressed', V.view==='playlists');
   $('#tab-gigs').setAttribute('aria-pressed', V.view==='gigs');
-  $('#main').innerHTML = V.view==='playlists' ? renderPlaylists() : V.view==='gigs' ? renderGigs() : renderRoom();
+  $('#tab-table').setAttribute('aria-pressed', V.view==='table');
+  $('#main').innerHTML = V.view==='playlists' ? renderPlaylists() : V.view==='gigs' ? renderGigs() : V.view==='table' ? renderTable() : renderRoom();
   if(V.view==='unit') bindSwipe();
   if(V.view==='playlists') bindPlaylist();
   save();
@@ -1737,8 +1806,8 @@ function renderNP(){
       <ol class="chain">${CHAIN.map((c,i)=>`<li class="${chainCls(i)}"><span>${esc(c)}</span></li>`).join('')}</ol>${P.log.length?`<div class="log">${esc(P.log.join('\n'))}</div>`:''}`;
   sh.innerHTML = `<button class="grab" data-act="close-np" aria-label="Close player"></button>
     <div class="np-wrap">
-      <div class="row" style="justify-content:space-between"><span class="muted" style="font-size:13px">${esc(P.src||'Now playing')} · ${P.i+1} of ${P.queue.length}</span><button class="icon-btn" data-act="close-np" aria-label="Close player"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></button></div>
-      <div class="deck">${vinyl(r)}${arm}</div>
+      <div class="row np-top" style="justify-content:space-between"><span class="muted" style="font-size:13px">${esc(P.src||'Now playing')} · ${P.i+1} of ${P.queue.length}</span><button class="icon-btn" data-act="close-np" aria-label="Close player"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></button></div>
+      <div class="np-left"><div class="deck">${vinyl(r)}${arm}</div>
       <div class="np-meta"><h3>${esc(r.title)}</h3><div class="by">${esc(r.artist)}</div>
         <div class="facts" style="justify-content:center"><span><b>${esc(r.label)}</b></span><span class="code">${esc(r.year||'—')}</span>${r.bpm?`<span class="code">${esc(r.bpm)} BPM</span>`:''}${locChip(r.loc)}</div>
         ${P.mode==='yt'?`<div class="scrub"><i class="pbar"></i></div><div class="code muted" id="ptime" style="font-size:12px">0:00 / 0:00</div>`:''}
@@ -1747,8 +1816,9 @@ function renderNP(){
         <div class="row" style="justify-content:center;margin-top:10px"><button class="btn sm" data-act="edit-rec" data-r="${r.id}">Edit details</button><button class="btn sm" data-act="add-to-pl" data-r="${r.id}">+ Playlist</button><button class="btn sm" data-act="goto-rec" data-r="${r.id}">Show on shelf</button></div>
       </div>
       ${P.mode==='link'?`<div class="notice"><b>Inline playback is blocked inside this preview.</b> The play button opens the track on YouTube. On Crates' own site the same player plays inline and runs the full fallback chain.</div>`:''}
-      <div class="np-tabs" role="tablist">${tabs.map(([k,n])=>`<button role="tab" data-act="np-tab" data-t="${k}" aria-pressed="${P.tab===k}">${n}</button>`).join('')}</div>
-      ${body}
+      </div>
+      <div class="np-right"><div class="np-tabs" role="tablist">${tabs.map(([k,n])=>`<button role="tab" data-act="np-tab" data-t="${k}" aria-pressed="${P.tab===k}">${n}</button>`).join('')}</div>
+      ${body}</div>
     </div>`;
   sh.scrollTop = y;
 }
@@ -1888,6 +1958,124 @@ document.addEventListener('keydown', e=>{
   if(V.view==='unit' && !sheetKind && !P.open && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){
     if(e.key==='ArrowRight') dig(1); if(e.key==='ArrowLeft') dig(-1);
   }
+});
+
+
+/* =====================================================================
+   COLLECTION TABLE: spreadsheet view, inline edits, bag & home columns
+   ===================================================================== */
+const T = {sort:'artist', dir:1, q:'', filt:'all', sel:new Set()};
+const T_FILTERS = [['all','All'],['bag','In a bag'],['away','Away from home'],['stale','Not played in a year'],['edited','Edited by me'],['nohome','No home spot']];
+const inBagNow = r => unit(r.loc.u) && unit(r.loc.u).kind!=='shelf';
+const awayFromHome = r => hasHome(r) && !same(r.loc, r.home);
+function tFilter(r){
+  if(T.filt==='bag' && !inBagNow(r)) return false;
+  if(T.filt==='away' && !awayFromHome(r)) return false;
+  if(T.filt==='stale' && !isStale(r)) return false;
+  if(T.filt==='edited' && !editedSet(r).size) return false;
+  if(T.filt==='nohome' && hasHome(r)) return false;
+  if(T.q){ const hay = `${r.artist} ${r.title} ${r.label} ${r.catno} ${r.year} ${r.style} ${r.bpm} ${r.key} ${r.tags.join(' ')} ${r.notes} ${addrShort(r.loc)} ${hasHome(r)?addrShort(r.home):''} ${cellName(unit(r.loc.u),r.loc.c)}`.toLowerCase(); if(!T.q.toLowerCase().split(/\s+/).every(w=>hay.includes(w))) return false; }
+  return true;
+}
+const T_KEYS = {
+  artist:r=>r.artist.toLowerCase(), title:r=>r.title.toLowerCase(), label:r=>r.label.toLowerCase(), catno:r=>(r.catno||'').toLowerCase(),
+  year:r=>+r.year||9999, style:r=>(r.style||'').toLowerCase(), bpm:r=>+r.bpm||999, key:r=>(r.key||'').toLowerCase(), rating:r=>-(r.rating||0),
+  tags:r=>r.tags.join(',').toLowerCase(), bag:r=>inBagNow(r)?unit(r.loc.u).name.toLowerCase():'~', home:r=>hasHome(r)?addrShort(r.home):'~', played:r=>lastPlayed(r)||'0',
+};
+function tRows(){ const k = T_KEYS[T.sort]||T_KEYS.artist; return S.records.filter(tFilter).sort((a,b)=>{ const x=k(a), y=k(b); return (x>y?1:x<y?-1:0)*T.dir || a.title.localeCompare(b.title); }); }
+function shelfOptions(sel){
+  return S.units.filter(u=>u.kind==='shelf').map(u=>`<optgroup label="${esc(u.id)} · ${esc(u.name)}">${cellKeys(u).map(k=>{ const v=u.id+'|'+k; const n=cellName(u,k); return `<option value="${v}" ${sel===v?'selected':''}>${esc(u.id)}·${esc(cellLabel(u,k))}${n?' · '+esc(n):''}</option>`; }).join('')}</optgroup>`).join('');
+}
+function renderTable(){
+  const rows = tRows(), bags = S.units.filter(u=>u.kind!=='shelf');
+  const away = S.records.filter(r=>inBagNow(r)&&hasHome(r)).length;
+  const head = (k,label,cls='') => `<th class="${cls}"><button data-act="t-sort" data-k="${k}" aria-sort="${T.sort===k?(T.dir>0?'ascending':'descending'):'none'}">${label}${T.sort===k?(T.dir>0?' ↑':' ↓'):''}</button></th>`;
+  const txt = (r,f,cls,ph='') => `<td><input class="ce ${cls} ${editedSet(r).has(f)?'edited':''}" data-tedit="${f}" data-r="${r.id}" value="${esc(r[f])}" aria-label="${f} for ${esc(r.title)}" placeholder="${ph}"></td>`;
+  const body = rows.map(r=>{
+    const bagSel = inBagNow(r) ? r.loc.u : '';
+    const homeVal = hasHome(r) ? r.home.u+'|'+r.home.c : '';
+    return `<tr class="${T.sel.has(r.id)?'sel':''}">
+      <td class="cb stick"><input type="checkbox" data-tsel="${r.id}" ${T.sel.has(r.id)?'checked':''} aria-label="Select ${esc(r.title)}"></td>
+      <td class="stick2"><button class="mini-btn" style="width:auto;height:auto;padding:0" data-act="goto-rec" data-r="${r.id}" aria-label="Show ${esc(r.title)} on its shelf">${thumb(r)}</button></td>
+      ${txt(r,'artist','w-artist')}${txt(r,'title','w-title')}
+      <td><div class="spot"><select class="ce" data-tbag="${r.id}" aria-label="Bag for ${esc(r.title)}"><option value="">${inBagNow(r)?'Take out':'—'}</option>${bags.map(b=>`<option value="${b.id}" ${bagSel===b.id?'selected':''}>${esc(b.name)}</option>`).join('')}</select>${inBagNow(r)&&hasHome(r)?`<button class="btn sm" data-act="t-back" data-r="${r.id}">Put back</button>`:''}</div></td>
+      <td><select class="ce" data-thome="${r.id}" aria-label="Home spot for ${esc(r.title)}"><option value="">No home yet</option>${shelfOptions(homeVal)}</select></td>
+      ${txt(r,'label','w-label')}${txt(r,'catno','w-catno code')}${txt(r,'year','w-year num')}${txt(r,'style','w-style')}${txt(r,'bpm','w-bpm num')}${txt(r,'key','w-key code')}
+      <td><select class="ce w-rating" data-tedit="rating" data-r="${r.id}" aria-label="Rating for ${esc(r.title)}">${[0,1,2,3,4,5].map(n=>`<option value="${n}" ${r.rating===n?'selected':''}>${n?'★'.repeat(n):'—'}</option>`).join('')}</select></td>
+      <td><input class="ce w-tags" data-tedit="tags" data-r="${r.id}" value="${esc(r.tags.join(', '))}" aria-label="Tags for ${esc(r.title)}" placeholder="add tags"></td>
+      <td>${locChip(r.loc)}</td>
+      <td class="code" style="padding:0 8px;color:${isStale(r)?'var(--warn)':'var(--muted)'}">${lastPlayed(r)?fmtDate(lastPlayed(r)):'never'}</td>
+    </tr>`;
+  }).join('');
+  const nsel = T.sel.size;
+  return `<div class="sec-head"><div><div class="kicker">${S.records.length} records · click any cell to edit</div><h2>Collection</h2></div>
+      <div class="row">${away?`<button class="btn primary" data-act="t-back-all">Put ${away} back home</button>`:''}<button class="btn" data-act="t-csv">Export CSV</button></div></div>
+    <div class="tbl-tools">
+      <label for="t-q" class="sr">Filter the collection</label><input id="t-q" type="search" value="${esc(T.q)}" placeholder="Filter by anything: artist, tag, K1·A2, Crater…">
+      ${T_FILTERS.map(([k,n])=>`<button class="chip" data-act="t-filt" data-f="${k}" aria-pressed="${T.filt===k}">${n}</button>`).join('')}
+    </div>
+    ${nsel?`<div class="selbar" style="position:static;margin:0 0 10px"><span>${nsel} selected</span><button class="btn sm" data-act="t-sel-none">Clear</button><button class="btn sm primary" data-act="t-sel-back">Put back home</button>${bags.length?`<label class="sr" for="t-sel-bag">Put selected in a bag</label><select id="t-sel-bag" class="btn sm" style="background:var(--surface);color:var(--ink)"><option value="">Put in bag…</option>${bags.map(b=>`<option value="${b.id}">${esc(b.name)}</option>`).join('')}</select>`:''}<button class="btn sm" data-act="t-sel-pl">Add to playlist…</button></div>`:''}
+    <div class="tbl-wrap"><table class="ctable" aria-label="Collection">
+      <thead><tr><th class="cb stick"><input type="checkbox" data-tsel="all" ${rows.length&&rows.every(r=>T.sel.has(r.id))?'checked':''} aria-label="Select all shown"></th><th class="stick2"></th>
+        ${head('artist','Artist')}${head('title','Title')}${head('bag','Bag')}${head('home','Home spot')}${head('label','Label')}${head('catno','Cat no.')}${head('year','Year')}${head('style','Style')}${head('bpm','BPM')}${head('key','Key')}${head('rating','Rating')}${head('tags','Tags')}<th><span style="display:block;padding:10px 8px">Now</span></th>${head('played','Last played')}</tr></thead>
+      <tbody>${body||`<tr><td colspan="16" style="padding:28px;text-align:center;color:var(--muted)">No records match. Clear the filter to see everything.</td></tr>`}</tbody></table></div>
+    <div class="tbl-foot"><span>${rows.length} of ${S.records.length} shown · edited cells have a red edge · your edits never overwrite the Discogs original</span><span>Tab and Shift+Tab move between cells. Enter saves.</span></div>`;
+}
+function tCommit(el){
+  const r = rec(el.dataset.r); if(!r) return;
+  const f = el.dataset.tedit; let v = el.value;
+  if(f==='tags') r.tags = v.split(',').map(x=>x.trim()).filter(Boolean);
+  else if(f==='rating') r.rating = +v||0;
+  else r[f] = v.trim();
+  el.classList.toggle('edited', editedSet(r).has(f));
+  save();
+}
+document.addEventListener('change', e=>{
+  const t = e.target;
+  if(t.dataset?.tedit){ tCommit(t); return; }
+  if(t.dataset?.tbag){ const r = rec(t.dataset.tbag); lastUndo = snap([r]);
+    if(t.value) place(r,{u:t.value,c:'0-0'}); else if(hasHome(r)) place(r,{...r.home},{setHome:false});
+    setTimeout(()=>{ render(); toast(t.value?`${r.title} is in ${unit(t.value).name}`:`${r.title} is back in ${addrShort(r.home)}`, true); },0); return; }
+  if(t.dataset?.thome){ const r = rec(t.dataset.thome); lastUndo = snap([r]);
+    if(!t.value){ r.home = null; } else { const [u,c] = t.value.split('|'); const to = {u,c};
+      if(inBagNow(r)) { r.home = to; enqueueSync(r); } else place(r,to); }
+    setTimeout(()=>{ render(); toast(t.value?`Home spot is now ${addrShort(r.home)}`:'Home spot cleared', true); },0); return; }
+  if(t.dataset?.tsel){ if(t.dataset.tsel==='all'){ const rows = tRows(); if(t.checked) rows.forEach(r=>T.sel.add(r.id)); else rows.forEach(r=>T.sel.delete(r.id)); } else { t.checked ? T.sel.add(t.dataset.tsel) : T.sel.delete(t.dataset.tsel); } setTimeout(render,0); return; }
+  if(t.id==='t-sel-bag' && t.value){ const recs = [...T.sel].map(rec).filter(Boolean); lastUndo = snap(recs); recs.forEach(r=>place(r,{u:t.value,c:'0-0'})); T.sel.clear(); setTimeout(()=>{ render(); toast(`${recs.length} put in ${unit(t.value).name}`, true); },0); }
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Enter' && e.target.dataset?.tedit && e.target.tagName==='INPUT'){ e.preventDefault(); tCommit(e.target);
+  const cells = [...document.querySelectorAll(`[data-tedit="${e.target.dataset.tedit}"]`)]; const i = cells.indexOf(e.target); (cells[i+(e.shiftKey?-1:1)]||e.target).focus(); } });
+let tQT;
+document.addEventListener('input', e=>{ if(e.target.id==='t-q'){ T.q = e.target.value; clearTimeout(tQT); tQT = setTimeout(()=>{ const pos = e.target.selectionStart; render(); const q = $('#t-q'); if(q){ q.focus(); q.setSelectionRange(pos,pos); } }, 160); } });
+function putBack(recs){ const list = recs.filter(r=>hasHome(r) && !same(r.loc,r.home)); lastUndo = snap(list); list.forEach(r=>place(r,{...r.home},{setHome:false})); return list.length; }
+function csvCell(v){ v = String(v??''); return /[",\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }
+async function exportCSV(){
+  const head = ['Artist','Title','Label','Cat no.','Year','Style','BPM','Key','Rating','Tags','Notes','Now','Home spot','Bag','Last played','Plays'];
+  const lines = [head.join(',')].concat(tRows().map(r=>[r.artist,r.title,r.label,r.catno,r.year,r.style,r.bpm,r.key,r.rating||'',r.tags.join('; '),r.notes,addrLong(r.loc),hasHome(r)?addrLong(r.home):'',inBagNow(r)?unit(r.loc.u).name:'',lastPlayed(r),(r.plays||[]).length].map(csvCell).join(',')));
+  const data = lines.join('\n');
+  let dl = null; try{ dl = await window.claude?.use?.('downloads'); }catch(e){}
+  try{
+    if(dl) await dl.save({filename:'crates-collection.csv', data});
+    else if(!IN_ARTIFACT){ const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([data],{type:'text/csv'})); a.download='crates-collection.csv'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); }
+    else { toast('Saving files isn’t available in this view'); return; }
+    toast('CSV saved');
+  }catch(e){ toast(e?.code==='declined'?'Export cancelled':'Couldn’t save the CSV'); }
+}
+Object.assign(A, {
+  'go-table':()=>{ V.view='table'; render(); },
+  't-sort':d=>{ if(T.sort===d.k) T.dir = -T.dir; else { T.sort = d.k; T.dir = 1; } render(); },
+  't-filt':d=>{ T.filt = d.f; render(); },
+  't-back':d=>{ const n = putBack([rec(d.r)]); render(); if(n) toast(`Back in ${addrShort(rec(d.r).home)}`, true); },
+  't-back-all':()=>{ const n = putBack(S.records.filter(inBagNow)); render(); toast(`${n} records put back home`, true); },
+  't-sel-none':()=>{ T.sel.clear(); render(); },
+  't-sel-back':()=>{ const n = putBack([...T.sel].map(rec).filter(Boolean)); T.sel.clear(); render(); toast(n?`${n} put back home`:'Those are already home', !!n); },
+  't-sel-pl':()=>{ const ids = [...T.sel];
+    openSheet(`<div class="sheet-head"><div><div class="kicker">${ids.length} records</div><h2>Add to playlist</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+      <div class="plgrid">${S.playlists.map(p=>`<button class="plcard" style="--pc:${p.color}" data-act="t-pl-to" data-p="${p.id}"><b>${esc(p.name)}</b><span>${p.items.length} records</span></button>`).join('')}<button class="plcard" style="--pc:var(--line)" data-act="t-pl-to" data-p=""><b>+ New playlist</b><span>Starts with these records</span></button></div>`); },
+  't-pl-to':d=>{ const ids = [...T.sel]; let p = S.playlists.find(x=>x.id===d.p);
+    if(!p){ p = {id:uid('p'),name:'New playlist',color:PL_COLORS[S.playlists.length%PL_COLORS.length],items:[]}; S.playlists.push(p); }
+    ids.forEach(id=>{ if(!p.items.includes(id)) p.items.push(id); }); T.sel.clear(); closeSheet(); render(); toast(`Added to ${p.name}`); },
+  't-csv':()=>exportCSV(),
 });
 
 /* ---------- Claude photo recognition (optional) ---------- */

@@ -11,7 +11,7 @@
 
 ---
 
-Crates is a vinyl librarian for DJs. Draw your shelves, crates and bags, drop your records in, and it remembers every spot. Search a record and it answers with a place, not a folder. Pack a bag for a gig, log what you played, put it all back when you get home. Press play and it spins through YouTube, with the fallback chain from [discogs-stream](https://github.com/CarlosFranzetti/discogs-stream) so a dead link never kills the set.
+Crates is a vinyl librarian for DJs. Draw your shelves, crates and bags, drop your records in, and it remembers every spot. Search a record and it answers with a place, not a folder. Pack a bag for a gig, log what you played, put it all back when you get home. Press play and you can hear your collection wherever you are.
 
 ![The room as a map, with K1·A1 open in the side panel](docs/screenshots/readme-map-desktop.png)
 

@@ -1339,6 +1339,22 @@ def r10_density_and_sheet(browser, url):
         a.close()
 
 
+def r11_delete_and_upload(a):
+    a.click(".dig-info [data-act=del-rec]"); a.click("[data-act=del-rec-yes]"); _settle(a, 150)
+    check(a.ev("S.records.length") == 9 and a.toast().startswith("Deleted"), "delete did not remove the record")
+    a.undo(); check(a.ev("S.records.length") == 10 and a.ev("S.records[0].id") == "r9", "undo did not restore the record in place")
+    a.ev("V.view='table';render()"); a.page.locator("input[data-tsel=r1]").click(); a.page.locator("input[data-tsel=r2]").click(); _settle(a)
+    a.click("[data-act=t-sel-del]"); _settle(a, 150); check(a.ev("S.records.length") == 8, "bulk delete")
+    a.undo(); check(a.ev("S.records.length") == 10, "bulk undo")
+    a.ev("openDiscogsUpload()"); _settle(a, 150)
+    check(a.page.locator(".sheet [data-act=dg-upload]").is_disabled(), "upload must wait for the Discogs snapshot")
+    a.click(".sheet [data-act=dg-pre-demo]"); _settle(a, 200)
+    check(a.ev("backups()[0].kind") == "discogs" and not a.page.locator(".sheet [data-act=dg-upload]").is_disabled(), "snapshot should enable the upload")
+    a.click(".sheet [data-act=dg-upload]"); _settle(a, 150)
+    check(a.ev("S.syncQueue.filter(q=>q.kind==='add').length") == 10, "adds not queued")
+    check(not a.js_errors(), a.js_errors())
+
+
 TESTS += [
     ("R01 Room fits the screen", r01_room_fits), ("R02 Zoom into a unit", r02_zoom),
     ("R03 Drag and drop", r03_drag), ("R04 Multi-step undo", r04_multi_undo),
@@ -1347,6 +1363,7 @@ TESTS += [
     ("R08 Looks + cue bar", r08_looks_and_cuebar),
     ("R09 Backups + Discogs import", r09_backups_import),
     ("R10 Density, sheet snaps, phone columns", r10_density_and_sheet),
+    ("R11 Delete + two-step Discogs upload", r11_delete_and_upload),
 ]
 BROWSER_LEVEL |= {r01_room_fits, r03_drag, r06_player_slides_in, r10_density_and_sheet}
 

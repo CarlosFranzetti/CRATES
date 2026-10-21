@@ -216,7 +216,8 @@ Printing tips:
 - **Backups** (Settings → Backups) keeps the four most recent snapshots in this browser. One is made automatically before every import, restore and reset; **Back up now** adds one by hand. The oldest is dropped when all four slots are used. **Restore** swaps a backup in (after backing up the current collection first), ✕ deletes one.
 - **Save to file** downloads `crates-YYYY-MM-DD.json`, the whole collection. **Load from file** reads one back (with a backup first). Keep a saved file somewhere safe; backups live only in this browser.
 - **Import from Discogs:** on discogs.com go to your Collection → Export and download the CSV, then load it here. Records you already own (same artist and title) are skipped, and new ones land as **Unplaced**, which you file from the Collection tab (Home spot column) or by dragging. A demo import of 6 records shows the flow. Importing straight from the Discogs API needs the server (research/discogs-api.md), so the prototype reads the export instead.
-- **Upload to your Discogs collection** queues every record for the Discogs sync; the full app sends the adds and the Location field from the server within the 60-requests-a-minute limit. In the prototype, Settings → **Sync now (demo)** marks them done.
+- **Delete a record** from its details (Delete, then confirm) or tick several in Collection and press Delete. Undo puts them back, in their playlists and gigs too.
+- **Upload to your Discogs collection** is two steps: first load your current Discogs CSV export, which is kept as a backup labelled “Discogs collection before upload” (the full app pulls it through the API), and only then can you queue the upload. It queues every record for the Discogs sync; the full app sends the adds and the Location field from the server within the 60-requests-a-minute limit. In the prototype, Settings → **Sync now (demo)** marks them done.
 
 ## When something does not look right
 

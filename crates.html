@@ -607,6 +607,25 @@ body:has(#player[hidden]){padding-bottom:24px}
 
 .foot{margin-top:34px;font-size:12.5px;color:var(--muted);max-width:72ch}
 
+/* ---------- slick table: no borders, soft stripes, pill hover ---------- */
+.tbl-shell .tbl-wrap{border:0;box-shadow:none;background:transparent;border-radius:12px}
+.ctable td{border-bottom:0;padding:3px 6px}
+.ctable tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surface) 55%,transparent)}
+.ctable tbody tr td{transition:background .12s}
+.ctable tbody tr:hover td{background:color-mix(in srgb,var(--surface-2) 90%,transparent)}
+.ctable tbody tr td:first-child{border-radius:10px 0 0 10px}.ctable tbody tr td:last-child{border-radius:0 10px 10px 0}
+.ctable th{background:transparent;border-bottom:0;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ctable thead tr th{background:var(--bg)}
+.ctable th button{padding:8px 6px}
+.ctable .stick,.ctable .stick2{background:var(--bg)}
+.ctable th.stick,.ctable th.stick2{background:var(--bg)}
+.ctable td.stick,.ctable td.stick2{box-shadow:none}
+.ctable tbody tr:nth-child(even) td.stick,.ctable tbody tr:nth-child(even) td.stick2{background:color-mix(in srgb,var(--surface) 55%,var(--bg))}
+.ctable tbody tr:hover td.stick,.ctable tbody tr:hover td.stick2{background:color-mix(in srgb,var(--surface-2) 90%,var(--bg))}
+.ctable tr.sel td{background:color-mix(in srgb,var(--accent) 12%,var(--bg))!important}
+.ce{border-color:transparent}.ce:hover{border-color:transparent;background:color-mix(in srgb,var(--surface-2) 80%,transparent)}
+.tbl-shell .tbl-tools input[type=search]{border:0;background:var(--surface)}
+
 /* ---------- tighter chrome (0.8b): icons -7%, smaller Add with a border, smaller mini vinyl, shorter container bar ---------- */
 .top .icon-btn{width:35px;height:35px}
 .top .icon-btn svg{width:16px;height:16px}
@@ -1328,6 +1347,8 @@ function recInfo(cur){
         <button class="btn" data-act="add-to-pl" data-r="${cur.id}">+ Playlist</button>
         <button class="btn" data-act="log-play" data-r="${cur.id}">Log a play</button>
         <a class="btn ghost" href="${discogsUrl(cur)}" target="_blank" rel="noopener">Discogs ↗</a>
+        <button class="btn ghost danger" data-act="del-rec" data-r="${cur.id}">Delete</button>
+      </div><div id="del-rec-confirm"></div><div class="row" hidden>
       </div></div>`;
 }
 /* rows for a spot's records. opts.act = what a click does; opts.inline = expand the current record under its row */
@@ -2994,6 +3015,10 @@ const A = {
   'eu-finish':d=>{ const u = unit(d.u); u.finish = finishesFor(presetOf(u)).find(f=>f.name===d.n); render(); openEditUnit(d.u); },
   'eu-nophoto':d=>{ unit(d.u).photo=null; render(); openEditUnit(d.u); },
   'del-unit':d=>{ $('#del-confirm').innerHTML = `<div class="notice">Remove ${esc(unit(d.u).name)} from your room? <div class="row" style="margin-top:8px"><button class="btn danger" data-act="del-unit-yes" data-u="${d.u}">Remove</button><button class="btn" data-act="close">Keep it</button></div></div>`; },
+  'del-rec':d=>{ const r = rec(d.r); if(!r) return; const box = $('#del-rec-confirm'); if(!box) { deleteRecords([r.id]); return; }
+    box.innerHTML = `<div class="notice">Delete “${esc(r.title)}” from your collection? You can undo this. <div class="row" style="margin-top:8px"><button class="btn danger" data-act="del-rec-yes" data-r="${r.id}">Delete record</button><button class="btn" data-act="del-rec-no">Keep it</button></div></div>`; },
+  'del-rec-yes':d=>deleteRecords([d.r]),
+  'del-rec-no':()=>{ const b = $('#del-rec-confirm'); if(b) b.innerHTML=''; },
   'del-unit-yes':d=>{ S.units = S.units.filter(u=>u.id!==d.u); S.records.forEach(r=>{ if(r.home?.u===d.u) r.home=null; }); S.recent = S.recent.filter(l=>l.u!==d.u); closeSheet(); V.view='room'; V.unit=null; render(); toast('Removed'); },
   'ar-loc':d=>{ addRec.loc={u:d.u,c:d.c}; renderAddRecord(); },
   'file-found':()=>{ const list = addRec.found.filter(f=>f.keep); if(!list.length){ toast('Tick at least one record'); return; } fileRecords(list); },
@@ -3182,7 +3207,7 @@ function renderTable(){
       <label for="t-q" class="sr">Filter the collection</label><input id="t-q" type="search" value="${esc(T.q)}" placeholder="Filter by anything: artist, tag, K1·A2, Crater…">
       ${T_FILTERS.map(([k,n])=>`<button class="chip" data-act="t-filt" data-f="${k}" aria-pressed="${T.filt===k}">${n}</button>`).join('')}
     </div>
-    ${nsel?`<div class="selbar" style="position:static;margin:0 0 10px"><span>${nsel} selected</span><button class="btn sm" data-act="t-sel-none">Clear</button><button class="btn sm primary" data-act="t-sel-back">Put back home</button>${bags.length?`<label class="sr" for="t-sel-bag">Put selected in a bag</label><select id="t-sel-bag" class="btn sm" style="background:var(--surface);color:var(--ink)"><option value="">Put in bag…</option>${bags.map(b=>`<option value="${b.id}">${esc(b.name)}</option>`).join('')}</select>`:''}<button class="btn sm" data-act="t-sel-pl">Add to playlist…</button></div>`:''}
+    ${nsel?`<div class="selbar" style="position:static;margin:0 0 10px"><span>${nsel} selected</span><button class="btn sm" data-act="t-sel-none">Clear</button><button class="btn sm primary" data-act="t-sel-back">Put back home</button><button class="btn sm danger" data-act="t-sel-del">Delete</button>${bags.length?`<label class="sr" for="t-sel-bag">Put selected in a bag</label><select id="t-sel-bag" class="btn sm" style="background:var(--surface);color:var(--ink)"><option value="">Put in bag…</option>${bags.map(b=>`<option value="${b.id}">${esc(b.name)}</option>`).join('')}</select>`:''}<button class="btn sm" data-act="t-sel-pl">Add to playlist…</button></div>`:''}
     <div class="tbl-wrap"><table class="ctable" aria-label="Collection">
       <thead><tr><th class="cb stick"><input type="checkbox" data-tsel="all" ${rows.length&&rows.every(r=>T.sel.has(r.id))?'checked':''} aria-label="Select all shown"></th><th class="stick2"></th>
         ${head('artist','Artist')}${head('title','Title')}${head('bag','Bag')}${head('home','Home spot')}${head('label','Label')}${head('catno','Cat no.')}${head('year','Year')}${head('style','Style')}${head('bpm','BPM')}${head('key','Key')}${head('rating','Rating')}${head('tags','Tags')}<th><span style="display:block;padding:10px 8px">Now</span></th>${head('played','Last played')}</tr></thead>
@@ -3240,6 +3265,7 @@ Object.assign(A, {
   't-back':d=>{ const n = putBack([rec(d.r)]); render(); if(n) toast(`Back in ${addrShort(rec(d.r).home)}`, true); },
   't-back-all':()=>{ const n = putBack(S.records.filter(inBagNow)); render(); toast(`${n} records put back home`, true); },
   't-sel-none':()=>{ T.sel.clear(); render(); },
+  't-sel-del':()=>{ const ids = [...T.sel]; if(!ids.length) return; deleteRecords(ids); },
   't-sel-back':()=>{ const n = putBack([...T.sel].map(rec).filter(Boolean)); T.sel.clear(); render(); toast(n?`${n} put back home`:'Those are already home', !!n); },
   't-sel-pl':()=>{ const ids = [...T.sel];
     openSheet(`<div class="sheet-head"><div><div class="kicker">${ids.length} records</div><h2>Add to playlist</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
@@ -3332,7 +3358,7 @@ function openDiscogsImport(){
     <p class="muted" style="margin:0 0 10px;font-size:13.5px">A backup of your current collection is made first. Imported records land as <b>Unplaced</b>; file them from the Collection tab or by dragging. Records you already own (same artist and title) are skipped.</p>
     <div class="row" style="margin-bottom:14px"><label class="btn primary file">Load Discogs CSV export<input type="file" id="dg-csv" accept=".csv,text/csv"></label><button class="btn" data-act="dg-demo">Import a demo collection (6 records)</button></div>
     <div class="bcbox"><b style="font-size:14px">Upload to your Discogs collection</b><p class="muted" style="margin:6px 0 10px;font-size:13px">Adds records that aren’t in your Discogs collection yet, and writes each one’s spot to the “Location” field. Queued here; the full app sends them from the server within the 60 requests/minute limit.</p>
-      <div class="row"><button class="btn" data-act="dg-upload">Queue upload (${S.records.length} records)</button><span class="muted" style="font-size:13px">${S.syncQueue.filter(q=>q.kind==='add').length} adds waiting</span></div></div>
+      <div class="row"><button class="btn" data-act="dg-upload-open">Upload to Discogs…</button><span class="muted" style="font-size:13px">${S.syncQueue.filter(q=>q.kind==='add').length} adds waiting</span></div></div>
     <p class="muted" style="font-size:12.5px;margin-top:12px">Importing straight from the Discogs API needs a server-side token (research/discogs-api.md), so the prototype reads the CSV export instead.</p>`);
   $('#dg-csv').onchange = e => { const f = e.target.files[0]; if(!f) return; const rd = new FileReader(); rd.onload = () => importDiscogsRows(parseCSV(rd.result), f.name); rd.readAsText(f); };
 }
@@ -3351,7 +3377,38 @@ function importDemoDiscogs(){
   const h = ['Artist','Title','Label','Released','Genre'];
   importDiscogsRows([h, ...DEMO_DISCOGS], 'the demo Discogs collection');
 }
+/* delete records; Undo puts them back where they were (in the same order), and in every playlist and gig they were in */
+function deleteRecords(ids){
+  const set = new Set(ids); const gone = [];
+  S.records.forEach((r,i)=>{ if(set.has(r.id)) gone.push({r, i}); });
+  if(!gone.length) return;
+  const pl = S.playlists.map(p=>[p, [...p.items]]), gg = S.gigs.map(g=>[g, [...g.items]]), q = P.queue.slice(), qi = P.i;
+  S.records = S.records.filter(r=>!set.has(r.id));
+  S.playlists.forEach(p=>{ p.items = p.items.filter(id=>!set.has(id)); }); S.gigs.forEach(g=>{ g.items = g.items.filter(it=>!set.has(it.r)); });
+  S.syncQueue = S.syncQueue.filter(x=>!set.has(x.r)); T.sel.clear(); P.queue = P.queue.filter(id=>!set.has(id)); if(P.i>=P.queue.length) P.i = P.queue.length-1;
+  lastUndo = () => { gone.sort((a,b)=>a.i-b.i).forEach(({r,i})=>S.records.splice(Math.min(i, S.records.length), 0, r)); pl.forEach(([p,items])=>{ p.items = items; }); gg.forEach(([g,items])=>{ g.items = items; }); P.queue = q; P.i = qi; renderPlayer(); };
+  closeSheet(); V.dig = Math.max(0, V.dig-1); render(); renderPlayer();
+  toast(gone.length===1 ? `Deleted “${gone[0].r.title}”` : `Deleted ${gone.length} records`, true);
+}
+/* Upload to Discogs: first pull the current Discogs collection and keep it as a backup, then queue the adds */
+function openDiscogsUpload(){
+  const snap = backups().find(b=>b.kind==='discogs');
+  openSheet(`<div class="sheet-head"><div><div class="kicker">Two steps, and nothing leaves until step 2</div><h2>Upload to Discogs</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <div class="bcbox"><b style="font-size:14px">1 · Download your Discogs collection and back it up</b>
+      <p class="muted" style="margin:6px 0 10px;font-size:13px">So the upload can never lose anything, Crates keeps a copy of what Discogs has <em>before</em> it writes. Load your current CSV export (Collection → Export on discogs.com); it is stored as a backup labelled “Discogs collection before upload”. The full app does this pull itself through the API.</p>
+      <div class="row"><label class="btn primary file">Load Discogs CSV export<input type="file" id="dg-pre"></label><button class="btn" data-act="dg-pre-demo">Use the demo snapshot</button>${snap?`<span class="pill ok">Snapshot kept ${fmtWhen(snap.at)}</span>`:''}</div></div>
+    <div class="bcbox" style="margin-top:12px;${snap?'':'opacity:.55'}"><b style="font-size:14px">2 · Queue the upload</b>
+      <p class="muted" style="margin:6px 0 10px;font-size:13px">Adds the records Discogs doesn’t have yet and writes every spot to the “Location” field. The full app sends them from the server within the 60-requests-a-minute limit; here they wait in the queue (Settings → Sync now).</p>
+      <div class="row"><button class="btn ${snap?'primary':''}" data-act="dg-upload" ${snap?'':'disabled'}>Queue upload (${S.records.length} records)</button><span class="muted" style="font-size:13px">${S.syncQueue.filter(q=>q.kind==='add').length} adds waiting</span></div></div>`);
+  const inp = $('#dg-pre'); if(inp){ inp.accept='.csv,text/csv'; inp.onchange = e => { const f = e.target.files[0]; if(!f) return; const rd = new FileReader(); rd.onload = () => { const rows = parseCSV(rd.result); if(rows.length<2){ toast('No records found in that file'); return; } snapshotDiscogs(rows, f.name); }; rd.readAsText(f); }; }
+}
+function snapshotDiscogs(rows, label){
+  const b = backupNow('Discogs collection before upload · '+label, 'discogs');
+  if(b){ b.discogsRows = rows.length-1; const list = backups(); list[0].discogsRows = rows.length-1; localStorage.setItem(BK_KEY, JSON.stringify(list)); }
+  toast(`Kept a copy of ${rows.length-1} Discogs rows as a backup`); openDiscogsUpload();
+}
 function queueDiscogsUpload(){
+  if(!backups().some(b=>b.kind==='discogs')){ toast('Download and back up your Discogs collection first'); openDiscogsUpload(); return; }
   let n=0; S.records.forEach(r=>{ if(!S.syncQueue.some(q=>q.kind==='add'&&q.r===r.id)){ S.syncQueue.push({kind:'add', r:r.id, value:discogsLocValue(r), status:'pending', at:Date.now()}); n++; } });
   save(); closeSheet(); toast(`${n} records queued for Discogs · Settings → Sync now (demo)`);
 }
@@ -3365,6 +3422,8 @@ Object.assign(A, {
   'dg-import':()=>openDiscogsImport(),
   'dg-demo':()=>importDemoDiscogs(),
   'dg-upload':()=>queueDiscogsUpload(),
+  'dg-upload-open':()=>openDiscogsUpload(),
+  'dg-pre-demo':()=>snapshotDiscogs([['Artist','Title'], ...DEMO_DISCOGS], 'demo snapshot'),
 });
 
 /* ---------- Claude photo recognition (optional) ---------- */

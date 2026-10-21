@@ -472,7 +472,8 @@ Bag capacities are in LPs unless stated; "Capacity not listed" means the maker g
 - [x] Save the collection to a JSON file; load one back (validated, with a backup first)
 - [x] Import a Discogs CSV export (Collection → Export): CSV parser with quotes, duplicate skip by normalised artist + title, imported records land as Unplaced, import log in `S.imports`
 - [~] Demo Discogs import (6 sample records) stands in for the API import, which needs the server
-- [~] Upload to the Discogs collection: queued as `kind:'add'` entries in the sync queue; sent by the full app's server job
+- [x] Delete records (single with confirm, or multi-select in Collection); Undo restores them in place, in playlists and gigs
+- [~] Upload to the Discogs collection: step 1 pulls the current Discogs collection (CSV export in the prototype, API in the full app) into a backup of kind `discogs`; step 2 queues `kind:'add'` entries in the sync queue, sent by the server job
 - [x] Collection table: full height, container bar on top (All + every spot) filters and takes dropped rows via the ⋮⋮ handle; Unplaced filter; pads size to their text and drop the subtitle when tight
 
 ## 23. Prototype data and persistence

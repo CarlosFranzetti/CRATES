@@ -3,3 +3,4 @@ tests/harness.html
 tests/shots/
 .env*
 dist/
+/node_modules/

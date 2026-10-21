@@ -75,3 +75,10 @@ Local `gh` token is invalid; no repo created. Local git repo at `/home/claude/cr
 3. Fix `gh` auth and create `CarlosFranzetti/crates`.
 4. Backfill `discogs_release_id`/`cover_url`/tracks from Discogs; run the YouTube link health check to set `media_links.status`.
 5. Seed uses `owner_id = 'demo'`; replace it with real auth user ids once auth exists.
+
+## API (Vercel functions) — added 2026-10-21
+
+- `api/_lib.js`, `api/sync.js`, `api/collection.js`, `api/img.js`. Node ESM, `@neondatabase/serverless`. `vercel.json` excludes `/api/` from the SPA rewrite and sets `maxDuration` 60 s for sync.
+- Env vars (server only): `DISCOGS_TOKEN`, `DISCOGS_USERNAME`, `DATABASE_URL`. Optional later: `YOUTUBE_API_KEY`.
+- Migrations `005_stream_parity.sql` and `006_sync.sql` applied to Neon `crates` on 2026-10-21 (branch `migrations-005-006` first, then `main`).
+- Discogs terms: images are fetched through `/api/img` with the Crates User-Agent and CDN-cached for 6 hours; the database keeps urls and metadata, never image bytes; the listing is re-checked every 6 hours.

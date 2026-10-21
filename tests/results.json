@@ -1,9 +1,16 @@
 [
   {
-    "test": "R11 Delete + two-step Discogs upload",
+    "test": "N03 Discogs Location sync",
     "status": "PASS",
-    "note": "",
+    "note": "queue after move ['r9=K1\u00b7B3']",
     "js_errors": [],
-    "secs": 2.8
+    "secs": 3.7
+  },
+  {
+    "test": "R12 Discogs sync (mocked API)",
+    "status": "PASS",
+    "note": "sync loop, merge, art, label, fallback",
+    "js_errors": [],
+    "secs": 2.7
   }
 ]

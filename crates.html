@@ -252,8 +252,10 @@ textarea{height:auto;min-height:96px;padding:10px 12px;resize:vertical}
 .pfilter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
 .preset{border:1px solid var(--line);background:var(--surface-2);border-radius:12px;padding:10px;text-align:left;display:flex;flex-direction:column;gap:6px}
-.preset .pv{height:96px;display:grid;place-items:end center;overflow:hidden}
-.preset .pv>*{transform:scale(.62);transform-origin:bottom center}
+.preset .ppv{height:96px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
+.preset .ppv>*{width:200px!important;max-width:200px!important;flex:0 0 200px;transform:scale(.6);transform-origin:bottom center;margin:0}
+.preset .ppv .kallax{max-width:200px!important}
+.preset .ppv .bagwrap,.preset .ppv .bag,.preset .ppv .cratewrap{width:200px!important}
 .preset b{font-size:13.5px;font-weight:600;line-height:1.25}
 .preset span{font-size:12px;color:var(--muted)}
 .preset[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--surface)}
@@ -606,6 +608,11 @@ body:has(#player[hidden]){padding-bottom:24px}
 .cuebar .sep{flex:0 0 1px;background:var(--line);margin:6px 2px}
 
 .foot{margin-top:34px;font-size:12.5px;color:var(--muted);max-width:72ch}
+.art-img{width:100%;height:100%;object-fit:cover;display:block;background:var(--surface-2)}
+.thumb .art-img,.sleeve .art-img,.bigcover .art-img,.lab .art-img{width:100%;height:100%}
+.sync-prog{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin:10px 0 6px}
+.sync-prog i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.sync-log{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);max-height:140px;overflow:auto;white-space:pre-wrap;margin-top:8px}
 
 /* ---------- slick table: no borders, soft stripes, pill hover ---------- */
 .tbl-shell .tbl-wrap{border:0;box-shadow:none;background:transparent;border-radius:12px}
@@ -1067,6 +1074,9 @@ function migrate(st){
     r.plays = list(r.plays).filter(p=>SAFE_DAY.test(p.d)).map(p=>({...p, venue:txt(p.venue)}));
     r.orig = isObj(r.orig) ? r.orig : {};
     if(r.dl!=null) r.dl = txt(r.dl);
+    ['cover','thumb','labelArt','discogsUrl'].forEach(k=>{ if(r[k]!=null && !(typeof r[k]==='string' && /^\/api\/img\?u=|^https:\/\/(i|img|www)\.discogs\.com\//.test(r[k]))) r[k] = null; });
+    r.tracks = list(r.tracks).map(t=>({position:txt(t.position), title:txt(t.title), duration:txt(t.duration)})); r.videos = list(r.videos).filter(v=>SAFE_YT.test(v.id)).map(v=>({id:v.id, title:txt(v.title), from:txt(v.from)}));
+    if(r.releaseId!=null && !Number.isInteger(r.releaseId)) r.releaseId = null; if(r.instanceId!=null && !Number.isInteger(r.instanceId)) r.instanceId = null;
   });
   st.playlists.forEach(p=>{ p.name = txt(p.name) || 'Untitled'; p.color = SAFE_HEX.test(p.color) ? p.color : PL_COLORS[0]; p.items = Array.isArray(p.items) ? p.items.map(R).filter(Boolean) : []; });
   st.gigs.forEach(g=>{ g.name = txt(g.name) || 'Gig'; g.venue = txt(g.venue); if(!SAFE_DAY.test(g.date)) g.date = new Date().toISOString().slice(0,10);
@@ -1101,13 +1111,20 @@ function addrLong(loc){ const u=unit(loc?.u); if(!u) return 'Unplaced';
 const same = (a,b) => a && b && a.u===b.u && a.c===b.c;
 const hasHome = r => !!(r.home && unit(r.home.u)?.kind==='shelf');
 const inCell = (u,c) => S.records.filter(r => r.loc.u===u && (c==='all' || r.loc.c===c));
-const discogsUrl = r => 'https://www.discogs.com/search/?q='+encodeURIComponent(r.artist+' '+r.title)+'&type=all';
+const discogsUrl = r => r.discogsUrl || (r.releaseId ? 'https://www.discogs.com/release/'+r.releaseId : 'https://www.discogs.com/search/?q='+encodeURIComponent(r.artist+' '+r.title)+'&type=all');
 const ytUrl = id => 'https://www.youtube.com/watch?v='+id;
 const ytSearch = r => 'https://www.youtube.com/results?search_query='+encodeURIComponent(r.artist+' '+r.title);
 function hash(s){ let h=0; for(const ch of String(s)) h=(Math.imul(31,h)+ch.charCodeAt(0))>>>0; return h; }
 const uid = p => p+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36);
 
-function cover(r){
+/* real Discogs art when the collection has been synced; the generated sleeve otherwise or if the image fails */
+function cover(r, kind){
+  const src = kind==='label' ? (r.labelArt || r.cover) : r.cover;
+  if(src && /^\/api\/img\?u=|^https:\/\/(i|img)\.discogs\.com\//.test(src)) return `<img class="art-img" src="${esc(src)}" alt="" loading="lazy" decoding="async" data-cover="${esc(r.id)}" data-kind="${kind||'cover'}">`;
+  return coverSvg(r);
+}
+document.addEventListener('error', e=>{ const img = e.target; if(!(img instanceof HTMLImageElement) || !img.dataset.cover) return; const r = rec(img.dataset.cover); if(r){ const t = document.createElement('span'); t.innerHTML = coverSvg(r); img.replaceWith(t.firstElementChild); } }, true);
+function coverSvg(r){
   const [a,b,c] = r.pal; let g='';
   switch(r.pat){
     case 0: g=`<rect width="100" height="100" fill="${b}"/>${[44,34,24,14].map((rad,i)=>`<circle cx="50" cy="42" r="${rad}" fill="${i%2?b:a}"/>`).join('')}<circle cx="50" cy="42" r="5" fill="${c}"/>`; break;
@@ -1535,7 +1552,7 @@ function renderAddFurniture(){
     <div class="pfilter">${groups.map(g=>`<button class="chip" data-act="af-group" data-g="${esc(g)}" aria-pressed="${draft.group===g}">${esc(g)}</button>`).join('')}</div>
     <div class="pgrid">${FURNITURE.filter(x=>x.group===draft.group).map(x=>{
       const s = {id:'X',kind:x.kind,preset:x.key,rows:x.rows||1,cols:x.cols||1,finish:finishesFor(x)[0],name:''};
-      return `<button class="preset" data-act="af-preset" data-k="${x.key}" aria-pressed="${draft.preset===x.key}"><span class="pv">${drawUnit(s,false,{empty:true})}</span><b>${esc((x.brand&&x.brand!=='Generic'&&x.brand!=='Custom'&&!x.name.includes(x.brand)?x.brand+' ':'')+x.name)}</b><span>${x.kind==='shelf'?(x.rows+'×'+x.cols+' · '):''}${esc(x.cap||'')}</span></button>`;}).join('')}</div>
+      return `<button class="preset" data-act="af-preset" data-k="${x.key}" aria-pressed="${draft.preset===x.key}"><span class="ppv">${drawUnit(s,false,{empty:true})}</span><b>${esc((x.brand&&x.brand!=='Generic'&&x.brand!=='Custom'&&!x.name.includes(x.brand)?x.brand+' ':'')+x.name)}</b><span>${x.kind==='shelf'?(x.rows+'×'+x.cols+' · '):''}${esc(x.cap||'')}</span></button>`;}).join('')}</div>
     <div class="sec-head"><div><h2 style="font-size:21px">Look</h2></div></div>
     <div class="detail-grid" style="margin-top:0">
       <div class="preview">${drawUnit(sample,false,{empty:true})}</div>
@@ -1561,7 +1578,7 @@ function renderAddBag(){
   const sample = {id:'X',name:draft.name||'Your bag',kind:'bag',preset:p.key,finish:draft.finish};
   openSheet(`<div class="sheet-head"><div><div class="kicker">Add a record bag</div><h2>${esc(p.brand+' '+p.name)}</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
     <div class="pfilter">${brands.map(b=>`<button class="chip" data-act="ab-brand" data-b="${esc(b)}" aria-pressed="${draft.brand===b}">${esc(b)}</button>`).join('')}</div>
-    <div class="pgrid">${BAGS.filter(b=>draft.brand==='All'||b.brand===draft.brand).map(b=>`<button class="preset" data-act="ab-preset" data-k="${b.key}" aria-pressed="${draft.preset===b.key}"><span class="pv">${drawBag({id:'X',name:'',kind:'bag',preset:b.key,finish:b.colors[0]},{empty:true,noTag:true})}</span><b>${esc(b.brand+' '+b.name)}</b><span>${esc(FORM_NAMES[b.form]||b.form)} · ${esc(b.cap)}${b.conf==='low'?' · unverified':''}</span></button>`).join('')}</div>
+    <div class="pgrid">${BAGS.filter(b=>draft.brand==='All'||b.brand===draft.brand).map(b=>`<button class="preset" data-act="ab-preset" data-k="${b.key}" aria-pressed="${draft.preset===b.key}"><span class="ppv">${drawBag({id:'X',name:'',kind:'bag',preset:b.key,finish:b.colors[0]},{empty:true,noTag:true})}</span><b>${esc(b.brand+' '+b.name)}</b><span>${esc(FORM_NAMES[b.form]||b.form)} · ${esc(b.cap)}${b.conf==='low'?' · unverified':''}</span></button>`).join('')}</div>
     <div class="sec-head"><div><h2 style="font-size:21px">Color & name</h2></div></div>
     <div class="detail-grid" style="margin-top:0">
       <div class="preview">${drawBag(sample,{empty:true})}</div>
@@ -1843,7 +1860,7 @@ function openSettings(){
     <p class="muted" style="font-size:13px">Each unit's finish or bag color is set from its own page: open it and tap “Look & name”.</p>
     <p class="muted" style="font-size:12.5px">Demo collection. Covers are placeholder art; the full app pulls sleeves and metadata from Discogs. ${SRC_NOTE} Changes stay in this browser.</p>
     <p class="muted" style="margin:18px 0 8px;font-size:13px">Your collection</p>
-    <div class="row"><button class="btn" data-act="bk-open">Backups (${backups().length}/${BK_MAX})</button><button class="btn" data-act="col-save">Save to file</button><button class="btn" data-act="dg-import">Import from Discogs…</button><button class="btn" data-act="reset">Reset demo collection</button></div><div id="reset-confirm"></div>
+    <div class="row"><button class="btn" data-act="bk-open">Backups (${backups().length}/${BK_MAX})</button><button class="btn" data-act="col-save">Save to file</button><button class="btn" data-act="sync-open">Sync from Discogs</button><button class="btn" data-act="dg-import">Import / upload…</button><button class="btn" data-act="reset">Reset demo collection</button></div><div id="reset-confirm"></div>
     <p class="muted" style="font-size:12.5px;margin-top:22px;border-top:1px solid var(--line);padding-top:12px"><b>Crates ${APP_VERSION}</b> · Thought up by Carlos Franzetti · Put into motion by Claude and the Crates crew</p>`);
   $('#set-dsync').onchange = e => { S.settings.discogsSync = e.target.checked; if(e.target.checked) S.records.forEach(enqueueSync); save(); setTimeout(()=>{ render(); openSettings(); },0); };
 }
@@ -2284,10 +2301,9 @@ function loadCandidate(){
   const r = cur(), st = stOf(r), id = r.yt[st.cand];
   st.state='trying'; plog(`${r.title}: link ${st.cand+1}/${r.yt.length} (${id})`);
   if(P.cued && P.cued.rid===r.id && P.cued.id===id && P.yt2){
-    try{ P.yt.stopVideo?.(); }catch(e){}
-    [P.yt, P.yt2] = [P.yt2, P.yt]; P.cued = null; plog(`${r.title}: swapped in the prefetched player`);
-    P.yt.playVideo();
-  } else P.yt.loadVideoById(id);
+    const old = P.yt; [P.yt, P.yt2] = [P.yt2, P.yt]; P.cued = null; plog(`${r.title}: swapped in the prefetched player`);
+    crossfade(old, P.yt);
+  } else { P.yt.loadVideoById(id); autoplayRetry(); }
   setTimeout(prefetchNext, 1200);
   st.step = st.cand===0?1:2; renderPlayer();
   P.timers.push(setTimeout(()=>{ const s = P.yt.getPlayerState?.(); if(s===1||s===3) return; failCandidate('no signal within 3s'); }, 3000));
@@ -2322,6 +2338,19 @@ function saveWorkingLink(r, st){
   r.ytStatus = 'working'; r.ytChecked = todayISO(); save();
   if(P.open) renderNP();
 }
+/* fade the old player out while the new one fades in (about a second), then stop the old one */
+function crossfade(from, to){
+  try{ to.setVolume(0); to.playVideo(); }catch(e){}
+  let step = 0; const steps = 12;
+  const t = setInterval(()=>{ step++; const k = step/steps; try{ to.setVolume(Math.round(k*100)); from.setVolume(Math.round((1-k)*100)); }catch(e){}
+    if(step>=steps){ clearInterval(t); try{ from.stopVideo(); from.setVolume(100); }catch(e){} } }, 90);
+  autoplayRetry();
+}
+/* discogs-stream: after a skip, poke playVideo every 300ms up to 10 times until the player is playing or buffering */
+function autoplayRetry(){
+  let n = 0; clearInterval(P.retryT);
+  P.retryT = setInterval(()=>{ n++; const s = P.yt?.getPlayerState?.(); if(s===1 || s===3 || n>10 || !P.playing){ clearInterval(P.retryT); return; } try{ P.yt.playVideo(); }catch(e){} }, 300);
+}
 function next(){ playAt(P.i+1); }
 function prev(){ playAt(P.i-1); }
 function toggle(){
@@ -2355,7 +2384,7 @@ function vinyl(r, opts={}){
   return `<div class="vinyl ${opts.cls||''} ${P.playing?'spin glow':''}"><div class="disc">
       <span class="g" style="inset:7%"></span><span class="g" style="inset:14%"></span><span class="g" style="inset:21%"></span>
       <svg viewBox="0 0 100 100" style="position:absolute;inset:0;width:100%;height:100%">${dust}</svg>
-      <span class="lab">${cover(r)}</span><span class="hole"></span></div><span class="sheen"></span></div>`;
+      <span class="lab">${cover(r,'label')}</span><span class="hole"></span></div><span class="sheen"></span></div>`;
 }
 function renderPlayer(){
   setTimeout(layoutVars, 0); setTimeout(layoutVars, 420);
@@ -3356,7 +3385,7 @@ const DEMO_DISCOGS = [['Underground Resistance','The Final Frontier','Undergroun
 function openDiscogsImport(){
   openSheet(`<div class="sheet-head"><div><div class="kicker">Collection → Export on discogs.com gives you a CSV</div><h2>Import from Discogs</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
     <p class="muted" style="margin:0 0 10px;font-size:13.5px">A backup of your current collection is made first. Imported records land as <b>Unplaced</b>; file them from the Collection tab or by dragging. Records you already own (same artist and title) are skipped.</p>
-    <div class="row" style="margin-bottom:14px"><label class="btn primary file">Load Discogs CSV export<input type="file" id="dg-csv" accept=".csv,text/csv"></label><button class="btn" data-act="dg-demo">Import a demo collection (6 records)</button></div>
+    <div class="row" style="margin-bottom:14px"><button class="btn primary" data-act="sync-open">Sync collection from Discogs…</button><label class="btn file">Load Discogs CSV export<input type="file" id="dg-csv" accept=".csv,text/csv"></label><button class="btn" data-act="dg-demo">Import a demo collection (6 records)</button></div>
     <div class="bcbox"><b style="font-size:14px">Upload to your Discogs collection</b><p class="muted" style="margin:6px 0 10px;font-size:13px">Adds records that aren’t in your Discogs collection yet, and writes each one’s spot to the “Location” field. Queued here; the full app sends them from the server within the 60 requests/minute limit.</p>
       <div class="row"><button class="btn" data-act="dg-upload-open">Upload to Discogs…</button><span class="muted" style="font-size:13px">${S.syncQueue.filter(q=>q.kind==='add').length} adds waiting</span></div></div>
     <p class="muted" style="font-size:12.5px;margin-top:12px">Importing straight from the Discogs API needs a server-side token (research/discogs-api.md), so the prototype reads the CSV export instead.</p>`);
@@ -3426,6 +3455,104 @@ Object.assign(A, {
   'dg-pre-demo':()=>snapshotDiscogs([['Artist','Title'], ...DEMO_DISCOGS], 'demo snapshot'),
 });
 
+/* =====================================================================
+   DISCOGS SYNC — talks to /api (Vercel functions; see api/ and app/db/006_sync.sql).
+   Pulls the collection into Neon in paced steps, then merges covers, label art, tracklists
+   and every YouTube link Discogs knows about into the records here. Checks for updates on boot
+   once the last sync is older than 6 hours.
+   ===================================================================== */
+const API = {ok:null, user:null, missing:[], busy:false};
+const API_HOST = !IN_ARTIFACT && /^https?:$/.test(location.protocol) && !/^(localhost|127\.)/.test(location.hostname);
+async function apiPing(){
+  if(!API_HOST){ API.ok = false; return false; }
+  try{ const r = await fetch('/api/collection?ping=1', {cache:'no-store'}); const j = await r.json().catch(()=>({})); API.ok = !!j.ok; API.user = j.user||null; API.missing = j.missing||[]; }catch(e){ API.ok = false; }
+  return API.ok;
+}
+let syncUI = null;
+function renderSyncSheet(state){
+  const pct = state.total ? Math.min(100, Math.round(((state.phase==='list' ? state.page/Math.max(1,state.pages)*0.2 : 0.2 + (state.total-(state.left??state.total))/state.total*0.8))*100)) : 0;
+  const phase = state.error ? state.error : state.done ? `Done · ${state.total} records in your Discogs collection` : state.phase==='list' ? `Listing your collection · page ${state.page} of ${state.pages||'?'}` : `Fetching covers, label art, tracklists and links · ${state.left??'?'} to go`;
+  const box = $('#sync-box'); if(!box) return;
+  box.innerHTML = `<p style="margin:0;font-size:14px"><b>${esc(phase)}</b></p><div class="sync-prog"><i style="width:${pct}%"></i></div>
+    <p class="muted" style="margin:0;font-size:12.5px">${state.done ? 'Merging into Crates…' : 'Paced to Discogs’ 60 requests a minute. You can close this; it carries on.'}</p>
+    ${state.log?.length?`<div class="sync-log">${esc(state.log.slice(-8).join('\n'))}</div>`:''}`;
+}
+function openSyncSheet(){
+  openSheet(`<div class="sheet-head"><div><div class="kicker">${API.user?'Discogs · '+esc(API.user):'Discogs'}</div><h2>Sync collection</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    ${API.ok ? `<p class="muted" style="margin:0 0 10px;font-size:13.5px">Pulls your Discogs collection through the Crates server: real covers and label scans, full tracklists, and every YouTube link Discogs has for the release, its master and sibling pressings. A backup is made before anything is merged. New records land as Unplaced.</p>
+      <div class="row" style="margin-bottom:12px"><button class="btn primary" data-act="dsync-run" ${API.busy?'disabled':''}>${S.lastSync?'Check for updates':'Sync now'}</button><button class="btn" data-act="dsync-full" ${API.busy?'disabled':''}>Refresh all art and links</button>${S.lastSync?`<span class="muted" style="font-size:13px">Last synced ${fmtWhen(S.lastSync)}</span>`:''}</div>
+      <div id="sync-box"></div>`
+    : `<div class="notice"><b>The server isn’t set up yet.</b> ${API_HOST ? `Add these in Vercel → Settings → Environment Variables and redeploy: <code>${esc((API.missing||['DISCOGS_TOKEN','DISCOGS_USERNAME','DATABASE_URL']).join(', '))}</code>. The Discogs token stays on the server; the browser never sees it.` : 'Syncing runs on crates-livid.vercel.app, not in this preview.'}</div>`}`);
+  if(API.busy && syncUI) renderSyncSheet(syncUI);
+}
+async function syncDiscogs(mode='run', quiet=false){
+  if(API.busy) return; API.busy = true; syncUI = {phase:'list', page:0, pages:0, total:0, log:[]};
+  if(!quiet) renderSyncSheet(syncUI);
+  try{
+    for(let i=0; i<400; i++){
+      const r = await fetch('/api/sync?mode='+mode, {method:'POST'}); const j = await r.json().catch(()=>({error:'Bad reply from the server'}));
+      if(!r.ok || j.error){ syncUI = {...syncUI, error: j.error || ('Server error '+r.status)}; if(!quiet) renderSyncSheet(syncUI); toast('Sync stopped: '+(j.error||r.status)); return; }
+      syncUI = {...j, log:[...(syncUI.log||[]), ...(j.log||[])]}; if(!quiet) renderSyncSheet(syncUI);
+      if(j.done){ if(j.fresh && quiet && S.lastSync && new Date(j.finished_at||0) <= new Date(S.lastSync)) return; break; }
+      mode = 'run';
+    }
+    const r = await fetch('/api/collection', {cache:'no-store'}); const j = await r.json();
+    if(!r.ok || !Array.isArray(j.records)) throw new Error(j.error||'Could not read the synced collection');
+    const n = mergeCollection(j.records, quiet);
+    S.lastSync = new Date().toISOString(); S.discogsUser = j.user; save();
+    if(!quiet) closeSheet(); render(); renderPlayer(); preloadArt();
+    toast(`Synced with Discogs · ${n.added} new, ${n.updated} updated, ${j.records.length} total`, false);
+  }catch(e){ toast('Sync failed: '+(e.message||e)); }
+  finally{ API.busy = false; syncUI = null; }
+}
+/* merge the server's records into S.records: match by release id, then by artist + title; never overwrite the owner's edits */
+function mergeCollection(list, quiet){
+  if(!quiet) backupNow('Before Discogs sync', 'import'); else if(!backups().some(b=>b.kind==='import' && Date.now()-new Date(b.at) < 36e5)) backupNow('Before Discogs update', 'import');
+  const byRel = new Map(S.records.filter(r=>r.releaseId).map(r=>[r.releaseId, r]));
+  const byName = new Map(S.records.map(r=>[norm(r.artist)+'|'+norm(r.title), r]));
+  let added=0, updated=0;
+  list.forEach(x=>{
+    let r = byRel.get(x.releaseId) || byName.get(norm(x.artist)+'|'+norm(x.title));
+    if(!r){
+      const n = hash(x.artist+x.title);
+      r = {id:uid('r'), artist:x.artist, title:x.title, label:x.label, year:String(x.year||''), style:x.style, catno:x.catno, barcode:x.barcode||'', bpm:'', key:'', rating:0, cm:'', notes:'', tags:[], yt:[], pal:PALS[n%PALS.length], pat:n%6, loc:{u:null,c:null}, home:null, from:null, plays:[], orig:{}};
+      ['artist','title','label','catno','year','style'].forEach(k=>{ r.orig[k] = r[k]; });
+      S.records.push(r); added++;
+    } else {
+      // fill blanks and refresh the Discogs original, keep anything the owner typed
+      const ed = editedSet(r);
+      [['label',x.label],['catno',x.catno],['year',String(x.year||'')],['style',x.style],['barcode',x.barcode||'']].forEach(([k,v])=>{ if(!v) return; r.orig ||= {}; const was = r.orig[k]; if(!r[k] || (!ed.has(k) && r[k]===was)) r[k] = v; r.orig[k] = v; });
+      updated++;
+    }
+    r.releaseId = x.releaseId; r.instanceId = x.instanceId; r.folderId = x.folderId; r.dateAdded = x.dateAdded;
+    r.cover = x.cover || r.cover || null; r.thumb = x.thumb || null; r.labelArt = x.labelArt || null;
+    r.tracks = x.tracks || []; r.formats = x.formats || []; r.discogsUrl = x.discogsUrl;
+    // links: a saved working primary stays first; everything Discogs found is appended once
+    const keep = r.ytStatus==='working' && r.yt[0] ? [r.yt[0]] : [];
+    r.yt = [...new Set([...keep, ...(x.yt||[]), ...r.yt])];
+    r.videos = x.videos || [];
+  });
+  return {added, updated};
+}
+/* warm the covers the user is about to see (the CDN keeps them 6 hours) */
+function preloadArt(){
+  const here = unit(V.unit) ? inCell(V.unit, V.cell) : [];
+  const list = [...here, ...S.records.slice(0, 60)];
+  const seen = new Set();
+  list.forEach(r=>{ [r.thumb, r.cover].forEach(u=>{ if(u && !seen.has(u)){ seen.add(u); const im = new Image(); im.decoding='async'; im.src = u; } }); });
+}
+/* on boot: if the server is there and the last sync is older than 6 hours, check for updates quietly */
+async function apiBoot(){
+  if(!(await apiPing())) return;
+  const stale = !S.lastSync || Date.now() - new Date(S.lastSync).getTime() > 6*36e5;
+  if(stale) syncDiscogs('check', true); else preloadArt();
+}
+Object.assign(A, {
+  'sync-open':()=>openSyncSheet(),
+  'dsync-run':()=>syncDiscogs('run'),
+  'dsync-full':()=>syncDiscogs('full'),
+});
+
 /* ---------- Claude photo recognition (optional) ---------- */
 (async()=>{
   try{ AI = await window.claude?.use?.('sample'); if(AI){ const lim = await AI.limits().catch(()=>null); AI_IMAGES = !!lim?.images; } }catch(e){ AI = null; }
@@ -3434,6 +3561,7 @@ Object.assign(A, {
 /* ---------- boot ---------- */
 render();
 if(location.hash) routeHash();
+setTimeout(apiBoot, 800);
 renderPlayer();  // hidden until something plays, then it slides in from the bottom
 updateUndoBtn();
 </script>

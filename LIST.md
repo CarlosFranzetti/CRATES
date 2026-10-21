@@ -476,6 +476,16 @@ Bag capacities are in LPs unless stated; "Capacity not listed" means the maker g
 - [~] Upload to the Discogs collection: step 1 pulls the current Discogs collection (CSV export in the prototype, API in the full app) into a backup of kind `discogs`; step 2 queues `kind:'add'` entries in the sync queue, sent by the server job
 - [x] Collection table: full height, container bar on top (All + every spot) filters and takes dropped rows via the ⋮⋮ handle; Unplaced filter; pads size to their text and drop the subtitle when tight
 
+## 22c. Discogs sync (server)
+
+- [x] `api/sync.js`: paced incremental sync (20 Discogs requests per call, 60/min), phases list → enrich → done; master and sibling-version videos when a release is short on links; removed releases flagged
+- [x] `api/collection.js`: the synced collection shaped for the app; `?ping=1` config check; `?check=1` freshness
+- [x] `api/img.js`: Discogs-only image proxy with our User-Agent, CDN-cached 6 hours; no image bytes stored
+- [x] Client: Sync sheet with progress, merge by release id then artist + title (owner edits kept), backup first, quiet 6-hour update check on boot, art preload for the current spot
+- [x] Real covers in sleeves, thumbnails, the big cover and the spinning record's label (label scan when Discogs has one), generated art as the fallback
+- [x] Player: crossfade on the prefetch swap, autoplay retry after a skip (discogs-stream)
+- [ ] YouTube search for releases with no Discogs links (needs `YOUTUBE_API_KEY`; discogs-stream's search function)
+
 ## 23. Prototype data and persistence
 
 - [x] All state in the browser (`localStorage`, key `crates-demo-v3`), saved after every change

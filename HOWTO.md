@@ -211,6 +211,15 @@ Printing tips:
 - **Your collection:** Backups, Save to file, Import from Discogs, Reset demo collection (see the next section).
 - The page follows your reduced-motion setting.
 
+## Sync your Discogs collection (real covers, label art, every link)
+
+Crates has a small server (Vercel functions in `api/`, Neon tables from `app/db/006_sync.sql`). Once it has your token it pulls your Discogs collection in paced steps, 60 requests a minute: the collection listing first, then each release's covers, label scan, full tracklist and YouTube links. When a release lists fewer links than tracks it also looks at the master release and up to three sibling pressings.
+
+1. In Vercel → Project → Settings → Environment Variables add `DISCOGS_TOKEN` (a personal access token from discogs.com/settings/developers), `DISCOGS_USERNAME` and `DATABASE_URL` (the Neon connection string). Redeploy. The token never reaches the browser.
+2. Settings → **Sync from Discogs** → **Sync now**. The sheet shows progress; you can close it and it carries on. A backup is made before anything is merged. Existing records are matched by release or by artist + title and get their art, tracks and links; the rest land as Unplaced.
+3. Covers and label scans load through `/api/img`, which caches them for six hours (Discogs' freshness rule) and the app warms the ones you're about to see.
+4. On every launch, if the last sync is older than six hours, Crates checks Discogs for changes and merges them quietly. **Refresh all art and links** forces a full pass.
+
 ## Back up, save, load and import
 
 - **Backups** (Settings → Backups) keeps the four most recent snapshots in this browser. One is made automatically before every import, restore and reset; **Back up now** adds one by hand. The oldest is dropped when all four slots are used. **Restore** swaps a backup in (after backing up the current collection first), ✕ deletes one.

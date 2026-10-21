@@ -1355,6 +1355,58 @@ def r11_delete_and_upload(a):
     check(not a.js_errors(), a.js_errors())
 
 
+def r12_discogs_sync(browser, url):
+    import base64, json as _json
+    a = App(browser, url, 1280, 900, legacy=False)
+    try:
+        png = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==")
+        calls = {"sync": 0}
+        cover = "/api/img?u=" + "https%3A%2F%2Fi.discogs.com%2Fabc%2Fcover.jpg"
+        coll = {"user": "los", "total": 2, "fresh": True, "phase": "done", "records": [
+            {"releaseId": 101, "instanceId": 5, "folderId": 1, "dateAdded": "2026-01-01T00:00:00Z", "artist": "Model 500", "title": "No UFO's", "label": "Metroplex", "catno": "M-001", "year": 1985, "style": "Electro",
+             "cover": cover, "thumb": cover, "labelArt": cover, "tracks": [{"position": "A", "title": "No UFO's", "duration": "5:40"}, {"position": "B", "title": "Future", "duration": "6:01"}],
+             "yt": ["UHja6QCvwRc", "zzzzzzzzzzz"], "videos": [{"id": "UHja6QCvwRc", "title": "x", "from": "release"}, {"id": "zzzzzzzzzzz", "title": "y", "from": "master"}], "enriched": True, "discogsUrl": "https://www.discogs.com/release/101"},
+            {"releaseId": 202, "instanceId": 6, "folderId": 1, "dateAdded": "2026-02-01T00:00:00Z", "artist": "Drexciya", "title": "Aquatic Invasion", "label": "Underground Resistance", "catno": "UR-029", "year": 1995, "style": "Electro",
+             "cover": cover, "thumb": cover, "labelArt": None, "tracks": [], "yt": ["aaaaaaaaaaa"], "videos": [{"id": "aaaaaaaaaaa", "title": "z", "from": "version:7"}], "enriched": True, "discogsUrl": "https://www.discogs.com/release/202"}]}
+        def api(route):
+            u = route.request.url
+            if "/api/collection" in u:
+                if "ping=1" in u: return route.fulfill(status=200, content_type="application/json", body=_json.dumps({"ok": True, "user": "los"}))
+                return route.fulfill(status=200, content_type="application/json", body=_json.dumps(coll))
+            if "/api/sync" in u:
+                calls["sync"] += 1
+                body = {"done": calls["sync"] >= 2, "phase": "enrich" if calls["sync"] < 2 else "done", "page": 1, "pages": 1, "total": 2, "left": 2 - calls["sync"], "log": [f"step {calls['sync']}"]}
+                return route.fulfill(status=200, content_type="application/json", body=_json.dumps(body))
+            if "/api/img" in u: return route.fulfill(status=200, content_type="image/png", body=png)
+            return route.continue_()
+        a.page.route("**/api/**", api)
+        a.ev("API.ok=true; API.user='los'")
+        a.click("[data-act=open-settings]"); a.click(".sheet [data-act=sync-open]"); a.click(".sheet [data-act=dsync-run]")
+        a.page.wait_for_function("S.lastSync", timeout=8000); _settle(a, 300)
+        check(calls["sync"] >= 2, "sync loop did not continue until done")
+        check(a.ev("S.records.length") == 11, f"expected 10 + 1 new, got {a.ev('S.records.length')}")
+        r9 = a.ev("JSON.stringify(rec('r9'))"); r9 = _json.loads(r9)
+        check(r9["releaseId"] == 101 and r9["cover"] == cover and r9["labelArt"] == cover, "existing record did not get its Discogs art")
+        check(r9["yt"][:2] == ["UHja6QCvwRc", "zzzzzzzzzzz"] and len(r9["tracks"]) == 2, f"links/tracks not merged: {r9['yt'][:3]}")
+        check(r9["label"] == "Metroplex" and r9["catno"] == "M-001", "blank fields not filled")
+        new = a.ev("S.records.find(r=>r.releaseId===202)")
+        check(new and new["loc"]["u"] is None, "new record should be Unplaced")
+        check(a.ev("backups()[0].label") == "Before Discogs sync", "no backup before the merge")
+        check(a.page.locator(".spot-panel .thumb img.art-img").count() >= 1, "real cover not rendered in the panel")
+        a.ev("P.queue=[rec('r9').id];P.i=0;openNP()"); _settle(a, 200)
+        check(a.page.locator("#np-sheet .lab img.art-img").count() == 1, "label art not on the spinning record")
+        a.ev("closeNP()")
+        # a broken image falls back to the generated sleeve
+        a.ev("rec('r9').cover='/api/img?u=https%3A%2F%2Fi.discogs.com%2Fbroken.jpg';render()")
+        a.page.unroute("**/api/**"); a.page.route("**/api/img**", lambda r: r.fulfill(status=404, body=""))
+        a.ev("render()"); _settle(a, 400)
+        check(a.page.locator(".spot-panel .thumb svg").count() >= 1, "broken image did not fall back")
+        check(not a.js_errors(), a.js_errors())
+        return "sync loop, merge, art, label, fallback"
+    finally:
+        a.close()
+
+
 TESTS += [
     ("R01 Room fits the screen", r01_room_fits), ("R02 Zoom into a unit", r02_zoom),
     ("R03 Drag and drop", r03_drag), ("R04 Multi-step undo", r04_multi_undo),
@@ -1364,8 +1416,9 @@ TESTS += [
     ("R09 Backups + Discogs import", r09_backups_import),
     ("R10 Density, sheet snaps, phone columns", r10_density_and_sheet),
     ("R11 Delete + two-step Discogs upload", r11_delete_and_upload),
+    ("R12 Discogs sync (mocked API)", r12_discogs_sync),
 ]
-BROWSER_LEVEL |= {r01_room_fits, r03_drag, r06_player_slides_in, r10_density_and_sheet}
+BROWSER_LEVEL |= {r01_room_fits, r03_drag, r06_player_slides_in, r10_density_and_sheet, r12_discogs_sync}
 
 # ---------------------------------------------------------------- review swarm (docs/REVIEW-SWARM.md)
 _GEN = """(([nu, nr]) => {

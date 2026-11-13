@@ -1,2 +1,2 @@
-crates.html merge=union
-tests/test_crates.py merge=union
+# crates.html: no union merge, it drops shared closing lines
+

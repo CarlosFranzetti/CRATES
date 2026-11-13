@@ -5,3 +5,4 @@ tests/shots/
 dist/
 /node_modules/
 /.claude/
+/tests/results.json

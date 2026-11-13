@@ -1,9 +1,86 @@
 [
   {
-    "test": "R10 Density, sheet snaps, phone columns",
-    "status": "FAIL",
-    "note": "compact rows should be shorter (50.6875 -> 50.6875)",
+    "test": "WB01 Spot opens as a stack",
+    "status": "PASS",
+    "note": "5 records, caption \"No UFO's\"",
+    "js_errors": [],
+    "secs": 0.9
+  },
+  {
+    "test": "WB02 Keys flip without a rebuild",
+    "status": "PASS",
+    "note": "arrows/Home/End/J/K/PageUp/PageDown/type-ahead keep the same stack node",
+    "js_errors": [],
+    "secs": 1.9
+  },
+  {
+    "test": "WB03 Wheel and trackpad flip",
+    "status": "PASS",
+    "note": "notch = 1, trackpad flick ran 5",
+    "js_errors": [],
+    "secs": 1.7
+  },
+  {
+    "test": "WB04 Touch flick",
+    "status": "PASS",
+    "note": "slow drag 3, hard flick 31",
+    "js_errors": [],
+    "secs": 5.9
+  },
+  {
+    "test": "WB05 Scrubber",
+    "status": "PASS",
+    "note": "scrubbed to 50 then 100",
+    "js_errors": [],
+    "secs": 1.5
+  },
+  {
+    "test": "WB06 Stack/list toggle persists",
+    "status": "PASS",
+    "note": "persisted in Map and Columns",
+    "js_errors": [],
+    "secs": 2.3
+  },
+  {
+    "test": "WB07 Select and stale show the list",
+    "status": "PASS",
+    "note": "Select and stale fall back to the list",
+    "js_errors": [],
+    "secs": 1.1
+  },
+  {
+    "test": "WB08 150-record spot is fast",
+    "status": "PASS",
+    "note": "avg 0.31 ms, max 2.60 ms per flip, 13 covers",
+    "js_errors": [],
+    "secs": 0.4
+  },
+  {
+    "test": "WB09 Phone fit + Columns",
+    "status": "PASS",
+    "note": "cover 78% of width, body 525/525",
+    "js_errors": [],
+    "secs": 1.8
+  },
+  {
+    "test": "WB10 Columns follow + drag",
+    "status": "PASS",
+    "note": "detail follows, drag from the front sleeve moves the record",
+    "js_errors": [],
+    "secs": 1.6
+  },
+  {
+    "test": "WB11 Empty and single",
+    "status": "PASS",
+    "note": "empty and single-record states",
     "js_errors": [],
     "secs": 0.7
+  },
+  {
+    "test": "WB12 Looks and reduced motion",
+    "status": "PASS",
+    "note": "flat, booth, shop; reduced motion",
+    "js_errors": [],
+    "secs": 0.9
   }
 ]

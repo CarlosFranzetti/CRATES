@@ -1643,6 +1643,312 @@ TESTS += [("X24 Build CSP hashes match", x24_build_csp_hashes)]
 BROWSER_LEVEL |= {x15_phone_reveal, x19_phone_gutters_and_resize, x20_phone_columns_history, x21_sheet_release_velocity} | {x24_build_csp_hashes}
 
 
+# ---------------------------------------------------------------- WP-B: flip stack
+_WB_GEN = """((n) => { const base = S.records.slice(0,5).map(r=>JSON.parse(JSON.stringify(r))), recs = [];
+  for(let i=0;i<n;i++){ const b = base[i%base.length]; recs.push({...JSON.parse(JSON.stringify(b)), id:'w'+i, title:b.title+' '+i, artist:String.fromCharCode(65+(i%26))+'rtist '+i, loc:{u:'C1',c:'0-0'}, home:null}); }
+  S.records = S.records.filter(r=>r.loc.u!=='C1').concat(recs); V.view='map'; V.unit='C1'; V.cell='all'; V.dig=0; M.sheet='half'; render(); return n; })"""
+_WB_CAP = "(()=>{ const r=rec(STK.ids[V.dig]), n=STK.ids.length; return {t:document.querySelector('.stk-t').textContent, a:document.querySelector('.stk-a').textContent, c:document.querySelector('.stk-c').textContent, live:document.querySelector('.stk-live').textContent, want:r.title, wantA:r.artist, n}; })()"
+
+
+def _wb_app(browser, url, w=1280, h=900):
+    return App(browser, url, w, h, legacy=False)
+
+
+def _wb_over_stage(a):
+    b = a.page.locator(".spot-panel .stk-stage, .col-recs .stk-stage").first.bounding_box()
+    a.page.mouse.move(b["x"] + b["width"] / 2, b["y"] + b["height"] / 2)
+    return b
+
+
+def wb01_opens_as_stack(browser, url):
+    a = _wb_app(browser, url)
+    try:
+        check(a.page.locator(".spot-panel .stk").count() == 1, "a spot should open as a stack")
+        check(a.page.locator(".spot-panel .list .li").count() == 0, "list should not show by default")
+        c = a.ev(_WB_CAP)
+        check(c["t"] == c["want"] and c["a"] == c["wantA"], f"caption {c}")
+        check(c["c"] == f"1 of {c['n']}", f"counter {c['c']!r}")
+        check(c["live"] == f"{c['want']}, {c['wantA']}, 1 of {c['n']}", f"aria-live text {c['live']!r}")
+        check(a.page.locator(".stk").get_attribute("tabindex") == "0", "stack must be focusable")
+        check(a.page.locator(".stk-live").get_attribute("aria-live") == "polite", "live region")
+        check(a.ev("document.querySelector('.stk-s.f').dataset.drag") == a.ev("STK.ids[0]"), "front sleeve must carry data-drag")
+        for lab in ["Play", "Preview 30s", "Detail", "Move…"]:
+            check(a.page.locator(f".stk-acts :text-is('{lab}')").count() == 1, f"missing action {lab}")
+        # Detail (no A.detail yet) falls back to the edit sheet; clicking the front sleeve does the same
+        a.page.locator(".stk-s.f").click(); _settle(a, 150)
+        check(a.ev("typeof sheetKind==='string' && !!sheetKind"), "tapping the front sleeve should open the detail/edit sheet")
+        a.page.keyboard.press("Escape"); _settle(a, 100)
+        check(not a.js_errors(), a.js_errors())
+        return f"{c['n']} records, caption {c['t']!r}"
+    finally:
+        a.close()
+
+
+def wb02_keys_flip_without_rebuild(browser, url):
+    a = _wb_app(browser, url)
+    try:
+        a.ev(_WB_GEN, 12)
+        a.ev("window.__stk = document.querySelector('.stk'); window.__stage = document.querySelector('.stk-stage')")
+        same = "document.querySelector('.stk')===window.__stk && document.querySelector('.stk-stage')===window.__stage"
+        seq = [("ArrowRight", 1), ("ArrowRight", 2), ("ArrowLeft", 1), ("End", 11), ("Home", 0), ("j", 1), ("k", 0), ("PageDown", 10), ("PageUp", 0)]
+        for key, want in seq:
+            a.page.keyboard.press(key); _settle(a, 30)
+            check(a.ev("V.dig") == want, f"{key}: V.dig {a.ev('V.dig')} != {want}")
+            c = a.ev(_WB_CAP)
+            check(c["t"] == c["want"] and c["c"] == f"{want+1} of 12" and c["live"].endswith(f"{want+1} of 12"), f"{key}: caption {c}")
+            check(a.ev(same), f"{key}: the stack element was re-created")
+        check(a.ev("document.querySelectorAll('.stk-s.f').length") == 1 and a.ev("document.querySelector('.stk-s.f').dataset.i") == "0", "front sleeve should follow the flip")
+        a.page.keyboard.press("ArrowLeft"); _settle(a, 30); check(a.ev("V.dig") == 0, "should not go below 0")
+        # type-ahead by artist: artists are 'Artist 0', 'Brtist 1', 'Crtist 2' ...
+        a.page.keyboard.press("c"); _settle(a, 30)
+        check(a.ev("rec(STK.ids[V.dig]).artist.toLowerCase().startsWith('c')"), f"type-ahead c -> {a.ev('rec(STK.ids[V.dig]).artist')}")
+        a.page.wait_for_timeout(900)
+        a.page.keyboard.press("e"); _settle(a, 30)
+        check(a.ev("rec(STK.ids[V.dig]).artist.toLowerCase().startsWith('e')"), "type-ahead e after the buffer expired")
+        check(a.ev(same), "type-ahead re-created the stack")
+        check(not a.js_errors(), a.js_errors())
+        return "arrows/Home/End/J/K/PageUp/PageDown/type-ahead keep the same stack node"
+    finally:
+        a.close()
+
+
+def wb03_wheel_flips(browser, url):
+    a = _wb_app(browser, url)
+    try:
+        a.ev(_WB_GEN, 20)
+        _wb_over_stage(a)
+        a.page.mouse.wheel(0, 100); _settle(a, 60)
+        check(a.ev("V.dig") == 1, f"one wheel notch should flip one record, V.dig={a.ev('V.dig')}")
+        a.page.mouse.wheel(0, 100); a.page.mouse.wheel(0, 100); _settle(a, 60)
+        check(a.ev("V.dig") == 3, f"two notches -> 3, got {a.ev('V.dig')}")
+        a.page.mouse.wheel(0, -100); _settle(a, 60)
+        check(a.ev("V.dig") == 2, "wheel up should go back")
+        a.page.wait_for_timeout(250)
+        a.page.mouse.wheel(60, 0); _settle(a, 60)   # horizontal trackpad delta, under a notch: accumulates
+        check(a.ev("V.dig") == 3, f"a 60 px horizontal scroll should flip one, got {a.ev('V.dig')}")
+        a.ev("V.dig=0; stkApply()"); a.page.wait_for_timeout(250)
+        for _ in range(8):
+            a.page.mouse.wheel(0, 30)
+        _settle(a, 80)
+        d = a.ev("V.dig")
+        check(d >= 3, f"a trackpad flick (8 x 30 px) should run through several records, got {d}")
+        check(a.ev("document.documentElement.scrollTop + document.querySelector('.spot-body').scrollTop") == 0, "the page or panel scrolled instead")
+        check(not a.js_errors(), a.js_errors())
+        return f"notch = 1, trackpad flick ran {d}"
+    finally:
+        a.close()
+
+
+_WB_TOUCH = """async ([sel, xs, gap, tp]) => {
+  const el = document.querySelector(sel), b = el.getBoundingClientRect(), y = b.top + b.height/2;
+  const fire = (t, x) => el.dispatchEvent(new PointerEvent(t, {bubbles:true, cancelable:true, pointerId:7, pointerType:tp||'touch', isPrimary:true, button:0, buttons:t==='pointerup'?0:1, clientX:x, clientY:y}));
+  fire('pointerdown', xs[0]);
+  for(const x of xs.slice(1)){ await new Promise(r=>setTimeout(r,gap)); fire('pointermove', x); }
+  fire('pointerup', xs[xs.length-1]);
+}"""
+
+
+def wb04_touch_flick(browser, url):
+    a = _wb_app(browser, url, 390, 844)
+    try:
+        a.ev(_WB_GEN, 40); a.ev("M.sheet='full'; render()"); _settle(a, 200)
+        b = a.page.locator(".stk-stage").bounding_box(); x0 = b["x"] + b["width"] * .8
+        # a slow drag: 192 px at 64 px per record = 3 records, no inertia
+        a.ev(_WB_TOUCH, [".stk-s.f", [x0 - i * 24 for i in range(9)], 90, "touch"]); _settle(a, 800)
+        slow = a.ev("V.dig")
+        check(slow == 3, f"a slow 192 px drag should move 3 records, moved {slow}")
+        # a hard flick: 40 px every 8 ms, then it decelerates through many records
+        a.ev("V.dig=0; stkApply()")
+        a.ev(_WB_TOUCH, [".stk-s.f", [x0 - i * 40 for i in range(7)], 8, "touch"]); _settle(a, 1200)
+        fast = a.ev("V.dig")
+        check(fast >= 8, f"a hard flick should run through several records, got {fast}")
+        # a flick to the right goes back
+        a.ev(_WB_TOUCH, [".stk-s.f", [x0 - 240 + i * 40 for i in range(7)], 8, "touch"]); _settle(a, 1200)
+        check(a.ev("V.dig") < fast, "flicking right should go back")
+        # a swipe does not open the detail sheet
+        a.ev("V.dig=2; stkApply()"); _settle(a, 450)
+        a.ev(_WB_TOUCH, [".stk-s.f", [x0, x0 - 90, x0 - 130], 20, "touch"]); _settle(a, 600)
+        check(not a.ev("typeof sheetKind==='string' && !!sheetKind"), "a swipe must not open the detail sheet")
+        check(a.ev("document.documentElement.scrollWidth") <= 390, "sideways scroll")
+        check(not a.js_errors(), a.js_errors())
+        return f"slow drag {slow}, hard flick {fast}"
+    finally:
+        a.close()
+
+
+def wb05_scrubber(browser, url):
+    a = _wb_app(browser, url)
+    try:
+        a.ev(_WB_GEN, 100)
+        a.ev("window.__stk = document.querySelector('.stk')")
+        check(a.page.locator(".stk-tk").count() == 60, f"ticks should be capped at 60, got {a.page.locator('.stk-tk').count()}")
+        b = a.page.locator(".stk-scrub").bounding_box(); y = b["y"] + b["height"] / 2; m = a.page.mouse
+        m.move(b["x"] + 2, y); m.down()
+        m.move(b["x"] + b["width"] / 2, y, steps=6); _settle(a, 40)
+        mid = a.ev("V.dig"); check(40 <= mid <= 60, f"dragging to the middle should land near 50, got {mid}")
+        m.move(b["x"] + b["width"] - 1, y, steps=6); _settle(a, 40)
+        check(a.ev("V.dig") == 99, f"dragging to the end should reach the last record, got {a.ev('V.dig')}")
+        m.up(); _settle(a, 350)
+        check(a.ev("document.querySelector('.stk')===window.__stk"), "scrubbing re-created the stack")
+        check(a.page.locator(".stk-tk.on").count() == 1, "exactly one tick should be highlighted")
+        c = a.ev(_WB_CAP); check(c["c"] == "100 of 100" and c["t"] == c["want"] and c["live"].endswith("100 of 100"), f"caption after scrub {c}")
+        check(a.page.locator(".stk-scrub").get_attribute("aria-valuenow") == "100", "slider value")
+        check(not a.js_errors(), a.js_errors())
+        return f"scrubbed to {mid} then 100"
+    finally:
+        a.close()
+
+
+def wb06_toggle_persists(browser, url):
+    a = _wb_app(browser, url)
+    try:
+        a.page.locator(".stk-acts [data-act=spot-mode]").click(); _settle(a, 100)
+        check(a.page.locator(".spot-panel .stk").count() == 0 and a.page.locator(".spot-panel .list .li").count() > 0, "toggle should show the list")
+        check(a.ev("S.settings.spotMode") == "list", "setting not stored")
+        a.page.reload(); a.page.wait_for_selector("#main .map"); _settle(a, 200)
+        check(a.page.locator(".spot-panel .stk").count() == 0 and a.page.locator(".spot-panel .list .li").count() > 0, "list mode should survive a reload")
+        a.page.locator(".stk-modebar [data-act=spot-mode]").click(); _settle(a, 100)
+        check(a.page.locator(".spot-panel .stk").count() == 1, "toggle back to the stack")
+        a.page.reload(); a.page.wait_for_selector("#main .map"); _settle(a, 200)
+        check(a.page.locator(".spot-panel .stk").count() == 1 and a.ev("S.settings.spotMode") == "stack", "stack mode should survive a reload")
+        a.ev("S.settings.spotMode='sideways'; S=migrate(S); render()")
+        check(a.ev("S.settings.spotMode") == "stack", "migrate should reset an unknown spotMode")
+        a.ev("S.settings.view='columns';V.view='columns';render()"); _settle(a, 100)
+        check(a.page.locator(".col-recs .stk").count() == 1, "the Columns middle pane should show the stack")
+        a.page.locator(".col-recs .stk-acts [data-act=spot-mode]").click(); _settle(a, 100)
+        check(a.page.locator(".col-recs .stk").count() == 0 and a.page.locator(".col-recs .list .li").count() > 0, "Columns list mode")
+        check(not a.js_errors(), a.js_errors())
+        return "persisted in Map and Columns"
+    finally:
+        a.close()
+
+
+def wb07_select_and_stale_show_list(browser, url):
+    a = _wb_app(browser, url)
+    try:
+        a.page.locator(".spot-head [data-act=toggle-sel]").click(); _settle(a, 100)
+        check(a.page.locator(".spot-panel .stk").count() == 0 and a.page.locator(".spot-panel .list input[type=checkbox]").count() > 0, "Select mode should show the list with checkboxes")
+        a.page.locator(".spot-head [data-act=toggle-sel]").click(); _settle(a, 100)
+        check(a.page.locator(".spot-panel .stk").count() == 1, "leaving Select mode should bring the stack back")
+        a.page.locator(".spot-head [data-act=toggle-stale]").click(); _settle(a, 100)
+        check(a.page.locator(".spot-panel .stk").count() == 0, "the stale filter should show the list (or its empty state)")
+        a.page.locator(".spot-head [data-act=toggle-stale]").click(); _settle(a, 100)
+        check(a.page.locator(".spot-panel .stk").count() == 1, "stack back after the stale filter")
+        check(not a.js_errors(), a.js_errors())
+        return "Select and stale fall back to the list"
+    finally:
+        a.close()
+
+
+def wb08_big_spot_is_fast(browser, url):
+    a = _wb_app(browser, url)
+    try:
+        a.ev(_WB_GEN, 150)
+        n0 = a.ev("document.querySelectorAll('.stk-s').length"); check(n0 <= 13, f"{n0} covers in the DOM at start")
+        a.ev("window.__stk = document.querySelector('.stk')")
+        ms = a.ev("(()=>{ const t=[]; for(let i=0;i<50;i++){ const s=performance.now(); dig(1); t.push(performance.now()-s); } return t; })()")
+        avg = sum(ms) / len(ms)
+        check(avg < 16, f"a flip averaged {avg:.2f} ms of script time")
+        check(a.ev("V.dig") == 50, "50 flips should reach record 50")
+        n1 = a.ev("document.querySelectorAll('.stk-s').length"); check(n1 <= 13, f"{n1} covers in the DOM after flipping")
+        a.ev("stkGo(149)"); n2 = a.ev("document.querySelectorAll('.stk-s').length"); check(n2 <= 13, f"{n2} covers at the end")
+        check(a.ev("document.querySelector('.stk')===window.__stk"), "stack re-created")
+        check(a.ev("document.getElementsByTagName('*').length") < 2500, "DOM too large for a 150-record crate")
+        check(not a.js_errors(), a.js_errors())
+        return f"avg {avg:.2f} ms, max {max(ms):.2f} ms per flip, {n1} covers"
+    finally:
+        a.close()
+
+
+def wb09_phone_fits(browser, url):
+    a = _wb_app(browser, url, 390, 844)
+    try:
+        a.ev("M.sheet='full'; render()"); _settle(a, 300)
+        check(a.ev("document.documentElement.scrollWidth") <= 390, "sideways scroll")
+        sh, ch = a.ev("[document.querySelector('.spot-body').scrollHeight, document.querySelector('.spot-body').clientHeight]")
+        check(sh <= ch + 1, f"the stack should fit without scrolling at 390x844 ({sh} > {ch})")
+        sw = a.page.locator(".stk-s.f").bounding_box()["width"]; cw = a.page.locator(".stk").bounding_box()["width"]
+        check(.72 <= sw / cw <= .84, f"cover should be about 78% of the width, got {sw / cw:.2f}")
+        pb = a.page.locator(".spot-panel").bounding_box()
+        for sel in [".stk-cap", ".stk-acts"]:
+            bb = a.page.locator(sel).bounding_box(); check(bb["y"] + bb["height"] <= pb["y"] + pb["height"] + 1, f"{sel} below the panel")
+        for i in range(a.page.locator(".stk-acts .btn").count()):
+            bb = a.page.locator(".stk-acts .btn").nth(i).bounding_box(); check(bb["height"] >= 43, f"action {i} is {bb['height']}px tall")
+        check(a.page.locator(".stk-acts").bounding_box()["height"] < 50, "the actions should sit on one row")
+        a.ev("S.settings.view='columns';V.view='columns';V.col='records';render()"); _settle(a, 200)
+        check(a.page.locator(".col-recs .stk").is_visible(), "Columns phone records pane should show the stack")
+        check(a.ev("document.documentElement.scrollWidth") <= 390, "sideways scroll in Columns")
+        a.page.locator(".col-recs .stk-s.f").click(); _settle(a, 500)
+        check(a.ev("V.col") == "record", "tapping the front sleeve in Columns on a phone should open the record")
+        check(not a.js_errors(), a.js_errors())
+        return f"cover {sw / cw:.0%} of width, body {sh}/{ch}"
+    finally:
+        a.close()
+
+
+def wb10_columns_follow_and_drag(browser, url):
+    a = _wb_app(browser, url, 1440, 900)
+    try:
+        a.ev("S.settings.view='columns';V.view='columns';V.cell='0-0';V.dig=0;render()"); _settle(a, 100)
+        a.page.keyboard.press("ArrowRight"); _settle(a, 350)
+        t = a.page.locator(".col-rec .dig-info h3").inner_text()
+        check(t == a.ev("rec(STK.ids[1]).title"), f"the detail column should follow the flip, shows {t!r}")
+        rid = a.ev("STK.ids[V.dig]")
+        _drag(a, ".col-recs .stk-s.f", ".col-spots .spot-row[data-u=K1][data-c='0-1']")
+        check(a.loc(rid) == "K1:0-1", f"drag from the stack did not move the record: {a.loc(rid)}")
+        check(not a.js_errors(), a.js_errors())
+        return "detail follows, drag from the front sleeve moves the record"
+    finally:
+        a.close()
+
+
+def wb11_empty_and_single(browser, url):
+    a = _wb_app(browser, url)
+    try:
+        a.ev("S.records=S.records.filter(r=>r.loc.u!=='C1'); V.unit='C1'; V.cell='all'; V.dig=0; render()"); _settle(a, 100)
+        check(a.page.locator(".spot-panel .stk").count() == 0 and a.page.locator(".spot-panel .empty").count() == 1, "an empty spot keeps its empty state")
+        a.ev(_WB_GEN, 1); _settle(a, 100)
+        check(a.page.locator(".spot-panel .stk").count() == 1, "a single record shows the stack")
+        check(a.page.locator(".stk-c").inner_text() == "1 of 1", "counter for one record")
+        check(a.page.locator(".stk-scrub[role=slider]").count() == 0, "no scrubber for one record")
+        a.page.keyboard.press("ArrowRight"); a.page.keyboard.press("End"); a.page.keyboard.press("Home"); _settle(a, 50)
+        check(a.ev("V.dig") == 0 and a.page.locator(".stk-s").count() == 1, "one record: keys do nothing")
+        check(a.page.locator(".stk-acts [data-act=move]").count() == 1, "actions still there")
+        check(not a.js_errors(), a.js_errors())
+        return "empty and single-record states"
+    finally:
+        a.close()
+
+
+def wb12_looks_and_motion(browser, url):
+    a = _wb_app(browser, url)
+    try:
+        for look in ["flat", "booth", "shop"]:
+            a.ev(f"S.settings.look='{look}'; render()"); _settle(a, 80)
+            bb = a.page.locator(".stk-s.f").bounding_box(); check(bb and bb["width"] > 150, f"{look}: front sleeve missing")
+            check(a.ev("document.documentElement.scrollWidth") <= 1280, f"{look}: sideways scroll")
+        a.ev("S.settings.look='flat'; render()")
+        a.page.emulate_media(reduced_motion="reduce"); _settle(a, 50)
+        check(a.ev("getComputedStyle(document.querySelector('.stk-s')).transitionDuration") in ("0s", "0s, 0s"), "reduced motion should switch the flip transition off")
+        a.page.emulate_media(reduced_motion="no-preference"); _settle(a, 50)
+        check(a.ev("getComputedStyle(document.querySelector('.stk-s')).transitionDuration").startswith("0.16s"), "flip transition should be 160 ms")
+        check(not a.js_errors(), a.js_errors())
+        return "flat, booth, shop; reduced motion"
+    finally:
+        a.close()
+
+
+TESTS += [
+    ("WB01 Spot opens as a stack", wb01_opens_as_stack), ("WB02 Keys flip without a rebuild", wb02_keys_flip_without_rebuild),
+    ("WB03 Wheel and trackpad flip", wb03_wheel_flips), ("WB04 Touch flick", wb04_touch_flick),
+    ("WB05 Scrubber", wb05_scrubber), ("WB06 Stack/list toggle persists", wb06_toggle_persists),
+    ("WB07 Select and stale show the list", wb07_select_and_stale_show_list), ("WB08 150-record spot is fast", wb08_big_spot_is_fast),
+    ("WB09 Phone fit + Columns", wb09_phone_fits), ("WB10 Columns follow + drag", wb10_columns_follow_and_drag),
+    ("WB11 Empty and single", wb11_empty_and_single), ("WB12 Looks and reduced motion", wb12_looks_and_motion),
+]
+BROWSER_LEVEL |= {wb01_opens_as_stack, wb02_keys_flip_without_rebuild, wb03_wheel_flips, wb04_touch_flick, wb05_scrubber, wb06_toggle_persists, wb07_select_and_stale_show_list, wb08_big_spot_is_fast, wb09_phone_fits, wb10_columns_follow_and_drag, wb11_empty_and_single, wb12_looks_and_motion}
+
+
 def main():
     only = sys.argv[1:]
     build()

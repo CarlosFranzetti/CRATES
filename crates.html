@@ -1070,6 +1070,105 @@ a.pv::before,button.pv::before,.icon-btn::before,.step .round::before,.map-tools
 @media (prefers-reduced-motion:reduce){.stk-s{transition:none}}
 /* the flat look's row padding beat the compact density (R10 failed on main); compact rows are shorter again */
 :root[data-look="flat"][data-density="compact"] .li{padding:4px 4px}
+/* ==== WP-C: photos and capture ==== */
+.ph-sec{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.ph-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.ph-head>b{font-size:14px}
+.ph-cs{display:inline-flex;align-items:center;gap:8px;font-size:13px}
+.ph-cs .seg button{height:36px;padding:0 12px}
+.ph-cs .seg button:disabled{opacity:.4;cursor:not-allowed}
+.ph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.ph-item{border:1px solid var(--line);border-radius:10px;background:var(--surface-2);padding:8px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.ph-img{aspect-ratio:1;border-radius:6px;background:var(--surface);overflow:hidden;position:relative}
+.ph-img img{width:100%;height:100%;object-fit:cover;display:block}
+.ph-tag{position:absolute;left:6px;top:6px}
+.ph-item select{height:44px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:0 10px;font-size:14px;width:100%;min-width:0}
+.ph-item .btn{height:44px;width:100%;min-width:0;padding:0 8px}
+.ph-two{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ph-sec .btn.file{height:44px}
+.ph-pickbox{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:12px;background:var(--surface-2);display:flex;flex-direction:column;gap:8px}
+.ph-pickbox input{height:44px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:0 12px;font-size:15px;width:100%;min-width:0}
+.ph-rec{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;text-align:left;width:100%;min-height:48px;padding:6px 8px;border:1px solid transparent;border-radius:8px;background:none;color:var(--ink)}
+.ph-rec:hover{border-color:var(--line);background:var(--surface)}
+.ph-rec .t{display:flex;flex-direction:column;min-width:0}
+.ph-rec .t b,.ph-rec .t span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ph-rec .t span{font-size:12.5px;color:var(--muted)}
+/* review board */
+.bd-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.bd-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.bd-bar .btn{height:44px}
+.bd-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.bd-card{border:1px solid var(--line);border-radius:10px;background:var(--surface-2);padding:10px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.bd-card[data-over="1"],.bd-new[data-over="1"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface-2))}
+.bd-card[data-st="aside"]{border-color:color-mix(in srgb,var(--warn) 55%,var(--line))}
+.bd-photos{display:flex;gap:6px;flex-wrap:wrap}
+.bd-ph{position:relative;width:72px;height:72px;border:1px solid var(--line);border-radius:6px;background:var(--surface);padding:0;overflow:hidden;flex:0 0 auto}
+.bd-ph img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.bd-ph[aria-expanded="true"]{outline:2px solid var(--accent);outline-offset:1px}
+.bd-k{position:absolute;left:0;right:0;bottom:0;font-style:normal;font-size:10.5px;font-weight:600;text-align:center;background:color-mix(in srgb,var(--bg) 82%,transparent);color:var(--ink);padding:1px 0}
+.bd-st{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;line-height:1.35}
+.dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto;margin-top:4px;border:2px solid var(--muted);box-sizing:border-box}
+.dot.work{border-color:var(--accent);border-top-color:transparent;animation:phspin .8s linear infinite}
+.dot.ok{background:var(--ok);border-color:var(--ok)}
+.dot.aside{background:var(--warn);border-color:var(--warn)}
+@keyframes phspin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.dot.work{animation:none;border-top-color:var(--accent)}}
+.bd-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.bd-fields input{height:44px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:0 10px;font-size:15px;width:100%;min-width:0}
+.bd-cands{display:flex;flex-direction:column;gap:6px}
+.bd-cand{display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px;align-items:center;text-align:left;min-height:48px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);width:100%}
+.bd-cand[aria-pressed="true"]{border-color:var(--accent)}
+.bd-cand img{width:40px;height:40px;object-fit:cover;border-radius:3px;background:var(--surface-2)}
+.bd-cand .t{display:flex;flex-direction:column;min-width:0}
+.bd-cand .t b,.bd-cand .t span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bd-cand .t span{font-size:12.5px;color:var(--muted)}
+.bd-tools{display:flex;gap:6px;flex-wrap:wrap}
+.bd-tools .btn{height:44px}
+.bd-move{display:flex;flex-direction:column;gap:6px}
+.bd-move:empty{display:none}
+.bd-move .btn{height:44px;justify-content:flex-start}
+.bd-kinds{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.bd-kinds .btn{justify-content:center;padding:0 4px}
+.bd-kinds .btn[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+.bd-new{border:1.5px dashed var(--line);border-radius:10px;padding:14px;text-align:center;color:var(--muted);font-size:13.5px;margin-top:12px}
+/* rapid capture */
+.cap{position:fixed;inset:0;z-index:65;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;height:100dvh}
+.cap-top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:max(10px,env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) 10px max(14px,env(safe-area-inset-left,0px))}
+.cap-top .btn{height:44px}
+.cap-count{font-size:13px;color:var(--muted)}
+.cap-view{position:relative;flex:1 1 auto;min-height:0;background:var(--surface-2);overflow:hidden}
+.cap-view video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cap-prompt{position:absolute;left:0;right:0;top:14px;text-align:center;pointer-events:none}
+.cap-prompt span{display:inline-block;padding:6px 14px;border-radius:99px;font-weight:700;font-size:15px;background:color-mix(in srgb,var(--bg) 80%,transparent);color:var(--ink)}
+.cap-still{position:absolute;left:12px;right:12px;bottom:12px;padding:10px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--line);font-size:14px}
+.cap-still:empty{display:none}
+.cap-flash{position:absolute;inset:0;background:var(--ink);opacity:0;pointer-events:none}
+.cap-flash.on{animation:capflash .18s ease-out}
+@keyframes capflash{from{opacity:.55}to{opacity:0}}
+@media (prefers-reduced-motion:reduce){.cap-flash.on{animation:none}}
+.cap-fallback{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;color:var(--muted);font-size:14px}
+.cap[data-cam="0"] .cap-fallback{display:flex}
+.cap[data-cam="0"] video{display:none}
+.cap-strip{display:flex;gap:8px;overflow-x:auto;padding:10px max(14px,env(safe-area-inset-left,0px));min-height:64px;align-items:center;border-top:1px solid var(--line)}
+.cap-strip:empty::before{content:"Your shots appear here";color:var(--muted);font-size:13px}
+.cap-shot{position:relative;width:44px;height:44px;flex:0 0 auto;border-radius:5px;overflow:hidden;background:var(--surface-2);border:1px solid var(--line)}
+.cap-shot img{width:100%;height:100%;object-fit:cover;display:block}
+.cap-shot .dot{position:absolute;right:3px;top:3px;background:var(--bg);margin:0}
+.cap-shot .dot.ok{background:var(--ok)}
+.cap-shot .dot.aside{background:var(--warn)}
+.cap-bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:10px max(14px,env(safe-area-inset-left,0px)) calc(14px + env(safe-area-inset-bottom,0px))}
+.cap-bar .btn{height:44px}
+.cap-toggle[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+.cap-shutter{width:72px;height:72px;border-radius:50%;border:4px solid var(--ink);background:var(--accent);padding:0;display:block;position:relative;overflow:hidden}
+.cap-shutter:active{transform:scale(.94)}
+.cap-shutter input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+/* the flat look shrinks buttons on phones; photo and capture controls stay 44px touch targets */
+:root .bd-bar .btn,:root .bd-tools .btn,:root .bd-move .btn,:root .bd-kinds .btn,:root .bd-card .warn .btn,:root .ph-item .btn,:root .ph-sec .btn,:root .ph-pickbox .btn,:root .cap-top .btn,:root .cap-bar .btn,:root .ph-cs .seg button{height:44px}
+:root .bd-fields label.f input,:root .bd-fields input{height:44px}
+/* the flat look's fixed row sizes beat the Compact density setting (R10 failed on the base commit); compact wins again here */
+:root[data-look="flat"][data-density="compact"] .li{padding:4px 4px;grid-template-columns:28px minmax(0,1fr) auto auto}
+:root[data-look="flat"][data-density="compact"] .thumb{width:28px;height:28px}
+/* ==== /WP-C css ==== */
 </style>
 
 <div class="top"><div class="wrap">
@@ -1223,7 +1322,7 @@ function migrate(st){
   const txt = x => typeof x==='string' ? x : x==null ? '' : String(x);
   const val = x => typeof x==='number' && isFinite(x) ? x : txt(x);
   st.settings = isObj(st.settings) ? st.settings : {};
-  ['units','records','playlists','gigs','syncQueue','recent'].forEach(k=>{ st[k] = list(st[k]); });
+  ['units','records','playlists','gigs','syncQueue','recent','inbox'].forEach(k=>{ st[k] = list(st[k]); });
   const s = st.settings;
   if(!['red','brass','cyan'].includes(s.accent)) s.accent = 'red';
   s.discogsSync = !!s.discogsSync; if(s.lookV!==2){ s.look = 'flat'; s.lookV = 2; } s.look = ['flat','booth','shop','auto'].includes(s.look) ? s.look : 'flat'; s.view = s.view==='columns' ? 'columns' : 'map'; s.density = s.density==='compact' ? 'compact' : 'regular'; s.spotMode = s.spotMode==='list' ? 'list' : 'stack';
@@ -1261,12 +1360,22 @@ function migrate(st){
     const day = x => SAFE_DAY.test(txt(x)) ? txt(x) : '', phone = x => txt(x).replace(/[^0-9 +\-()]/g,'').trim().slice(0,32);
     r.lent = isObj(r.lent) && txt(r.lent.to).trim() ? {to:txt(r.lent.to).trim().slice(0,80), phone:phone(r.lent.phone), since:day(r.lent.since) || new Date().toISOString().slice(0,10), note:txt(r.lent.note).slice(0,500)} : null;
     r.lentLog = list(r.lentLog).slice(-50).map(x=>({to:txt(x.to).trim().slice(0,80), phone:phone(x.phone), since:day(x.since), back:day(x.back)}));
+    /* WP-C: personal photos (bytes live in IndexedDB; only ids and kinds are kept here) */
+    { const seen = new Set(); r.photos = list(r.photos).filter(p=>SAFE_ID.test(txt(p.id)) && !seen.has(p.id) && seen.add(p.id)).slice(0,60).map(p=>({id:p.id, kind:['cover','label','back','other'].includes(p.kind)?p.kind:'other', at: typeof p.at==='string' ? txt(p.at).slice(0,32) : (Number.isFinite(+p.at) && +p.at>9e11 ? new Date(+p.at).toISOString() : ''), w: Number.isInteger(p.w)&&p.w>0&&p.w<=20000?p.w:0, h: Number.isInteger(p.h)&&p.h>0&&p.h<=20000?p.h:0}));
+      if(['discogs','personal'].includes(r.coverSrc)) {} else delete r.coverSrc;
+      r.coverPhoto = typeof r.coverPhoto==='string' && r.photos.some(p=>p.id===r.coverPhoto) ? r.coverPhoto : null; }
     if(r.releaseId!=null && !Number.isInteger(r.releaseId)) r.releaseId = null; if(r.instanceId!=null && !Number.isInteger(r.instanceId)) r.instanceId = null;
   });
   st.playlists.forEach(p=>{ p.name = txt(p.name) || 'Untitled'; p.color = SAFE_HEX.test(p.color) ? p.color : PL_COLORS[0]; p.items = Array.isArray(p.items) ? p.items.map(R).filter(Boolean) : []; });
   st.gigs.forEach(g=>{ g.name = txt(g.name) || 'Gig'; g.venue = txt(g.venue); if(!SAFE_DAY.test(g.date)) g.date = new Date().toISOString().slice(0,10);
     if(!['planning','packing','out','return','done'].includes(g.status)) g.status = 'planning'; g.bag = U(g.bag);
     g.items = list(g.items).map(it=>({r:R(it.r), packed:!!it.packed, played:!!it.played, back:!!it.back})).filter(it=>it.r); });
+  remap(st.inbox,'i');   // WP-C: rapid-capture inbox
+  st.inbox = st.inbox.slice(0,200).map(i=>({id:i.id, photos: Array.isArray(i.photos) ? i.photos.filter(x=>typeof x==='string' && SAFE_ID.test(x)).slice(0,12) : [],
+    kinds: Object.fromEntries(Object.entries(isObj(i.kinds)?i.kinds:{}).filter(([k,v])=>SAFE_ID.test(k) && ['cover','label','back','other'].includes(v))),
+    status: ['queued','identifying','matched','review','aside','failed'].includes(i.status) ? (i.status==='identifying'?'queued':i.status) : 'queued',
+    guess: isObj(i.guess) ? {artist:txt(i.guess.artist).slice(0,200), title:txt(i.guess.title).slice(0,200), label:txt(i.guess.label).slice(0,200), catno:txt(i.guess.catno).slice(0,60)} : null,
+    recordId: i.recordId==null ? null : R(i.recordId), note: txt(i.note).slice(0,200), at: typeof i.at==='string' ? i.at.slice(0,32) : ''})).filter(i=>i.photos.length);
   st.syncQueue = st.syncQueue.map(q=>({...q, r:R(q.r), value:txt(q.value)})).filter(q=>q.r);
   st.recent = st.recent.map(loc).filter(Boolean);
   const rm = isObj(st.remind) ? st.remind : {}; st.remind = {};
@@ -1306,6 +1415,8 @@ const uid = p => p+Date.now().toString(36)+Math.floor(Math.random()*1e4).toStrin
 
 /* real Discogs art when the collection has been synced; the generated sleeve otherwise or if the image fails */
 function cover(r, kind){
+  let pu = null; try{ pu = personalCover(r, kind); }catch(e){}   // WP-C: the owner's own photo, when it is the chosen cover
+  if(pu) return `<img class="art-img" src="${esc(pu)}" alt="" decoding="async" data-cover="${esc(r.id)}" data-kind="${kind||'cover'}" data-personal="1">`;
   const src = kind==='label' ? (r.labelArt || r.cover) : r.cover;
   if(src && /^\/api\/img\?u=|^https:\/\/(i|img)\.discogs\.com\//.test(src)) return `<img class="art-img" src="${esc(src)}" alt="" loading="lazy" decoding="async" data-cover="${esc(r.id)}" data-kind="${kind||'cover'}">`;
   return coverSvg(r);
@@ -1323,7 +1434,7 @@ function coverSvg(r){
   }
   return `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="sh${r.id}" x1="0" y1="0" x2="0" y2="1"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient></defs>${g}<rect width="100" height="100" fill="url(#sh${r.id})"/></svg>`;
 }
-const thumb = r => `<span class="thumb">${cover(r)}</span>`;
+const thumb = r => `<span class="thumb">${cover(r,'thumb')}</span>`;
 
 function locChip(loc, cls=''){
   const u = unit(loc?.u); if(!u) return `<span class="loc ${cls}">Unplaced</span>`;
@@ -4084,6 +4195,580 @@ Object.assign(A, {
   'spot-mode':d=>{ S.settings.spotMode = d.m==='list' ? 'list' : 'stack'; render(); },
   'stk-card':d=>{ if(Date.now()<STK.noClick) return; const i = +d.i; if(i===V.dig) stkDetail(STK.ids[i]); else stkGo(i); },
 });
+
+/* ==== WP-C: photos, grouping, rapid capture ==== */
+const PH_KINDS = ['cover','label','back','other'];
+const PH = {db:null, opening:null, mem:new Map(), urls:new Map(), thumbs:new Map(), tried:new Set(), want:new Set(), feat:new Map(), busy:new WeakSet(), warned:false, tick:null, rd:null};
+/* --- photo store: IndexedDB `crates-photos` / `photos`, with an in-memory fallback so everything still works for the session --- */
+function phOpen(){
+  return PH.opening ||= new Promise(res=>{
+    try{ if(!window.indexedDB) throw 0;
+      const q = indexedDB.open('crates-photos', 1);
+      q.onupgradeneeded = () => { if(!q.result.objectStoreNames.contains('photos')) q.result.createObjectStore('photos', {keyPath:'id'}); };
+      q.onsuccess = () => { PH.db = q.result; res(PH.db); };
+      q.onerror = q.onblocked = () => res(null);
+    }catch(e){ res(null); }
+  });
+}
+const phReq = (mode, fn) => phOpen().then(db => !db ? Promise.reject(new Error('nodb')) : new Promise((res, rej)=>{
+  try{ const tx = db.transaction('photos', mode); const rq = fn(tx.objectStore('photos'));
+    tx.oncomplete = () => res(rq && 'result' in rq ? rq.result : undefined); tx.onerror = tx.onabort = () => rej(tx.error || new Error('tx')); }catch(e){ rej(e); } }));
+function phCache(o){
+  PH.thumbs.set(o.id, o.thumb); PH.tried.add(o.id);
+  const old = PH.urls.get(o.id); if(old) URL.revokeObjectURL(old);
+  if(o.blob) PH.urls.set(o.id, URL.createObjectURL(o.blob));
+}
+async function phPut(o){
+  phCache(o);
+  try{ await phReq('readwrite', s=>s.put(o)); PH.mem.delete(o.id); return true; }
+  catch(e){
+    PH.mem.set(o.id, o);
+    if(e && (e.name==='QuotaExceededError' || /quota/i.test(e.message||''))) toast('Couldn’t store that photo: this browser’s storage is full. It stays for this session only.');
+    else if(!PH.warned){ PH.warned = true; toast('Photos can’t be saved in this browser (private window?). They stay for this session only.'); }
+    return false;
+  }
+}
+async function phGet(id){ if(PH.mem.has(id)) return PH.mem.get(id); try{ return (await phReq('readonly', s=>s.get(id))) || null; }catch(e){ return null; } }
+function phDel(id){
+  const u = PH.urls.get(id); if(u) URL.revokeObjectURL(u);
+  PH.urls.delete(id); PH.thumbs.delete(id); PH.mem.delete(id); PH.feat.delete(id);
+  phReq('readwrite', s=>s.delete(id)).catch(()=>{});
+}
+function phWant(id){ if(!id || PH.tried.has(id)) return; PH.want.add(id); if(!PH.tick) PH.tick = setTimeout(phFlush, 0); }
+const photoURL = id => PH.urls.get(id) || PH.thumbs.get(id) || (phWant(id), null);
+const photoThumb = id => PH.thumbs.get(id) || (phWant(id), null);
+async function phFlush(){
+  PH.tick = null; const ids = [...PH.want]; PH.want.clear(); ids.forEach(id=>PH.tried.add(id));
+  const objs = await Promise.all(ids.map(phGet)); let got = 0;
+  objs.forEach(o=>{ if(o){ phCache(o); got++; } });
+  if(got) phRedraw();
+}
+function phRedraw(){ clearTimeout(PH.rd); PH.rd = setTimeout(()=>{ try{ render(); }catch(e){ console.error(e); } phRefreshUI(); }, 30); }
+const phRefIds = () => { const s = new Set(); S.records.forEach(r=>(r.photos||[]).forEach(p=>s.add(p.id))); (S.inbox||[]).forEach(i=>(i.photos||[]).forEach(id=>s.add(id))); return s; };
+/* orphans (a cancelled import, a closed review board) are swept a day after they were taken */
+async function phGC(){
+  try{ const keys = await phReq('readonly', s=>s.getAllKeys()); const ref = phRefIds();
+    for(const k of keys||[]){ if(ref.has(k) || (typeof BD!=='undefined' && BD && BD.items.some(i=>i.photos.includes(k)))) continue; const o = await phGet(k); if(o && Date.now() - Date.parse(o.at||0) > 864e5) phDel(k); } }catch(e){}
+}
+
+/* --- pipeline: decode (EXIF-aware) -> 1600px JPEG + 240px thumb + cheap features for grouping --- */
+async function phDecode(file){
+  try{ const b = await createImageBitmap(file, {imageOrientation:'from-image'}); return {src:b, w:b.width, h:b.height, done(){ b.close?.(); }}; }catch(e){}
+  return new Promise((res, rej)=>{ const u = URL.createObjectURL(file), im = new Image();
+    im.onload = () => res({src:im, w:im.naturalWidth, h:im.naturalHeight, done(){ URL.revokeObjectURL(u); }});
+    im.onerror = () => { URL.revokeObjectURL(u); rej(new Error('decode')); }; im.src = u; });
+}
+const phBlobOf = (c, q) => new Promise(res=>c.toBlob(b=>res(b), 'image/jpeg', q));
+function phFeatures(c){
+  const W = c.width, H = c.height;
+  const g = document.createElement('canvas'); g.width = g.height = 8; const gx = g.getContext('2d', {willReadFrequently:true}); gx.drawImage(c, 0, 0, 8, 8);
+  const d = gx.getImageData(0, 0, 8, 8).data, lum = []; let sum = 0;
+  for(let i=0;i<64;i++){ const l = .299*d[i*4] + .587*d[i*4+1] + .114*d[i*4+2]; lum.push(l); sum += l; }
+  const hash = lum.map(l=>l > sum/64 ? '1' : '0').join('');
+  /* a centred circular edge (a record label) at one consistent radius, in 12 of 16 directions */
+  const n = 48, q = document.createElement('canvas'); q.width = q.height = n; const qx = q.getContext('2d', {willReadFrequently:true});
+  const side = Math.min(W, H); qx.drawImage(c, (W-side)/2, (H-side)/2, side, side, 0, 0, n, n);
+  const e = qx.getImageData(0, 0, n, n).data;
+  const L = (th, r) => { const x = Math.max(0, Math.min(n-1, Math.round(n/2 + Math.cos(th)*r*n))), y = Math.max(0, Math.min(n-1, Math.round(n/2 + Math.sin(th)*r*n))), i = (y*n + x)*4; return .299*e[i] + .587*e[i+1] + .114*e[i+2]; };
+  const rad = [];
+  for(let a=0;a<16;a++){ const th = a/16*Math.PI*2; let best = 0, br = 0;
+    for(let r=.17; r<=.47; r+=.01){ const dd = Math.abs(L(th, r+.03) - L(th, r-.03)); if(dd > best){ best = dd; br = r; } }
+    if(best >= 30) rad.push(br); }
+  rad.sort((x, y)=>x-y); const med = rad[rad.length>>1] || 0;
+  const circ = rad.filter(r=>Math.abs(r-med) <= .03).length / 16;
+  const ar = W / H;
+  return {hash, label: circ >= .75 && med >= .18 && med <= .46, circ, square: ar >= .7 && ar <= 1.43};
+}
+/* ingest a drawable (bitmap, <img>, <video> or canvas) of size W x H. `id` may be pre-assigned (rapid capture). */
+async function phIngest(src, W, H, opts={}){
+  const id = opts.id || uid('p'), s = Math.min(1, 1600/Math.max(W, H)), w = Math.max(1, Math.round(W*s)), h = Math.max(1, Math.round(H*s));
+  const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d');
+  x.fillStyle = '#fff'; x.fillRect(0, 0, w, h); x.drawImage(src, 0, 0, w, h);
+  const blob = await phBlobOf(c, .85); if(!blob) throw new Error('encode');
+  const ts = Math.min(1, 240/Math.max(w, h)), t = document.createElement('canvas'); t.width = Math.max(1, Math.round(w*ts)); t.height = Math.max(1, Math.round(h*ts));
+  t.getContext('2d').drawImage(c, 0, 0, t.width, t.height);
+  const at = new Date(opts.at && opts.at > 9e11 ? opts.at : Date.now()).toISOString();
+  const o = {id, blob, thumb: t.toDataURL('image/jpeg', .8), w, h, at};
+  PH.feat.set(id, phFeatures(c));
+  await phPut(o);
+  return {id, kind:'other', at, w, h, feat: PH.feat.get(id)};
+}
+async function phAdd(file){
+  const d = await phDecode(file);
+  try{ return await phIngest(d.src, d.w, d.h, {at: file.lastModified}); } finally { d.done(); }
+}
+/* add files to a record; returns the new photo entries */
+async function phAddTo(r, files){
+  const out = []; let bad = 0;
+  for(const f of files){ try{ const m = await phAdd(f); r.photos ||= []; m.kind = r.photos.length || phCoverId(r) ? 'other' : 'cover'; delete m.feat; r.photos.push(m); out.push(m); }catch(e){ bad++; } }
+  if(bad) toast(`Couldn’t read ${bad} photo${bad>1?'s':''}. Photos from some phones (HEIC) need to be shared as JPEG.`);
+  return out;
+}
+
+/* --- cover source --- */
+const phList = r => Array.isArray(r.photos) ? r.photos : [];
+function phCoverId(r){ const L = phList(r); if(r.coverPhoto && L.some(p=>p.id===r.coverPhoto)) return r.coverPhoto; return L.find(p=>p.kind==='cover')?.id || null; }
+function phSrcEffective(r){
+  const pid = phCoverId(r), hasD = !!r.cover;
+  if(r.coverSrc==='personal' && pid) return 'personal';
+  if(r.coverSrc==='discogs' && hasD) return 'discogs';
+  return hasD ? 'discogs' : pid ? 'personal' : 'art';
+}
+function personalCover(r, kind){
+  if(kind==='label'){ const lp = phList(r).find(p=>p.kind==='label'); if(lp){ const u = photoURL(lp.id); if(u) return u; } }
+  if(phSrcEffective(r)!=='personal') return null;
+  const pid = phCoverId(r); return pid ? (kind==='thumb' ? photoThumb(pid) : photoURL(pid)) : null;
+}
+const phSnap = (...recs) => { const s = recs.map(r=>[r, JSON.stringify({photos:r.photos||[], coverSrc:r.coverSrc??null, coverPhoto:r.coverPhoto??null})]);
+  return () => s.forEach(([r, j])=>{ const o = JSON.parse(j); r.photos = o.photos; if(o.coverSrc) r.coverSrc = o.coverSrc; else delete r.coverSrc; r.coverPhoto = o.coverPhoto; }); };
+function phFix(r){   // after a photo left a record: keep the cover fields pointing at something real
+  if(r.coverPhoto && !phList(r).some(p=>p.id===r.coverPhoto)) r.coverPhoto = null;
+  if(r.coverSrc==='personal' && !phCoverId(r)) delete r.coverSrc;
+}
+
+/* --- the Photos section (Detail sheet calls photoSection(r); the edit sheet gets it appended) --- */
+const PH_KIND_LABEL = {cover:'Cover', label:'Label', back:'Back', other:'Other'};
+function phItem(r, p, pid, eff){
+  const t = photoThumb(p.id), isC = p.id===pid;
+  return `<div class="ph-item" data-p="${esc(p.id)}">
+    <div class="ph-img">${t?`<img src="${esc(t)}" alt="${esc(PH_KIND_LABEL[p.kind]||'Photo')} photo of ${esc(r.title)}">`:''}${isC&&eff==='personal'?'<span class="pill ok ph-tag">On the sleeve</span>':''}</div>
+    <label class="sr" for="phk-${esc(p.id)}">Photo kind</label>
+    <select id="phk-${esc(p.id)}" class="ph-kind" data-phkind="${esc(p.id)}" data-r="${esc(r.id)}">${PH_KINDS.map(k=>`<option value="${k}" ${k===p.kind?'selected':''}>${PH_KIND_LABEL[k]}</option>`).join('')}</select>
+    <button type="button" class="btn" data-act="ph-cover" data-r="${esc(r.id)}" data-p="${esc(p.id)}" ${isC&&eff==='personal'?'disabled':''}>Set as cover</button>
+    <div class="ph-two"><button type="button" class="btn" data-act="ph-move" data-r="${esc(r.id)}" data-p="${esc(p.id)}">Move…</button><button type="button" class="btn danger" data-act="ph-del" data-r="${esc(r.id)}" data-p="${esc(p.id)}">Delete</button></div>
+    <div class="ph-conf" id="phc-${esc(p.id)}"></div></div>`;
+}
+function photoSection(r){
+  const L = phList(r), pid = phCoverId(r), eff = phSrcEffective(r);
+  return `<section class="ph-sec" id="ph-sec" data-r="${esc(r.id)}" aria-label="Photos of ${esc(r.title)}">
+    <div class="ph-head"><b>Photos</b><span class="ph-cs"><span class="muted">Cover:</span><span class="seg" role="group" aria-label="Cover source">
+      <button type="button" data-act="ph-src" data-v="discogs" data-r="${esc(r.id)}" aria-pressed="${eff==='discogs'}" ${r.cover?'':'disabled'}>Discogs</button><button type="button" data-act="ph-src" data-v="personal" data-r="${esc(r.id)}" aria-pressed="${eff==='personal'}" ${pid?'':'disabled'}>My photo</button></span></span></div>
+    ${L.length ? `<div class="ph-grid">${L.map(p=>phItem(r, p, pid, eff)).join('')}</div>` : `<p class="muted" style="margin:0 0 10px;font-size:13px">No photos yet. Add the sleeve, the label and the back; a photo can be the cover Crates shows for this record.</p>`}
+    <div class="row" style="margin-top:12px"><label class="btn file">Add photos<input type="file" accept="image/*" multiple data-phadd="${esc(r.id)}" aria-label="Add photos to ${esc(r.title)}"></label></div>
+    <div id="ph-pick"></div></section>`;
+}
+function phRefreshUI(){
+  const sec = document.getElementById('ph-sec'); if(sec){ const r = rec(sec.dataset.r); if(r) sec.outerHTML = photoSection(r); }
+  if(typeof phBoardRefresh==='function') phBoardRefresh();
+  if(typeof capStrip==='function') capStrip();
+}
+function phMount(id){
+  const r = rec(id), sh = document.querySelector('#layer .sheet'); if(!r || !sh || sh.querySelector('#ph-sec')) return;
+  sh.insertAdjacentHTML('beforeend', photoSection(r));
+}
+{ const _edit = openEditRecord; openEditRecord = function(id){ _edit(id); phMount(id); }; }
+
+const PHUI = {r:null, p:null};
+function phPickList(q){
+  q = norm(q||'');
+  const hits = S.records.filter(x=>x.id!==PHUI.r && (!q || norm(x.artist+' '+x.title).includes(q))).slice(0, 8);
+  return hits.length ? hits.map(x=>`<button type="button" class="ph-rec" data-act="ph-move-to" data-to="${esc(x.id)}"><span class="thumb">${cover(x,'thumb')}</span><span class="t"><b>${esc(x.title)}</b><span>${esc(x.artist)}</span></span></button>`).join('') : `<p class="muted" style="font-size:13px;margin:8px 0 0">No other record matches.</p>`;
+}
+document.addEventListener('input', e=>{ if(e.target.id==='ph-pq'){ const l = document.getElementById('ph-pl'); if(l) l.innerHTML = phPickList(e.target.value); } });
+document.addEventListener('change', e=>{
+  const t = e.target;
+  if(t.dataset?.phadd){ const r = rec(t.dataset.phadd), files = [...t.files]; t.value = ''; if(!r || !files.length) return;
+    const undo = phSnap(r); phAddTo(r, files).then(added=>{ if(!added.length) return; lastUndo = () => { undo(); added.forEach(m=>phDel(m.id)); }; render(); phRefreshUI(); toast(`${added.length} photo${added.length>1?'s':''} added`, true); }); }
+  else if(t.dataset?.phkind){ const r = rec(t.dataset.r), p = phList(r||{}).find(x=>x.id===t.dataset.phkind); if(!p) return;
+    const undo = phSnap(r); p.kind = PH_KINDS.includes(t.value) ? t.value : 'other'; lastUndo = undo; setTimeout(()=>{ render(); phRefreshUI(); toast(`Marked as ${PH_KIND_LABEL[p.kind].toLowerCase()}`, true); }, 0); }
+});
+Object.assign(A, {
+  'ph-src':d=>{ const r = rec(d.r); if(!r || (d.v==='personal' && !phCoverId(r)) || (d.v==='discogs' && !r.cover)) return; lastUndo = phSnap(r); r.coverSrc = d.v; render(); phRefreshUI(); toast(d.v==='personal' ? 'Showing your photo as the cover' : 'Showing the Discogs cover', true); },
+  'ph-cover':d=>{ const r = rec(d.r), p = phList(r||{}).find(x=>x.id===d.p); if(!p) return; lastUndo = phSnap(r); p.kind = 'cover'; r.coverPhoto = p.id; r.coverSrc = 'personal'; render(); phRefreshUI(); toast('Your photo is now the cover', true); },
+  'ph-move':d=>{ PHUI.r = d.r; PHUI.p = d.p; const box = document.getElementById('ph-pick'); if(!box) return;
+    box.innerHTML = `<div class="ph-pickbox"><div class="row" style="justify-content:space-between"><b style="font-size:14px">Move this photo to…</b><button type="button" class="btn sm ghost" data-act="ph-pick-x">Cancel</button></div><input id="ph-pq" type="search" autocomplete="off" placeholder="Search artist or title" aria-label="Search records"><div id="ph-pl">${phPickList('')}</div></div>`;
+    box.scrollIntoView?.({block:'nearest'}); document.getElementById('ph-pq')?.focus({preventScroll:true}); },
+  'ph-pick-x':()=>{ const b = document.getElementById('ph-pick'); if(b) b.innerHTML = ''; },
+  'ph-move-to':d=>{ const a = rec(PHUI.r), b = rec(d.to), p = phList(a||{}).find(x=>x.id===PHUI.p); if(!a || !b || !p) return;
+    lastUndo = phSnap(a, b); a.photos = a.photos.filter(x=>x!==p); phFix(a); b.photos ||= []; b.photos.push(p); render(); phRefreshUI(); toast(`Moved to ${b.title}`, true); },
+  'ph-del':d=>{ const box = document.getElementById('phc-'+d.p); if(!box) return;
+    box.innerHTML = `<div class="warn" role="alertdialog" aria-label="Delete this photo?"><span>Delete this photo?</span><button type="button" class="btn sm danger" data-act="ph-del-yes" data-r="${esc(d.r)}" data-p="${esc(d.p)}">Delete</button><button type="button" class="btn sm ghost" data-act="ph-del-no" data-p="${esc(d.p)}">Keep</button></div>`; },
+  'ph-del-no':d=>{ const box = document.getElementById('phc-'+d.p); if(box) box.innerHTML = ''; },
+  'ph-del-yes':async d=>{ const r = rec(d.r), p = phList(r||{}).find(x=>x.id===d.p); if(!p) return;
+    const o = await phGet(p.id), undo = phSnap(r); r.photos = r.photos.filter(x=>x!==p); phFix(r); phDel(p.id);
+    lastUndo = () => { undo(); if(o) phPut(o); }; render(); phRefreshUI(); toast('Photo deleted', true); },
+});
+/* ==== /WP-C part 1 ==== */
+
+/* --- identification: barcode in the image -> Claude (preview only) -> the Crates server -> nothing --- */
+const PH_ASIDE = "Couldn't identify this one automatically. Type the artist and title, or scan the barcode.";
+const PHQ = {n:0, q:[]};
+function phLimit(fn, max=2){ return new Promise((res, rej)=>{ const run = () => { PHQ.n++; Promise.resolve().then(fn).then(res, rej).finally(()=>{ PHQ.n--; const nx = PHQ.q.shift(); if(nx) nx(); }); }; PHQ.n < max ? run() : PHQ.q.push(run); }); }
+const phStr = (x, n=200) => (typeof x==='string' || typeof x==='number') ? String(x).trim().slice(0, n) : '';
+const phDataURL = blob => new Promise((res, rej)=>{ const f = new FileReader(); f.onload = () => res(f.result); f.onerror = rej; f.readAsDataURL(blob); });
+async function identifyCover(photoId){
+  const o = await phGet(photoId); if(!o || !o.blob) return null;
+  let barcode = '';
+  try{ if('BarcodeDetector' in window){ const bmp = await createImageBitmap(o.blob), det = new BarcodeDetector({formats:['ean_13','upc_a','ean_8','upc_e']});
+    barcode = String((await det.detect(bmp))[0]?.rawValue || '').replace(/\D/g, ''); bmp.close?.(); } }catch(e){}
+  if(barcode){ const own = findDupes('', '', barcode)[0]; if(own) return {artist:own.artist, title:own.title, label:own.label, catno:own.catno, confidence:'high', cands:[]}; }
+  if(AI && AI_IMAGES){
+    try{ const f = new File([o.blob], 'cover.jpg', {type:'image/jpeg'});
+      const j = await AI.json(`This photo shows the front of a vinyl record sleeve, or a record's centre label, or the back of a sleeve. Read the artist and title printed on it. Reply with only JSON like {"artist":"...","title":"...","label":"...","catno":"...","confidence":"high"}. Use null for anything you cannot read and "low" confidence when unsure. Never invent a record you cannot read.`, {images:[f]});
+      if(j && (j.title || j.artist)) return {artist:phStr(j.artist), title:phStr(j.title), label:phStr(j.label), catno:phStr(j.catno, 60), confidence:['high','medium','low'].includes(j.confidence) ? j.confidence : 'medium', cands:[]};
+    }catch(e){}
+  }
+  if(API.ok){
+    try{ const ctl = new AbortController(), t = setTimeout(()=>ctl.abort(), 30000);
+      const r = await fetch('/api/identify', {method:'POST', headers:{'Content-Type':'application/json'}, signal:ctl.signal, body:JSON.stringify({image: await phDataURL(o.blob), barcode})}); clearTimeout(t);
+      if(r.ok){ const j = await r.json(); const c = Array.isArray(j.candidates) ? j.candidates.slice(0, 5) : [], g = j.guess || c[0];
+        if(g && (g.title || g.artist)) return {artist:phStr(g.artist), title:phStr(g.title), label:phStr(g.label), catno:phStr(g.catno, 60), confidence:['high','medium','low'].includes(g.confidence) ? g.confidence : 'medium', cands:c}; }
+    }catch(e){}
+  }
+  return null;
+}
+const phAlive = it => S.inbox.includes(it) || !!(BD && BD.items.includes(it));
+function phOrder(it){ const rank = {cover:0, label:1, back:2, other:3}; return it.photos.slice().sort((a, b)=>(rank[it.kinds?.[a]]??3) - (rank[it.kinds?.[b]]??3)); }
+function phReady(it){ return !!(it.recordId && rec(it.recordId)) || !!(it.guess && (it.guess.artist || it.guess.title)); }
+function phRematch(it){
+  const g = it.guess, own = g && g.title ? findDupes(g.artist || '', g.title)[0] : null;
+  if(own){ it.status = 'matched'; it.recordId = own.id; it.note = ''; }
+  else if(g && (g.artist || g.title)){ it.status = 'review'; it.recordId = null; it.note = ''; }
+  else { it.status = 'aside'; it.recordId = null; it.note = it.note || PH_ASIDE; }
+}
+let phSaveT;
+function phChanged(it){
+  if(S.inbox.includes(it)){ clearTimeout(phSaveT); phSaveT = setTimeout(()=>{ try{ save(); }catch(e){} }, 200); }
+  if(typeof capStrip==='function') capStrip();
+  phBoardStatus(it);
+}
+async function phIdentifyItem(it){
+  if(PH.busy.has(it)) return; PH.busy.add(it);
+  it.status = 'identifying'; it.note = ''; phChanged(it);
+  let res = null;
+  try{ for(const pid of phOrder(it).slice(0, 3)){ res = await phLimit(()=>identifyCover(pid)); if(res) break; } }catch(e){ res = null; }
+  PH.busy.delete(it);
+  if(!phAlive(it)) return;
+  if(res && !it.touched) it.guess = {artist:phStr(res.artist), title:phStr(res.title), label:phStr(res.label), catno:phStr(res.catno, 60)};
+  it.cands = (res && Array.isArray(res.cands)) ? res.cands : []; it.conf = res ? phStr(res.confidence, 10) : ''; it.candSel = null;
+  if(!res && !it.touched){ it.status = 'aside'; it.note = PH_ASIDE; it.recordId = null; } else phRematch(it);
+  phChanged(it);
+}
+
+/* --- grouping: time gaps, label shapes, first square photo = cover, a second front cover starts a new record --- */
+function phGroup(items){
+  const dist = (a, b) => { let n = 0; for(let k=0;k<64;k++) if(a[k]!==b[k]) n++; return n; };
+  const sorted = items.slice().sort((a, b)=>(a.t||0) - (b.t||0) || (a.i||0) - (b.i||0));
+  const groups = []; let g = null;
+  sorted.forEach(p=>{
+    const f = p.feat || p;
+    const last = g && g.items[g.items.length-1];
+    let start = !g || (p.t && last.t && p.t - last.t > 25000);
+    const same = !start && g.items.some(q=>(q.feat||q).hash && f.hash && dist((q.feat||q).hash, f.hash) <= 4);   // a retake of a shot already in the group
+    if(!start && !same){
+      if(f.label) start = !!g.label;
+      else if(g.cover && f.square) start = !(g.label && !g.back);
+    }
+    if(start){ g = {items:[], cover:false, label:false, back:false}; groups.push(g); }
+    let kind = 'other';
+    if(f.label && !g.label){ kind = 'label'; g.label = true; }
+    else if(!f.label && f.square && !g.cover){ kind = 'cover'; g.cover = true; }
+    else if(!f.label && f.square && g.label && !g.back && !same){ kind = 'back'; g.back = true; }
+    g.items.push({...p, kind});
+  });
+  groups.forEach(gr=>{ if(!gr.cover){ const c = gr.items.find(p=>p.kind==='other'); if(c){ c.kind = 'cover'; gr.cover = true; } } });
+  return groups.map(gr=>gr.items);
+}
+
+/* --- review board --- */
+let BD = null;   // {items:[{id, photos:[id], kinds:{id:kind}, status, guess, recordId, note, at}], src:'import'|'inbox', sel:{i,p}|null, confirm:{type,i,p}|null}
+const phNewItem = (photos, at) => ({id:uid('i'), photos:photos.map(p=>p.id), kinds:Object.fromEntries(photos.map(p=>[p.id, p.kind])), status:'queued', guess:null, recordId:null, note:'', at: at || new Date().toISOString()});
+const phKindOf = (it, id) => PH_KINDS.includes(it.kinds?.[id]) ? it.kinds[id] : 'other';
+function phEnsureCover(it){ if(!it.photos.some(id=>phKindOf(it, id)==='cover')){ const c = it.photos.find(id=>phKindOf(it, id)!=='label') || it.photos[0]; if(c) it.kinds[c] = 'cover'; } }
+function phCardName(it){ const g = it.guess; if(g && (g.artist || g.title)) return [g.artist, g.title].filter(Boolean).join(' – '); const i = BD.items.indexOf(it); return 'Record '+(i+1); }
+function phStatusHtml(it){
+  switch(it.status){
+    case 'queued': case 'identifying': return `<span class="dot work"></span><span>Reading the cover…</span>`;
+    case 'matched': { const r = rec(it.recordId); return `<span class="dot ok"></span><span><b>In your collection:</b> ${esc(r?.artist||'')} – ${esc(r?.title||'')}${r?` · ${esc(addrShort(r.loc))}`:''}. The photos will be added to it.</span>`; }
+    case 'review': return `<span class="dot ok"></span><span><b>New record.</b>${it.conf?` Read with ${esc(it.conf)} confidence.`:''} Check the artist and title.</span>`;
+    default: return `<span class="dot aside"></span><span><b>Set aside.</b> ${esc(it.note || PH_ASIDE)}</span>`;
+  }
+}
+function phCandsHtml(it){
+  const c = it.cands || []; if(c.length < 2) return '';
+  return `<div class="bd-cands" role="group" aria-label="Possible releases">${c.map((x, k)=>`<button type="button" class="bd-cand" data-act="bd-cand" data-i="${esc(it.id)}" data-k="${k}" aria-pressed="${it.candSel===k}">${x.thumb && /^\/api\/img\?u=/.test(x.thumb)?`<img src="${esc(x.thumb)}" alt="" loading="lazy">`:'<img alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">'}<span class="t"><b>${esc(x.artist||'')} – ${esc(x.title||'')}</b><span>${esc([x.label, x.catno, x.year].filter(Boolean).join(' · '))}</span></span></button>`).join('')}</div>`;
+}
+function phCardHtml(it, n){
+  const g = it.guess || {}, sel = BD.sel && BD.sel.i===it.id ? BD.sel.p : null;
+  const photos = it.photos.map(id=>{ const k = phKindOf(it, id), t = photoThumb(id);
+    return `<button type="button" class="bd-ph" draggable="true" data-act="bd-ph" data-i="${esc(it.id)}" data-p="${esc(id)}" aria-expanded="${sel===id}" aria-label="${esc(PH_KIND_LABEL[k])} photo. Move or change">${t?`<img src="${esc(t)}" alt="">`:''}<i class="bd-k">${PH_KIND_LABEL[k]}</i></button>`; }).join('');
+  let panel = '';
+  if(BD.confirm && BD.confirm.i===it.id){
+    panel = BD.confirm.type==='item'
+      ? `<div class="warn" role="alertdialog"><span>Discard this record and its ${it.photos.length} photo${it.photos.length>1?'s':''}?</span><button type="button" class="btn sm danger" data-act="bd-drop-yes" data-i="${esc(it.id)}">Discard</button><button type="button" class="btn sm ghost" data-act="bd-confirm-x">Keep</button></div>`
+      : `<div class="warn" role="alertdialog"><span>Delete this photo?</span><button type="button" class="btn sm danger" data-act="bd-rm-yes" data-i="${esc(it.id)}" data-p="${esc(BD.confirm.p)}">Delete</button><button type="button" class="btn sm ghost" data-act="bd-confirm-x">Keep</button></div>`;
+  } else if(sel){
+    const k = phKindOf(it, sel);
+    panel = `<div class="bd-kinds" role="group" aria-label="Photo kind">${PH_KINDS.map(x=>`<button type="button" class="btn" data-act="bd-kind" data-i="${esc(it.id)}" data-p="${esc(sel)}" data-k="${x}" aria-pressed="${x===k}">${PH_KIND_LABEL[x]}</button>`).join('')}</div>
+      <b style="font-size:13px">Move this photo to</b>
+      ${it.photos.length>1?`<button type="button" class="btn" data-act="bd-mvto" data-i="${esc(it.id)}" data-p="${esc(sel)}" data-to="new">New record</button>`:''}
+      ${BD.items.filter(o=>o!==it).map(o=>`<button type="button" class="btn" data-act="bd-mvto" data-i="${esc(it.id)}" data-p="${esc(sel)}" data-to="${esc(o.id)}">${esc(phCardName(o))}</button>`).join('')}
+      <button type="button" class="btn danger" data-act="bd-rm" data-i="${esc(it.id)}" data-p="${esc(sel)}">Delete photo…</button>
+      <button type="button" class="btn ghost" data-act="bd-sel-x">Close</button>`;
+  }
+  const idx = BD.items.indexOf(it);
+  return `<article class="bd-card" id="bd-c-${esc(it.id)}" data-i="${esc(it.id)}" data-st="${it.status==='matched'||it.status==='review'?'ok':it.status==='aside'?'aside':'work'}">
+    <div class="bd-photos">${photos}</div>
+    <div class="bd-st" id="bd-s-${esc(it.id)}">${phStatusHtml(it)}</div>
+    <div class="bd-fields"><label class="f">Artist<input data-bdf="artist" data-i="${esc(it.id)}" value="${esc(g.artist||'')}" autocomplete="off" placeholder="Artist"></label><label class="f">Title<input data-bdf="title" data-i="${esc(it.id)}" value="${esc(g.title||'')}" autocomplete="off" placeholder="Title"></label></div>
+    <div id="bd-d-${esc(it.id)}">${phCandsHtml(it)}</div>
+    <div class="bd-tools">${it.photos.length>1?`<button type="button" class="btn" data-act="bd-split" data-i="${esc(it.id)}">Split</button>`:''}${idx>0?`<button type="button" class="btn" data-act="bd-merge" data-i="${esc(it.id)}">Merge up</button>`:''}<button type="button" class="btn" data-act="bd-redo" data-i="${esc(it.id)}">Read again</button><button type="button" class="btn ghost danger" data-act="bd-drop" data-i="${esc(it.id)}">Discard</button></div>
+    <div class="bd-move">${panel}</div></article>`;
+}
+function renderBoard(){
+  if(!BD) return;
+  const keep = document.querySelector('#layer .sheet')?.scrollTop || 0;
+  const n = BD.items.length, ready = BD.items.filter(phReady).length, wait = n - ready, aside = BD.items.filter(i=>i.status==='aside').length;
+  openSheet(`<div id="bd"><div class="bd-head"><div><div class="kicker">${BD.src==='inbox'?'Rapid capture':'Add from photos'} · review</div><h2>Check the records</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <p class="muted" style="margin:0 0 10px;font-size:13.5px">${n} record${n===1?'':'s'} found${aside?` · ${aside} set aside`:''}. Drag a photo to another record, or tap it to move it. Records already in your collection get the photos added; the rest are filed as Unplaced. A backup is made first.</p>
+    <div class="bd-bar"><button class="btn primary" data-act="bd-addall" ${ready?'':'disabled'}>Add ${ready} record${ready===1?'':'s'}</button><span class="muted" id="bd-wait" style="font-size:13px">${phWaitText(wait)}</span><button class="btn ghost danger" data-act="bd-discard-all" style="margin-left:auto">Discard all</button></div>
+    <div id="bd-confirm-all"></div>
+    <div class="bd-list">${BD.items.map(phCardHtml).join('')}</div>
+    <div class="bd-new" data-new="1">Drop a photo here to make it a new record</div></div>`);
+  const sh = document.querySelector('#layer .sheet'); if(sh) sh.scrollTop = keep;
+}
+const phWaitText = n => n ? `${n} still need${n===1?'s':''} an artist or title` : '';
+function phBoardRefresh(){ if(document.getElementById('bd') && BD) renderBoard(); }
+function phBoardStatus(it){
+  const card = document.getElementById('bd-c-'+it.id); if(!card || !BD) return;
+  const s = document.getElementById('bd-s-'+it.id); if(s) s.innerHTML = phStatusHtml(it);
+  const d = document.getElementById('bd-d-'+it.id); if(d) d.innerHTML = phCandsHtml(it);
+  card.dataset.st = it.status==='matched'||it.status==='review' ? 'ok' : it.status==='aside' ? 'aside' : 'work';
+  card.querySelectorAll('[data-bdf]').forEach(inp=>{ if(document.activeElement!==inp) inp.value = it.guess?.[inp.dataset.bdf] || ''; });
+  const ready = BD.items.filter(phReady).length, b = document.querySelector('[data-act="bd-addall"]');
+  if(b){ b.disabled = !ready; b.textContent = `Add ${ready} record${ready===1?'':'s'}`; }
+  const w = document.getElementById('bd-wait'); if(w) w.textContent = phWaitText(BD.items.length - ready);
+}
+function phMovePhoto(fromId, pid, to){
+  const a = BD.items.find(i=>i.id===fromId); if(!a || !a.photos.includes(pid)) return;
+  let b;
+  if(to==='new'){ if(a.photos.length < 2) return; b = phNewItem([], a.at); BD.items.splice(BD.items.indexOf(a)+1, 0, b); }
+  else { b = BD.items.find(i=>i.id===to); if(!b || b===a) return; }
+  const kind = phKindOf(a, pid);
+  a.photos = a.photos.filter(x=>x!==pid); delete a.kinds[pid]; b.photos.push(pid); b.kinds[pid] = to==='new' && kind!=='label' ? 'cover' : kind;
+  if(!a.photos.length) BD.items.splice(BD.items.indexOf(a), 1); else phEnsureCover(a);
+  BD.sel = null; BD.confirm = null;
+  if(BD.src==='inbox') phChanged(b);
+  renderBoard();
+  if(to==='new') phIdentifyItem(b);
+}
+function phDropItem(it){ it.photos.forEach(phDel); BD.items.splice(BD.items.indexOf(it), 1); }
+async function phAddAll(){
+  if(!BD) return;
+  const ready = BD.items.filter(phReady); if(!ready.length) return;
+  backupNow('Before adding photos', 'import');
+  const metas = new Map();
+  await Promise.all(ready.flatMap(it=>it.photos).map(async id=>{ const o = await phGet(id); metas.set(id, o ? {at:o.at||'', w:o.w||0, h:o.h||0} : {at:'', w:0, h:0}); }));
+  const made = [], matched = [], snaps = [];
+  ready.forEach(it=>{
+    phEnsureCover(it);
+    const photos = it.photos.map(id=>({id, kind:phKindOf(it, id), ...metas.get(id)}));
+    const own = it.recordId && rec(it.recordId);
+    if(own){
+      snaps.push(phSnap(own)); const hadCover = !!own.cover || !!phCoverId(own);
+      own.photos ||= []; photos.forEach(p=>{ if(p.kind==='cover' && own.photos.some(x=>x.kind==='cover')) p.kind = 'other'; own.photos.push(p); });
+      if(!hadCover){ const c = photos.find(p=>p.kind==='cover'); if(c){ own.coverPhoto = c.id; } }
+      matched.push(own);
+    } else {
+      const g = it.guess, artist = phStr(g.artist), title = phStr(g.title) || 'Untitled', n = hash(artist+title);
+      const nr = {id:uid('r'), artist:artist || 'Unknown artist', title, label:phStr(g.label), year:'', style:'', catno:phStr(g.catno, 60), barcode:'', bpm:'', key:'', rating:0, cm:'', cs:'', notes:'', tags:[], custom:[], yt:[], pal:PALS[n%PALS.length], pat:n%6, loc:{u:null, c:null}, home:null, from:null, plays:[], orig:{}, photos};
+      ['artist','title','label','catno','year','style'].forEach(k=>{ nr.orig[k] = nr[k]; });
+      const cs = it.candSel!=null ? it.cands?.[it.candSel] : null; if(cs && Number.isInteger(cs.releaseId)) nr.releaseId = cs.releaseId;
+      const c = photos.find(p=>p.kind==='cover'); if(c){ nr.coverPhoto = c.id; nr.coverSrc = 'personal'; }
+      made.push(nr);
+    }
+  });
+  S.records.push(...made);
+  const madeIds = new Set(made.map(r=>r.id)), gone = new Set(ready), wasInbox = BD.src==='inbox', removed = ready.slice();
+  for(let k=BD.items.length-1;k>=0;k--) if(gone.has(BD.items[k])) BD.items.splice(k, 1);
+  lastUndo = () => { snaps.forEach(f=>f()); S.records = S.records.filter(r=>!madeIds.has(r.id)); if(wasInbox) S.inbox.push(...removed); };
+  const left = BD.items.length;
+  V.view = 'table'; T.filt = 'unplaced'; T.spot = null;
+  if(left){ BD.sel = null; render(); renderBoard(); } else { BD = null; closeSheet(); render(); }
+  toast(`${made.length?`${made.length} new record${made.length>1?'s':''}`:''}${made.length&&matched.length?' · ':''}${matched.length?`photos added to ${matched.length} you own`:''}${left?` · ${left} still need a name`:''} · backup made`, true);
+}
+function phDragData(e){ try{ const [tag, i, p] = (e.dataTransfer.getData('text/plain') || '').split('|'); return tag==='crates-bd' ? {i, p} : null; }catch(x){ return null; } }
+document.addEventListener('dragstart', e=>{ const b = e.target.closest?.('.bd-ph'); if(!b) return; e.dataTransfer.setData('text/plain', `crates-bd|${b.dataset.i}|${b.dataset.p}`); e.dataTransfer.effectAllowed = 'move'; });
+document.addEventListener('dragover', e=>{ const t = e.target.closest?.('.bd-card, .bd-new'); if(!t) return; e.preventDefault(); document.querySelectorAll('[data-over]').forEach(x=>{ if(x!==t) x.removeAttribute('data-over'); }); t.dataset.over = '1'; });
+document.addEventListener('dragleave', e=>{ const t = e.target.closest?.('.bd-card, .bd-new'); if(t && !t.contains(e.relatedTarget)) t.removeAttribute('data-over'); });
+document.addEventListener('drop', e=>{ const t = e.target.closest?.('.bd-card, .bd-new'); if(!t) return; e.preventDefault(); document.querySelectorAll('[data-over]').forEach(x=>x.removeAttribute('data-over'));
+  const d = phDragData(e); if(d && BD) phMovePhoto(d.i, d.p, t.dataset.new ? 'new' : t.dataset.i); });
+document.addEventListener('input', e=>{ const t = e.target; if(!t.dataset?.bdf || !BD) return; const it = BD.items.find(i=>i.id===t.dataset.i); if(!it) return;
+  it.guess ||= {artist:'', title:'', label:'', catno:''}; it.guess[t.dataset.bdf] = t.value; it.touched = true; it.candSel = null; });
+document.addEventListener('change', e=>{ const t = e.target;
+  if(t.dataset?.bdf && BD){ const it = BD.items.find(i=>i.id===t.dataset.i); if(!it) return; phRematch(it); phChanged(it); }
+  else if(t.id==='ph-imp'){ const files = [...t.files]; t.value = ''; phImportFiles(files); }
+});
+
+/* --- Add > Photos: many photos at once -> groups --- */
+function phIdentModes(){
+  const m = []; if('BarcodeDetector' in window) m.push('barcodes in the photo'); if(AI && AI_IMAGES) m.push('Claude, in this preview'); if(API.ok) m.push('the Crates server');
+  return m.length ? `Crates tries ${m.join(', then ')} to read each cover.` : `This browser can’t read covers on its own, so type the artist and title on each card. Barcode and cover reading turn on with the Crates server.`;
+}
+function openPhotoImport(){
+  openSheet(`<div class="sheet-head"><div><div class="kicker">Add</div><h2>Add from photos</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <p class="muted" style="margin:0 0 12px;font-size:13.5px">Pick many photos at once, in the order you shot them: cover, label, back for each record. Crates groups them into records by when they were taken and what they show, then you check the groups before anything is added. ${esc(phIdentModes())}</p>
+    <div class="row"><label class="btn primary file" style="height:44px">Choose photos<input type="file" id="ph-imp" accept="image/*" multiple aria-label="Choose photos"></label></div>
+    <div id="ph-prog" role="status" class="muted" style="font-size:13.5px;margin-top:12px"></div>`);
+}
+async function phImportFiles(files){
+  files = [...files].filter(f=>/^image\//.test(f.type) || /\.(jpe?g|png|webp|gif|avif|heic|heif)$/i.test(f.name));
+  if(!files.length){ toast('No photos selected'); return; }
+  if(!document.getElementById('ph-prog')) openPhotoImport();
+  const items = []; let bad = 0;
+  for(let k=0;k<files.length;k++){
+    const pg = document.getElementById('ph-prog'); if(pg) pg.textContent = `Reading photo ${k+1} of ${files.length}…`;
+    try{ const m = await phAdd(files[k]); items.push({...m, t: files[k].lastModified || 0, i:k}); }catch(e){ bad++; }
+  }
+  if(bad) toast(`Couldn’t read ${bad} photo${bad>1?'s':''}. Photos from some phones (HEIC) need to be shared as JPEG.`);
+  if(!items.length) return;
+  BD = {items: phGroup(items).map(g=>phNewItem(g, g[0].at)), src:'import', sel:null, confirm:null};
+  renderBoard();
+  BD.items.slice().forEach(it=>phIdentifyItem(it));
+}
+Object.assign(A, {
+  'ph-import':()=>openPhotoImport(),
+  'ph-board-open':()=>{ if(!BD) BD = {items:S.inbox, src:'inbox', sel:null, confirm:null}; renderBoard(); },
+  'bd-ph':d=>{ if(!BD) return; BD.confirm = null; BD.sel = BD.sel && BD.sel.i===d.i && BD.sel.p===d.p ? null : {i:d.i, p:d.p}; renderBoard(); },
+  'bd-sel-x':()=>{ BD.sel = null; BD.confirm = null; renderBoard(); },
+  'bd-confirm-x':()=>{ BD.confirm = null; renderBoard(); },
+  'bd-kind':d=>{ const it = BD.items.find(i=>i.id===d.i); if(!it) return; it.kinds[d.p] = PH_KINDS.includes(d.k) ? d.k : 'other'; if(BD.src==='inbox') phChanged(it); renderBoard(); },
+  'bd-mvto':d=>phMovePhoto(d.i, d.p, d.to),
+  'bd-rm':d=>{ BD.confirm = {type:'photo', i:d.i, p:d.p}; renderBoard(); },
+  'bd-rm-yes':d=>{ const it = BD.items.find(i=>i.id===d.i); if(!it) return; phDel(d.p); it.photos = it.photos.filter(x=>x!==d.p); delete it.kinds[d.p];
+    if(!it.photos.length) BD.items.splice(BD.items.indexOf(it), 1); else phEnsureCover(it); BD.sel = null; BD.confirm = null; if(BD.src==='inbox') phChanged(it); if(!BD.items.length){ BD = null; closeSheet(); toast('Nothing left to add'); return; } renderBoard(); },
+  'bd-split':d=>{ const it = BD.items.find(i=>i.id===d.i); if(!it || it.photos.length < 2) return; const rest = it.photos.slice(1).map(id=>({id, kind:phKindOf(it, id)}));
+    it.photos = [it.photos[0]]; rest.forEach(p=>delete it.kinds[p.id]); const nb = phNewItem(rest, it.at); phEnsureCover(nb); phEnsureCover(it); BD.items.splice(BD.items.indexOf(it)+1, 0, nb); BD.sel = null; if(BD.src==='inbox') phChanged(nb); renderBoard(); phIdentifyItem(nb); },
+  'bd-merge':d=>{ const k = BD.items.findIndex(i=>i.id===d.i); if(k < 1) return; const it = BD.items[k], prev = BD.items[k-1];
+    const hasCover = prev.photos.some(id=>phKindOf(prev, id)==='cover');
+    it.photos.forEach(id=>{ let kd = phKindOf(it, id); if(kd==='cover' && hasCover) kd = 'other'; prev.photos.push(id); prev.kinds[id] = kd; });
+    BD.items.splice(k, 1); BD.sel = null; BD.confirm = null; phEnsureCover(prev); if(BD.src==='inbox') phChanged(prev); renderBoard(); },
+  'bd-redo':d=>{ const it = BD.items.find(i=>i.id===d.i); if(!it) return; it.touched = false; phIdentifyItem(it); },
+  'bd-drop':d=>{ BD.confirm = {type:'item', i:d.i}; BD.sel = null; renderBoard(); },
+  'bd-drop-yes':d=>{ const it = BD.items.find(i=>i.id===d.i); if(!it) return; phDropItem(it); BD.confirm = null; if(BD.src==='inbox') save(); if(!BD.items.length){ BD = null; closeSheet(); toast('Nothing left to add'); return; } renderBoard(); },
+  'bd-cand':d=>{ const it = BD.items.find(i=>i.id===d.i), c = it?.cands?.[+d.k]; if(!c) return; it.candSel = +d.k; it.guess = {artist:phStr(c.artist), title:phStr(c.title), label:phStr(c.label), catno:phStr(c.catno, 60)}; it.touched = true; phRematch(it); if(BD.src==='inbox') phChanged(it); renderBoard(); },
+  'bd-addall':()=>phAddAll(),
+  'bd-discard-all':()=>{ const b = document.getElementById('bd-confirm-all'); if(b) b.innerHTML = `<div class="warn" role="alertdialog"><span>Discard all ${BD.items.length} records and their photos? They aren’t saved anywhere else.</span><button class="btn sm danger" data-act="bd-discard-yes">Discard all</button><button class="btn sm ghost" data-act="bd-discard-no">Keep</button></div>`; },
+  'bd-discard-no':()=>{ const b = document.getElementById('bd-confirm-all'); if(b) b.innerHTML = ''; },
+  'bd-discard-yes':()=>{ if(!BD) return; BD.items.slice().forEach(phDropItem); if(BD.src==='inbox') save(); BD = null; closeSheet(); toast('Discarded'); },
+});
+
+/* --- rapid capture: a camera loop that never waits for identification --- */
+const CAP = {el:null, stream:null, video:null, last:null, attach:false, lock:null, slow:new Set(), slowMs:6000};
+const CAP_ICON = `<svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>`;
+const PICS_ICON = `<svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/><path d="m3 15 4-4 5 5"/></svg>`;
+{ const _add = openAdd; openAdd = function(){
+    _add(); const ch = document.querySelector('#layer .choice'); if(!ch || ch.querySelector('[data-act="capture"]')) return;
+    ch.insertAdjacentHTML('afterbegin', `<button data-act="capture"><span class="ico">${CAP_ICON}</span><b>Rapid capture</b><span>Shoot record after record with the camera. Crates reads each one in the background.</span></button>`);
+    const rb = ch.querySelector('[data-act="add-record"]');
+    (rb || ch.lastElementChild).insertAdjacentHTML('afterend', `<button data-act="ph-import"><span class="ico">${PICS_ICON}</span><b>Photos</b><span>Pick many photos at once. Crates groups them into records for you to check.</span></button>`);
+    const pending = BD ? BD.items.length : S.inbox.length;
+    if(pending) ch.insertAdjacentHTML('beforeend', `<button data-act="ph-board-open"><span class="ico">${PICS_ICON}</span><b>Review ${pending} waiting</b><span>Photos from a capture or an import that aren’t filed yet.</span></button>`);
+  }; }
+
+function capStill(){
+  const el = document.getElementById('cap-still'); if(!el) return;
+  const any = [...CAP.slow].some(id=>{ const it = S.inbox.find(i=>i.id===id); return it && PH.busy.has(it); });
+  el.textContent = any ? "Still working on that one. It's set aside; keep going." : '';
+}
+function capPrompt(){ const p = document.getElementById('cap-prompt'); if(p) p.textContent = CAP.attach && CAP.last ? 'Label or back of the last record' : 'Next record'; const t = document.getElementById('cap-toggle'); if(t) t.setAttribute('aria-pressed', String(CAP.attach)); }
+function capStrip(){
+  const el = document.getElementById('cap-strip'), c = document.getElementById('cap-count'); if(!el) return;
+  const items = S.inbox.slice(-12);
+  el.innerHTML = items.map(it=>{ const t = photoThumb(it.photos[0]), st = it.status, cls = st==='matched'||st==='review' ? 'ok' : st==='aside'||st==='failed' ? 'aside' : 'work';
+    const txt = cls==='ok' ? (st==='matched' ? 'matched' : 'read') : cls==='aside' ? 'set aside' : 'working';
+    return `<span class="cap-shot" role="img" aria-label="Shot, ${txt}" data-i="${esc(it.id)}">${t?`<img src="${esc(t)}" alt="">`:''}<span class="dot ${cls}"></span></span>`; }).join('');
+  el.scrollLeft = el.scrollWidth;
+  if(c) c.textContent = `${S.inbox.length} record${S.inbox.length===1?'':'s'} shot`;
+  capStill();
+}
+function capShutter(cam){
+  const w = document.getElementById('cap-shutwrap'); if(!w) return;
+  w.innerHTML = cam ? `<button type="button" class="cap-shutter" id="cap-shutter" data-act="cap-shot" aria-label="Take photo"></button>`
+    : `<label class="cap-shutter" aria-label="Take photo"><input type="file" accept="image/*" capture="environment" id="cap-file"></label>`;
+}
+async function capLock(){ try{ CAP.lock = await navigator.wakeLock?.request('screen'); }catch(e){ CAP.lock = null; } }
+document.addEventListener('visibilitychange', ()=>{ if(CAP.el && document.visibilityState==='visible') capLock(); });
+async function openCapture(){
+  if(CAP.el) return; closeSheet();
+  const el = document.createElement('div'); el.className = 'cap'; el.id = 'cap'; el.dataset.cam = '1';
+  el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Rapid capture');
+  el.innerHTML = `<div class="cap-top"><button type="button" class="btn" data-act="cap-x">Close</button><span class="cap-count" id="cap-count" aria-live="polite"></span><button type="button" class="btn primary" data-act="cap-done">Done</button></div>
+    <div class="cap-view"><video id="cap-video" playsinline muted autoplay></video><div class="cap-fallback"><b style="color:var(--ink)">The camera isn’t available here</b><span>Use the big button to take each photo with your phone’s camera.</span></div>
+      <div class="cap-prompt"><span id="cap-prompt">Next record</span></div><div class="cap-flash" id="cap-flash"></div><div class="cap-still" id="cap-still" role="status"></div></div>
+    <div class="cap-strip" id="cap-strip" aria-label="Last shots"></div>
+    <div class="cap-bar"><button type="button" class="btn cap-toggle" id="cap-toggle" data-act="cap-attach" aria-pressed="false">Label / back</button><span id="cap-shutwrap"></span><span></span></div>`;
+  document.body.appendChild(el); CAP.el = el; CAP.video = el.querySelector('video'); CAP.last = null; CAP.attach = false;
+  capShutter(true); capStrip(); capLock();
+  let ok = false;
+  if(navigator.mediaDevices?.getUserMedia){
+    try{ CAP.stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}, audio:false}); CAP.video.srcObject = CAP.stream; CAP.video.play?.().catch?.(()=>{}); ok = true; }catch(e){ ok = false; }
+  }
+  if(!CAP.el) { CAP.stream?.getTracks().forEach(t=>t.stop()); return; }
+  el.dataset.cam = ok ? '1' : '0'; capShutter(ok);
+  setTimeout(()=>el.querySelector('.cap-shutter, .cap-top .btn')?.focus?.({preventScroll:true}), 30);
+}
+function capClose(){
+  CAP.stream?.getTracks().forEach(t=>t.stop()); CAP.stream = null;
+  try{ CAP.lock?.release?.(); }catch(e){} CAP.lock = null;
+  CAP.el?.remove(); CAP.el = null; CAP.video = null; CAP.attach = false;
+  try{ save(); }catch(e){}
+}
+function capWatch(it){
+  setTimeout(()=>{ if(!PH.busy.has(it) || !phAlive(it)) return;
+    if(it.status==='identifying'){ it.status = 'aside'; it.note = 'Still being read. It stays set aside until Crates has an answer.'; }
+    CAP.slow.add(it.id); phChanged(it); capStill(); }, CAP.slowMs);
+}
+/* take one shot from `src` (video, canvas or bitmap) of size W x H. Returns immediately; saving and reading happen in the background. */
+function capTake(src, W, H){
+  try{ navigator.vibrate?.(8); }catch(e){}
+  const fl = document.getElementById('cap-flash'); if(fl){ fl.classList.remove('on'); void fl.offsetWidth; fl.classList.add('on'); }
+  const id = uid('p'); PH.tried.add(id);
+  const prev = CAP.last, attach = !!(CAP.attach && prev && S.inbox.includes(prev));
+  let it;
+  if(attach){ it = prev; it.kinds ||= {}; it.kinds[id] = Object.values(it.kinds).includes('label') ? 'back' : 'label'; it.photos.push(id); }
+  else { it = {id:uid('i'), photos:[id], kinds:{[id]:'cover'}, status:'queued', guess:null, recordId:null, note:'', at:new Date().toISOString()}; S.inbox.push(it); CAP.last = it; }
+  CAP.attach = false; capPrompt(); capStrip();
+  phIngest(src, W, H, {id}).then(()=>{
+    if(!phAlive(it)) { phDel(id); return; }
+    capStrip();
+    const resolved = it.status==='matched' || it.status==='review';
+    if(!(attach && resolved)){ capWatch(it); phIdentifyItem(it); } else phChanged(it);
+  }).catch(()=>{
+    it.photos = it.photos.filter(x=>x!==id); delete it.kinds[id];
+    if(!it.photos.length){ const k = S.inbox.indexOf(it); if(k >= 0) S.inbox.splice(k, 1); if(CAP.last===it) CAP.last = null; }
+    toast('Couldn’t save that shot. Try again.'); capStrip();
+  });
+  try{ save(); }catch(e){}
+}
+function capDone(){
+  const had = S.inbox.length; capClose();
+  if(!had){ toast('No photos taken'); return; }
+  const rank = it => it.status==='aside' || it.status==='failed' ? 0 : 1;
+  S.inbox.sort((a, b)=>rank(a) - rank(b));   // set-aside first (stable)
+  BD = {items:S.inbox, src:'inbox', sel:null, confirm:null};
+  renderBoard();
+  BD.items.slice().forEach(it=>{ if((it.status==='queued') && !PH.busy.has(it)) phIdentifyItem(it); });
+}
+document.addEventListener('change', e=>{
+  if(e.target.id==='cap-file'){ const files = [...e.target.files]; e.target.value = '';
+    files.forEach(async f=>{ try{ const d = await phDecode(f); capTake(d.src, d.w, d.h); d.done(); }catch(err){ toast('Couldn’t read that photo'); } }); }
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && CAP.el){ e.preventDefault(); capClose(); } });
+Object.assign(A, {
+  'capture':()=>openCapture(),
+  'cap-x':()=>capClose(),
+  'cap-done':()=>capDone(),
+  'cap-attach':()=>{ if(!CAP.last || !S.inbox.includes(CAP.last)){ toast('Take a cover first, then add its label or back'); return; } CAP.attach = !CAP.attach; capPrompt(); },
+  'cap-shot':()=>{ const v = CAP.video; if(!v || !v.videoWidth || v.readyState < 2){ toast('The camera is still starting'); return; } capTake(v, v.videoWidth, v.videoHeight); },
+});
+function phBoot(){ phRefIds().forEach(phWant); setTimeout(phGC, 5000); }
+phBoot();
+/* ==== /WP-C ==== */
+
+
+
+
 
 /* ---------- Claude photo recognition (optional) ---------- */
 (async()=>{

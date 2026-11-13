@@ -1813,6 +1813,295 @@ def wa07_phone_and_looks(browser, url):
         a.close()
 
 
+# ---------------------------------------------------------------- WP-C: personal photos, multi-photo import, rapid capture
+import base64 as _b64
+
+# Page-side generators: square "cover" (left/right split, per variant), "back" (top/bottom bars), and "label" (bright disc on black).
+WC_GEN = r"""
+window.mkImg = (kind, v) => new Promise(res => {
+  const c = document.createElement('canvas'), n = 600; c.width = c.height = n; const x = c.getContext('2d');
+  const cols = ['#d33', '#3a7', '#37d', '#da3', '#a3d'], col = cols[v % cols.length];
+  if (kind === 'label') { x.fillStyle = '#000'; x.fillRect(0, 0, n, n); x.fillStyle = col; x.beginPath(); x.arc(n/2, n/2, n*.35, 0, 7); x.fill(); x.fillStyle = '#fff'; x.beginPath(); x.arc(n/2, n/2, 14, 0, 7); x.fill(); }
+  else if (kind === 'back') { x.fillStyle = '#fff'; x.fillRect(0, 0, n, n); x.fillStyle = col; for (let i = 0; i < 6; i += 2) x.fillRect(0, i*100, n, 100); }
+  else if (v % 2) { x.fillStyle = '#111'; x.fillRect(0, 0, n, n); x.fillStyle = col; x.fillRect(n*.66, 0, n*.34, n); x.fillStyle = '#fff'; x.fillRect(n*.08, n*.7, n*.4, n*.2); }
+  else { x.fillStyle = '#111'; x.fillRect(0, 0, n, n); x.fillStyle = col; x.fillRect(0, 0, n/2, n); x.fillStyle = '#fff'; x.fillRect(n*.62, n*.1, n*.3, n*.18); }
+  c.toBlob(b => res(b), 'image/png');
+});
+window.mkB64 = async (kind, v) => { const b = await mkImg(kind, v); return await new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result.split(',')[1]); f.readAsDataURL(b); }); };
+window.mkFile = async (kind, v, name, t) => new File([await mkImg(kind, v)], name, {type: 'image/png', lastModified: t});
+"""
+
+
+def _wcpng(a, kind, v=0):
+    return _b64.b64decode(a.ev(f"mkB64('{kind}', {v})"))
+
+
+def _wc_boot(a):
+    a.ev(WC_GEN)
+    a.ev("PH.warned = true")   # no storage-warning toast in headless runs where IndexedDB is blocked
+
+
+def wc01_photo_section(a):
+    _wc_boot(a)
+    ids = a.ev("S.records.filter(r=>!r.cover).slice(0,2).map(r=>r.id)")
+    rid, other = ids[0], ids[1]
+    a.ev(f"rec('{rid}').cover='https://i.discogs.com/x.jpg'")   # a Discogs cover exists so both sources are selectable
+    a.ev(f"openEditRecord('{rid}')"); a.page.wait_for_selector("#ph-sec")
+    check(a.ev("document.querySelector('#ph-sec [data-act=ph-src][data-v=personal]').disabled"), "My photo should be disabled before any photo exists")
+    check(not a.ev("document.querySelector('#ph-sec [data-act=ph-src][data-v=discogs]').disabled"), "Discogs should be enabled when the record has a cover")
+    a.page.set_input_files("#ph-sec input[data-phadd]", [
+        {"name": "one.png", "mimeType": "image/png", "buffer": _wcpng(a, "cover", 0)},
+        {"name": "two.png", "mimeType": "image/png", "buffer": _wcpng(a, "back", 1)}])
+    a.page.wait_for_function(f"rec('{rid}').photos.length===2", timeout=8000)
+    a.page.wait_for_selector("#ph-sec .ph-item img")
+    check(a.ev("document.querySelectorAll('#ph-sec .ph-item').length") == 2, "two photo cards expected")
+    p1, p2 = a.ev(f"rec('{rid}').photos.map(p=>p.id)")
+    check(a.ev(f"rec('{rid}').photos.map(p=>p.kind)") == ["cover", "other"], "first photo of a record becomes its cover kind, the next is 'other'")
+    # stored as a 1600px-max JPEG with a 240px thumb
+    o = a.ev(f"phGet('{p1}').then(o=>({{type:o.blob.type, w:o.w, h:o.h, th:o.thumb.slice(0,22)}}))")
+    check(o["type"] == "image/jpeg" and o["w"] <= 1600 and o["th"].startswith("data:image/jpeg"), f"unexpected stored photo {o}")
+    # Discogs is the default source while the record has a Discogs cover
+    check("i.discogs.com" in a.ev(f"cover(rec('{rid}'))"), "Discogs art should show by default when it exists")
+    # set the second photo as cover
+    a.page.locator(f"#ph-sec .ph-item[data-p='{p2}'] [data-act=ph-cover]").click()
+    check(a.ev(f"rec('{rid}').coverPhoto") == p2 and a.ev(f"rec('{rid}').coverSrc") == "personal", "Set as cover should pick that photo and the personal source")
+    h = a.ev(f"cover(rec('{rid}'))")
+    check("data-personal" in h and "i.discogs.com" not in h, "the sleeve should now show the personal photo")
+    a.ev(f"V.view='table';T.filt='all';T.q='';render()"); _settle(a, 150)
+    check(a.ev(f"!!document.querySelector('#main img[data-personal][data-cover=\"{rid}\"]')"), "the personal photo should render in the collection table")
+    # switch the source back and forth
+    a.page.locator("#ph-sec [data-act=ph-src][data-v=discogs]").click()
+    check("i.discogs.com" in a.ev(f"cover(rec('{rid}'))"), "switching back to Discogs should show the Discogs cover")
+    a.page.locator("#ph-sec [data-act=ph-src][data-v=personal]").click()
+    check("data-personal" in a.ev(f"cover(rec('{rid}'))"), "My photo should show the photo again")
+    # label kind prefers a personal label photo
+    a.page.select_option(f"#phk-{p1}", "label")
+    a.page.wait_for_function(f"rec('{rid}').photos[0].kind==='label'")
+    check("data-personal" in a.ev(f"cover(rec('{rid}'),'label')"), "the Label art should use the personal label photo")
+    # move a photo to another record (searchable picker), then undo
+    a.page.locator(f"#ph-sec .ph-item[data-p='{p1}'] [data-act=ph-move]").click()
+    a.page.wait_for_selector("#ph-pq")
+    a.page.fill("#ph-pq", a.ev(f"rec('{other}').title.slice(0,4)"))
+    a.page.locator(f"#ph-pl [data-act=ph-move-to][data-to='{other}']").click()
+    a.page.wait_for_function(f"rec('{other}').photos.length===1 && rec('{rid}').photos.length===1")
+    check(a.ev(f"rec('{other}').photos[0].id") == p1, "the moved photo should be on the other record")
+    a.undo(); _settle(a, 100)
+    check(a.ev(f"rec('{rid}').photos.length") == 2 and a.ev(f"rec('{other}').photos.length") == 0, "undo should put the photo back on both records")
+    # delete (in-place confirm), blob is gone, undo restores it
+    a.page.locator(f"#ph-sec .ph-item[data-p='{p2}'] [data-act=ph-del]").click()
+    a.page.locator(f"#phc-{p2} [data-act=ph-del-yes]").click()
+    a.page.wait_for_function(f"rec('{rid}').photos.length===1")
+    check(not a.ev(f"PH.thumbs.has('{p2}')") and a.ev(f"phGet('{p2}')") is None, "deleting a photo should delete its blob")
+    check(a.ev(f"rec('{rid}').coverPhoto") in (None, p1), "cover pointer should not dangle after delete")
+    a.undo(); a.page.wait_for_function(f"rec('{rid}').photos.length===2 && PH.thumbs.has('{p2}')", timeout=5000)
+    check(a.ev(f"phGet('{p2}').then(o=>!!o && o.blob.size>100)"), "undo should restore the blob")
+    return "photos added, cover source switched, label art, moved + undone, deleted + undone"
+
+
+def wc02_group_and_import(a):
+    _wc_boot(a)
+    # pure grouping rules
+    H = lambda n: "0" * n + "1" * (64 - n)
+    g = a.ev("""(()=>{ const H = n => '0'.repeat(n)+'1'.repeat(64-n);
+      const mk = (id, t, o) => ({id, t, i:0, hash:H(o.h||0), square:o.sq!==false, label:!!o.label});
+      const gap = phGroup([mk('c1',0,{h:0}), mk('l1',3000,{label:true,h:20}), mk('b1',40000,{h:40})]).map(g=>g.map(p=>p.id+':'+p.kind));
+      const seq = phGroup([mk('c1',0,{h:0}), mk('l1',2000,{label:true,h:20}), mk('b1',4000,{h:40}), mk('c2',6000,{h:10}), mk('l2',8000,{label:true,h:30})]).map(g=>g.map(p=>p.id+':'+p.kind));
+      const retake = phGroup([mk('c1',0,{h:0}), mk('c1b',3000,{h:2})]).map(g=>g.map(p=>p.id+':'+p.kind));
+      const wide = phGroup([mk('c1',0,{h:0}), mk('w',2000,{h:30,sq:false})]).map(g=>g.map(p=>p.id+':'+p.kind));
+      return {gap, seq, retake, wide}; })()""")
+    check(g["gap"] == [["c1:cover", "l1:label"], ["b1:cover"]], f"a gap over 25 s should start a new record: {g['gap']}")
+    check(g["seq"] == [["c1:cover", "l1:label", "b1:back"], ["c2:cover", "l2:label"]], f"a second front cover should start a new record: {g['seq']}")
+    check(g["retake"] == [["c1:cover", "c1b:other"]], f"a near-identical retake stays in the group: {g['retake']}")
+    check(g["wide"] == [["c1:cover", "w:other"]], f"a non-square photo never starts a record: {g['wide']}")
+    # label detection on real pixels
+    f = a.ev("""(async()=>{ const out = {}; for (const [k,v] of [['cover',0],['label',1],['back',2]]) { const f = await mkFile(k, v, k+'.png', 1); const m = await phAdd(f); out[k] = {label:m.feat.label, square:m.feat.square}; phDel(m.id); } return out; })()""")
+    check(f["label"]["label"] and not f["cover"]["label"] and not f["back"]["label"], f"label shape detection off: {f}")
+    # five generated photos with controlled times: cover A, label A, back A, cover B (no gap), label B
+    a.ev("""(()=>{ window.__n = 0; identifyCover = async () => { const n = ++window.__n; return {artist:'WC Artist '+n, title:'WC Title '+n, label:'WC Label', catno:'WC-'+n, confidence:'high', cands:[]}; }; })()""")
+    n0 = a.ev("S.records.length")
+    a.ev("""(async()=>{ const t = Date.now() - 600000; const files = [await mkFile('cover',0,'a1.png',t), await mkFile('label',1,'a2.png',t+3000), await mkFile('back',2,'a3.png',t+6000), await mkFile('cover',3,'b1.png',t+9000), await mkFile('label',4,'b2.png',t+12000)];
+      window.__imp = phImportFiles(files); })()""")
+    a.page.wait_for_selector("#bd .bd-card", timeout=15000)
+    cards = a.ev("BD.items.map(i=>i.photos.map(id=>i.kinds[id]))")
+    check(cards == [["cover", "label", "back"], ["cover", "label"]], f"expected groups [cover,label,back] and [cover,label], got {cards}")
+    a.page.wait_for_function("BD.items.every(i=>i.status==='review')", timeout=8000)
+    check(a.ev("document.querySelectorAll('#bd .bd-card').length") == 2, "two cards expected on the board")
+    check("New record" in a.ev("document.querySelector('#bd .bd-st').innerText"), "an unmatched card should say it is a new record")
+    # tap a thumb, move it to the other card
+    first_back = a.ev("BD.items[0].photos[2]")
+    a.page.locator(f"#bd .bd-ph[data-p='{first_back}']").click()
+    a.page.locator(f"#bd [data-act=bd-mvto][data-p='{first_back}'][data-to='{a.ev('BD.items[1].id')}']").click()
+    a.page.wait_for_function("BD.items[0].photos.length===2 && BD.items[1].photos.length===3")
+    check(a.ev("BD.items[1].photos.includes('%s')" % first_back), "the thumb should now be on the second card")
+    # move it back with the real drag and drop
+    a.page.locator(f"#bd .bd-ph[data-p='{first_back}']").drag_to(a.page.locator(f"#bd .bd-card[data-i='{a.ev('BD.items[0].id')}']"))
+    a.page.wait_for_function("BD.items[0].photos.length===3 && BD.items[1].photos.length===2", timeout=4000)
+    # split + merge
+    a.page.locator(f"#bd [data-act=bd-split][data-i='{a.ev('BD.items[0].id')}']").click()
+    a.page.wait_for_function("BD.items.length===3")
+    a.page.locator(f"#bd [data-act=bd-merge][data-i='{a.ev('BD.items[1].id')}']").click()
+    a.page.wait_for_function("BD.items.length===2 && BD.items[0].photos.length===3")
+    a.page.wait_for_function("BD.items.every(i=>i.status==='review')", timeout=8000)
+    # Add all: a backup first, records are Unplaced with photos and a personal cover
+    nb = a.ev("backups().length")
+    a.page.locator("#bd [data-act=bd-addall]").click()
+    a.page.wait_for_function(f"S.records.length=={n0}+2", timeout=8000)
+    new = a.ev(f"S.records.slice({n0}).map(r=>({{a:r.artist, n:r.photos.length, kinds:r.photos.map(p=>p.kind), src:r.coverSrc, cp:!!r.coverPhoto, placed:!!r.loc.u}}))")
+    check(sorted(x["n"] for x in new) == [2, 3] and all(x["src"] == "personal" and x["cp"] and not x["placed"] for x in new), f"new records wrong: {new}")
+    check(a.ev("backups()[0].label") == "Before adding photos" and a.ev("backups().length") >= min(nb + 1, 4), "a backup should be made before adding")
+    check(a.ev("BD") is None and a.ev("!document.getElementById('bd')"), "the board should close when everything was added")
+    # a group that matches a record you own gets the photos attached
+    own = a.ev("(()=>{ const r = S.records[0]; return {id:r.id, n:(r.photos||[]).length, count:S.records.length, artist:r.artist, title:r.title}; })()")
+    a.ev("identifyCover = async () => ({artist:%s, title:%s, label:'', catno:'', confidence:'high', cands:[]})" % (json.dumps(own["artist"]), json.dumps(own["title"])))
+    a.ev("""(async()=>{ window.__imp = phImportFiles([await mkFile('cover',2,'own.png',Date.now()-5000)]); })()""")
+    a.page.wait_for_selector("#bd .bd-card")
+    a.page.wait_for_function("BD.items[0].status==='matched'", timeout=8000)
+    check("In your collection" in a.ev("document.querySelector('#bd .bd-st').innerText"), "an owned record should be shown as matched")
+    a.page.locator("#bd [data-act=bd-addall]").click()
+    a.page.wait_for_function(f"rec('{own['id']}').photos.length=={own['n']}+1", timeout=8000)
+    check(a.ev("S.records.length") == own["count"], "attaching to an owned record must not create a new one")
+    return "grouping rules, label shape, 5 photos -> 2 groups, move/drag/split/merge, Add all, attach to owned"
+
+
+def _cam_stub(a):
+    a.ev("""(()=>{ const c = document.createElement('canvas'); c.width = 640; c.height = 480; const x = c.getContext('2d'); let k = 0;
+      setInterval(()=>{ x.fillStyle = 'hsl('+((k++*9)%360)+',60%,45%)'; x.fillRect(0,0,640,480); x.fillStyle = '#fff'; x.fillRect(120,90,220,300); }, 40);
+      window.__stream = c.captureStream(25); window.__gum = 0;
+      navigator.mediaDevices.getUserMedia = async (cons) => { window.__gum++; window.__cons = JSON.stringify(cons); return window.__stream; }; })()""")
+
+
+def wc03_rapid_capture(a):
+    _wc_boot(a); _cam_stub(a)
+    a.ev("""(()=>{ window.__n = 0; CAP.slowMs = 500;
+      identifyCover = async () => { const n = ++window.__n; await new Promise(r => setTimeout(r, 1800)); return n === 2 ? null : {artist:'Cap Artist '+n, title:'Cap Title '+n, label:'', catno:'', confidence:'high', cands:[]}; }; })()""")
+    n0 = a.ev("S.inbox.length")
+    # the Add sheet offers Rapid capture first
+    a.click(".add-btn, .tb-add"); a.page.wait_for_selector(".choice button")
+    check(a.ev("document.querySelector('.choice button').dataset.act") == "capture", "Rapid capture should be the first option")
+    check(a.ev("!!document.querySelector('.choice [data-act=ph-import]')"), "Add should offer Photos")
+    a.page.locator(".choice [data-act=capture]").click()
+    a.page.wait_for_selector("#cap")
+    a.page.wait_for_function("document.getElementById('cap-video').videoWidth>0", timeout=8000)
+    check("environment" in a.ev("window.__cons"), "the rear camera should be requested")
+    check(a.ev("document.getElementById('cap-prompt').textContent") == "Next record", "prompt should invite the next record")
+    # three quick shots: none waits for identification
+    for _ in range(3):
+        a.page.locator("#cap-shutter").click(); a.page.wait_for_timeout(60)
+    check(a.ev("S.inbox.length") == n0 + 3, f"three shots should make three inbox items, got {a.ev('S.inbox.length')}")
+    check(a.ev("S.inbox.slice(-3).every(i=>i.photos.length===1)"), "each shot is its own item")
+    a.page.wait_for_function("document.querySelectorAll('#cap-strip .cap-shot').length>=3")
+    a.page.wait_for_function("document.getElementById('cap-still').textContent.includes('Still working on that one')", timeout=4000)
+    check("set aside; keep going" in a.ev("document.getElementById('cap-still').textContent"), "the still-working line should say the item is set aside")
+    check(a.ev("document.getElementById('cap-prompt').textContent") == "Next record", "the viewfinder stays ready")
+    a.page.locator("#cap-shutter").click()   # still shooting while identification runs
+    check(a.ev("S.inbox.length") == n0 + 4, "a shot during identification must not be blocked")
+    # label / back toggle attaches to the previous item
+    a.page.locator("#cap-toggle").click()
+    check(a.ev("document.getElementById('cap-toggle').getAttribute('aria-pressed')") == "true", "toggle should show on")
+    a.page.locator("#cap-shutter").click()
+    a.page.wait_for_function(f"S.inbox.length=={n0}+4 && S.inbox[S.inbox.length-1].photos.length===2")
+    check(a.ev("Object.values(S.inbox[S.inbox.length-1].kinds).includes('label')"), "the attached shot is a label")
+    check(a.ev("document.getElementById('cap-toggle').getAttribute('aria-pressed')") == "false", "the toggle is one-shot")
+    # the photos really were saved (full size JPEG + thumb)
+    pid = a.ev("S.inbox[S.inbox.length-1].photos[0]")
+    o = a.ev(f"phGet('{pid}').then(o=>({{t:o.blob.type,w:o.w}}))")
+    check(o["t"] == "image/jpeg" and o["w"] == 640, f"shot not stored: {o}")
+    a.page.wait_for_function("S.inbox.every(i=>!PH.busy.has(i) && !['queued','identifying'].includes(i.status))", timeout=15000)
+    st = a.ev("S.inbox.slice(-4).map(i=>i.status)")
+    check(st.count("aside") == 1 and st.count("review") == 3, f"one unreadable shot should be set aside, got {st}")
+    # Done opens the review board with set-aside items first and stops the camera
+    a.page.locator("#cap [data-act=cap-done]").click()
+    a.page.wait_for_selector("#bd .bd-card")
+    check(a.ev("BD.items[0].status") == "aside", "set-aside items come first on the board")
+    check(a.ev("!document.getElementById('cap') && __stream.getTracks().every(t=>t.readyState==='ended')"), "camera tracks must be stopped on exit")
+    check("Couldn't identify" in a.ev("document.querySelector('#bd .bd-card .bd-st').innerText"), "an aside card explains what to do")
+    return "3+ shots never blocked, still-working line, label toggle, Done -> board with aside first, camera stopped"
+
+
+def wc04_identify_server_503(a):
+    _wc_boot(a)
+    a.page.route("**/api/identify", lambda r: r.fulfill(status=503, content_type="application/json", body='{"error":"Not configured","missing":["ANTHROPIC_API_KEY"]}'))
+    a.ev("API.ok = true; AI = null")
+    a.ev("""(async()=>{ window.__imp = phImportFiles([await mkFile('cover',0,'x.png',Date.now()-3000)]); })()""")
+    a.page.wait_for_selector("#bd .bd-card", timeout=10000)
+    a.page.wait_for_function("BD.items[0].status==='aside'", timeout=10000)
+    t = a.ev("document.querySelector('#bd .bd-st').innerText")
+    check("Couldn't identify this one automatically. Type the artist and title, or scan the barcode." in t, f"aside note missing: {t}")
+    # typing a name rescues it
+    a.page.fill("#bd [data-bdf=artist]", "Typed Artist"); a.page.fill("#bd [data-bdf=title]", "Typed Title")
+    a.page.locator("#bd [data-bdf=title]").blur()
+    a.page.wait_for_function("BD.items[0].status==='review'")
+    check(not a.ev("document.querySelector('#bd [data-act=bd-addall]').disabled"), "Add should enable once there is a name")
+    return "503 -> set aside with the note; typing a name makes it addable"
+
+
+def wc05_hostile_data(a):
+    _wc_boot(a)
+    evil = {"v": 2, "settings": {}, "units": [], "playlists": [], "gigs": [], "recent": [], "syncQueue": [],
+            "records": [{"id": "r1", "artist": "a", "title": "<img src=x onerror=window.__pwn=7>", "photos": [{"id": "x\"><img src=x onerror=window.__pwn=1>", "kind": "evil"}, {"id": "ok1", "kind": "zzz", "w": "9", "h": -5}, {"id": "ok1", "kind": "cover"}, "str", None], "coverSrc": "<b>", "coverPhoto": "nope"},
+                        {"id": "r2", "artist": "b", "title": "t", "photos": [{"id": "ok2", "kind": "label", "at": 1700000000000}], "coverSrc": "personal", "coverPhoto": "ok2"}],
+            "inbox": [{"id": "i\"><img src=x onerror=window.__pwn=2>", "photos": ["bad id<", "p1", "p2"], "status": "hax", "kinds": {"p1": "cover", "<b>": "cover", "p2": "nope"},
+                       "guess": {"artist": {"a": 1}, "title": "<img src=x onerror=window.__pwn=3>", "label": 5, "catno": None}, "recordId": "ghost", "note": 5, "at": {"x": 1}},
+                      {"id": "i2", "photos": [], "status": "matched"}, "str", None, {"id": "i3", "photos": ["p3"], "status": "identifying", "recordId": "r1"}]}
+    out = a.ev("(e => { const s = migrate(e); return JSON.parse(JSON.stringify({r:s.records, i:s.inbox})); })(%s)" % json.dumps(evil))
+    r1, r2 = out["r"]; i0, i1 = out["i"][0], out["i"][1]
+    check([p["id"] for p in r1["photos"]] == ["ok1"] and r1["photos"][0]["kind"] == "other" and r1["photos"][0]["w"] == 0 and r1["photos"][0]["h"] == 0, f"photos not sanitised: {r1['photos']}")
+    check("coverSrc" not in r1 and r1["coverPhoto"] is None, f"cover fields not sanitised: {r1}")
+    check(r2["coverSrc"] == "personal" and r2["coverPhoto"] == "ok2" and r2["photos"][0]["at"].startswith("2023-"), f"a valid personal cover should survive: {r2}")
+    check(len(out["i"]) == 2 and re.fullmatch(r"[A-Za-z0-9_-]{1,40}", i0["id"]), f"inbox ids/items not sanitised: {out['i']}")
+    check(i0["photos"] == ["p1", "p2"] and i0["status"] == "queued" and i0["kinds"] == {"p1": "cover"} and i0["recordId"] is None, f"inbox item not sanitised: {i0}")
+    check(i0["guess"]["artist"] != {"a": 1} and isinstance(i0["guess"]["artist"], str) and i0["note"] == "5" and i0["at"] == "", f"inbox strings: {i0}")
+    check(i1["status"] == "queued" and i1["recordId"] == "r1", f"identifying must not persist as identifying: {i1}")
+    # rendering hostile strings stays inert
+    a.ev("""(()=>{ const it = {id:'ihost', photos:['pz'], kinds:{pz:'cover'}, status:'review', guess:{artist:'<img src=x onerror=window.__pwn=9>', title:'"><img src=x onerror=window.__pwn=8>', label:'', catno:''}, recordId:null, note:'<b>x</b>', cands:[{releaseId:1, artist:'<i>a</i>', title:'<img src=x onerror=window.__pwn=6>', label:'', catno:'', year:'', thumb:'javascript:alert(1)'},{releaseId:2, artist:'b', title:'c', label:'', catno:'', year:'', thumb:null}]};
+      BD = {items:[it], src:'import', sel:null, confirm:null}; renderBoard(); })()""")
+    _settle(a, 200)
+    check(a.ev("window.__pwn") is None, "hostile strings must not run script")
+    check(a.ev("document.querySelectorAll('#bd img[onerror]').length") == 0 and a.ev("document.querySelectorAll('#bd .bd-cand').length") == 2, "hostile strings must be escaped on the board")
+    return "photos/inbox sanitised; board escapes hostile strings"
+
+
+def wc06_phone_layout(browser, url):
+    a = App(browser, url, 390, 844, legacy=False)
+    try:
+        _wc_boot(a); _cam_stub(a)
+        a.ev("identifyCover = async () => null")
+        widths = {}
+        def w(tag):
+            widths[tag] = max(a.ev("document.documentElement.scrollWidth"), a.ev("(()=>{const s=document.querySelector('.sheet');return s?390+(s.scrollWidth-s.clientWidth):0})()"))
+        # photo section in the edit sheet
+        rid = a.ev("S.records[0].id")
+        a.ev(f"openEditRecord('{rid}')"); a.page.wait_for_selector("#ph-sec")
+        a.page.set_input_files("#ph-sec input[data-phadd]", [{"name": f"p{i}.png", "mimeType": "image/png", "buffer": _wcpng(a, "cover", i)} for i in range(3)])
+        a.page.wait_for_function(f"rec('{rid}').photos.length===3", timeout=8000); _settle(a, 150); w("photo section")
+        a.ev("closeSheet()")
+        # review board with several cards
+        a.ev("""(async()=>{ const t = Date.now() - 900000; const fs = []; for (let i = 0; i < 4; i++) { fs.push(await mkFile('cover', i, 'c'+i+'.png', t+i*40000)); fs.push(await mkFile('label', i, 'l'+i+'.png', t+i*40000+3000)); }
+          window.__imp = phImportFiles(fs); })()""")
+        a.page.wait_for_selector("#bd .bd-card", timeout=15000); a.page.wait_for_function("BD.items.every(i=>i.status==='aside')", timeout=10000); _settle(a, 150); w("review board")
+        a.page.locator("#bd .bd-ph").first.click(); _settle(a, 100); w("board photo panel")
+        small = a.ev("[...document.querySelectorAll('#bd .btn, #bd .bd-ph, #bd input')].filter(e=>e.offsetParent && e.getBoundingClientRect().height<43.5).map(e=>e.className+':'+Math.round(e.getBoundingClientRect().height)+':'+(e.dataset.act||e.dataset.bdf))")
+        check(not small, f"touch targets on the board should be at least 44px: {small}")
+        a.ev("BD=null; closeSheet()")
+        # capture screen
+        a.ev("openCapture()"); a.page.wait_for_function("document.getElementById('cap-video')?.videoWidth>0", timeout=8000)
+        for _ in range(2): a.page.locator("#cap-shutter").click(); a.page.wait_for_timeout(80)
+        _settle(a, 200); w("capture")
+        check(a.ev("document.getElementById('cap-shutter').getBoundingClientRect().height") >= 44, "shutter must be a large target")
+        check(a.ev("document.getElementById('cap').getBoundingClientRect().bottom") <= 844 + 1, "capture fits the screen")
+        a.ev("capClose()")
+        bad = {k: v for k, v in widths.items() if v > 390}
+        check(not bad, f"sideways scroll at 390px: {bad}")
+        for look in ("booth", "shop"):
+            a.ev(f"S.settings.look='{look}'; render()"); a.ev(f"openEditRecord('{rid}')"); a.page.wait_for_selector("#ph-sec"); _settle(a, 100)
+            check(a.ev("(()=>{const s=document.querySelector('.sheet');return s.scrollWidth<=s.clientWidth})()"), f"sheet overflows sideways in {look}")
+            a.ev("closeSheet()")
+        check(not a.js_errors(), a.js_errors())
+        return f"no sideways scroll: {widths}"
+    finally:
+        a.close()
+
+
 # ---------------------------------------------------------------- WP-B: flip stack
 _WB_GEN = """((n) => { const base = S.records.slice(0,5).map(r=>JSON.parse(JSON.stringify(r))), recs = [];
   for(let i=0;i<n;i++){ const b = base[i%base.length]; recs.push({...JSON.parse(JSON.stringify(b)), id:'w'+i, title:b.title+' '+i, artist:String.fromCharCode(65+(i%26))+'rtist '+i, loc:{u:'C1',c:'0-0'}, home:null}); }
@@ -2122,6 +2411,15 @@ TESTS += [
     ("WB11 Empty and single", wb11_empty_and_single), ("WB12 Looks and reduced motion", wb12_looks_and_motion),
 ]
 BROWSER_LEVEL |= {wb01_opens_as_stack, wb02_keys_flip_without_rebuild, wb03_wheel_flips, wb04_touch_flick, wb05_scrubber, wb06_toggle_persists, wb07_select_and_stale_show_list, wb08_big_spot_is_fast, wb09_phone_fits, wb10_columns_follow_and_drag, wb11_empty_and_single, wb12_looks_and_motion}
+TESTS += [
+    ("WC01 Photos: add, cover source, move, delete + undo", wc01_photo_section),
+    ("WC02 Multi-photo import: grouping, board, Add all", wc02_group_and_import),
+    ("WC03 Rapid capture", wc03_rapid_capture),
+    ("WC04 Identify 503 -> set aside", wc04_identify_server_503),
+    ("WC05 Photos/inbox sanitised", wc05_hostile_data),
+    ("WC06 Photos + capture at 390px", wc06_phone_layout),
+]
+BROWSER_LEVEL |= {wc06_phone_layout}
 
 
 def main():

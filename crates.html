@@ -970,6 +970,36 @@ a.pv::before,button.pv::before,.icon-btn::before,.step .round::before,.map-tools
   :root[data-look="flat"] .spot-row{height:40px;font-size:14px}
   :root[data-look="flat"] .li{padding:7px 4px}
 }
+/* ==== WP-B: flip stack ==== */
+.stk{width:min(100%,440px);margin:0 auto;padding:6px 0 4px;container-type:inline-size;outline:none;overscroll-behavior:contain}
+.stk:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.stk-modebar{display:flex;justify-content:flex-end;padding:6px 2px 4px}
+.stk-stage{--cs:min(78cqw,42vh,380px);position:relative;height:calc(var(--cs) + 86px);overflow:hidden;perspective:900px;perspective-origin:50% 30%;touch-action:pan-y;-webkit-user-select:none;user-select:none;overscroll-behavior:contain}
+.stk-s{position:absolute;left:50%;top:56px;width:var(--cs);aspect-ratio:1;transform-origin:50% 0;border:1px solid var(--line);border-radius:3px;overflow:hidden;background:var(--surface-2);cursor:pointer;transition:transform .16s cubic-bezier(.2,.8,.2,1),opacity .16s ease-out}
+.stk-s.f{cursor:grab}
+.stk-s svg,.stk-s img{width:100%;height:100%;display:block;object-fit:cover}
+.stk-scrub{position:relative;height:36px;display:flex;align-items:center;gap:1px;touch-action:none;cursor:pointer;-webkit-user-select:none;user-select:none}
+.stk-scrub.one{cursor:default}
+.stk-tk{flex:1 1 0;min-width:1px;height:10px;background:var(--line);border-radius:1px;pointer-events:none}
+.stk-tk.on{background:var(--accent);height:20px}
+.stk-cap{text-align:center;padding:0 8px 8px;min-height:60px}
+.stk-t{display:block;font-size:16px;font-weight:600;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stk-a{display:block;font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stk-m{display:flex;justify-content:center;gap:10px;margin-top:2px;font:12px var(--f-mono);color:var(--muted)}
+.stk-l:empty{display:none}
+.stk-acts{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.stk-acts .btn,.stk-pv .btn{height:36px;padding:0 11px;gap:5px;display:inline-flex;align-items:center;white-space:nowrap}
+.stk-acts .btn svg{width:14px;height:14px}
+.stk-acts .btn.sq{width:36px;padding:0;justify-content:center}
+.stk-pv{display:contents}
+@media (max-width:780px){
+  .stk-stage{--cs:min(78cqw,40vh)}
+  .stk-acts .btn,.stk-pv .btn{height:44px;padding:0 10px}
+  .stk-acts .btn.sq{width:44px}
+  .stk-scrub{height:44px}
+  .stk-cap{min-height:56px}
+}
+@media (prefers-reduced-motion:reduce){.stk-s{transition:none}}
 </style>
 
 <div class="top"><div class="wrap">
@@ -1126,7 +1156,7 @@ function migrate(st){
   ['units','records','playlists','gigs','syncQueue','recent'].forEach(k=>{ st[k] = list(st[k]); });
   const s = st.settings;
   if(!['red','brass','cyan'].includes(s.accent)) s.accent = 'red';
-  s.discogsSync = !!s.discogsSync; if(s.lookV!==2){ s.look = 'flat'; s.lookV = 2; } s.look = ['flat','booth','shop','auto'].includes(s.look) ? s.look : 'flat'; s.view = s.view==='columns' ? 'columns' : 'map'; s.density = s.density==='compact' ? 'compact' : 'regular';
+  s.discogsSync = !!s.discogsSync; if(s.lookV!==2){ s.look = 'flat'; s.lookV = 2; } s.look = ['flat','booth','shop','auto'].includes(s.look) ? s.look : 'flat'; s.view = s.view==='columns' ? 'columns' : 'map'; s.density = s.density==='compact' ? 'compact' : 'regular'; s.spotMode = s.spotMode==='list' ? 'list' : 'stack';
   const remap = (items, p) => { const taken = new Set(), m = new Map();
     items.forEach(x=>{ const old = txt(x.id); let id = old; if(!SAFE_ID.test(id) || taken.has(id)){ let n=1; while(taken.has(p+n)) n++; id = p+n; } taken.add(id); if(!m.has(old)) m.set(old, id); x.id = id; });
     return id => m.get(txt(id)) ?? null; };
@@ -1464,7 +1494,7 @@ function bindSwipe(){
   st.onpointerdown = e => { x0 = e.clientX; };
   st.onpointerup = e => { if(x0==null) return; const dx = e.clientX-x0; x0=null; if(Math.abs(dx)>40) dig(dx<0?1:-1); };
 }
-function dig(d){ const list = inCell(V.unit,V.cell); if(!list.length) return; V.dig = Math.max(0, Math.min(list.length-1, V.dig+d)); render(); }
+function dig(d){ const list = inCell(V.unit,V.cell); if(!list.length) return; V.dig = Math.max(0, Math.min(list.length-1, V.dig+d)); if(typeof stkApply==='function' && stkApply()) return; render(); }
 
 /* ---------- moving ---------- */
 /* Multi-step undo. Code assigns `lastUndo = fn` to push a step (the global setter below). */
@@ -2651,7 +2681,7 @@ let drag = null, dragJustEnded = false;
 document.addEventListener('pointerdown', e=>{
   const src = e.target.closest('[data-drag]');
   if(!src || e.button!==0 || e.target.closest('a, input, select, textarea, .pv')) return;
-  drag = {rid:src.dataset.drag, src, x:e.clientX, y:e.clientY, id:e.pointerId, on:false, touch:e.pointerType!=='mouse', timer:null, target:null, isSleeve:src.classList.contains('sleeve')};
+  drag = {rid:src.dataset.drag, src, x:e.clientX, y:e.clientY, id:e.pointerId, on:false, touch:e.pointerType!=='mouse', timer:null, target:null, isSleeve:src.classList.contains('sleeve')||src.classList.contains('stk-s')};
   if(drag.touch) drag.timer = setTimeout(()=>{ if(drag && !drag.on) startDrag(e.clientX, e.clientY); }, 380);
 });
 function startDrag(x, y){
@@ -2855,7 +2885,7 @@ function spotPanel(){
   V.dig = Math.max(0, Math.min(V.dig, list.length-1));
   return `<aside class="spot-panel" data-snap="${M.sheet}" aria-label="${esc(addrLong({u:u.id,c:V.cell}))}">
     ${spotHead(u, list)}
-    <div class="spot-body">${list.length ? `<div class="list">${recordRows(list,{act:'map-rec', inline:true})}</div>${selBar()}` : emptySpot(u)}</div>
+    <div class="spot-body">${list.length ? (stkOn() ? stackView(list) : `${stkModeBar()}<div class="list">${recordRows(list,{act:'map-rec', inline:true})}</div>${selBar()}`) : emptySpot(u)}</div>
     <div class="spot-foot">${isPhone()?'Press and hold a record to drag it onto the map.':'Drag a record onto any cubby or bag on the map to move it.'}</div>
   </aside>`;
 }
@@ -3044,20 +3074,24 @@ function spotRows(){
     return `<div class="ugrp"><div class="uhead"><button class="uh" data-act="col-unit" data-u="${u.id}" title="Open ${esc(u.name)}">${esc(u.name)}</button><span class="idtag">${esc(u.id)}</span><span class="n">${n}</span></div>${rows}</div>`;
   }).join('') + `<div class="row" style="padding:12px 8px 4px"><button class="btn sm ghost" data-act="open-add" style="border-style:dashed;width:100%">+ Add furniture or bag</button></div>`;
 }
+/* the right-hand Columns pane for the current record (also re-rendered alone while the flip stack runs) */
+function colDetail(u, list, cur){
+  return cur ? `<div class="col-head"><div class="col-nav"><button class="backlink" data-act="col-back" data-to="records"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>${esc(u.kind==='shelf'?u.id+'·'+cellLabel(u,V.cell):u.name)}</button><span class="code muted" style="margin-left:auto;font-size:12px">${V.dig+1} of ${list.length}</span></div>
+      <div class="spot-title" style="display:${isPhone()?'none':'flex'}"><span class="sub">Record</span><span class="cnt">${V.dig+1} of ${list.length}</span></div></div>
+    <div class="col-body"><div class="bigcover" data-drag="${cur.id}">${cover(cur)}</div>
+      <div class="dig-nav"><button class="round" data-act="dig" data-d="-1" aria-label="Previous record" ${V.dig===0?'disabled':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m15 18-6-6 6-6"/></svg></button><button class="round main" data-act="play-rec" data-r="${cur.id}" aria-label="Play ${esc(cur.title)}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg></button>${previewBtn(cur,true)}<button class="round" data-act="dig" data-d="1" aria-label="Next record" ${V.dig===list.length-1?'disabled':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m9 18 6-6-6-6"/></svg></button></div>
+      ${recInfo(cur)}</div>`
+    : `<div class="col-head"><div class="col-nav"><button class="backlink" data-act="col-back" data-to="records"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>Back</button></div><div class="spot-title"><span class="sub">Record</span></div></div><div class="col-body"><div class="empty"><b>Nothing picked</b>Choose a record from the middle column.</div></div>`;
+}
 function renderColumns(){
   const u = unit(V.unit);
   if(u && u.kind==='shelf' && V.cell==='all') V.cell = '0-0';
   const list = u ? inCell(u.id, V.cell).filter(r=>!V.stale || isStale(r)) : [];
   V.dig = Math.max(0, Math.min(V.dig, list.length-1));
   const cur = list[V.dig];
-  const recs = u ? `${spotHead(u, list, {nav:true})}<div class="col-body">${list.length ? `<div class="list">${recordRows(list,{act:'col-rec'})}</div>${selBar()}` : emptySpot(u)}</div><div class="spot-foot">${isPhone()?'Press and hold a record to drag it to another spot.':'Drag a record onto any spot on the left to move it.'}</div>`
+  const recs = u ? `${spotHead(u, list, {nav:true})}<div class="col-body">${list.length ? (stkOn() ? stackView(list) : `${stkModeBar()}<div class="list">${recordRows(list,{act:'col-rec'})}</div>${selBar()}`) : emptySpot(u)}</div><div class="spot-foot">${isPhone()?'Press and hold a record to drag it to another spot.':'Drag a record onto any spot on the left to move it.'}</div>`
     : `<div class="col-head"><div class="spot-title"><span class="sub">Pick a spot</span></div></div><div class="col-body"></div>`;
-  const det = cur ? `<div class="col-head"><div class="col-nav"><button class="backlink" data-act="col-back" data-to="records"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>${esc(u.kind==='shelf'?u.id+'·'+cellLabel(u,V.cell):u.name)}</button><span class="code muted" style="margin-left:auto;font-size:12px">${V.dig+1} of ${list.length}</span></div>
-      <div class="spot-title" style="display:${isPhone()?'none':'flex'}"><span class="sub">Record</span><span class="cnt">${V.dig+1} of ${list.length}</span></div></div>
-    <div class="col-body"><div class="bigcover" data-drag="${cur.id}">${cover(cur)}</div>
-      <div class="dig-nav"><button class="round" data-act="dig" data-d="-1" aria-label="Previous record" ${V.dig===0?'disabled':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m15 18-6-6 6-6"/></svg></button><button class="round main" data-act="play-rec" data-r="${cur.id}" aria-label="Play ${esc(cur.title)}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg></button>${previewBtn(cur,true)}<button class="round" data-act="dig" data-d="1" aria-label="Next record" ${V.dig===list.length-1?'disabled':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m9 18 6-6-6-6"/></svg></button></div>
-      ${recInfo(cur)}</div>`
-    : `<div class="col-head"><div class="col-nav"><button class="backlink" data-act="col-back" data-to="records"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>Back</button></div><div class="spot-title"><span class="sub">Record</span></div></div><div class="col-body"><div class="empty"><b>Nothing picked</b>Choose a record from the middle column.</div></div>`;
+  const det = colDetail(u, list, cur);
   return `${roomBar()}<div class="cols" data-col="${V.col}">
     <section class="col col-spots" aria-label="Spots"><div class="col-head"><div class="spot-title"><span class="code-big" style="font-size:22px">Spots</span><span class="cnt">${spotList().length}</span></div></div><div class="col-body">${spotRows()}</div></section>
     <section class="col col-recs" aria-label="Records in the spot">${recs}</section>
@@ -3630,6 +3664,179 @@ Object.assign(A, {
   'sync-open':()=>openSyncSheet(),
   'dsync-run':()=>syncDiscogs('run'),
   'dsync-full':()=>syncDiscogs('full'),
+});
+
+/* ==== WP-B: flip stack ==== */
+/* A spot's records as a stack of sleeves seen from the front. Rendered once per spot; a flip only moves transforms and
+   rewrites the caption (no render()). Only the current record +/- STK.win covers are in the DOM. */
+const STK = {ids:[], win:6, cap:60, acc:0, wt:0, buf:'', bt:0, noClick:0, glide:0, liveT:0, colT:0, vib:0};
+const stkOn = () => S.settings.spotMode!=='list' && !V.sel && !V.stale;
+const stkEl = () => document.querySelector('.stk');
+const stkModeBar = () => (V.sel||V.stale) ? '' : `<div class="stk-modebar"><button class="chip" data-act="spot-mode" data-m="stack">Show as stack</button></div>`;
+function stkStyle(d){
+  if(d===0) return 'transform:translate(-50%,0) scale(1);opacity:1;z-index:50;pointer-events:auto';
+  if(d>0) return `transform:translate(-50%,${-d*13}px) scale(${(1-d*.055).toFixed(3)});opacity:${d>4?0:(1-d*.19).toFixed(2)};z-index:${50-d};pointer-events:${d>3?'none':'auto'}`;
+  const a = -d;   // flipped forward and down, out of the way
+  return `transform:translate(-50%,calc(100% - ${a===1?30:14}px)) rotateX(${a===1?-38:-60}deg) scale(${a===1?.95:.9});opacity:${a===1?.85:0};z-index:${50-a};pointer-events:${a===1?'auto':'none'}`;
+}
+function stkCardHtml(k, front){
+  const r = rec(STK.ids[k]);
+  return `<div class="stk-s${front?' f':''}" data-act="stk-card" data-i="${k}" ${front?`data-drag="${r.id}" `:''}aria-hidden="true" style="${stkStyle(k-V.dig)}">${cover(r)}</div>`;
+}
+function stkPvBtn(r){
+  const on = P.preview?.rid===r.id, ic = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="5" height="7" rx="1.5"/><rect x="16" y="14" width="5" height="7" rx="1.5"/></svg>';
+  const label = on ? 'Stop preview' : 'Preview 30s';
+  if(P.mode!=='yt') return `<a class="btn" href="${r.yt.length ? `https://www.youtube.com/watch?v=${esc(r.yt[0])}&t=60s` : esc(ytSearch(r))}" target="_blank" rel="noopener" aria-label="Preview ${esc(r.title)} on YouTube, 30 seconds">${ic}${label}</a>`;
+  return `<button class="btn" data-act="preview" data-r="${r.id}" aria-pressed="${on}" aria-label="${on?'Stop preview of':'Preview 30 seconds of'} ${esc(r.title)}">${ic}${label}</button>`;
+}
+const stkLive = (r, i, n) => `${r.title}, ${r.artist}, ${i+1} of ${n}`;
+const stkTick = (i, n) => n<=STK.cap ? i : Math.round(i/(n-1)*(STK.cap-1));
+function stackView(list){
+  STK.ids = list.map(r=>r.id);
+  const n = list.length, i = V.dig, r = list[i], u = unit(V.unit);
+  const cards = [];
+  for(let k=Math.max(0,i-STK.win); k<=Math.min(n-1,i+STK.win); k++) cards.push(stkCardHtml(k, k===i));
+  const nt = Math.min(n, STK.cap), tk = n>1 ? Array.from({length:nt},(_,k)=>`<i class="stk-tk${k===stkTick(i,n)?' on':''}"></i>`).join('') : '';
+  const where = u.kind==='shelf' ? `${u.id}·${cellLabel(u,V.cell)}` : u.name;
+  return `<div class="stk" tabindex="0" role="group" aria-roledescription="record stack" aria-label="Records in ${esc(where)}. Left and right arrow keys flip, Home and End jump." data-n="${n}" data-u="${esc(V.unit)}" data-c="${esc(V.cell)}">
+    <div class="stk-stage">${cards.join('')}</div>
+    ${n>1?`<div class="stk-scrub" role="slider" tabindex="-1" aria-label="Position in ${esc(where)}" aria-valuemin="1" aria-valuemax="${n}" aria-valuenow="${i+1}">${tk}</div>`:'<div class="stk-scrub one" aria-hidden="true"></div>'}
+    <div class="stk-cap"><b class="stk-t">${esc(r.title)}</b><span class="stk-a">${esc(r.artist)}</span><span class="stk-m"><span class="stk-l">${esc([r.label, r.year].filter(Boolean).join(' · '))}</span><span class="stk-c">${i+1} of ${n}</span></span></div>
+    <span class="sr stk-live" aria-live="polite" aria-atomic="true">${esc(stkLive(r,i,n))}</span>
+    <div class="stk-acts">
+      <button class="btn primary" data-act="play-rec" data-r="${r.id}" aria-label="Play ${esc(r.title)}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>Play</button>
+      <span class="stk-pv">${stkPvBtn(r)}</span>
+      <button class="btn" data-act="${A.detail?'detail':'edit-rec'}" data-r="${r.id}">Detail</button>
+      <button class="btn" data-act="move" data-r="${r.id}">Move…</button>
+      <button class="btn sq" data-act="spot-mode" data-m="list" aria-label="Show as list" title="Show as list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg></button>
+    </div></div>`;
+}
+/* move the stack to V.dig without rebuilding it. Returns false when no matching stack is mounted. */
+function stkApply(opts={}){
+  const el = stkEl(), ids = STK.ids, n = ids.length;
+  if(!el || el.dataset.u!==V.unit || el.dataset.c!==V.cell || +el.dataset.n!==n || !n) return false;
+  const i = V.dig = Math.max(0, Math.min(n-1, V.dig)), stage = el.firstElementChild;
+  const have = new Map();
+  stage.querySelectorAll('.stk-s').forEach(c=>{ const k = +c.dataset.i; if(Math.abs(k-i)>STK.win) c.remove(); else have.set(k, c); });
+  for(let k=Math.max(0,i-STK.win); k<=Math.min(n-1,i+STK.win); k++){
+    const c = have.get(k);
+    if(!c){ stage.insertAdjacentHTML('beforeend', stkCardHtml(k, k===i)); continue; }
+    c.style.cssText = stkStyle(k-i);
+    if(k===i){ c.classList.add('f'); c.dataset.drag = ids[k]; } else { c.classList.remove('f'); c.removeAttribute('data-drag'); }
+  }
+  const r = rec(ids[i]);
+  el.querySelector('.stk-t').textContent = r.title;
+  el.querySelector('.stk-a').textContent = r.artist;
+  el.querySelector('.stk-l').textContent = [r.label, r.year].filter(Boolean).join(' · ');
+  el.querySelector('.stk-c').textContent = `${i+1} of ${n}`;
+  const sc = el.querySelector('.stk-scrub[role=slider]');
+  if(sc){ sc.setAttribute('aria-valuenow', i+1); sc.querySelector('.on')?.classList.remove('on'); sc.children[stkTick(i,n)]?.classList.add('on'); }
+  const live = el.querySelector('.stk-live');
+  clearTimeout(STK.liveT);
+  if(opts.live===false) STK.liveT = setTimeout(()=>{ live.textContent = stkLive(r,i,n); }, 260); else live.textContent = stkLive(r,i,n);
+  el.querySelectorAll('.stk-acts [data-r]').forEach(b=>{ b.dataset.r = r.id; });
+  el.querySelector('.stk-acts [data-act=play-rec]').setAttribute('aria-label', 'Play '+r.title);
+  el.querySelector('.stk-pv').innerHTML = stkPvBtn(r);
+  const now = performance.now(); if(now-STK.vib>60){ STK.vib = now; try{ navigator.vibrate?.(4); }catch(e){} }
+  if(V.view==='columns'){ clearTimeout(STK.colT); STK.colT = setTimeout(stkColRefresh, 110); }
+  return true;
+}
+function stkColRefresh(){
+  const sec = document.querySelector('.col-rec'), u = unit(V.unit); if(!sec || !u || !stkEl()) return;
+  const list = STK.ids.map(rec).filter(Boolean);
+  sec.innerHTML = colDetail(u, list, list[V.dig]);
+}
+function stkGo(i, opts){ const n = STK.ids.length; i = Math.max(0, Math.min(n-1, i)); if(i===V.dig) return; V.dig = i; if(!stkApply(opts)) render(); }
+const stkStep = (d, opts) => stkGo(V.dig+d, opts);
+function stkDetail(id){
+  if(V.view==='columns' && isPhone()){ colGo('record','push'); return; }
+  (A.detail || A['edit-rec'])({r:id});
+}
+/* inertia after a flick: walk through the records with ease-out timing */
+function stkGlide(from, cards){
+  cancelAnimationFrame(STK.glide);
+  const n = STK.ids.length, to = Math.max(0, Math.min(n-1, from+cards)), span = to-from; if(!span) return;
+  const T = Math.max(260, Math.min(700, 220+18*Math.abs(span))), t0 = performance.now();
+  const tick = now => {
+    const t = Math.min(1, (now-t0)/T), p = 1-(1-t)*(1-t), k = from + Math.round(p*span);
+    if(k!==V.dig){ V.dig = k; stkApply({live:false}); }
+    if(t<1) STK.glide = requestAnimationFrame(tick);
+  };
+  STK.glide = requestAnimationFrame(tick);
+}
+/* pointer swipe on the stage: 64 px of travel = one record, release velocity runs on */
+let stkSw = null;
+document.addEventListener('pointerdown', e=>{
+  const st = e.target.closest?.('.stk-stage'); if(!st || e.button!==0 || !stkEl()) return;
+  cancelAnimationFrame(STK.glide);
+  stkSw = {id:e.pointerId, x0:e.clientX, y0:e.clientY, i0:V.dig, on:false, s:[{x:e.clientX, t:e.timeStamp}]};
+});
+window.addEventListener('pointermove', e=>{
+  if(!stkSw || e.pointerId!==stkSw.id) return;
+  if(drag?.on){ stkSw = null; return; }
+  const dx = e.clientX-stkSw.x0, dy = e.clientY-stkSw.y0;
+  if(!stkSw.on){
+    if(Math.abs(dx)>8 && Math.abs(dx)>Math.abs(dy)){ stkSw.on = true; if(drag){ clearTimeout(drag.timer); drag = null; } }   // horizontal before the long-press fires = a swipe
+    else return;
+  }
+  STK.noClick = Date.now()+400;
+  stkSw.s.push({x:e.clientX, t:e.timeStamp}); while(stkSw.s.length>2 && e.timeStamp-stkSw.s[0].t>90) stkSw.s.shift();
+  const k = Math.max(0, Math.min(STK.ids.length-1, stkSw.i0 - Math.round(dx/64)));
+  if(k!==V.dig){ V.dig = k; if(!stkApply({live:false})) stkSw = null; }
+});
+function stkSwipeEnd(e, cancel){
+  if(!stkSw || e.pointerId!==stkSw.id) return;
+  const s = stkSw; stkSw = null; if(!s.on || cancel) return;
+  const a = s.s[0], b = s.s[s.s.length-1], dt = Math.max(12, b.t-a.t), v = (b.x-a.x)/dt;   // px per ms
+  if(Math.abs(v) < .3) return;
+  const cards = Math.max(-30, Math.min(30, Math.round(-(v*0.998/(1-0.998))/64)));
+  stkGlide(V.dig, cards);
+}
+window.addEventListener('pointerup', e=>stkSwipeEnd(e, false));
+window.addEventListener('pointercancel', e=>stkSwipeEnd(e, true));
+/* wheel and trackpad: a mouse notch is one record; small trackpad deltas accumulate, 48 px per record */
+document.addEventListener('wheel', e=>{
+  if(!e.target.closest?.('.stk-stage')) return;
+  e.preventDefault();
+  let d = Math.abs(e.deltaX)>Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+  if(e.deltaMode===1) d *= 16; else if(e.deltaMode===2) d *= 300;
+  const now = performance.now(); if(now-STK.wt>200) STK.acc = 0; STK.wt = now;
+  if(Math.abs(d)>=90){ STK.acc = 0; stkStep(Math.sign(d), {live:false}); return; }
+  STK.acc += d; const s = Math.trunc(STK.acc/48);
+  if(s){ STK.acc -= s*48; stkStep(s, {live:false}); }
+}, {passive:false});
+/* scrubber: drag along the row of ticks to scrub the whole spot */
+let stkScrub = null;
+const stkScrubAt = (el, x) => { const b = el.getBoundingClientRect(); return Math.round(Math.max(0, Math.min(1, (x-b.left)/Math.max(1,b.width))) * (STK.ids.length-1)); };
+document.addEventListener('pointerdown', e=>{
+  const sc = e.target.closest?.('.stk-scrub[role=slider]'); if(!sc || e.button!==0) return;
+  e.preventDefault(); cancelAnimationFrame(STK.glide); stkScrub = {id:e.pointerId, el:sc};
+  try{ sc.setPointerCapture(e.pointerId); }catch(_){}
+  stkGo(stkScrubAt(sc, e.clientX), {live:false});
+});
+document.addEventListener('pointermove', e=>{ if(stkScrub && e.pointerId===stkScrub.id) stkGo(stkScrubAt(stkScrub.el, e.clientX), {live:false}); });
+const stkScrubEnd = e => { if(stkScrub && e.pointerId===stkScrub.id) stkScrub = null; };
+document.addEventListener('pointerup', stkScrubEnd); document.addEventListener('pointercancel', stkScrubEnd);
+/* keys: arrows already call dig(); here Home/End, PageUp/PageDown, J/K and type-ahead by artist */
+document.addEventListener('keydown', e=>{
+  if(!stkEl() || sheetKind || P.open || e.ctrlKey || e.metaKey || e.altKey) return;
+  const t = document.activeElement; if(t && (/INPUT|TEXTAREA|SELECT/.test(t.tagName) || t.isContentEditable)) return;
+  const n = STK.ids.length, k = e.key;
+  if(k==='Home'){ e.preventDefault(); stkGo(0); }
+  else if(k==='End'){ e.preventDefault(); stkGo(n-1); }
+  else if(k==='PageDown'){ e.preventDefault(); stkStep(10); }
+  else if(k==='PageUp'){ e.preventDefault(); stkStep(-10); }
+  else if(k.length===1 && /[a-z0-9]/i.test(k)){
+    const now = performance.now(), typing = STK.buf && now-STK.bt<800;
+    if(!typing && (k==='j'||k==='J'||k==='k'||k==='K')){ stkStep(k.toLowerCase()==='j'?1:-1); return; }
+    STK.buf = (typing?STK.buf:'') + k.toLowerCase(); STK.bt = now;
+    const q = STK.buf, from = q.length===1 ? V.dig+1 : V.dig;
+    for(let o=0; o<n; o++){ const j = (from+o)%n; if((rec(STK.ids[j])?.artist||'').toLowerCase().startsWith(q)){ stkGo(j); break; } }
+  }
+});
+Object.assign(A, {
+  'spot-mode':d=>{ S.settings.spotMode = d.m==='list' ? 'list' : 'stack'; render(); },
+  'stk-card':d=>{ if(Date.now()<STK.noClick) return; const i = +d.i; if(i===V.dig) stkDetail(STK.ids[i]); else stkGo(i); },
 });
 
 /* ---------- Claude photo recognition (optional) ---------- */

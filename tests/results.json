@@ -1,16 +1,9 @@
 [
   {
-    "test": "N03 Discogs Location sync",
-    "status": "PASS",
-    "note": "queue after move ['r9=K1\u00b7B3']",
+    "test": "R10 Density, sheet snaps, phone columns",
+    "status": "FAIL",
+    "note": "compact rows should be shorter (50.6875 -> 50.6875)",
     "js_errors": [],
-    "secs": 3.7
-  },
-  {
-    "test": "R12 Discogs sync (mocked API)",
-    "status": "PASS",
-    "note": "sync loop, merge, art, label, fallback",
-    "js_errors": [],
-    "secs": 2.7
+    "secs": 0.7
   }
 ]

@@ -1662,7 +1662,7 @@ window.mkFile = async (kind, v, name, t) => new File([await mkImg(kind, v)], nam
 """
 
 
-def _png(a, kind, v=0):
+def _wcpng(a, kind, v=0):
     return _b64.b64decode(a.ev(f"mkB64('{kind}', {v})"))
 
 
@@ -1680,8 +1680,8 @@ def wc01_photo_section(a):
     check(a.ev("document.querySelector('#ph-sec [data-act=ph-src][data-v=personal]').disabled"), "My photo should be disabled before any photo exists")
     check(not a.ev("document.querySelector('#ph-sec [data-act=ph-src][data-v=discogs]').disabled"), "Discogs should be enabled when the record has a cover")
     a.page.set_input_files("#ph-sec input[data-phadd]", [
-        {"name": "one.png", "mimeType": "image/png", "buffer": _png(a, "cover", 0)},
-        {"name": "two.png", "mimeType": "image/png", "buffer": _png(a, "back", 1)}])
+        {"name": "one.png", "mimeType": "image/png", "buffer": _wcpng(a, "cover", 0)},
+        {"name": "two.png", "mimeType": "image/png", "buffer": _wcpng(a, "back", 1)}])
     a.page.wait_for_function(f"rec('{rid}').photos.length===2", timeout=8000)
     a.page.wait_for_selector("#ph-sec .ph-item img")
     check(a.ev("document.querySelectorAll('#ph-sec .ph-item').length") == 2, "two photo cards expected")
@@ -1902,7 +1902,7 @@ def wc06_phone_layout(browser, url):
         # photo section in the edit sheet
         rid = a.ev("S.records[0].id")
         a.ev(f"openEditRecord('{rid}')"); a.page.wait_for_selector("#ph-sec")
-        a.page.set_input_files("#ph-sec input[data-phadd]", [{"name": f"p{i}.png", "mimeType": "image/png", "buffer": _png(a, "cover", i)} for i in range(3)])
+        a.page.set_input_files("#ph-sec input[data-phadd]", [{"name": f"p{i}.png", "mimeType": "image/png", "buffer": _wcpng(a, "cover", i)} for i in range(3)])
         a.page.wait_for_function(f"rec('{rid}').photos.length===3", timeout=8000); _settle(a, 150); w("photo section")
         a.ev("closeSheet()")
         # review board with several cards

@@ -1065,6 +1065,9 @@ a.pv::before,button.pv::before,.icon-btn::before,.step .round::before,.map-tools
 /* the flat look shrinks buttons on phones; photo and capture controls stay 44px touch targets */
 :root .bd-bar .btn,:root .bd-tools .btn,:root .bd-move .btn,:root .bd-kinds .btn,:root .bd-card .warn .btn,:root .ph-item .btn,:root .ph-sec .btn,:root .ph-pickbox .btn,:root .cap-top .btn,:root .cap-bar .btn,:root .ph-cs .seg button{height:44px}
 :root .bd-fields label.f input,:root .bd-fields input{height:44px}
+/* the flat look's fixed row sizes beat the Compact density setting (R10 failed on the base commit); compact wins again here */
+:root[data-look="flat"][data-density="compact"] .li{padding:4px 4px;grid-template-columns:28px minmax(0,1fr) auto auto}
+:root[data-look="flat"][data-density="compact"] .thumb{width:28px;height:28px}
 /* ==== /WP-C css ==== */
 </style>
 
@@ -4065,12 +4068,13 @@ function renderBoard(){
   const n = BD.items.length, ready = BD.items.filter(phReady).length, wait = n - ready, aside = BD.items.filter(i=>i.status==='aside').length;
   openSheet(`<div id="bd"><div class="bd-head"><div><div class="kicker">${BD.src==='inbox'?'Rapid capture':'Add from photos'} · review</div><h2>Check the records</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
     <p class="muted" style="margin:0 0 10px;font-size:13.5px">${n} record${n===1?'':'s'} found${aside?` · ${aside} set aside`:''}. Drag a photo to another record, or tap it to move it. Records already in your collection get the photos added; the rest are filed as Unplaced. A backup is made first.</p>
-    <div class="bd-bar"><button class="btn primary" data-act="bd-addall" ${ready?'':'disabled'}>Add ${ready} record${ready===1?'':'s'}</button>${wait?`<span class="muted" style="font-size:13px">${wait} still need${wait===1?'s':''} an artist or title</span>`:''}<button class="btn ghost danger" data-act="bd-discard-all" style="margin-left:auto">Discard all</button></div>
+    <div class="bd-bar"><button class="btn primary" data-act="bd-addall" ${ready?'':'disabled'}>Add ${ready} record${ready===1?'':'s'}</button><span class="muted" id="bd-wait" style="font-size:13px">${phWaitText(wait)}</span><button class="btn ghost danger" data-act="bd-discard-all" style="margin-left:auto">Discard all</button></div>
     <div id="bd-confirm-all"></div>
     <div class="bd-list">${BD.items.map(phCardHtml).join('')}</div>
     <div class="bd-new" data-new="1">Drop a photo here to make it a new record</div></div>`);
   const sh = document.querySelector('#layer .sheet'); if(sh) sh.scrollTop = keep;
 }
+const phWaitText = n => n ? `${n} still need${n===1?'s':''} an artist or title` : '';
 function phBoardRefresh(){ if(document.getElementById('bd') && BD) renderBoard(); }
 function phBoardStatus(it){
   const card = document.getElementById('bd-c-'+it.id); if(!card || !BD) return;
@@ -4080,6 +4084,7 @@ function phBoardStatus(it){
   card.querySelectorAll('[data-bdf]').forEach(inp=>{ if(document.activeElement!==inp) inp.value = it.guess?.[inp.dataset.bdf] || ''; });
   const ready = BD.items.filter(phReady).length, b = document.querySelector('[data-act="bd-addall"]');
   if(b){ b.disabled = !ready; b.textContent = `Add ${ready} record${ready===1?'':'s'}`; }
+  const w = document.getElementById('bd-wait'); if(w) w.textContent = phWaitText(BD.items.length - ready);
 }
 function phMovePhoto(fromId, pid, to){
   const a = BD.items.find(i=>i.id===fromId); if(!a || !a.photos.includes(pid)) return;
@@ -4307,6 +4312,8 @@ Object.assign(A, {
 function phBoot(){ phRefIds().forEach(phWant); setTimeout(phGC, 5000); }
 phBoot();
 /* ==== /WP-C ==== */
+
+
 
 
 

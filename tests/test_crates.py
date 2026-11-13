@@ -358,7 +358,7 @@ def t12_player(a):
     sh = a.page.locator("#np-sheet"); sh.wait_for()
     h3 = lambda: a.page.locator(".np-meta h3").inner_text().strip()
     check(h3() == "No UFO's", h3())
-    a.click(".np-tabs .np-more"); a.click(".np-tabs [data-t=links]"); check(a.page.locator(".links .link").count() == 4, "links count")
+    a.click(".np-tabs .np-more"); a.click(".np-tabs [data-t=links]"); check(a.page.locator(".links .link").count() >= 4, "links count")   # seed links plus the ones Discogs lists
     a.click(".np-tabs [data-t=chain]"); check(a.page.locator(".chain li").count() == 5, "chain count")
     a.click("[data-act=dry-run]")
     a.page.wait_for_selector(".chain li.on", timeout=2000)
@@ -574,7 +574,7 @@ def _open_add_record(a):
 def n01_dupes(a):
     _open_add_record(a)
     check(a.page.locator("#ar-submit").inner_text().strip() == "File into K1·A1", "submit label before typing")
-    a.page.locator("#ar-artist").fill("Mr Fingers"); a.page.locator("#ar-title").fill("Can You Feel It")
+    a.page.locator("#ar-artist").fill("Fingers Inc"); a.page.locator("#ar-title").fill("Can You Feel It")
     txt = _txt(a.page.locator("#ar-dupe"))
     check("You already own" in txt, f"#ar-dupe = {txt!r}")
     check("Kallax 1, shelf A1 (Detroit & Chicago)" in txt, f"#ar-dupe location: {txt!r}")
@@ -909,7 +909,7 @@ def n13_mobile_no_errors(browser, url):
         a.click("#tab-room"); a.click(".viewbar [data-act=stickers]"); sw("stickers", True)
         a.click(".sheet [data-act=stk-size][data-z='2']"); sw("stickers-2in", True); a.click(".sheet [data-act=close]")
         _open_add_record(a)
-        a.page.locator("#ar-artist").fill("Mr Fingers"); a.page.locator("#ar-title").fill("Can You Feel It")
+        a.page.locator("#ar-artist").fill("Fingers Inc"); a.page.locator("#ar-title").fill("Can You Feel It")
         a.page.locator("#ar-bc").fill("724384960650"); a.click("#bc-form button[type=submit]"); sw("add-record", True)
         a.click(".sheet [data-act=close]")
         a.click(".viewbar [data-act=stale-list]"); sw("stale", True); a.click(".sheet [data-act=close]")
@@ -1013,7 +1013,7 @@ def n15_readme_shots(browser, url):
             top = lambda: (a.ev("window.scrollTo(0,0)"), a.ev("document.querySelector('.toast')?.remove()"), a.page.mouse.move(0, 0), _settle(a, 150))
             a.click(".chips .chip[data-c='0-1']"); top(); shot("room", True)
             _open_add_record(a)
-            a.page.locator("#ar-artist").fill("Mr Fingers"); a.page.locator("#ar-title").fill("Can You Feel It")
+            a.page.locator("#ar-artist").fill("Fingers Inc"); a.page.locator("#ar-title").fill("Can You Feel It")
             a.page.locator("#ar-bc").fill("724384960650"); a.click("#bc-form button[type=submit]")
             a.ev("document.querySelector('.bcbox').scrollIntoView({block:'start'})"); _settle(a, 350); shot("add-record-dupe")
             a.click(".sheet [data-act=close]")
@@ -1103,7 +1103,7 @@ def x13_cube_label_overlap(browser, url):
 
 def x14_table_thumbs(a):
     a.click("#tab-table")
-    w = a.ev("(()=>{const t=document.querySelector('.ctable .thumb');return [t.getBoundingClientRect().width,t.querySelector('svg').getBoundingClientRect().width]})()")
+    w = a.ev("(()=>{const t=document.querySelector('.ctable .thumb');return [t.getBoundingClientRect().width,t.querySelector('svg,img').getBoundingClientRect().width]})()")
     check(w[1] >= w[0] - 1, f"collection cover art draws at {w[1]}px inside a {w[0]}px thumb (.mini-btn svg rule shrinks it)")
 
 
@@ -1660,11 +1660,11 @@ def wa01_detail_edit_undo(a):
         check(a.page.locator(f".dt-sec summary:has-text('{sec}')").count() == 1, f"missing section {sec}")
     check(a.page.locator(".dt-cover").count() == 1 and a.page.locator("[data-act=detail-play]").count() == 1, "header cover/play missing")
     orig = a.ev("JSON.stringify(rec('r9').orig)")
-    a.page.fill("#er-label", "Metroplex Ltd"); a.page.fill("#er-country", "US"); a.page.fill("#er-barcode", "123456789012")
+    a.page.fill("#er-label", "Metroplex Ltd"); a.page.fill("#er-country", "Canada"); a.page.fill("#er-barcode", "123456789012")
     a.page.fill("#er-genres", "Electronic, Funk"); a.page.fill("#er-formats", "Vinyl / 12\"")
     a.page.select_option("#er-cm", "VG+"); a.page.fill("#er-notes", "Light scuff on A2")
     a.click("#er-form button[type=submit]"); _settle(a, 120)
-    check(a.ev("rec('r9').label") == "Metroplex Ltd" and a.ev("rec('r9').country") == "US", "metadata not saved")
+    check(a.ev("rec('r9').label") == "Metroplex Ltd" and a.ev("rec('r9').country") == "Canada", "metadata not saved")
     check(a.ev("rec('r9').genres.join('|')") == "Electronic|Funk" and a.ev("rec('r9').formats.join('|')") == 'Vinyl|12"', "lists not saved")
     check(a.ev("rec('r9').cm") == "VG+" and a.ev("rec('r9').notes") == "Light scuff on A2", "grade/notes not saved")
     check(a.ev("JSON.stringify(rec('r9').orig)") == orig, "the Discogs original (orig) was overwritten")
@@ -1672,7 +1672,7 @@ def wa01_detail_edit_undo(a):
     check(a.page.locator("label:has(#er-label) .edited").count() >= 1, "edited dot missing in Detail")
     a.click(".sheet [data-act=close]"); _settle(a, 80)
     a.undo(); _settle(a, 120)
-    check(a.ev("rec('r9').label") != "Metroplex Ltd" and a.ev("'country' in rec('r9')") is False, "undo did not restore the record")
+    check(a.ev("rec('r9').label") != "Metroplex Ltd" and a.ev("rec('r9').country") == "US", "undo did not restore the record")
     a.ev("A['edit-rec']({r:'r9'})"); _settle(a, 100)
     check(a.page.locator(".sheet .dt").count() == 1, "edit-rec alias no longer opens Detail")
     check(not a.js_errors(), a.js_errors())
@@ -1843,7 +1843,7 @@ def _wc_boot(a):
 
 def wc01_photo_section(a):
     _wc_boot(a)
-    ids = a.ev("S.records.filter(r=>!r.cover).slice(0,2).map(r=>r.id)")
+    ids = a.ev("S.records.slice(0,2).map(r=>r.id)")
     rid, other = ids[0], ids[1]
     a.ev(f"rec('{rid}').cover='https://i.discogs.com/x.jpg'")   # a Discogs cover exists so both sources are selectable
     a.ev(f"openEditRecord('{rid}')"); a.page.wait_for_selector("#ph-sec")

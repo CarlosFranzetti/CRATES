@@ -43,11 +43,13 @@ Accessibility: `.stk` is `tabindex=0`, `role=group`, labelled; `.stk-live` (`ari
 - The Preview button is my own labelled "Preview 30s" button (same `preview` action and link-mode fallback as `previewBtn`), not the round `.pv` icon, so it reads as an action in the row. On phones its icon is hidden to keep all five actions on one 44 px row at 390 px.
 - The stack height is derived from the container (`min(78cqw, 42vh, 380px)` on desktop, `min(78cqw, 40vh)` on phones), so at 390x844 with the sheet full the cover is 78% of the width and everything (stage, scrubber, caption, actions) fits in the panel body without scrolling. In the half-height sheet the body scrolls, as the list did.
 - Flat look first; Booth and Shop only change tokens. No shadows or glows were added.
-- `R10` (compact rows) was already failing on `main` before this work (the flat look's `.li` padding overrides the compact density); I did not touch it beyond switching it to list mode.
+- `R10` (compact rows) was already failing on `main` before this work (the flat look's `.li` padding overrides the compact density); I added a one-line CSS override in the WP-B block so compact rows are shorter again, and switched the test to list mode.
 
 ## Numbers
 
-See the report with the commit hash: 150 records, 50 consecutive `dig(1)` calls average 0.31 ms of script time (max 2.6 ms), 13 covers in the DOM at all times.
+150 records in a crate: 50 consecutive `dig(1)` calls average 0.2 to 0.45 ms of script time per flip over several runs (worst single flip 2.6 ms), 13 covers in the DOM at all times. Full suite: 79/79 (67 existing + WB01..WB12).
+
+Test changes: R02, R10, X20 and X23 switch to list mode (`S.settings.spotMode='list'`) because they test list rows; R12 accepts stack covers and now uses a single route handler with a flag instead of swapping routes (the swap raced with in-flight image requests, which the stack's extra covers made likelier). R10 needed a CSS fix (`:root[data-look="flat"][data-density="compact"] .li`), see above.
 
 ## Open issues
 

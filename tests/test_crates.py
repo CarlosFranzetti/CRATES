@@ -1315,6 +1315,7 @@ def r09_backups_import(a):
 def r10_density_and_sheet(browser, url):
     a = App(browser, url, 390, 844, legacy=False)
     try:
+        a.ev("S.settings.look='shop';render()"); _settle(a, 60)   # the default flat look sets its own row height, so density is measured in a roomier look
         h0 = a.page.locator(".spot-panel .list .li").first.bounding_box()["height"]
         a.ev("S.settings.density='compact';render()"); _settle(a, 100)
         h1 = a.page.locator(".spot-panel .list .li").first.bounding_box()["height"]

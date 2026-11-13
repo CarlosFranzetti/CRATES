@@ -1010,7 +1010,7 @@ a.pv::before,button.pv::before,.icon-btn::before,.step .round::before,.map-tools
 .dt-sec summary::-webkit-details-marker{display:none}
 .dt-sec summary::before{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(-45deg);margin-right:6px;transition:transform .15s}
 .dt-sec[open]>summary::before{transform:rotate(45deg)}
-.dt-sec summary>:first-child{flex:1}
+.dt-sec summary>span:first-child{flex:1}
 .dt-body{padding:2px 0 12px}
 .dt .form{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .dt label.f,.dt .f{display:flex;flex-direction:column;gap:4px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;color:var(--muted);min-width:0}
@@ -1023,7 +1023,7 @@ a.pv::before,button.pv::before,.icon-btn::before,.step .round::before,.map-tools
 .dt-tracks li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:8px;padding:4px 0;border-top:1px solid var(--line)}
 .dt-tracks li:first-child{border-top:0}
 .dt-lendstate{font-size:13px;margin:0 0 8px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
-.dt-actions{display:flex;gap:8px;padding-top:12px;border-top:1px solid var(--line)}
+.dt-actions{display:flex;gap:8px;padding-top:12px;border-top:1px solid var(--line);position:sticky;bottom:-1px;background:var(--surface);z-index:2}
 @media (max-width:780px){
   .sheet:has(.dt){width:100%;height:100dvh;max-height:100dvh;border-radius:0;border:0}
   .dt{grid-template-columns:minmax(0,1fr);gap:12px}
@@ -1032,7 +1032,7 @@ a.pv::before,button.pv::before,.icon-btn::before,.step .round::before,.map-tools
   .dt-side>.dt-facts,.dt-side>*:nth-child(n+5){grid-column:1/-1}
   .dt .form{grid-template-columns:repeat(2,minmax(0,1fr))}
   .dt label.f input,.dt label.f select{height:40px;font-size:16px}
-  .dt-actions{position:sticky;bottom:0;background:var(--surface);padding-bottom:6px;z-index:2}
+  .dt-actions{padding-bottom:6px}
   .dt-actions .btn{flex:1}
 }
 </style>
@@ -1876,7 +1876,7 @@ function openEditRecord(id){
   const tracks = (r.tracks||[]).length
     ? `<ol class="dt-tracks">${r.tracks.map(t=>`<li><span class="code">${esc(t.position||'')}</span><span>${esc(t.title)}</span><span class="code muted">${esc(t.duration||'')}</span></li>`).join('')}</ol>`
     : `<p class="muted dt-empty">No tracklist yet. Sync from Discogs to fill it in.</p>`;
-  const sec = (title, body, open=true, extra='') => `<details class="dt-sec" ${open?'open':''}><summary>${title}${extra}</summary><div class="dt-body">${body}</div></details>`;
+  const sec = (title, body, open=true, extra='') => `<details class="dt-sec" ${open?'open':''}><summary><span>${title}</span>${extra}</summary><div class="dt-body">${body}</div></details>`;
   openSheet(`<div class="sheet-head"><div><div class="kicker">Your details · Discogs data is kept untouched</div><h2>Detail</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
     <div class="dt">
       <aside class="dt-side">

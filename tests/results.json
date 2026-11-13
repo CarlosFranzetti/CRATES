@@ -1,16 +1,9 @@
 [
   {
-    "test": "WA02 Lend: row, recInfo, table filter",
+    "test": "R10 Density, sheet snaps, phone columns",
     "status": "PASS",
-    "note": "",
+    "note": "compact rows, sheet snaps, push/pop",
     "js_errors": [],
-    "secs": 1.8
-  },
-  {
-    "test": "WA06 Lending sheet + digest",
-    "status": "PASS",
-    "note": "",
-    "js_errors": [],
-    "secs": 1.9
+    "secs": 3.2
   }
 ]

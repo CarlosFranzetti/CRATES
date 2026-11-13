@@ -971,33 +971,36 @@ a.pv::before,button.pv::before,.icon-btn::before,.step .round::before,.map-tools
   :root[data-look="flat"] .li{padding:7px 4px}
 }
 /* ==== WP-B: flip stack ==== */
-.stk{width:min(100%,440px);margin:0 auto;padding:6px 0 4px;container-type:inline-size;outline:none;overscroll-behavior:contain}
+.stk{width:min(100%,440px);margin:0 auto;padding:4px 0 2px;container-type:inline-size;outline:none;overscroll-behavior:contain}
 .stk:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
 .stk-modebar{display:flex;justify-content:flex-end;padding:6px 2px 4px}
-.stk-stage{--cs:min(78cqw,42vh,380px);position:relative;height:calc(var(--cs) + 86px);overflow:hidden;perspective:900px;perspective-origin:50% 30%;touch-action:pan-y;-webkit-user-select:none;user-select:none;overscroll-behavior:contain}
-.stk-s{position:absolute;left:50%;top:56px;width:var(--cs);aspect-ratio:1;transform-origin:50% 0;border:1px solid var(--line);border-radius:3px;overflow:hidden;background:var(--surface-2);cursor:pointer;transition:transform .16s cubic-bezier(.2,.8,.2,1),opacity .16s ease-out}
+.stk-stage{--cs:min(78cqw,42vh,380px);position:relative;height:calc(var(--cs) + 66px);overflow:hidden;perspective:900px;perspective-origin:50% 30%;touch-action:pan-y;-webkit-user-select:none;user-select:none;overscroll-behavior:contain}
+.stk-s{position:absolute;left:50%;top:40px;width:var(--cs);aspect-ratio:1;transform-origin:50% 0;border:1px solid var(--line);border-radius:3px;overflow:hidden;background:var(--surface-2);cursor:pointer;transition:transform .16s cubic-bezier(.2,.8,.2,1),opacity .16s ease-out}
 .stk-s.f{cursor:grab}
 .stk-s svg,.stk-s img{width:100%;height:100%;display:block;object-fit:cover}
 .stk-scrub{position:relative;height:36px;display:flex;align-items:center;gap:1px;touch-action:none;cursor:pointer;-webkit-user-select:none;user-select:none}
 .stk-scrub.one{cursor:default}
 .stk-tk{flex:1 1 0;min-width:1px;height:10px;background:var(--line);border-radius:1px;pointer-events:none}
 .stk-tk.on{background:var(--accent);height:20px}
-.stk-cap{text-align:center;padding:0 8px 8px;min-height:60px}
+.stk-cap{text-align:center;padding:0 8px 6px;min-height:58px}
 .stk-t{display:block;font-size:16px;font-weight:600;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .stk-a{display:block;font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .stk-m{display:flex;justify-content:center;gap:10px;margin-top:2px;font:12px var(--f-mono);color:var(--muted)}
 .stk-l:empty{display:none}
+.stk-l:not(:empty)+.stk-c::before{content:"·";margin-right:10px}
 .stk-acts{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
-.stk-acts .btn,.stk-pv .btn{height:36px;padding:0 11px;gap:5px;display:inline-flex;align-items:center;white-space:nowrap}
+:root .stk-acts .btn,:root .stk-pv .btn{height:36px;padding:0 11px;gap:5px;display:inline-flex;align-items:center;white-space:nowrap}
 .stk-acts .btn svg{width:14px;height:14px}
-.stk-acts .btn.sq{width:36px;padding:0;justify-content:center}
+:root .stk-acts .btn.sq{width:36px;padding:0;justify-content:center}
 .stk-pv{display:contents}
 @media (max-width:780px){
   .stk-stage{--cs:min(78cqw,40vh)}
-  .stk-acts .btn,.stk-pv .btn{height:44px;padding:0 10px}
-  .stk-acts .btn.sq{width:44px}
-  .stk-scrub{height:44px}
-  .stk-cap{min-height:56px}
+  .stk-acts{gap:4px}
+  .stk-pv .btn svg{display:none}
+  :root .stk-acts .btn,:root .stk-pv .btn{height:44px;padding:0 8px;gap:4px;font-size:12.5px}
+  :root .stk-acts .btn.sq{width:44px}
+  .stk-scrub{height:42px}
+  .stk-cap{min-height:0;padding-bottom:4px}
 }
 @media (prefers-reduced-motion:reduce){.stk-s{transition:none}}
 </style>
@@ -3675,9 +3678,9 @@ const stkEl = () => document.querySelector('.stk');
 const stkModeBar = () => (V.sel||V.stale) ? '' : `<div class="stk-modebar"><button class="chip" data-act="spot-mode" data-m="stack">Show as stack</button></div>`;
 function stkStyle(d){
   if(d===0) return 'transform:translate(-50%,0) scale(1);opacity:1;z-index:50;pointer-events:auto';
-  if(d>0) return `transform:translate(-50%,${-d*13}px) scale(${(1-d*.055).toFixed(3)});opacity:${d>4?0:(1-d*.19).toFixed(2)};z-index:${50-d};pointer-events:${d>3?'none':'auto'}`;
+  if(d>0) return `transform:translate(-50%,${-d*12}px) scale(${(1-d*.055).toFixed(3)});opacity:${d>4?0:(1-d*.19).toFixed(2)};z-index:${50-d};pointer-events:${d>3?'none':'auto'}`;
   const a = -d;   // flipped forward and down, out of the way
-  return `transform:translate(-50%,calc(100% - ${a===1?30:14}px)) rotateX(${a===1?-38:-60}deg) scale(${a===1?.95:.9});opacity:${a===1?.85:0};z-index:${50-a};pointer-events:${a===1?'auto':'none'}`;
+  return `transform:translate(-50%,calc(100% - ${a===1?26:12}px)) rotateX(${a===1?-38:-60}deg) scale(${a===1?.95:.9});opacity:${a===1?.85:0};z-index:${50-a};pointer-events:${a===1?'auto':'none'}`;
 }
 function stkCardHtml(k, front){
   const r = rec(STK.ids[k]);

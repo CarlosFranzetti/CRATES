@@ -1,0 +1,1039 @@
+{
+  "checked": "2026-11-13",
+  "lp": {
+    "w_cm": 31.5,
+    "h_cm": 31.5
+  },
+  "bags": [
+    {
+      "brand": "UDG",
+      "model": "Ultimate SlingBag Trolley Set DeLuxe MK2 (U9679BL / U9679BLOR)",
+      "w_cm": 40.0,
+      "h_cm": 45.5,
+      "d_cm": 31.0,
+      "capacity": 90,
+      "source": "https://udggear.com/products/udg-ultimate-slingbag-trolley-set-deluxe-mk2 (outer 40.0 x 45.5-71.0 x 31.0 cm; 45.5 used as the body height, 71.0 with handle extended)",
+      "estimated": false
+    },
+    {
+      "brand": "UDG",
+      "model": "Ultimate SlingBag Trolley DeLuxe (U9981BL / U9981BL/OR)",
+      "w_cm": 40.0,
+      "h_cm": 45.5,
+      "d_cm": 31.0,
+      "capacity": 60,
+      "source": "https://udggear.com/products/udg-ultimate-slingbag-trolley-deluxe-mk2 (outer 40.0 x 45.5 x 31.0 cm)",
+      "estimated": false
+    },
+    {
+      "brand": "UDG",
+      "model": "Ultimate SlingBag MK2 (U9630)",
+      "w_cm": 44.0,
+      "h_cm": 35.0,
+      "d_cm": 20.0,
+      "capacity": 50,
+      "source": "https://udggear.com/products/udg-ultimate-slingbag-mk2 (outer 44.0 x 35.0 x 20.0 cm; maker says 50 LPs, bags.json said 45)",
+      "estimated": false
+    },
+    {
+      "brand": "UDG",
+      "model": "Trolley To Go (U9870BL)",
+      "w_cm": 38.0,
+      "h_cm": 37.0,
+      "d_cm": 19.0,
+      "capacity": 45,
+      "source": "https://udggear.com/products/udg-ultimate-trolley-to-go-black (outer 38.0 x 37.0 x 19.0 cm; Thomann lists 36 x 44 x 26 cm, conflict unresolved)",
+      "estimated": false
+    },
+    {
+      "brand": "UDG",
+      "model": "Ultimate 7\" SlingBag 60 (U9991BL)",
+      "w_cm": 21.0,
+      "h_cm": 21.0,
+      "d_cm": 16.5,
+      "capacity": 60,
+      "source": "https://udggear.com/products/udg-ultimate-7-slingbag-60-black (21.0 x 21.0 x 16.5 cm; 7-inch records)",
+      "estimated": false
+    },
+    {
+      "brand": "UDG",
+      "model": "Ultimate StarterBag (U9500)",
+      "w_cm": 33.5,
+      "h_cm": 34.5,
+      "d_cm": 20.0,
+      "capacity": 50,
+      "source": "https://udggear.com/products/udg-ultimate-starterbag-black-white-logo (33.5 x 34.5 x 20.0 cm; Thomann lists 34 x 34.5 x 19 cm)",
+      "estimated": false
+    },
+    {
+      "brand": "UDG",
+      "model": "Ultimate SoftBag 60",
+      "w_cm": 37.0,
+      "h_cm": 37.5,
+      "d_cm": 22.5,
+      "capacity": 60,
+      "source": "https://www.udggear.com/udg-ultimate-softbag-lp-60-small-black (37.0 x 37.5 x 22.5 cm; the page is the SoftBag LP 60 Small)",
+      "estimated": false
+    },
+    {
+      "brand": "UDG",
+      "model": "Ultimate SoftBag 90 / 90 Slanted",
+      "w_cm": 37.0,
+      "h_cm": 37.5,
+      "d_cm": 32.0,
+      "capacity": 90,
+      "source": "https://hinhuatdj.com/product/udg-ultimate-softbag-lp-90-slanted-black/ (retailer: 37 x 37.5 x 32 cm)",
+      "estimated": false
+    },
+    {
+      "brand": "UDG",
+      "model": "Ultimate Backpack Slim (U9108BL/OR)",
+      "w_cm": 32.0,
+      "h_cm": 44.0,
+      "d_cm": 23.0,
+      "capacity": null,
+      "source": "https://www.ludimusic.com/en/miscelanneous-gig-bags/udg-u-9108-camouflage-city-gig-bag (retailer, camo variant of U9108; 32 x 44 x 23 cm)",
+      "estimated": false
+    },
+    {
+      "brand": "UDG",
+      "model": "Urbanite MIDI Controller Backpack (Medium/Large/XL)",
+      "w_cm": 35.0,
+      "h_cm": 45.0,
+      "d_cm": 20.0,
+      "capacity": null,
+      "source": "no source found; placeholder for a MIDI-controller backpack, not derived from LP capacity",
+      "estimated": true
+    },
+    {
+      "brand": "Magma",
+      "model": "LP-Bag 100 Trolley (40500 black/black, 40540 black/red)",
+      "w_cm": 40.0,
+      "h_cm": 45.0,
+      "d_cm": 40.0,
+      "capacity": 90,
+      "source": "https://www.thomann.com/magma_lp_bag_100_trolly.htm (40 x 45 x 40 cm; magma-bags.de lists 38 x 45 x 38 cm)",
+      "estimated": false
+    },
+    {
+      "brand": "Magma",
+      "model": "Riot LP-Trolley 50 (MGA44200)",
+      "w_cm": 35.5,
+      "h_cm": 41.0,
+      "d_cm": 20.0,
+      "capacity": 50,
+      "source": "https://thomann.co.uk/magma_riot_lp_trolley_50.htm (41 H x 35.5 W x 20 D cm in the description; the spec table disagrees)",
+      "estimated": false
+    },
+    {
+      "brand": "Magma",
+      "model": "Riot LP-Bag 50 with Trolley Sling (MGA44210)",
+      "w_cm": 35.0,
+      "h_cm": 33.0,
+      "d_cm": 20.0,
+      "capacity": 50,
+      "source": "https://www.magma-bags.de/riot-lp-bag-50 (H/B/T 33 x 35 x 20 cm)",
+      "estimated": false
+    },
+    {
+      "brand": "Magma",
+      "model": "LP-Bag 40 II with Trolley Sling Straps",
+      "w_cm": 33.0,
+      "h_cm": 33.0,
+      "d_cm": 20.0,
+      "capacity": 40,
+      "source": "https://www.magma-bags.de/lp-bag-40-2 (H/B/T 33 x 33 x 20 cm)",
+      "estimated": false
+    },
+    {
+      "brand": "Magma",
+      "model": "LP Bag II 42640 (courier style)",
+      "w_cm": 33.0,
+      "h_cm": 33.0,
+      "d_cm": 20.0,
+      "capacity": 40,
+      "source": "https://www.magma-bags.de/lp-bag-40-2 (same product as MGA42640 per turntablelab.com; H/B/T 33 x 33 x 20 cm)",
+      "estimated": false
+    },
+    {
+      "brand": "Magma",
+      "model": "LP-Bag 60 Profi (44150)",
+      "w_cm": 38.0,
+      "h_cm": 38.0,
+      "d_cm": 27.0,
+      "capacity": 60,
+      "source": "https://www.musicstore.com/en_US/USD/Magma-LP-Bag-60-Profi-black-/art-DJE0001705-000 (W 380 x H 380 x D 270 mm)",
+      "estimated": false
+    },
+    {
+      "brand": "Magma",
+      "model": "LP 100 Profi Bag",
+      "w_cm": 35.5,
+      "h_cm": 35.5,
+      "d_cm": 39.0,
+      "capacity": 100,
+      "source": "no source found; estimated from the 100 in the model name: interior 31.5 cm, depth 100 x 0.35 = 35 cm, +4 cm per dimension",
+      "estimated": true
+    },
+    {
+      "brand": "Magma",
+      "model": "12\" Sandwich (MGA44205 / 638190)",
+      "w_cm": 38.0,
+      "h_cm": 38.5,
+      "d_cm": 24.5,
+      "capacity": 60,
+      "source": "https://www.juno.co.uk/labels/Magma/ (H/B/T 38.5 x 38 x 24.5 cm)",
+      "estimated": false
+    },
+    {
+      "brand": "Magma",
+      "model": "Solid Blaze Vinyl Bag (626524)",
+      "w_cm": 33.0,
+      "h_cm": 40.0,
+      "d_cm": 23.0,
+      "capacity": 50,
+      "source": "https://www.thomann.com/magma_solid_blaze_vinyl_bag.htm (W x D x H 330 x 230 x 400 mm)",
+      "estimated": false
+    },
+    {
+      "brand": "Magma",
+      "model": "Solid Blaze Vinyl-Trolley (615995)",
+      "w_cm": 37.0,
+      "h_cm": 56.0,
+      "d_cm": 31.0,
+      "capacity": 60,
+      "source": "https://www.musicstore.com/en_US/USD/Magma-SOLID-BLAZE-Vinyl-Trolley/art-DJE0008542-000 (370 x 560 x 310 mm with handle extended); Thomann lists 420 x 440 mm W x H, conflict unresolved",
+      "estimated": false
+    },
+    {
+      "brand": "Zomo",
+      "model": "VS-Box 50",
+      "w_cm": 19.0,
+      "h_cm": 37.0,
+      "d_cm": 33.5,
+      "capacity": 50,
+      "source": "https://www.galaxus.ch/en/s1/product/zomo-vs-box-50-dj-cases-5668705 (190 x 370 x 335 mm; order not labelled, read as W x H x D to match the VS-Box 100 spec)",
+      "estimated": false
+    },
+    {
+      "brand": "Zomo",
+      "model": "VS-Box 100",
+      "w_cm": 36.0,
+      "h_cm": 37.0,
+      "d_cm": 33.5,
+      "capacity": 100,
+      "source": "https://www.zomo.de/en/zomo-vs-box-100 (W x D x H 360 x 335 x 370 mm)",
+      "estimated": false
+    },
+    {
+      "brand": "Zomo (Technics licensed)",
+      "model": "Technics BackBag (45 LPs)",
+      "w_cm": 32.0,
+      "h_cm": 33.0,
+      "d_cm": 17.0,
+      "capacity": 45,
+      "source": "https://www.ebay.ie/itm/117437513014 (listing: width 170 mm, length 320 mm, height 330 mm; length read as W, width as D; mapping inferred)",
+      "estimated": false
+    },
+    {
+      "brand": "Zomo (Technics licensed)",
+      "model": "Technics DJ-Bag",
+      "w_cm": 36.5,
+      "h_cm": 30.5,
+      "d_cm": 18.0,
+      "capacity": 60,
+      "source": "https://www.frenexport.it/en/413254-dj-record-bag-capacity-60-lps-silver-color (365 x 180 x 305 mm, W x D x H)",
+      "estimated": false
+    },
+    {
+      "brand": "Glorious",
+      "model": "Record Box Advanced 110",
+      "w_cm": 35.5,
+      "h_cm": 26.5,
+      "d_cm": 34.0,
+      "capacity": 110,
+      "source": "https://www.thomann.com/glorious_record_box_advanced_black_110.htm (W x H x D 355 x 265 x 340 mm)",
+      "estimated": false
+    },
+    {
+      "brand": "Glorious",
+      "model": "Record Box 110",
+      "w_cm": 35.5,
+      "h_cm": 35.5,
+      "d_cm": 34.0,
+      "capacity": 110,
+      "source": "research/furniture.json Glorious Record Box 110 entry (355 x 355 x 340 mm); not re-verified in this pass",
+      "estimated": false
+    },
+    {
+      "brand": "Glorious",
+      "model": "Record Rack 330",
+      "w_cm": 35.6,
+      "h_cm": 95.6,
+      "d_cm": 34.2,
+      "capacity": 330,
+      "source": "https://www.glorious.de/glorious-record-rack-330-black (356 x 956 x 342 mm, L x H x W)",
+      "estimated": false
+    },
+    {
+      "brand": "Reloop",
+      "model": "80 Record Case",
+      "w_cm": 36.0,
+      "h_cm": 35.0,
+      "d_cm": 27.5,
+      "capacity": 80,
+      "source": "https://www.thomann.co.uk/reloop_80_record_case_black.htm (W x D x H 360 x 275 x 350 mm)",
+      "estimated": false
+    },
+    {
+      "brand": "Reloop",
+      "model": "Club Series 120 Trolley Case (AMS-REC-TROLLEY-120-BLK)",
+      "w_cm": 38.3,
+      "h_cm": 48.3,
+      "d_cm": 25.3,
+      "capacity": 120,
+      "source": "https://www.reloop.com/reloop-club-series-120-trolley-case-50-50-black (383 W x 253 D x 483 H mm)",
+      "estimated": false
+    },
+    {
+      "brand": "Odyssey",
+      "model": "CLP100P Carpeted Record Case",
+      "w_cm": 36.8,
+      "h_cm": 35.6,
+      "d_cm": 35.6,
+      "capacity": 100,
+      "source": "https://www.idjnow.com/odyssey-clp100p-case.html (14.5 W x 14 D x 14 H in)",
+      "estimated": false
+    },
+    {
+      "brand": "Odyssey",
+      "model": "CLP200P Pro Record/Utility Carpeted Case",
+      "w_cm": 71.1,
+      "h_cm": 35.6,
+      "d_cm": 36.8,
+      "capacity": 50,
+      "source": "https://www.idjnow.com/odyssey-clp200p-case.html (28 W x 14.5 D x 14 H in); title says 200 LPs, retailer copy says about 50, conflict unresolved",
+      "estimated": false
+    },
+    {
+      "brand": "Odyssey",
+      "model": "Flight Zone FZLP80",
+      "w_cm": 38.1,
+      "h_cm": 38.1,
+      "d_cm": 38.1,
+      "capacity": 80,
+      "source": "https://www.odysseygear.com/product/fzlp80/ (15 x 15 x 15 in)",
+      "estimated": false
+    },
+    {
+      "brand": "Odyssey",
+      "model": "Flight Zone FZLP120HW (trolley)",
+      "w_cm": 55.9,
+      "h_cm": 42.5,
+      "d_cm": 45.7,
+      "capacity": 120,
+      "source": "https://www.odysseygear.com/product/fzlp120hw/ (22 W x 18 D x 16.75 H in)",
+      "estimated": false
+    },
+    {
+      "brand": "Odyssey",
+      "model": "Krom KLP70BL / KLP1",
+      "w_cm": 37.5,
+      "h_cm": 36.8,
+      "d_cm": 27.9,
+      "capacity": 70,
+      "source": "https://www.odysseygear.com/product/klp70bl/ (14.75 W x 11 D x 14.5 H in)",
+      "estimated": false
+    },
+    {
+      "brand": "Odyssey",
+      "model": "Krom KLP2 Stacking Record Case",
+      "w_cm": 37.5,
+      "h_cm": 36.8,
+      "d_cm": 27.9,
+      "capacity": 70,
+      "source": "Krom KLP70BL dimensions used as a proxy; KLP2 not separately verified",
+      "estimated": true
+    },
+    {
+      "brand": "Gator",
+      "model": "ONYX Case for 12\" Vinyl (G-ONYX-VINYL-1270)",
+      "w_cm": 27.9,
+      "h_cm": 36.8,
+      "d_cm": 38.1,
+      "capacity": 70,
+      "source": "https://gatorco.com/product/onyx-case-for-12-vinyl-records-g-onyx-vinyl-1270/ (outer 11 x 14.5 x 15 in; the page gives no depth label, 15 in read as depth)",
+      "estimated": false
+    },
+    {
+      "brand": "Gorilla",
+      "model": "GC-LP100 (LP100) Flight Carry Case",
+      "w_cm": 36.0,
+      "h_cm": 39.0,
+      "d_cm": 35.5,
+      "capacity": 100,
+      "source": "https://gorilladj.co.uk/products/gorilla-gc-lp100-100x-12-vinyl-record-box-black (W 360 x H 390 x D 355 mm)",
+      "estimated": false
+    },
+    {
+      "brand": "Selektor",
+      "model": "Worker DJ Record Bag",
+      "w_cm": 34.0,
+      "h_cm": 34.0,
+      "d_cm": 14.0,
+      "capacity": 50,
+      "source": "https://earcave.com/products/selektor-12-dj-record-bag-vegan-leather-caramel-brown (34 x 34 x 14 cm); Juno lists 35.2 x 5.4 x 48.2 cm, conflict unresolved",
+      "estimated": false
+    },
+    {
+      "brand": "Crosley",
+      "model": "Record Carrier Case (CR401 family)",
+      "w_cm": 34.9,
+      "h_cm": 36.2,
+      "d_cm": 17.1,
+      "capacity": 30,
+      "source": "https://st.hzcdn.com/hfiles/aef402a70bf46570_3408 (13.75 W x 14.25 H x 6.75 D in)",
+      "estimated": false
+    },
+    {
+      "brand": "Crosley",
+      "model": "Platter-Pak (CR401-TA)",
+      "w_cm": 34.9,
+      "h_cm": 36.2,
+      "d_cm": 17.1,
+      "capacity": 30,
+      "source": "https://st.hzcdn.com/hfiles/aef402a70bf46570_3408 (CR401-TA tan listing, 13.75 W x 14.25 H x 6.75 D in)",
+      "estimated": false
+    },
+    {
+      "brand": "Crosley",
+      "model": "The Beatles Fab Four Case",
+      "w_cm": 34.9,
+      "h_cm": 36.2,
+      "d_cm": 17.1,
+      "capacity": 30,
+      "source": "CR401 carrier dimensions applied (Beatles livery, CR401-BE); not separately measured",
+      "estimated": true
+    },
+    {
+      "brand": "HumminGuru",
+      "model": "Vinyl Record Tote Bag",
+      "w_cm": 40.0,
+      "h_cm": 41.0,
+      "d_cm": 12.0,
+      "capacity": 30,
+      "source": "https://humminguru.com/products/humminguru-vinyl-record-tote-bag (40 W x 41 H x 12 D cm, without strap)",
+      "estimated": false
+    },
+    {
+      "brand": "Generic",
+      "model": "Canvas Record Tote (preset template)",
+      "w_cm": 35.5,
+      "h_cm": 35.5,
+      "d_cm": 12.8,
+      "capacity": 25,
+      "source": "no source found; estimated: 25 LPs x 0.35 cm = 8.75 cm interior depth + 4 cm; 31.5 cm LP + 4 cm per dimension",
+      "estimated": true
+    }
+  ],
+  "crates": [
+    {
+      "kind": "US milk crate (16 qt, 13 x 13 x 11 in)",
+      "w_cm": 33.0,
+      "h_cm": 28.0,
+      "d_cm": 33.0,
+      "capacity": "not a fit for 12in sleeves: interior 30.5 cm is narrower than a 31.5 cm sleeve; 12in discs only",
+      "source": "https://www.thunderbirdplastics.com/product/milk-crate/ (33 x 33 x 28 cm outer, 13 x 13 x 11 in); interior 12 x 12 x 10.75 in per research/furniture.json",
+      "estimated": false
+    },
+    {
+      "kind": "12in cardboard record box",
+      "w_cm": 34.3,
+      "h_cm": 33.0,
+      "d_cm": 27.3,
+      "capacity": 50,
+      "source": "https://www.bagsunlimited.com/audio-supplies-for-recorded-music-formats/33-13-rpm-vinyl-record-supplies/12-vinyl-record-storage-boxes (13-1/2 x 13 x 10-3/4 in, holds 50-65 LPs); 13 in read as height so LPs stand upright",
+      "estimated": false
+    },
+    {
+      "kind": "wooden record crate",
+      "w_cm": 32.8,
+      "h_cm": 35.0,
+      "d_cm": 35.2,
+      "capacity": 100,
+      "source": "research/furniture.json Studio 57 Vinyl Record Crate (wood): 32.8 x 35.2 x 35 cm, 1.2 cm wood; capacity 80-100 from brief (35.2 cm depth / 0.35 = about 100 LPs)",
+      "estimated": false
+    },
+    {
+      "kind": "flight case for 80 LPs",
+      "w_cm": 36.0,
+      "h_cm": 35.0,
+      "d_cm": 27.5,
+      "capacity": 80,
+      "source": "https://www.thomann.co.uk/reloop_80_record_case_black.htm (Reloop 80 Record Case, W x D x H 360 x 275 x 350 mm, holds 80 12in LPs); Odyssey FZLP80 is 15 x 15 x 15 in per odysseygear.com",
+      "estimated": false
+    }
+  ],
+  "furniture": [
+    {
+      "brand": "IKEA",
+      "model": "KALLAX 1x4 (42x147 cm)",
+      "rows": 4,
+      "cols": 1,
+      "w_cm": 41.9,
+      "h_cm": 147.0
+    },
+    {
+      "brand": "IKEA",
+      "model": "KALLAX 2x2 (77x77 cm)",
+      "rows": 2,
+      "cols": 2,
+      "w_cm": 77.2,
+      "h_cm": 77.2
+    },
+    {
+      "brand": "IKEA",
+      "model": "KALLAX 2x4 (77x147 cm)",
+      "rows": 2,
+      "cols": 4,
+      "w_cm": 147.0,
+      "h_cm": 77.2
+    },
+    {
+      "brand": "IKEA",
+      "model": "KALLAX 3x3 (112x112 cm)",
+      "rows": 3,
+      "cols": 3,
+      "w_cm": 112.1,
+      "h_cm": 112.1
+    },
+    {
+      "brand": "IKEA",
+      "model": "KALLAX 3x4 (112x147 cm)",
+      "rows": 4,
+      "cols": 3,
+      "w_cm": 112.1,
+      "h_cm": 147.0
+    },
+    {
+      "brand": "IKEA",
+      "model": "KALLAX 4x4 (147x147 cm)",
+      "rows": 4,
+      "cols": 4,
+      "w_cm": 147.0,
+      "h_cm": 147.0
+    },
+    {
+      "brand": "IKEA",
+      "model": "KALLAX 5x5 (182x182 cm)",
+      "rows": 5,
+      "cols": 5,
+      "w_cm": 181.9,
+      "h_cm": 181.9
+    },
+    {
+      "brand": "IKEA",
+      "model": "KALLAX 2x4 with 2 doors + 4 drawers (147x77 cm)",
+      "rows": 2,
+      "cols": 4,
+      "w_cm": 147.0,
+      "h_cm": 77.0
+    },
+    {
+      "brand": "IKEA",
+      "model": "KALLAX 2x4 on underframe (147x94 cm)",
+      "rows": 2,
+      "cols": 4,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "IKEA",
+      "model": "KALLAX TV bench on underframe (147x39x78 cm)",
+      "rows": 2,
+      "cols": 4,
+      "w_cm": 147.0,
+      "h_cm": 78.0
+    },
+    {
+      "brand": "IKEA",
+      "model": "EXPEDIT 2x2 (legacy)",
+      "rows": 2,
+      "cols": 2,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "IKEA",
+      "model": "EXPEDIT 4x2 (legacy)",
+      "rows": 2,
+      "cols": 4,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "IKEA",
+      "model": "EXPEDIT 4x4 (legacy)",
+      "rows": 4,
+      "cols": 4,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "IKEA",
+      "model": "EXPEDIT 5x5 (legacy)",
+      "rows": 5,
+      "cols": 5,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "IKEA",
+      "model": "EKET cube cabinet 35x35x35 cm",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 35.0,
+      "h_cm": 35.0
+    },
+    {
+      "brand": "IKEA",
+      "model": "EKET storage combination with legs (70x35x80 cm approx)",
+      "rows": "unknown",
+      "cols": "unknown",
+      "w_cm": 70.0,
+      "h_cm": 80.0
+    },
+    {
+      "brand": "IKEA",
+      "model": "EKET storage combination with feet (70x35x80 cm approx)",
+      "rows": "unknown",
+      "cols": "unknown",
+      "w_cm": 70.0,
+      "h_cm": 80.0
+    },
+    {
+      "brand": "IKEA",
+      "model": "BILLY bookcase (28 cm deep)",
+      "rows": "unknown",
+      "cols": "unknown",
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "IKEA",
+      "model": "BESTA frame/cabinet",
+      "rows": "unknown",
+      "cols": "unknown",
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "IKEA",
+      "model": "TONSTAD cabinet with doors",
+      "rows": "unknown",
+      "cols": "unknown",
+      "w_cm": 81.6,
+      "h_cm": 89.9
+    },
+    {
+      "brand": "IKEA",
+      "model": "BROR cabinet with 2 doors",
+      "rows": "unknown",
+      "cols": "unknown",
+      "w_cm": 75.9,
+      "h_cm": 66.0
+    },
+    {
+      "brand": "IKEA",
+      "model": "EKENABBEN cabinet",
+      "rows": "unknown",
+      "cols": "unknown",
+      "w_cm": 69.8,
+      "h_cm": 51.1
+    },
+    {
+      "brand": "IKEA",
+      "model": "VITTSJO shelf unit",
+      "rows": "unknown",
+      "cols": "unknown",
+      "w_cm": 100.0,
+      "h_cm": 93.0
+    },
+    {
+      "brand": "IKEA",
+      "model": "KOLBJORN cabinet (indoor/outdoor)",
+      "rows": "unknown",
+      "cols": "unknown",
+      "w_cm": 80.0,
+      "h_cm": 81.0
+    },
+    {
+      "brand": "IKEA",
+      "model": "LIXHULT cabinet",
+      "rows": "unknown",
+      "cols": "unknown",
+      "w_cm": 60.0,
+      "h_cm": 57.1
+    },
+    {
+      "brand": "Glorious",
+      "model": "Record Box 110",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 35.5,
+      "h_cm": 35.5
+    },
+    {
+      "brand": "Glorious",
+      "model": "Record Box Advanced 110",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 34.0,
+      "h_cm": 35.5
+    },
+    {
+      "brand": "Glorious",
+      "model": "Record Box 230",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 35.5,
+      "h_cm": 70.5
+    },
+    {
+      "brand": "Glorious",
+      "model": "Record Rack 330",
+      "rows": 2,
+      "cols": 1,
+      "w_cm": 35.6,
+      "h_cm": 95.6
+    },
+    {
+      "brand": "Zomo",
+      "model": "VS-Box 100/1",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 36.0,
+      "h_cm": 37.0
+    },
+    {
+      "brand": "Zomo",
+      "model": "VS-Box 100/2",
+      "rows": 2,
+      "cols": 1,
+      "w_cm": 36.0,
+      "h_cm": 56.0
+    },
+    {
+      "brand": "Zomo",
+      "model": "VS-Box 100/4",
+      "rows": 4,
+      "cols": 1,
+      "w_cm": 37.0,
+      "h_cm": 127.0
+    },
+    {
+      "brand": "Zomo",
+      "model": "VS-Box 50",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 33.5,
+      "h_cm": 37.0
+    },
+    {
+      "brand": "Zomo",
+      "model": "VS-Rack Vinya 150",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 30.0,
+      "h_cm": 115.5
+    },
+    {
+      "brand": "Zomo",
+      "model": "VS-Rack Vinya 100",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 30.0,
+      "h_cm": 80.5
+    },
+    {
+      "brand": "Zomo",
+      "model": "VS-Rack Loft",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 25.3,
+      "h_cm": 33.3
+    },
+    {
+      "brand": "Zomo",
+      "model": "VS-Rack Wave",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 30.0,
+      "h_cm": 30.0
+    },
+    {
+      "brand": "Zomo",
+      "model": "VS-Rack Cube",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 34.8,
+      "h_cm": 34.8
+    },
+    {
+      "brand": "Magma",
+      "model": "LP-Bag 100 Trolley",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 38.0,
+      "h_cm": 45.0
+    },
+    {
+      "brand": "Magma",
+      "model": "LP-Bag 60 Profi",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 38.0,
+      "h_cm": 38.0
+    },
+    {
+      "brand": "Magma",
+      "model": "LP-Bag 40 II",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 33.0,
+      "h_cm": 33.0
+    },
+    {
+      "brand": "Magma",
+      "model": "12\" Sandwich bag",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 38.0,
+      "h_cm": 38.5
+    },
+    {
+      "brand": "UDG",
+      "model": "Ultimate 12\" Vinyl Record Case 80",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 35.0,
+      "h_cm": 36.0
+    },
+    {
+      "brand": "Odyssey",
+      "model": "Flight Zone FZLP80 utility case",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 38.1,
+      "h_cm": 38.1
+    },
+    {
+      "brand": "Hama",
+      "model": "50 LP Vinyl Record Storage Case",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Pro-Ject",
+      "model": "Rack It - Basic Cube",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 53.5,
+      "h_cm": 37.6
+    },
+    {
+      "brand": "Keep Them Spinning",
+      "model": "The Standard modular wood cube",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 33.0,
+      "h_cm": 33.0
+    },
+    {
+      "brand": "Wax Stacks",
+      "model": "Wax Stacks crate",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Wax Rax",
+      "model": "LP-V4 vertical rack",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Mapleshade",
+      "model": "Record Shelf System",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Gothic Furniture",
+      "model": "LP Record Rack",
+      "rows": 1,
+      "cols": 3,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Cubitec",
+      "model": "Cubitec 13.25in-deep cube kit",
+      "rows": 2,
+      "cols": 2,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "LP Bin",
+      "model": "LP Bin (unnamed model)",
+      "rows": "unknown",
+      "cols": "unknown",
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Department Chicago",
+      "model": "Walnut Record Cabinet",
+      "rows": "unknown",
+      "cols": "unknown",
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Dual",
+      "model": "Portland cabinet",
+      "rows": "unknown",
+      "cols": "unknown",
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Can-Am",
+      "model": "LPCAB29",
+      "rows": "unknown",
+      "cols": "unknown",
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Boltz",
+      "model": "LP Record Storage Rack (4 shelves)",
+      "rows": 4,
+      "cols": 1,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Siosi",
+      "model": "Record // LP Shelving",
+      "rows": "unknown",
+      "cols": "unknown",
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Symbol Audio",
+      "model": "Aero 51in media cabinet",
+      "rows": 1,
+      "cols": 2,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Symbol Audio",
+      "model": "Aero 76.5in LP storage console",
+      "rows": 1,
+      "cols": 2,
+      "w_cm": 194.3,
+      "h_cm": 64.8
+    },
+    {
+      "brand": "Atocha",
+      "model": "Record Cabinet",
+      "rows": "unknown",
+      "cols": "unknown",
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Vinyl Styl",
+      "model": "Original LP Crate (VS-RS-04)",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Vinyl Styl",
+      "model": "Metro LP Crate (VS-RS-05)",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Studio 57",
+      "model": "Vinyl Record Crate (wood)",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 35.0,
+      "h_cm": 35.2
+    },
+    {
+      "brand": "Crosley",
+      "model": "Record Storage Crate",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Generic",
+      "model": "Corrugated cardboard 12in record box",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 33.0,
+      "h_cm": 34.3
+    },
+    {
+      "brand": "Generic",
+      "model": "Plastic milk crate, 16 qt (13x13x11 in)",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": 33.0,
+      "h_cm": 33.0
+    },
+    {
+      "brand": "Generic",
+      "model": "Wooden apple/produce crate",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Generic",
+      "model": "Record store browser/flip bin",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": null,
+      "h_cm": null
+    },
+    {
+      "brand": "Generic",
+      "model": "Wall-mounted LP display ledge",
+      "rows": 1,
+      "cols": 1,
+      "w_cm": null,
+      "h_cm": null
+    }
+  ]
+}

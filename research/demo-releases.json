@@ -1,344 +1,789 @@
 {
-  "fetched": "2026-11-12",
+  "fetched": "2026-11-13",
   "records": [
     {
-      "seedId": "r9",
-      "release_id": null,
-      "master_id": null,
-      "artist": null,
-      "title": null,
-      "label": null,
-      "catno": null,
-      "year": null,
-      "country": null,
-      "format": null,
-      "genres": [],
-      "styles": [],
-      "tracklist": [],
-      "barcode": null,
-      "videos": [],
-      "source": null,
+      "seedId": "r1",
+      "release_id": 20132,
+      "master_id": 5664,
+      "artist": "Fingers Inc.",
+      "title": "Can You Feel It",
+      "label": "Jack Trax",
+      "catno": "JTX 20",
+      "year": 1988,
+      "country": "UK",
+      "format": "Vinyl, 12\", 45 RPM",
+      "genres": [
+        "Electronic",
+        "Non-Music"
+      ],
+      "styles": [
+        "Acid House",
+        "Deep House",
+        "Spoken Word"
+      ],
+      "tracklist": [
+        {
+          "position": "A1",
+          "title": "Can You Feel It (Vocal)",
+          "duration": "5:53"
+        },
+        {
+          "position": "A2",
+          "title": "Can You Feel It (Instrumental)",
+          "duration": "5:55"
+        },
+        {
+          "position": "B1",
+          "title": "Can You Feel It (Spoken Word: Dr. Martin Luther King Jr.)",
+          "duration": "5:54"
+        },
+        {
+          "position": "B2",
+          "title": "Can You Feel It (Accapella)",
+          "duration": "5:10"
+        }
+      ],
+      "barcode": "5 015793 102065",
+      "videos": [
+        "pEo3v3_7ekk",
+        "oxHtQYwwBV8",
+        "AL0L1yc2-3c",
+        "XufX35Cbxoo",
+        "3nc8bv8oqmk",
+        "sN3Vj3H_eE0",
+        "xVsZHjyC394",
+        "9jqtbWC8mLQ",
+        "TUDWbTJiclI",
+        "OvOs3xnaoXU",
+        "8Ijo46wsz2s",
+        "pe2O9i1VovA",
+        "jwU4vrsd6Tw",
+        "6wSqvIZfqLw",
+        "4KqAM-hwqis",
+        "kloT4pl3k4E",
+        "1N9Wnqz8Rh8",
+        "e9ilyJuHraw",
+        "pR_oDN-fC0M",
+        "Ys-ej7EHuZs",
+        "UL0iOfeLT4Q",
+        "Li3MGcNbazo",
+        "pjqqKOvIEhw",
+        "kuHhyN7pY7Q",
+        "I7zXmXuK2S0",
+        "HO-koAACqaU",
+        "DJPI7l5ZsF8",
+        "ZxrymDOskA8",
+        "gLxzswkdRLs",
+        "plEmKrZbg1A",
+        "Op9PUck5A1U",
+        "y0_GjWp_6Ec",
+        "8dEee7IDuhw",
+        "wvdwUSuwFT0",
+        "Im33noCtE-Q",
+        "TTqJOK9bDoo",
+        "3y8FHasfRiQ",
+        "YO9KEKnnlKs",
+        "hkkCJ6gO5WU",
+        "_NSn5RfxoXs",
+        "ooWE35Vg69E",
+        "PIa4URjkgw8",
+        "KYwSq82hk50",
+        "kvlsfiz6pvQ",
+        "TIDpkhfx4nY",
+        "zAxPFxJoAQY",
+        "EMj1H_Ru6Ag",
+        "DEvPVYaOrQ0",
+        "v362n0QbGOw"
+      ],
+      "cover": "https://i.discogs.com/5eGzIGYWEtSvBEf7ggS5k5mzOIIwo6fd3gAScRfYqn4/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTIwMTMy/LTEzNTMxNTE4MTUt/OTUzMC5qcGVn.jpeg",
+      "thumb": "https://i.discogs.com/QjfHSXF8EjZxeaw0LHE6q3iX5CCCVqqtDaLCtqoGCiI/rs:fit/g:sm/q:40/h:150/w:150/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTIwMTMy/LTEzNTMxNTE4MTUt/OTUzMC5qcGVn.jpeg",
+      "label_art": "https://i.discogs.com/ypgfbhmMLsjZirDu-soYDA8tkl_86Y16K5gs9UBHPg8/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTIwMTMy/LTEzNTMxNTE4MjAt/MjM1MS5qcGVn.jpeg",
+      "discogs_url": "https://www.discogs.com/release/20132",
       "unverified": [
-        "release_id",
-        "master_id",
-        "artist",
-        "title",
-        "label",
-        "catno",
-        "year",
-        "country",
-        "format",
-        "genres",
-        "styles",
-        "tracklist",
-        "barcode",
-        "videos"
+        "discogs_url constructed from release id",
+        "release fetched via master 5664 main_release_id"
       ]
     },
     {
       "seedId": "r2",
-      "release_id": null,
-      "master_id": null,
-      "artist": null,
-      "title": null,
-      "label": null,
-      "catno": null,
-      "year": null,
-      "country": null,
-      "format": null,
-      "genres": [],
-      "styles": [],
-      "tracklist": [],
+      "release_id": 1075633,
+      "master_id": 695,
+      "artist": "Rhythim Is Rhythim",
+      "title": "Strings Of Life",
+      "label": "Transmat",
+      "catno": "MS 004",
+      "year": 1987,
+      "country": "US",
+      "format": "Vinyl, 12\", 33 ⅓ RPM",
+      "genres": [
+        "Electronic"
+      ],
+      "styles": [
+        "Techno"
+      ],
+      "tracklist": [
+        {
+          "position": "A1",
+          "title": "Strings (Flam-Boy-Ant Mix)",
+          "duration": "6:54"
+        },
+        {
+          "position": "A2",
+          "title": "Strings Of Life",
+          "duration": "7:23"
+        },
+        {
+          "position": "B1",
+          "title": "Move It (Remix)",
+          "duration": "5:42"
+        },
+        {
+          "position": "B2",
+          "title": "Kaos (Juice Bar Mix)",
+          "duration": "5:50"
+        },
+        {
+          "position": "B3",
+          "title": "Untitled",
+          "duration": "3:08"
+        }
+      ],
       "barcode": null,
-      "videos": [],
-      "source": null,
+      "videos": [
+        "5oMUQKLzXH4",
+        "6Gr42Uc7WgU",
+        "v79hwakTjwk",
+        "tAKdGtbcpLQ",
+        "fZSUt9LgpV4",
+        "sZOfvl-cryE",
+        "tHYFj45nZfI",
+        "SOLEwbe-eqM",
+        "Qny0oBRcdvk",
+        "hCkAPPiutx8",
+        "Tffoq_2ZNS0",
+        "NkWg8i7uPks",
+        "_pMav12kzaA",
+        "x65Z6mm0mYY"
+      ],
+      "cover": "https://i.discogs.com/dKCY583Zw--YoaE19Bd-gUbyNKXENXsjpGUCG0lDkv8/rs:fit/g:sm/q:90/h:600/w:588/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNzU2/MzMtMTE5MDIzOTUx/MS5qcGVn.jpeg",
+      "thumb": "https://i.discogs.com/nSdoVCTWJ8cg2GLw0jxvOyvO_x-b7k4_75TZ7jZ-Y9I/rs:fit/g:sm/q:40/h:150/w:150/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNzU2/MzMtMTE5MDIzOTUx/MS5qcGVn.jpeg",
+      "label_art": "https://i.discogs.com/MmCbrqSdfZWNk75tkR8W_-OFPNnnJ6T5ZXjaRXOtFnE/rs:fit/g:sm/q:90/h:599/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNzU2/MzMtMTE5MDIzOTUz/OC5qcGVn.jpeg",
+      "discogs_url": "https://www.discogs.com/release/1075633-Rhythim-Is-Rhythim-Strings-Of-Life",
       "unverified": [
-        "release_id",
-        "master_id",
-        "artist",
-        "title",
-        "label",
-        "catno",
-        "year",
-        "country",
-        "format",
-        "genres",
-        "styles",
-        "tracklist",
-        "barcode",
-        "videos"
-      ]
-    },
-    {
-      "seedId": "r1",
-      "release_id": null,
-      "master_id": null,
-      "artist": null,
-      "title": null,
-      "label": null,
-      "catno": null,
-      "year": null,
-      "country": null,
-      "format": null,
-      "genres": [],
-      "styles": [],
-      "tracklist": [],
-      "barcode": null,
-      "videos": [],
-      "source": null,
-      "unverified": [
-        "release_id",
-        "master_id",
-        "artist",
-        "title",
-        "label",
-        "catno",
-        "year",
-        "country",
-        "format",
-        "genres",
-        "styles",
-        "tracklist",
-        "barcode",
-        "videos"
-      ]
-    },
-    {
-      "seedId": "r6",
-      "release_id": null,
-      "master_id": null,
-      "artist": null,
-      "title": null,
-      "label": null,
-      "catno": null,
-      "year": null,
-      "country": null,
-      "format": null,
-      "genres": [],
-      "styles": [],
-      "tracklist": [],
-      "barcode": null,
-      "videos": [],
-      "source": null,
-      "unverified": [
-        "release_id",
-        "master_id",
-        "artist",
-        "title",
-        "label",
-        "catno",
-        "year",
-        "country",
-        "format",
-        "genres",
-        "styles",
-        "tracklist",
-        "barcode",
-        "videos"
+        "barcode: no Barcode identifier on release"
       ]
     },
     {
       "seedId": "r3",
-      "release_id": null,
-      "master_id": null,
-      "artist": null,
-      "title": null,
-      "label": null,
-      "catno": null,
-      "year": null,
-      "country": null,
-      "format": null,
-      "genres": [],
-      "styles": [],
-      "tracklist": [],
+      "release_id": 1949,
+      "master_id": 5108,
+      "artist": "Phuture",
+      "title": "Acid Tracks",
+      "label": "Trax Records",
+      "catno": "TX142",
+      "year": 1987,
+      "country": "US",
+      "format": "Vinyl, 12\", 33 ⅓ RPM",
+      "genres": [
+        "Electronic"
+      ],
+      "styles": [
+        "Acid House",
+        "House"
+      ],
+      "tracklist": [
+        {
+          "position": "A",
+          "title": "Acid Tracks",
+          "duration": "12:26"
+        },
+        {
+          "position": "B1",
+          "title": "Phuture Jacks",
+          "duration": "7:46"
+        },
+        {
+          "position": "B2",
+          "title": "Your Only Friend",
+          "duration": "4:53"
+        }
+      ],
       "barcode": null,
-      "videos": [],
-      "source": null,
+      "videos": [
+        "xjJxoy6Dbck",
+        "FjolCxZAryk",
+        "Ky4DZtuGyOc",
+        "NEP1wslJ2CU",
+        "nqoqoMjPezU",
+        "X3eYVYccv8c"
+      ],
+      "cover": "https://i.discogs.com/LvpUwm0WZmQg_n8R1DqaYa8Srqx4SGEzXOsEdfQiEXI/rs:fit/g:sm/q:90/h:600/w:599/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTE5NDkt/MTc0OTc2NTM5MS03/NTUzLmpwZWc.jpeg",
+      "thumb": "https://i.discogs.com/zRbuvT9KLTHpinwfM_RXjSYRqkLmjevdjp3DQvNrjyw/rs:fit/g:sm/q:40/h:150/w:150/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTE5NDkt/MTc0OTc2NTM5MS03/NTUzLmpwZWc.jpeg",
+      "label_art": "https://i.discogs.com/yXpkeQ_GQ1sZPP6aTbWlYVU-8MWxYf4QJoH0fvqdnd8/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTE5NDkt/MTM4NjEwMTc4Ni04/MDI0LmpwZWc.jpeg",
+      "discogs_url": "https://www.discogs.com/release/1949-Phuture-Acid-Tracks",
       "unverified": [
-        "release_id",
-        "master_id",
-        "artist",
-        "title",
-        "label",
-        "catno",
-        "year",
-        "country",
-        "format",
-        "genres",
-        "styles",
-        "tracklist",
-        "barcode",
-        "videos"
-      ]
-    },
-    {
-      "seedId": "r8",
-      "release_id": null,
-      "master_id": null,
-      "artist": null,
-      "title": null,
-      "label": null,
-      "catno": null,
-      "year": null,
-      "country": null,
-      "format": null,
-      "genres": [],
-      "styles": [],
-      "tracklist": [],
-      "barcode": null,
-      "videos": [],
-      "source": null,
-      "unverified": [
-        "release_id",
-        "master_id",
-        "artist",
-        "title",
-        "label",
-        "catno",
-        "year",
-        "country",
-        "format",
-        "genres",
-        "styles",
-        "tracklist",
-        "barcode",
-        "videos"
-      ]
-    },
-    {
-      "seedId": "r7",
-      "release_id": null,
-      "master_id": null,
-      "artist": null,
-      "title": null,
-      "label": null,
-      "catno": null,
-      "year": null,
-      "country": null,
-      "format": null,
-      "genres": [],
-      "styles": [],
-      "tracklist": [],
-      "barcode": null,
-      "videos": [],
-      "source": null,
-      "unverified": [
-        "release_id",
-        "master_id",
-        "artist",
-        "title",
-        "label",
-        "catno",
-        "year",
-        "country",
-        "format",
-        "genres",
-        "styles",
-        "tracklist",
-        "barcode",
-        "videos"
+        "barcode: no Barcode identifier on release"
       ]
     },
     {
       "seedId": "r4",
-      "release_id": null,
-      "master_id": null,
-      "artist": null,
-      "title": null,
-      "label": null,
-      "catno": null,
-      "year": null,
-      "country": null,
-      "format": null,
-      "genres": [],
-      "styles": [],
-      "tracklist": [],
-      "barcode": null,
-      "videos": [],
-      "source": null,
+      "release_id": 27746,
+      "master_id": 106942,
+      "artist": "Inner City",
+      "title": "Good Life",
+      "label": "Virgin",
+      "catno": "0-96591",
+      "year": 1988,
+      "country": "US",
+      "format": "Vinyl, 12\", 33 ⅓ RPM, Stereo",
+      "genres": [
+        "Electronic"
+      ],
+      "styles": [
+        "House",
+        "Acid House",
+        "Techno"
+      ],
+      "tracklist": [
+        {
+          "position": "A1",
+          "title": "Good Life (Mayday Mix)",
+          "duration": "6:12"
+        },
+        {
+          "position": "A2",
+          "title": "Good Life (Steve \"Silk\" Hurley Mix)",
+          "duration": "7:11"
+        },
+        {
+          "position": "A3",
+          "title": "Good Life (Radio Mix)",
+          "duration": "3:59"
+        },
+        {
+          "position": "B1",
+          "title": "Good Life (Magic Juan Mix)",
+          "duration": "8:28"
+        },
+        {
+          "position": "B2",
+          "title": "Good Life (Mike \"Hitman\" Wilson Mix)",
+          "duration": "7:21"
+        },
+        {
+          "position": "B3",
+          "title": "Big Fun (Les Adams Remix)",
+          "duration": "6:47"
+        }
+      ],
+      "barcode": "7567-96591-0",
+      "videos": [
+        "998P6HEzCdI",
+        "53vFCpwymSg",
+        "RdpZTe69Wes",
+        "XTcv2rhE3aE",
+        "S8_CIib73JI",
+        "l2-aEPLuKQ8",
+        "3sHZ3R5YnKc",
+        "gmxxASE_H48",
+        "QWfGpt5ROjI",
+        "-lPOsMASlEk",
+        "WKqD44Xfkkc",
+        "1Q1rtI2L7vU",
+        "vZ3vEeN4Uko",
+        "oSEvOTdAPGY",
+        "RhYso9W7okY",
+        "GjiE29lUdPk",
+        "QeWphony0vI",
+        "vuGq3aKvGzg",
+        "iUwfOOdg4eE",
+        "DdOdvICqyIM",
+        "DntdLaDD-SU",
+        "mL4Al4Ax1og",
+        "6eH67F1fiGo",
+        "MbK6YsMzqR8",
+        "_TZFoo22Vyg",
+        "KJxJxr9RlKM",
+        "9vYAq4UeRH8",
+        "ly-SD2eYETU",
+        "4OLmSBnHPwI",
+        "Tafl0LIU7fs",
+        "0uJpNiy6ZVI",
+        "6CpFYlCtYxI",
+        "VxBraJeNufs",
+        "EKSXQSKBkm4",
+        "KxGHSH5edus",
+        "AHfIDecswMc",
+        "wZHaJ2N9RR0",
+        "JmZlD-RxuFg",
+        "9FjArq-_ECw",
+        "7Att-V9qkn0",
+        "atxSRlyNiWs",
+        "psk70Wsti_c",
+        "kK3JkJR7zaM",
+        "wnzw0X9stzE",
+        "ztd__xu1YGA",
+        "mFz8I4_3yO4",
+        "G_46hrJM0-M",
+        "silm3k4elTw",
+        "EHNy3Uuh_nY",
+        "Fag1zVxUdBA",
+        "bUmTbicSOq4",
+        "zSyXXMSQ8sM",
+        "p0yndz2RJ9Y",
+        "1VNf80TaxO8",
+        "myqGXbt-C28",
+        "sczqOL1k1tk",
+        "i72FyBNA9qA",
+        "esPJx8A-Ijw",
+        "QTEOoS2ZXI4",
+        "N_pWnHiH-gs",
+        "hKtzDkxyP_o",
+        "J_okmvLkGPo",
+        "quv6DGQ1p54",
+        "6brH4_DBy4g",
+        "K_dml7eVMA0",
+        "jqi-K26LzRM",
+        "ewDei-jDnZ8",
+        "U8Y0DRd7WYU",
+        "_7UrEb0al9I",
+        "Mc8oaNEXsmQ",
+        "5BXtRcc3TRM",
+        "166oMfZeArY",
+        "6BFn2YTVE0g",
+        "eA8gUN34nlw",
+        "vDn2G_NvFoY",
+        "MabwIPn9YVo",
+        "qUlEKu3fPFg",
+        "lqsWPRNM5QM",
+        "yKg0b8qCJW0",
+        "ZHtD3HnsJEo",
+        "10_ggNUtPS4",
+        "SIYORjMJejU",
+        "7bcHd4dIF0s",
+        "wKxLHLnXLcQ",
+        "_AwzIAL4xrA",
+        "o6N_P4GRq3w",
+        "foqiZdxobgE",
+        "G2rf1fhhkp8",
+        "IJfZX6FVUUc",
+        "3NK-UXVu9RE",
+        "0fc1PFRqo7w",
+        "XWX7n37emSY",
+        "pNg-2WoZaSI",
+        "jA3Ex_Xk9yk",
+        "m0bYcfP5N-M",
+        "vFyV-WhcMxw",
+        "QXC6SOmS7Vc",
+        "EGaC8IvL10U",
+        "RMprVasIH_E",
+        "iXbIFqTV4yo",
+        "jR5Z8z9ls-s",
+        "QORnf6XZctk",
+        "0QwiXS1w8LQ",
+        "3ASmCUWkLMQ",
+        "TsDtMuXcglQ",
+        "lBACCrPSXnk",
+        "RJIlXXmCzq4",
+        "wcuoJ6XQVOI",
+        "YVT2ZRNK7CM",
+        "925mv-zPJyI",
+        "EVKYa9LJtHI",
+        "CJ9b-Z9LU1Y",
+        "HsnOP46-w7g",
+        "k9nmePsgHSo",
+        "fFz1-CYFKkg",
+        "Gvl_f8JW6iU",
+        "aXIg_Na4YU0",
+        "YjdjhCxdDO4",
+        "Pvc1z_QAB7o",
+        "WPpZqZIp2Bg",
+        "QPxy082uYCY",
+        "YNuX1vRiL1Q"
+      ],
+      "cover": "https://i.discogs.com/bUruR3GFp1ylYizkp4MSzzYeNebB68i_Sf-zsXJT5uk/rs:fit/g:sm/q:90/h:599/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTI3NzQ2/LTE2NDAyMzYzOTUt/Nzk2MC5qcGVn.jpeg",
+      "thumb": "https://i.discogs.com/9OdSck8tWiy7pTurAGzrIn5vRd4CRc9VgvPLotQec0U/rs:fit/g:sm/q:40/h:150/w:150/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTI3NzQ2/LTE2NDAyMzYzOTUt/Nzk2MC5qcGVn.jpeg",
+      "label_art": "https://i.discogs.com/jW9PGmpFdAyd2y8o_av56sXJrTed7_CDRDDJWfDGt8k/rs:fit/g:sm/q:90/h:598/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTI3NzQ2/LTE2NDAyMzYzOTUt/NjUzNi5qcGVn.jpeg",
+      "discogs_url": "https://www.discogs.com/release/27746",
       "unverified": [
-        "release_id",
-        "master_id",
-        "artist",
-        "title",
-        "label",
-        "catno",
-        "year",
-        "country",
-        "format",
-        "genres",
-        "styles",
-        "tracklist",
-        "barcode",
-        "videos"
+        "discogs_url constructed from release id",
+        "release fetched via master 106942 main_release_id"
       ]
     },
     {
       "seedId": "r5",
-      "release_id": null,
-      "master_id": null,
-      "artist": null,
-      "title": null,
-      "label": null,
-      "catno": null,
-      "year": null,
-      "country": null,
-      "format": null,
-      "genres": [],
-      "styles": [],
-      "tracklist": [],
+      "release_id": 64961,
+      "master_id": 25168,
+      "artist": "A Guy Called Gerald",
+      "title": "Voodoo Ray",
+      "label": "Rham!",
+      "catno": "RS8804",
+      "year": 1988,
+      "country": "UK",
+      "format": "Vinyl, 12\", 33 ⅓ RPM, Single",
+      "genres": [
+        "Electronic"
+      ],
+      "styles": [
+        "Acid House"
+      ],
+      "tracklist": [
+        {
+          "position": "A1",
+          "title": "Voodoo Ray",
+          "duration": null
+        },
+        {
+          "position": "A2",
+          "title": "Escape",
+          "duration": null
+        },
+        {
+          "position": "B1",
+          "title": "Rhapsody In Acid",
+          "duration": null
+        },
+        {
+          "position": "B2",
+          "title": "Blow Your House Down",
+          "duration": null
+        }
+      ],
       "barcode": null,
-      "videos": [],
-      "source": null,
+      "videos": [
+        "j7vxHOCeiQ4"
+      ],
+      "cover": "https://i.discogs.com/wcmFT1YxBXDr7LiPqhClBKWpSqgZDLqz3yh2cg6zFic/rs:fit/g:sm/q:90/h:600/w:572/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTY0OTYx/LTE0NzkwMDMxMjYt/ODg3Ny5wbmc.jpeg",
+      "thumb": "https://i.discogs.com/MZlhNVsEDZ73heMNu1OR35T--f04-JcD9iEXOm9Ni-s/rs:fit/g:sm/q:40/h:150/w:150/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTY0OTYx/LTE0NzkwMDMxMjYt/ODg3Ny5wbmc.jpeg",
+      "label_art": "https://i.discogs.com/tax2HSdTvdyz1TJz-MuxTlAjt3X7pQLEcnHA4iDFWc8/rs:fit/g:sm/q:90/h:600/w:569/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTY0OTYx/LTE0NzkwMDMxMjkt/OTg2OC5wbmc.jpeg",
+      "discogs_url": "https://www.discogs.com/release/64961-A-Guy-Called-Gerald-Voodoo-Ray",
       "unverified": [
-        "release_id",
-        "master_id",
-        "artist",
-        "title",
-        "label",
-        "catno",
-        "year",
-        "country",
-        "format",
-        "genres",
-        "styles",
-        "tracklist",
-        "barcode",
-        "videos"
+        "tracklist durations missing for some tracks (null on Discogs)",
+        "barcode: no Barcode identifier on release"
+      ]
+    },
+    {
+      "seedId": "r6",
+      "release_id": 2084,
+      "master_id": 7362,
+      "artist": "Joey Beltram",
+      "title": "Energy Flash",
+      "label": "Transmat",
+      "catno": "MS-16",
+      "year": 1990,
+      "country": "US",
+      "format": "Vinyl, 12\", 45 RPM",
+      "genres": [
+        "Electronic"
+      ],
+      "styles": [
+        "Techno"
+      ],
+      "tracklist": [
+        {
+          "position": "A",
+          "title": "Energy Flash",
+          "duration": "5:48"
+        },
+        {
+          "position": "B",
+          "title": "Psycho Bass",
+          "duration": "5:00"
+        }
+      ],
+      "barcode": null,
+      "videos": [
+        "AfxBCo5_7w4",
+        "xB0GVxefkAE",
+        "lk16KZTzVUo",
+        "RTI0odfgt1k",
+        "JNA893ppfWs",
+        "z669rJDRZdw",
+        "dvIg3KlngLQ",
+        "ZF3rjV2nWw8",
+        "NEGxyBIwoFE",
+        "maOM81a-Gyg",
+        "ALsHox5sYCk"
+      ],
+      "cover": "https://i.discogs.com/Fd6E2rEIHdETnNeojyiyS2-UWumUmGo6OFSVrDrQ0vg/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTIwODQt/MTMxMzE2MDk4My5q/cGVn.jpeg",
+      "thumb": "https://i.discogs.com/MIlBRWTs6SmWrt1DRGcSiG0dlEurI-jrXynVftz1VgM/rs:fit/g:sm/q:40/h:150/w:150/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTIwODQt/MTMxMzE2MDk4My5q/cGVn.jpeg",
+      "label_art": "https://i.discogs.com/w6mDqhHRmRWhmomL4KXsgjYD-yCHpqkr88Xr2GmTnlQ/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTIwODQt/MTMxMzE2MDk5MC5q/cGVn.jpeg",
+      "discogs_url": "https://www.discogs.com/release/2084-Beltram-Energy-Flash",
+      "unverified": [
+        "barcode: no Barcode identifier on release"
+      ]
+    },
+    {
+      "seedId": "r7",
+      "release_id": 9081728,
+      "master_id": 33110,
+      "artist": "808 State",
+      "title": "Pacific",
+      "label": "ZTT",
+      "catno": "ZANG 1T",
+      "year": 1989,
+      "country": "UK",
+      "format": "Vinyl, 12\", 33 ⅓ RPM",
+      "genres": [
+        "Electronic"
+      ],
+      "styles": [
+        "House",
+        "Techno",
+        "Balearic"
+      ],
+      "tracklist": [
+        {
+          "position": "A1",
+          "title": "Pacific-202",
+          "duration": null
+        },
+        {
+          "position": "A2",
+          "title": "Pacific State-Origin",
+          "duration": null
+        },
+        {
+          "position": "B1",
+          "title": "Pacific-303",
+          "duration": null
+        },
+        {
+          "position": "B2",
+          "title": "Cobra-Bora-Shortcut",
+          "duration": null
+        }
+      ],
+      "barcode": "0 22924 65210 3",
+      "videos": [
+        "E6t1Bj81Flc",
+        "oRSvu91qCUk",
+        "Tv0UiQ5n7SM",
+        "ab4iFk4tERM",
+        "1FzscSx_LBs",
+        "r-R6YszBgj0",
+        "Y6YuTJ34b2I",
+        "EyQ2U0Z5WMk",
+        "DHBTooSE2Ss",
+        "tCZ2p7jC_Os",
+        "ocV46WgNjwA",
+        "VTV1AEeE9uA",
+        "WQPvUVdf_XA",
+        "tLxDRePUwEY",
+        "0oYWW_kzuSA",
+        "cDhv5GxCD8U",
+        "JrZruZseyXc"
+      ],
+      "cover": "https://i.discogs.com/JqMvG-C-4v4hNpbA9V0dpsMiQLij4FM3Ljcp3e6xeNI/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTkwODE3/MjgtMTU4MDQ0NjQx/Ni03MjMzLmpwZWc.jpeg",
+      "thumb": "https://i.discogs.com/_nHOxHN-rWUgzTUV0NdPkFr8DxUmOaV_2aR_k22JwTw/rs:fit/g:sm/q:40/h:150/w:150/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTkwODE3/MjgtMTU4MDQ0NjQx/Ni03MjMzLmpwZWc.jpeg",
+      "label_art": null,
+      "discogs_url": "https://www.discogs.com/release/9081728",
+      "unverified": [
+        "tracklist durations missing for some tracks (null on Discogs)",
+        "label_art: no non-primary image within 12% aspect",
+        "discogs_url constructed from release id"
+      ]
+    },
+    {
+      "seedId": "r8",
+      "release_id": 11432,
+      "master_id": 45817,
+      "artist": "Josh Wink",
+      "title": "Higher State Of Consciousness",
+      "label": "Strictly Rhythm",
+      "catno": "SR12321",
+      "year": 1995,
+      "country": "US",
+      "format": "Vinyl, 12\", 33 ⅓ RPM",
+      "genres": [
+        "Electronic"
+      ],
+      "styles": [
+        "Breakbeat",
+        "Hard House",
+        "Acid",
+        "Acid House"
+      ],
+      "tracklist": [
+        {
+          "position": "A",
+          "title": "Higher State Of Consciousness (Version 1 - DJ Wink's Hardhouse Mix)",
+          "duration": "8:37"
+        },
+        {
+          "position": "B1",
+          "title": "Higher State Of Consciousness (Version 2 - The 611 Acid Groove Mix)",
+          "duration": "6:49"
+        },
+        {
+          "position": "B2",
+          "title": "Higher State Of Consciousness (Version 3 - Tweekin Acid Funk)",
+          "duration": "6:15"
+        }
+      ],
+      "barcode": null,
+      "videos": [
+        "Gt3ajYNuW48",
+        "Bd7KvxbynjU",
+        "A1mm5AsEorg",
+        "B2KG7Mt6iVc",
+        "ROwUqRZVHRA",
+        "zPDkQXqQDtA",
+        "6DW6RXfvuFU",
+        "JpSWmlO3Nk4",
+        "QvSVYJvowbA",
+        "MUVFfK2Fhzk",
+        "Mxx6G9AXvX8",
+        "xdIDB7nclkM",
+        "1jsVqkzY68E",
+        "rNoQqgjyQ5E",
+        "V_ATz-Gd-lY",
+        "uh8POlIHkSI",
+        "JIsFx54hf2s",
+        "w08CGZtXcKY",
+        "AdpH_0kP9l4"
+      ],
+      "cover": "https://i.discogs.com/p0XqIi_FO6Z4D-2M000nRgOOz74FCBLU2v7qexpN5A4/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExNDMy/LTEyOTY4NTM1NDUu/anBlZw.jpeg",
+      "thumb": "https://i.discogs.com/j3q4iJTeT_cwVpG2iEO8eOJuBN6oePw7kw_BOjZefz4/rs:fit/g:sm/q:40/h:150/w:150/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExNDMy/LTEyOTY4NTM1NDUu/anBlZw.jpeg",
+      "label_art": "https://i.discogs.com/y3_gW2-atSeQPoWEJotOUZsgBwpge1GTpFvbIgIySAA/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExNDMy/LTE0MjM0NDAxNTEt/MTY4My5qcGVn.jpeg",
+      "discogs_url": "https://www.discogs.com/release/11432-Wink-Higher-State-Of-Consciousness",
+      "unverified": [
+        "barcode: no Barcode identifier on release"
+      ]
+    },
+    {
+      "seedId": "r9",
+      "release_id": 1300331,
+      "master_id": 5405,
+      "artist": "Model 500",
+      "title": "No UFO's",
+      "label": "Metroplex",
+      "catno": "M-001",
+      "year": 1985,
+      "country": "US",
+      "format": "Vinyl, 12\", 33 ⅓ RPM",
+      "genres": [
+        "Electronic"
+      ],
+      "styles": [
+        "Electro",
+        "Techno"
+      ],
+      "tracklist": [
+        {
+          "position": "A1",
+          "title": "No UFO's (Vocal)",
+          "duration": "4:17"
+        },
+        {
+          "position": "A2",
+          "title": "No UFO's (Instrumental)",
+          "duration": "6:55"
+        },
+        {
+          "position": "B1",
+          "title": "Future (Vocal)",
+          "duration": "4:45"
+        },
+        {
+          "position": "B2",
+          "title": "Future (Instrumental)",
+          "duration": "5:01"
+        }
+      ],
+      "barcode": null,
+      "videos": [
+        "EarSRa19sZc",
+        "XtkpjkpD8xQ",
+        "hScSoAEkPYo",
+        "kpdKV4F57rU",
+        "rwLKTc76HR8",
+        "xcdOBLH_AXs",
+        "g9zc7gu3fF4",
+        "BprXvHQdlW0",
+        "ZW7HQi0sh5k",
+        "LeHCd3NdgQg",
+        "RHbW9W3XFkw"
+      ],
+      "cover": "https://i.discogs.com/cTK96sM5VfBrFLuee6WtU1AqBkIF0pwq3Qa_SgL4zxE/rs:fit/g:sm/q:90/h:586/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEzMDAz/MzEtMTIwNzY3NjMw/OS5qcGVn.jpeg",
+      "thumb": "https://i.discogs.com/VBHvU7G4dcbpHGdG9-H3K7fNFFKSut97Zc-kr6mBBhs/rs:fit/g:sm/q:40/h:150/w:150/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEzMDAz/MzEtMTIwNzY3NjMw/OS5qcGVn.jpeg",
+      "label_art": "https://i.discogs.com/q3rBjlfq_EToVb3TSOz4ozbJkk5SCN9ExosUXq_D23s/rs:fit/g:sm/q:90/h:589/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEzMDAz/MzEtMTIwNzY3NjMy/NC5qcGVn.jpeg",
+      "discogs_url": "https://www.discogs.com/release/1300331-Model-500-No-UFOs",
+      "unverified": [
+        "barcode: no Barcode identifier on release"
       ]
     },
     {
       "seedId": "r10",
-      "release_id": null,
-      "master_id": null,
-      "artist": null,
-      "title": null,
-      "label": null,
-      "catno": null,
-      "year": null,
-      "country": null,
-      "format": null,
-      "genres": [],
-      "styles": [],
-      "tracklist": [],
+      "release_id": 44542,
+      "master_id": 26714,
+      "artist": "Daft Punk",
+      "title": "Around The World",
+      "label": "Virgin",
+      "catno": "VST 1633",
+      "year": 1997,
+      "country": "Europe",
+      "format": "Vinyl, 12\", 33 ⅓ RPM",
+      "genres": [
+        "Electronic"
+      ],
+      "styles": [
+        "House",
+        "Tech House",
+        "Disco"
+      ],
+      "tracklist": [
+        {
+          "position": "A",
+          "title": "Around The World (LP Version)",
+          "duration": "7:07"
+        },
+        {
+          "position": "B1",
+          "title": "Around The World (Motorbass Vice Mix)",
+          "duration": "6:39"
+        },
+        {
+          "position": "B2",
+          "title": "Teachers (Extended Mix)",
+          "duration": "5:51"
+        }
+      ],
       "barcode": null,
-      "videos": [],
-      "source": null,
+      "videos": [
+        "K0HSD_i2DvA",
+        "T0lxekHV0qU",
+        "S5D7SYiA6w4",
+        "vemkhYYb16w",
+        "-gaAjuvsnKw",
+        "C-JOSWQIPMo",
+        "qjqHqhh2eI4",
+        "hej5yIRTrf4",
+        "aE9Jg87Bx2g",
+        "2JXIfuCTelo",
+        "dwDns8x3Jb4",
+        "ARfJ55bUAw0",
+        "Aj62th2bh2s",
+        "LKYPYj2XX80",
+        "Na-eqJLFhdU",
+        "Jb6gcoR266U",
+        "tuoSS5o4CSI",
+        "TOxkIzTPllY",
+        "3yq-NFiEywo",
+        "vCGo3RP2NG8",
+        "XSPKFmj6k8M",
+        "RhSAYDueqw4",
+        "69utGxI7e3Y",
+        "ZlpKgQfyMYE",
+        "0AA98DYM7CE",
+        "NKbO2oAFD1E"
+      ],
+      "cover": "https://i.discogs.com/wSGH0TIs23Z7RdZNyrLvifDd7sEUq_juGqrFtN71GWA/rs:fit/g:sm/q:90/h:600/w:587/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTQ0NTQy/LTEyMjgyNjExMDAu/anBlZw.jpeg",
+      "thumb": "https://i.discogs.com/FdGUeNE3zZNhsLOJuFlUbiJck9l1CJBJtZhUqckSJsk/rs:fit/g:sm/q:40/h:150/w:150/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTQ0NTQy/LTEyMjgyNjExMDAu/anBlZw.jpeg",
+      "label_art": "https://i.discogs.com/18QeycHIiio7qzewVE5qsgrzdYwFqN4A-QoFhKT1mrI/rs:fit/g:sm/q:90/h:600/w:587/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTQ0NTQy/LTEyMjgyNjExMTgu/anBlZw.jpeg",
+      "discogs_url": "https://www.discogs.com/release/44542-Daft-Punk-Around-The-World",
       "unverified": [
-        "release_id",
-        "master_id",
-        "artist",
-        "title",
-        "label",
-        "catno",
-        "year",
-        "country",
-        "format",
-        "genres",
-        "styles",
-        "tracklist",
-        "barcode",
-        "videos"
+        "barcode: no Barcode identifier on release"
       ]
     }
   ]

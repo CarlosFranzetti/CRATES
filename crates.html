@@ -1062,6 +1062,9 @@ a.pv::before,button.pv::before,.icon-btn::before,.step .round::before,.map-tools
 .cap-shutter{width:72px;height:72px;border-radius:50%;border:4px solid var(--ink);background:var(--accent);padding:0;display:block;position:relative;overflow:hidden}
 .cap-shutter:active{transform:scale(.94)}
 .cap-shutter input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+/* the flat look shrinks buttons on phones; photo and capture controls stay 44px touch targets */
+:root .bd-bar .btn,:root .bd-tools .btn,:root .bd-move .btn,:root .bd-kinds .btn,:root .bd-card .warn .btn,:root .ph-item .btn,:root .ph-sec .btn,:root .ph-pickbox .btn,:root .cap-top .btn,:root .cap-bar .btn,:root .ph-cs .seg button{height:44px}
+:root .bd-fields label.f input,:root .bd-fields input{height:44px}
 /* ==== /WP-C css ==== */
 </style>
 
@@ -4304,6 +4307,7 @@ Object.assign(A, {
 function phBoot(){ phRefIds().forEach(phWant); setTimeout(phGC, 5000); }
 phBoot();
 /* ==== /WP-C ==== */
+
 
 
 /* ---------- Claude photo recognition (optional) ---------- */

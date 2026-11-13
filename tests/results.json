@@ -1,16 +1,9 @@
 [
   {
-    "test": "N03 Discogs Location sync",
+    "test": "WC06 Photos + capture at 390px",
     "status": "PASS",
-    "note": "queue after move ['r9=K1\u00b7B3']",
+    "note": "no sideways scroll: {'photo section': 390, 'review board': 390, 'board photo panel': 390, 'capture': 390}",
     "js_errors": [],
-    "secs": 3.7
-  },
-  {
-    "test": "R12 Discogs sync (mocked API)",
-    "status": "PASS",
-    "note": "sync loop, merge, art, label, fallback",
-    "js_errors": [],
-    "secs": 2.7
+    "secs": 2.4
   }
 ]

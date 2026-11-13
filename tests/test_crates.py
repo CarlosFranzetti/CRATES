@@ -298,7 +298,7 @@ def t09_add_record(a):
 
 
 def t10_edit(a):
-    a.click(".dig-info [data-act=edit-rec]")
+    a.click(".dig-info [data-act=detail]")
     a.page.locator("#er-title").fill("No UFOs (Vocal)")
     a.page.locator("#er-bpm").fill("128")
     a.page.locator("#er-tags").fill("peak, detroit")
@@ -312,7 +312,7 @@ def t10_edit(a):
     check("128 BPM" in facts and "★★★★" in facts, facts)
     check(a.page.locator(".dig-info .tagchip").count() == 2, "tags")
     check(a.ev("rec('r9').custom.length===1 && rec('r9').custom[0].v==='Halcyon'"), "custom field")
-    a.click(".dig-info [data-act=edit-rec]")
+    a.click(".dig-info [data-act=detail]")
     a.click("[data-act=revert][data-k=title]")
     check(a.page.locator("#er-title").input_value() == "No UFO's", "revert field value")
     a.click("#er-form button[type=submit]")
@@ -482,9 +482,9 @@ def x04_add_record_slot_change_keeps_typing(a):
 
 
 def x05_revert_keeps_unsaved(a):
-    a.click(".dig-info [data-act=edit-rec]")
+    a.click(".dig-info [data-act=detail]")
     a.page.locator("#er-title").fill("X"); a.click("#er-form button[type=submit]")
-    a.click(".dig-info [data-act=edit-rec]")
+    a.click(".dig-info [data-act=detail]")
     a.page.locator("#er-bpm").fill("140")
     a.click("[data-act=revert][data-k=title]")
     v = a.page.locator("#er-bpm").input_value()
@@ -1226,7 +1226,7 @@ def r04_multi_undo(a):
     a.page.keyboard.press("Control+z"); a.page.wait_for_timeout(80)
     check(a.loc("r9") == "K1:0-0" and a.loc("r2") == "K1:0-0", "three undos should restore all")
     check(a.page.locator("#undo-btn").is_disabled(), "undo button should be disabled when the stack is empty")
-    a.click(".dig-info [data-act=edit-rec]"); a.page.locator("#er-title").fill("Changed"); a.click("#er-form button[type=submit]")
+    a.click(".dig-info [data-act=detail]"); a.page.locator("#er-title").fill("Changed"); a.click("#er-form button[type=submit]")
     check(a.title() == "Changed", "edit not saved")
     a.click("#undo-btn"); a.page.wait_for_timeout(80)
     check(a.title() != "Changed", "undo should revert a details edit")

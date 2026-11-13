@@ -970,6 +970,71 @@ a.pv::before,button.pv::before,.icon-btn::before,.step .round::before,.map-tools
   :root[data-look="flat"] .spot-row{height:40px;font-size:14px}
   :root[data-look="flat"] .li{padding:7px 4px}
 }
+/* ==== WP-A: Detail sheet and lending ==== */
+.pill.lent{background:color-mix(in srgb,var(--warn) 20%,transparent);color:var(--warn);white-space:nowrap;align-self:center}
+.lbadge{display:inline-grid;place-items:center;min-width:16px;height:16px;padding:0 4px;margin-left:6px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-size:10.5px;font-weight:700;line-height:1;vertical-align:middle}
+.lbadge[hidden]{display:none}
+.tabbar button[data-tab="table"]{position:relative}
+.tabbar .lbadge{position:absolute;top:4px;left:calc(50% + 6px);margin:0}
+.linkbtn{border:0;background:none;padding:0;color:var(--warn);font:inherit;font-size:12.5px;font-weight:600;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.lentline{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;font-size:13px}
+.lendbar{flex:0 0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:0 0 8px;padding:7px 10px;border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:6px;background:var(--surface);font-size:13px}
+.lendbar .lb-t{flex:1 1 320px;min-width:0}
+.lendbar .lb-a{display:flex;flex-wrap:wrap;gap:6px}
+.lendbar .btn{height:30px;font-size:12.5px;padding:0 10px}
+@media (max-width:780px){.lendbar .btn{height:36px}.lendbar .lb-t{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}}
+.lend-group{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:10px;background:var(--surface-2)}
+.lend-group h3{margin:0;font-size:15px}
+.lend-row{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.lend-row:first-of-type{border-top:0}
+.lend-row .t b{display:block;font-weight:500;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lend-row .t span{font-size:12px;color:var(--muted)}
+.lend-row .acts{display:flex;gap:6px}
+.lend-hist{margin:8px 0 0;padding:0;list-style:none;font-size:12.5px;color:var(--muted)}
+.sheet:has(.dt){width:min(1040px,100%)}
+.dt{display:grid;grid-template-columns:minmax(220px,270px) minmax(0,1fr);gap:22px;align-items:start}
+.dt-side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.dt-cover{aspect-ratio:1;width:100%;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--surface-2)}
+.dt-cover svg,.dt-cover .art-img{width:100%;height:100%;object-fit:cover;display:block}
+.dt-id h3{margin:0;font-size:17px;line-height:1.25;font-weight:600;overflow-wrap:anywhere}
+.dt-id .by{color:var(--muted);font-size:13.5px}
+.dt-chips{gap:6px}
+.dt-pv{font-size:12px}
+.dt-facts{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:13px}
+.dt-facts dt{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);align-self:center}
+.dt-facts dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.dt-main{min-width:0}
+.dt-sec{border-top:1px solid var(--line);padding:2px 0}
+.dt-sec:first-child{border-top:0}
+.dt-sec summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:36px;cursor:pointer;list-style:none;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.dt-sec summary::-webkit-details-marker{display:none}
+.dt-sec summary::before{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(-45deg);margin-right:6px;transition:transform .15s}
+.dt-sec[open]>summary::before{transform:rotate(45deg)}
+.dt-sec summary>:first-child{flex:1}
+.dt-body{padding:2px 0 12px}
+.dt .form{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.dt label.f,.dt .f{display:flex;flex-direction:column;gap:4px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;font-weight:600;color:var(--muted);min-width:0}
+.dt label.f input,.dt label.f select,.dt .kv input{height:34px;border-radius:6px;font-size:13.5px;padding:0 9px;text-transform:none;letter-spacing:0}
+.dt textarea{min-height:84px;border-radius:6px;font-size:13.5px;text-transform:none;letter-spacing:0}
+.dt .stars button{font-size:20px;min-width:32px;min-height:32px}
+.dt .kv{grid-template-columns:1fr 1.4fr auto}
+.dt-empty{font-size:12.5px;margin:4px 0 0}
+.dt-tracks{list-style:none;margin:0;padding:0;font-size:13px}
+.dt-tracks li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:8px;padding:4px 0;border-top:1px solid var(--line)}
+.dt-tracks li:first-child{border-top:0}
+.dt-lendstate{font-size:13px;margin:0 0 8px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.dt-actions{display:flex;gap:8px;padding-top:12px;border-top:1px solid var(--line)}
+@media (max-width:780px){
+  .sheet:has(.dt){width:100%;height:100dvh;max-height:100dvh;border-radius:0;border:0}
+  .dt{grid-template-columns:minmax(0,1fr);gap:12px}
+  .dt-side{display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px 12px}
+  .dt-side>.dt-cover{grid-row:span 2}
+  .dt-side>.dt-facts,.dt-side>*:nth-child(n+5){grid-column:1/-1}
+  .dt .form{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dt label.f input,.dt label.f select{height:40px;font-size:16px}
+  .dt-actions{position:sticky;bottom:0;background:var(--surface);padding-bottom:6px;z-index:2}
+  .dt-actions .btn{flex:1}
+}
 </style>
 
 <div class="top"><div class="wrap">
@@ -977,7 +1042,7 @@ a.pv::before,button.pv::before,.icon-btn::before,.step .round::before,.map-tools
     <button class="brand" data-act="go-room" aria-label="Crates home"><svg viewBox="62 48 520 136" aria-hidden="true" class="brandsvg"><g transform="translate(70.09 56) scale(1)"><defs><mask id="brandm" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128"><rect width="128" height="128" fill="#fff"/><rect x="3" y="45" width="80" height="80" rx="9" fill="#000"/></mask></defs><path fill="var(--brand)" fill-rule="evenodd" mask="url(#brandm)" d="M44,46A38,38 0 1 0 120,46A38,38 0 1 0 44,46ZM53,46A29,29 0 1 0 111,46A29,29 0 1 0 53,46ZM55.5,46A26.5,26.5 0 1 0 108.5,46A26.5,26.5 0 1 0 55.5,46ZM67,46A15,15 0 1 0 97,46A15,15 0 1 0 67,46ZM78,46A4,4 0 1 0 86,46A4,4 0 1 0 78,46Z"/><rect fill="var(--ink)" x="8" y="50" width="70" height="70" rx="4"/></g><path fill="none" stroke="var(--ink)" d="M281.12,105.97A25.5,25.5 0 1 0 281.12,142.03M299.45,98.5V149.5M299.45,120.82A22.32,22.32 0 0 1 321.77,98.5H331.81M349.81,124A25.5,25.5 0 1 1 400.81,124A25.5,25.5 0 1 1 349.81,124M400.81,98.5V149.5M427.89,78.66V142.06A8.68,8.68 0 0 0 436.57,149.5H442.53M418.81,98.5H442.53M460.53,124H511.53A25.5,25.5 0 1 0 504.98,141.06M562.37,104.86A17.44,11.98 0 1 0 546.97,122.47A17.44,13.52 0 1 1 531.57,142.33" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <div class="tabs" role="group" aria-label="Sections">
       <button data-act="go-room" id="tab-room">Room</button>
-      <button data-act="go-table" id="tab-table">Collection</button>
+      <button data-act="go-table" id="tab-table">Collection<b class="lbadge" hidden></b></button>
       <button data-act="go-playlists" id="tab-pl">Playlists</button>
       <button data-act="go-gigs" id="tab-gigs">Gigs</button>
     </div>
@@ -1001,7 +1066,7 @@ a.pv::before,button.pv::before,.icon-btn::before,.step .round::before,.map-tools
 <div class="player" id="player" hidden></div>
 <nav class="tabbar" id="tabbar" aria-label="Sections">
   <button data-act="go-room" data-tab="room"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg>Room</button>
-  <button data-act="go-table" data-tab="table"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>Collection</button>
+  <button data-act="go-table" data-tab="table"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>Collection<b class="lbadge" hidden></b></button>
   <button class="tb-add" data-act="open-add" aria-label="Add a record, furniture or bag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
   <button data-act="go-playlists" data-tab="playlists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>Playlists</button>
   <button data-act="go-gigs" data-tab="gigs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Gigs</button>
@@ -1155,6 +1220,12 @@ function migrate(st){
     if(r.dl!=null) r.dl = txt(r.dl);
     ['cover','thumb','labelArt','discogsUrl'].forEach(k=>{ if(r[k]!=null && !(typeof r[k]==='string' && /^\/api\/img\?u=|^https:\/\/(i|img|www)\.discogs\.com\//.test(r[k]))) r[k] = null; });
     r.tracks = list(r.tracks).map(t=>({position:txt(t.position), title:txt(t.title), duration:txt(t.duration)})); r.videos = list(r.videos).filter(v=>SAFE_YT.test(v.id)).map(v=>({id:v.id, title:txt(v.title), from:txt(v.from)}));
+    if(r.country!=null) r.country = txt(r.country); if(r.dateAdded!=null) r.dateAdded = txt(r.dateAdded).slice(0,40);
+    ['genres','styles'].forEach(k=>{ if(r[k]!=null) r[k] = Array.isArray(r[k]) ? r[k].map(txt).filter(Boolean) : []; });
+    if(r.formats!=null) r.formats = Array.isArray(r.formats) ? r.formats.map(f=>isObj(f) ? [txt(f.name), ...(Array.isArray(f.descriptions)?f.descriptions.map(txt):[])].filter(Boolean).join(', ') : txt(f)).filter(Boolean) : [];
+    const day = x => SAFE_DAY.test(txt(x)) ? txt(x) : '', phone = x => txt(x).replace(/[^0-9 +\-()]/g,'').trim().slice(0,32);
+    r.lent = isObj(r.lent) && txt(r.lent.to).trim() ? {to:txt(r.lent.to).trim().slice(0,80), phone:phone(r.lent.phone), since:day(r.lent.since) || new Date().toISOString().slice(0,10), note:txt(r.lent.note).slice(0,500)} : null;
+    r.lentLog = list(r.lentLog).slice(-50).map(x=>({to:txt(x.to).trim().slice(0,80), phone:phone(x.phone), since:day(x.since), back:day(x.back)}));
     if(r.releaseId!=null && !Number.isInteger(r.releaseId)) r.releaseId = null; if(r.instanceId!=null && !Number.isInteger(r.instanceId)) r.instanceId = null;
   });
   st.playlists.forEach(p=>{ p.name = txt(p.name) || 'Untitled'; p.color = SAFE_HEX.test(p.color) ? p.color : PL_COLORS[0]; p.items = Array.isArray(p.items) ? p.items.map(R).filter(Boolean) : []; });
@@ -1163,6 +1234,8 @@ function migrate(st){
     g.items = list(g.items).map(it=>({r:R(it.r), packed:!!it.packed, played:!!it.played, back:!!it.back})).filter(it=>it.r); });
   st.syncQueue = st.syncQueue.map(q=>({...q, r:R(q.r), value:txt(q.value)})).filter(q=>q.r);
   st.recent = st.recent.map(loc).filter(Boolean);
+  const rm = isObj(st.remind) ? st.remind : {}; st.remind = {};
+  Object.keys(rm).forEach(k=>{ const id = R(k); if(id && SAFE_DAY.test(txt(rm[k]))) st.remind[id] = txt(rm[k]); });
   st.v = 2;
   return st;
 }
@@ -1320,12 +1393,15 @@ function render(){
   $('#tab-gigs').setAttribute('aria-pressed', V.view==='gigs');
   $('#tab-table').setAttribute('aria-pressed', V.view==='table');
   document.querySelectorAll('#tabbar [data-tab]').forEach(b=>b.setAttribute('aria-pressed', b.dataset.tab==='room' ? isRoom : V.view===b.dataset.tab));
+  const nDue = dueReminders().length;
+  document.querySelectorAll('.lbadge').forEach(b=>{ b.hidden = !nDue; b.textContent = nDue; b.setAttribute('aria-label', nDue+' lent record'+(nDue===1?'':'s')+' due back'); });
   const main = $('#main');
   const shell = V.view==='map'||V.view==='columns'||V.view==='table';
   main.className = shell ? 'shell' : 'scrollpane';
   document.body.classList.toggle('overlay', isPhone() && V.view==='map' && M.sheet==='full');
+  const lb = lendBanner();
   const html = V.view==='playlists' ? renderPlaylists() : V.view==='gigs' ? renderGigs() : V.view==='table' ? renderTable() : V.view==='map' ? renderMap() : V.view==='columns' ? renderColumns() : renderRoom();
-  main.innerHTML = shell ? html : `<div class="inner">${html}</div>`;
+  main.innerHTML = shell ? lb+html : `<div class="inner">${lb}${html}</div>`;
   if(V.view==='unit') bindSwipe();
   if(V.view==='map') mapMount();
   if(V.view==='table') fitCue();
@@ -1434,12 +1510,12 @@ function recInfo(cur){
       ${cur.tags.length?`<div class="tags">${cur.tags.map(t=>`<span class="tagchip">${esc(t)}</span>`).join('')}</div>`:''}
       ${cur.notes?`<p style="margin:8px 0 0;font-size:14px">${esc(cur.notes)}</p>`:''}
       <div class="row" style="margin-top:12px">${locChip(cur.loc)}${inBag&&fromOf(cur)?`<span class="from">came from</span>${locChip(fromOf(cur),'home')}`:''}${!inBag&&!atHome?`<span class="muted" style="font-size:12px">home</span>${locChip(cur.home,'home')}`:''}${inBag&&hasHome(cur)&&!same(fromOf(cur),cur.home)?`<span class="muted" style="font-size:12px">home</span>${locChip(cur.home,'home')}`:''}${hasHome(cur)?'':`<span class="muted" style="font-size:12px">No home shelf yet. Move it to a shelf to set one.</span>`}</div>
-      ${playsLine(cur)}${dlLine(cur)}
+      ${playsLine(cur)}${dlLine(cur)}${typeof lentLine==='function' ? lentLine(cur) : ''}
       <div class="row" style="margin-top:14px">
         <button class="btn ink" data-act="move" data-r="${cur.id}">Move…</button>
         ${!inBag&&bag?`<button class="btn" data-act="to-bag" data-r="${cur.id}">Put in bag</button>`:''}
         ${!atHome?`<button class="btn" data-act="go-home" data-r="${cur.id}">Back to ${esc(addrShort(cur.home))}</button>`:''}
-        <button class="btn" data-act="edit-rec" data-r="${cur.id}">Edit details</button>
+        <button class="btn" data-act="detail" data-r="${cur.id}">Detail</button>
         <button class="btn" data-act="add-to-pl" data-r="${cur.id}">+ Playlist</button>
         <button class="btn" data-act="log-play" data-r="${cur.id}">Log a play</button>
         <a class="btn ghost" href="${discogsUrl(cur)}" target="_blank" rel="noopener">Discogs ↗</a>
@@ -1452,9 +1528,10 @@ function recordRows(list, opts={}){
   return list.map((r,i)=>{
     const tail = unit(r.loc.u)?.kind!=='shelf' ? (fromOf(r)?`<span class="from">from ${locChip(fromOf(r),'home')}</span>`:'') : (V.cell==='all'?locChip(r.loc):'');
     const sub = `${esc(r.artist)} · ${esc(r.label)}${isStale(r)&&V.stale?` · <span class="stale">${lastPlayed(r)?'last played '+fmtDate(lastPlayed(r)):'never logged'}</span>`:''}`;
-    if(V.sel) return `<label class="li ${V.sel.has(r.id)?'cur':''}"><input type="checkbox" data-sel="${r.id}" ${V.sel.has(r.id)?'checked':''}><span class="t"><b>${esc(r.title)}</b><span>${sub}</span></span>${tail}</label>`;
+    if(V.sel) return `<label class="li ${V.sel.has(r.id)?'cur':''}"><input type="checkbox" data-sel="${r.id}" ${V.sel.has(r.id)?'checked':''}><span class="t"><b>${esc(r.title)}</b><span>${sub}</span></span>${r.lent?'<span class="pill lent">Lent out</span>':''}${tail}</label>`;
     const cur = i===V.dig;
-    return `<div class="li ${cur?'cur':''}" role="button" tabindex="0" data-act="${opts.act||'dig-to'}" data-i="${i}" data-drag="${r.id}" ${cur?'aria-current="true"':''}>${thumb(r)}<span class="t"><b>${esc(r.title)}</b><span>${sub}</span></span>${tail}${previewBtn(r)}</div>`
+    const away = r.lent ? `<span class="pill lent" title="Lent to ${esc(r.lent.to)}">Lent out</span>` : '';
+    return `<div class="li ${cur?'cur':''}" role="button" tabindex="0" data-act="${opts.act||'dig-to'}" data-i="${i}" data-drag="${r.id}" ${cur?'aria-current="true"':''}>${thumb(r)}<span class="t"><b>${esc(r.title)}</b><span>${sub}</span></span>${away}${tail}${previewBtn(r)}</div>`
       + (opts.inline && cur ? `<div class="rec-x">${recInfo(r)}</div>` : '');
   }).join('');
 }
@@ -1786,40 +1863,78 @@ function fileRecords(list){
 }
 function shrink(file){ return new Promise(res=>{ const img = new Image(); img.onload=()=>{ const s = Math.min(1, 900/Math.max(img.width,img.height)); const c=document.createElement('canvas'); c.width=img.width*s; c.height=img.height*s; c.getContext('2d').drawImage(img,0,0,c.width,c.height); res(c.toDataURL('image/jpeg',.8)); URL.revokeObjectURL(img.src); }; img.onerror=()=>res(null); img.src = URL.createObjectURL(file); }); }
 
-/* ---------- edit record details ---------- */
+/* ---------- record Detail sheet (was "Edit details"; action `detail`, `edit-rec` is an alias) ---------- */
 let editing = null;
+function restoreRec(r, json){ const o = JSON.parse(json); Object.keys(r).forEach(k=>{ if(!(k in o)) delete r[k]; }); Object.assign(r, o); }
 function openEditRecord(id){
-  const r = rec(id); editing = {id, rating:r.rating, custom:r.custom.map(x=>({...x}))};
+  const r = rec(id); if(!r) return;
+  editing = {id, rating:r.rating, custom:r.custom.map(x=>({...x}))};
   const ed = editedSet(r);
-  const fld = (k,label,attrs='') => `<label class="f"><span class="lab">${label}${ed.has(k)?`<button type="button" class="revert" data-act="revert" data-k="${k}" data-r="${id}">Undo edit</button>`:''}</span><input id="er-${k}" value="${esc(r[k])}" ${attrs}></label>`;
-  openSheet(`<div class="sheet-head"><div><div class="kicker">Your details · Discogs data is kept untouched</div><h2>Edit ${esc(r.title)}</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
-    <form id="er-form">
-      <div class="form">
-        ${fld('artist','Artist')}${fld('title','Title')}${fld('label','Label')}${fld('catno','Cat no.')}${fld('year','Year','inputmode="numeric"')}${fld('style','Style')}
-        <label class="f">BPM<input id="er-bpm" value="${esc(r.bpm)}" inputmode="decimal" placeholder="122"></label>
-        <label class="f">Key<input id="er-key" value="${esc(r.key)}" placeholder="8A or Am"></label>
-        <label class="f">Media condition<select id="er-cm">${GRADES.map(g=>`<option ${r.cm===g?'selected':''} value="${g}">${g||'—'}</option>`).join('')}</select></label>
-        <label class="f">Sleeve condition<select id="er-cs">${GRADES.map(g=>`<option ${r.cs===g?'selected':''} value="${g}">${g||'—'}</option>`).join('')}</select></label>
-        <label class="f">Tags<input id="er-tags" value="${esc(r.tags.join(', '))}" placeholder="peak time, warm-up"></label>
-      </div>
-      <label class="f" style="margin-top:12px">Rating<span class="stars" id="er-stars">${[1,2,3,4,5].map(n=>`<button type="button" class="${n<=r.rating?'on':''}" data-act="er-star" data-n="${n}" aria-label="${n} star${n>1?'s':''}">★</button>`).join('')}</span></label>
-      <label class="f" style="margin-top:12px">Notes<textarea id="er-notes" placeholder="Cue on the second break. Pressing has a light scuff on A2.">${esc(r.notes)}</textarea></label>
-      <div style="margin-top:14px"><div class="row" style="justify-content:space-between"><b style="font-size:14px">Your own fields</b><button type="button" class="btn sm" data-act="er-addkv">+ Field</button></div><div id="er-kv"></div></div>
-      <div class="row" style="margin-top:18px"><button class="btn primary" type="submit">Save details</button><button class="btn ghost" type="button" data-act="close">Cancel</button></div>
-    </form>`);
+  const dot = k => ed.has(k) ? '<i class="edited" title="Edited by you"></i>' : '';
+  const fld = (k,label,attrs='',val=r[k]) => `<label class="f"><span class="lab"><span>${label}${dot(k)}</span>${ed.has(k)?`<button type="button" class="revert" data-act="revert" data-k="${k}" data-r="${id}">Undo edit</button>`:''}</span><input id="er-${k}" value="${esc(val??'')}" ${attrs}></label>`;
+  const added = SAFE_DAY.test(String(r.dateAdded||'').slice(0,10)) ? String(r.dateAdded).slice(0,10) : '';
+  const tracks = (r.tracks||[]).length
+    ? `<ol class="dt-tracks">${r.tracks.map(t=>`<li><span class="code">${esc(t.position||'')}</span><span>${esc(t.title)}</span><span class="code muted">${esc(t.duration||'')}</span></li>`).join('')}</ol>`
+    : `<p class="muted dt-empty">No tracklist yet. Sync from Discogs to fill it in.</p>`;
+  const sec = (title, body, open=true, extra='') => `<details class="dt-sec" ${open?'open':''}><summary>${title}${extra}</summary><div class="dt-body">${body}</div></details>`;
+  openSheet(`<div class="sheet-head"><div><div class="kicker">Your details · Discogs data is kept untouched</div><h2>Detail</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    <div class="dt">
+      <aside class="dt-side">
+        <div class="dt-cover">${cover(r)}</div>
+        <div class="dt-id"><h3>${esc(r.title)}</h3><div class="by">${esc(r.artist)}</div></div>
+        <div class="row dt-chips">${locChip(r.loc)}${r.lent?`<span class="pill lent">Lent out</span>`:''}</div>
+        <div class="row"><button type="button" class="btn primary sm" data-act="detail-play" data-r="${id}"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>Play</button>${previewBtn(r)}<span class="muted dt-pv">Preview</span></div>
+        <dl class="dt-facts">
+          <dt>Discogs</dt><dd>${r.releaseId ? `<a href="${esc(discogsUrl(r))}" target="_blank" rel="noopener">Release ${esc(r.releaseId)} ↗</a>` : '<span class="muted">Not linked</span>'}</dd>
+          ${r.instanceId ? `<dt>Instance</dt><dd class="code">${esc(r.instanceId)}</dd>` : ''}
+          <dt>Added</dt><dd>${added ? esc(fmtDate(added)) : '<span class="muted">—</span>'}</dd>
+          <dt>Plays</dt><dd>${(r.plays||[]).length ? (r.plays.length+' · last '+esc(fmtDate(lastPlayed(r)))) : '<span class="muted">Never logged</span>'}</dd>
+        </dl>
+        ${typeof photoSection==='function' ? photoSection(r) : ''}
+      </aside>
+      <form id="er-form" class="dt-main">
+        ${sec('Discogs metadata', `<div class="form">
+          ${fld('artist','Artist')}${fld('title','Title')}${fld('label','Label')}${fld('catno','Cat no.')}${fld('year','Year','inputmode="numeric"')}${fld('country','Country')}
+          <label class="f"><span class="lab"><span>Format</span></span><input id="er-formats" value="${esc((r.formats||[]).join(' / '))}" placeholder="Vinyl, 12&quot;, 33 ⅓ RPM"></label>
+          <label class="f"><span class="lab"><span>Genres</span></span><input id="er-genres" value="${esc((r.genres||[]).join(', '))}" placeholder="Electronic"></label>
+          ${fld('style','Style')}
+          <label class="f"><span class="lab"><span>All styles</span></span><input id="er-styles" value="${esc((r.styles||[]).join(', '))}" placeholder="Techno, Electro"></label>
+          ${fld('barcode','Barcode','inputmode="numeric"')}
+          <label class="f"><span class="lab"><span>Date added</span></span><input id="er-dateAdded" type="date" value="${esc(added)}"></label>
+          <label class="f"><span class="lab"><span>Media condition</span></span><select id="er-cm">${GRADES.map(g=>`<option ${r.cm===g?'selected':''} value="${g}">${g||'—'}</option>`).join('')}</select></label>
+          <label class="f"><span class="lab"><span>Sleeve condition</span></span><select id="er-cs">${GRADES.map(g=>`<option ${r.cs===g?'selected':''} value="${g}">${g||'—'}</option>`).join('')}</select></label>
+          <label class="f"><span class="lab"><span>BPM</span></span><input id="er-bpm" value="${esc(r.bpm)}" inputmode="decimal" placeholder="122"></label>
+          <label class="f"><span class="lab"><span>Key</span></span><input id="er-key" value="${esc(r.key)}" placeholder="8A or Am"></label>
+          <label class="f"><span class="lab"><span>Tags</span></span><input id="er-tags" value="${esc(r.tags.join(', '))}" placeholder="peak time, warm-up"></label>
+          <div class="f"><span class="lab"><span>Rating</span></span><span class="stars" id="er-stars" role="group" aria-label="Rating">${[1,2,3,4,5].map(n=>`<button type="button" class="${n<=r.rating?'on':''}" data-act="er-star" data-n="${n}" aria-label="${n} star${n>1?'s':''}">★</button>`).join('')}</span></div>
+        </div>`)}
+        ${sec('Lending', `<div id="dt-lend">${lendFields(r)}</div>`)}
+        ${sec('Notes', `<label class="f"><span class="sr">Notes</span><textarea id="er-notes" placeholder="Cue on the second break. Pressing has a light scuff on A2.">${esc(r.notes)}</textarea></label>`)}
+        ${sec('Your own fields', `<div id="er-kv"></div>`, true, `<button type="button" class="btn sm" data-act="er-addkv">+ Field</button>`)}
+        ${sec('Tracklist', tracks, !isPhone(), `<span class="muted dt-n">${(r.tracks||[]).length||''}</span>`)}
+        <div class="dt-actions"><button class="btn primary" type="submit">Save details</button><button class="btn ghost" type="button" data-act="close">Cancel</button></div>
+      </form>
+    </div>`);
   renderKV();
   $('#er-form').onsubmit = e => { e.preventDefault(); saveRecordEdit(); };
+  document.querySelectorAll('.dt-sec summary .btn').forEach(b=>b.addEventListener('click', e=>e.stopPropagation()));
 }
 function renderKV(){
-  $('#er-kv').innerHTML = editing.custom.map((x,i)=>`<div class="kv"><input aria-label="Field name" data-kv="${i}" data-p="k" value="${esc(x.k)}" placeholder="e.g. Bought at"><input aria-label="Value" data-kv="${i}" data-p="v" value="${esc(x.v)}" placeholder="e.g. Halcyon, Brooklyn"><button type="button" class="mini-btn" data-act="er-delkv" data-i="${i}" aria-label="Remove field">✕</button></div>`).join('') || `<p class="muted" style="font-size:13px;margin:6px 0 0">Add anything Discogs doesn't track: where you bought it, who you lent it to, cue points.</p>`;
+  $('#er-kv').innerHTML = editing.custom.map((x,i)=>`<div class="kv"><input aria-label="Field name" data-kv="${i}" data-p="k" value="${esc(x.k)}" placeholder="e.g. Bought at"><input aria-label="Value" data-kv="${i}" data-p="v" value="${esc(x.v)}" placeholder="e.g. Halcyon, Brooklyn"><button type="button" class="mini-btn" data-act="er-delkv" data-i="${i}" aria-label="Remove field">✕</button></div>`).join('') || `<p class="muted dt-empty">Add anything Discogs doesn't track: where you bought it, cue points, who pressed it.</p>`;
   document.querySelectorAll('[data-kv]').forEach(inp=>inp.oninput=()=>{ editing.custom[+inp.dataset.kv][inp.dataset.p]=inp.value; });
 }
 function saveRecordEdit(){
   const r = rec(editing.id);
-  const before = JSON.stringify(r); lastUndo = () => Object.assign(r, JSON.parse(before));
-  ['artist','title','label','catno','year','style','bpm','key','cm','cs','notes'].forEach(k=>{ const el=$('#er-'+k); if(el) r[k]=el.value.trim(); });
+  const before = JSON.stringify(r), rem = JSON.stringify(S.remind||{}); lastUndo = () => { restoreRec(r, before); S.remind = JSON.parse(rem); };
+  const val = k => { const el = $('#er-'+k); return el ? el.value.trim() : null; };
+  ['artist','title','label','catno','year','style','bpm','key','cm','cs','notes','country','barcode'].forEach(k=>{ const v = val(k); if(v!==null && (v!==String(r[k]??'') || k in r)) r[k] = v; });
+  const list = (k, sep) => { const v = val(k); if(v===null) return; const arr = v.split(sep).map(x=>x.trim()).filter(Boolean); if(arr.join('|')!==(r[k]||[]).join('|')) r[k] = arr; };
+  list('genres', ','); list('styles', ',');
+  { const v = val('formats'); if(v!==null){ const arr = v.split('/').map(x=>x.trim()).filter(Boolean); if(arr.join('|')!==(r.formats||[]).join('|')) r.formats = arr; } }
+  { const v = val('dateAdded'); if(v!==null && v!==String(r.dateAdded||'').slice(0,10)) r.dateAdded = v; }
   r.tags = $('#er-tags').value.split(',').map(s=>s.trim()).filter(Boolean);
   r.rating = editing.rating; r.custom = editing.custom.filter(x=>x.k||x.v);
+  saveLendFields(r);
   closeSheet(); render(); toast('Details saved', true); if(cur()?.id===r.id) renderPlayer();
 }
 
@@ -1939,7 +2054,7 @@ function openSettings(){
     <p class="muted" style="font-size:13px">Each unit's finish or bag color is set from its own page: open it and tap “Look & name”.</p>
     <p class="muted" style="font-size:12.5px">Demo collection. Covers are placeholder art; the full app pulls sleeves and metadata from Discogs. ${SRC_NOTE} Changes stay in this browser.</p>
     <p class="muted" style="margin:18px 0 8px;font-size:13px">Your collection</p>
-    <div class="row"><button class="btn" data-act="bk-open">Backups (${backups().length}/${BK_MAX})</button><button class="btn" data-act="col-save">Save to file</button><button class="btn" data-act="sync-open">Sync from Discogs</button><button class="btn" data-act="dg-import">Import / upload…</button><button class="btn" data-act="reset">Reset demo collection</button></div><div id="reset-confirm"></div>
+    <div class="row"><button class="btn" data-act="bk-open">Backups (${backups().length}/${BK_MAX})</button><button class="btn" data-act="col-save">Save to file</button><button class="btn" data-act="sync-open">Sync from Discogs</button><button class="btn" data-act="lending">Lending${S.records.some(r=>r.lent)?' ('+S.records.filter(r=>r.lent).length+')':''}</button><button class="btn" data-act="dg-import">Import / upload…</button><button class="btn" data-act="reset">Reset demo collection</button></div><div id="reset-confirm"></div>
     <p class="muted" style="font-size:12.5px;margin-top:22px;border-top:1px solid var(--line);padding-top:12px"><b>Crates ${APP_VERSION}</b> · Thought up by Carlos Franzetti · Put into motion by Claude and the Crates crew</p>`);
   $('#set-dsync').onchange = e => { S.settings.discogsSync = e.target.checked; if(e.target.checked) S.records.forEach(enqueueSync); save(); setTimeout(()=>{ render(); openSettings(); },0); };
 }
@@ -2573,7 +2688,7 @@ function renderNP(){
         ${P.mode==='yt'?`<div class="scrub"><i class="pbar"></i></div><div class="code muted" id="ptime" style="font-size:12px">0:00 / 0:00</div>`:''}
         <div class="np-ctrl"><button class="round" data-act="p-prev" aria-label="Previous">${I.prev}</button>${mainBtn(r,true)}<button class="round" data-act="p-next" aria-label="Next">${I.next}</button></div>
         <div class="row" style="justify-content:center;margin-top:12px"><span class="muted" style="font-size:13px;color:${st.state==='non_working'?'var(--bad)':st.state==='trying'?'var(--warn)':'var(--muted)'}">${esc(statusText(r))}</span></div>
-        <div class="row" style="justify-content:center;margin-top:10px"><button class="btn sm" data-act="edit-rec" data-r="${r.id}">Edit details</button><button class="btn sm" data-act="add-to-pl" data-r="${r.id}">+ Playlist</button><button class="btn sm" data-act="goto-rec" data-r="${r.id}">Show on shelf</button></div>
+        <div class="row" style="justify-content:center;margin-top:10px"><button class="btn sm" data-act="detail" data-r="${r.id}">Detail</button><button class="btn sm" data-act="add-to-pl" data-r="${r.id}">+ Playlist</button><button class="btn sm" data-act="goto-rec" data-r="${r.id}">Show on shelf</button></div>
       </div>
       ${P.mode==='link'?`<div class="notice"><b>Inline playback is blocked inside this preview.</b> The play button opens the track on YouTube. On Crates' own site the same player plays inline and runs the full fallback chain.</div>`:''}
       </div>
@@ -3246,7 +3361,7 @@ document.addEventListener('keydown', e=>{
    COLLECTION TABLE: spreadsheet view, inline edits, bag & home columns
    ===================================================================== */
 const T = {sort:'artist', dir:1, q:'', filt:'all', sel:new Set(), spot:null};
-const T_FILTERS = [['all','All'],['bag','In a bag'],['away','Away from home'],['stale','Not played in a year'],['edited','Edited by me'],['nohome','No home spot'],['unplaced','Unplaced']];
+const T_FILTERS = [['all','All'],['bag','In a bag'],['away','Away from home'],['stale','Not played in a year'],['edited','Edited by me'],['nohome','No home spot'],['unplaced','Unplaced'],['lent','Lent out']];
 const isUnplaced = r => !unit(r.loc?.u);
 const inBagNow = r => unit(r.loc.u) && unit(r.loc.u).kind!=='shelf';
 const awayFromHome = r => hasHome(r) && !same(r.loc, r.home);
@@ -3258,13 +3373,14 @@ function tFilter(r){
   if(T.filt==='edited' && !editedSet(r).size) return false;
   if(T.filt==='nohome' && hasHome(r)) return false;
   if(T.filt==='unplaced' && !isUnplaced(r)) return false;
-  if(T.q){ const hay = `${r.artist} ${r.title} ${r.label} ${r.catno} ${r.year} ${r.style} ${r.bpm} ${r.key} ${r.tags.join(' ')} ${r.notes} ${addrShort(r.loc)} ${hasHome(r)?addrShort(r.home):''} ${cellName(unit(r.loc.u),r.loc.c)}`.toLowerCase(); if(!T.q.toLowerCase().split(/\s+/).every(w=>hay.includes(w))) return false; }
+  if(T.filt==='lent' && !r.lent) return false;
+  if(T.q){ const hay = `${r.artist} ${r.title} ${r.label} ${r.catno} ${r.year} ${r.style} ${r.bpm} ${r.key} ${r.tags.join(' ')} ${r.notes} ${addrShort(r.loc)} ${hasHome(r)?addrShort(r.home):''} ${r.lent?'lent '+r.lent.to:''} ${cellName(unit(r.loc.u),r.loc.c)}`.toLowerCase(); if(!T.q.toLowerCase().split(/\s+/).every(w=>hay.includes(w))) return false; }
   return true;
 }
 const T_KEYS = {
   artist:r=>r.artist.toLowerCase(), title:r=>r.title.toLowerCase(), label:r=>r.label.toLowerCase(), catno:r=>(r.catno||'').toLowerCase(),
   year:r=>+r.year||9999, style:r=>(r.style||'').toLowerCase(), bpm:r=>+r.bpm||999, key:r=>(r.key||'').toLowerCase(), rating:r=>-(r.rating||0),
-  tags:r=>r.tags.join(',').toLowerCase(), bag:r=>inBagNow(r)?unit(r.loc.u).name.toLowerCase():'~', home:r=>hasHome(r)?addrShort(r.home):'~', played:r=>lastPlayed(r)||'0',
+  tags:r=>r.tags.join(',').toLowerCase(), bag:r=>inBagNow(r)?unit(r.loc.u).name.toLowerCase():'~', home:r=>hasHome(r)?addrShort(r.home):'~', played:r=>lastPlayed(r)||'0', lent:r=>r.lent ? r.lent.to.toLowerCase() : '~',
 };
 function tRows(){ const k = T_KEYS[T.sort]||T_KEYS.artist; return S.records.filter(tFilter).sort((a,b)=>{ const x=k(a), y=k(b); return (x>y?1:x<y?-1:0)*T.dir || a.title.localeCompare(b.title); }); }
 const shelfOpt = (u, k, sel) => { const v=u.id+'|'+k, n=cellName(u,k); return `<option value="${v}" ${sel===v?'selected':''}>${esc(u.id)}·${esc(cellLabel(u,k))}${n?' · '+esc(n):''}</option>`; };
@@ -3305,6 +3421,7 @@ function renderTable(){
       <td><input class="ce w-tags" data-tedit="tags" data-r="${r.id}" value="${esc(r.tags.join(', '))}" aria-label="Tags for ${esc(r.title)}" placeholder="add tags"></td>
       <td>${locChip(r.loc)}</td>
       <td class="code" style="padding:0 8px;color:${isStale(r)?'var(--warn)':'var(--muted)'}">${lastPlayed(r)?fmtDate(lastPlayed(r)):'never'}</td>
+      <td class="lentcell" style="padding:0 8px">${r.lent?`<button class="linkbtn" data-act="detail" data-r="${r.id}" title="Lent since ${esc(fmtDate(r.lent.since))}">${esc(r.lent.to)} · ${lentDays(r)}d</button>`:'<span class="muted">—</span>'}</td>
     </tr>`;
   }).join('');
   const nsel = T.sel.size;
@@ -3318,8 +3435,8 @@ function renderTable(){
     ${nsel?`<div class="selbar" style="position:static;margin:0 0 10px"><span>${nsel} selected</span><button class="btn sm" data-act="t-sel-none">Clear</button><button class="btn sm primary" data-act="t-sel-back">Put back home</button><button class="btn sm danger" data-act="t-sel-del">Delete</button>${bags.length?`<label class="sr" for="t-sel-bag">Put selected in a bag</label><select id="t-sel-bag" class="btn sm" style="background:var(--surface);color:var(--ink)"><option value="">Put in bag…</option>${bags.map(b=>`<option value="${b.id}">${esc(b.name)}</option>`).join('')}</select>`:''}<button class="btn sm" data-act="t-sel-pl">Add to playlist…</button></div>`:''}
     <div class="tbl-wrap"><table class="ctable" aria-label="Collection">
       <thead><tr><th class="cb stick"><input type="checkbox" data-tsel="all" ${rows.length&&rows.every(r=>T.sel.has(r.id))?'checked':''} aria-label="Select all shown"></th><th class="stick2"></th>
-        ${head('artist','Artist')}${head('title','Title')}${head('bag','Bag')}${head('home','Home spot')}${head('label','Label')}${head('catno','Cat no.')}${head('year','Year')}${head('style','Style')}${head('bpm','BPM')}${head('key','Key')}${head('rating','Rating')}${head('tags','Tags')}<th><span style="display:block;padding:10px 8px">Now</span></th>${head('played','Last played')}</tr></thead>
-      <tbody>${body||`<tr><td colspan="16" style="padding:28px;text-align:center;color:var(--muted)">No records match. Clear the filter to see everything.</td></tr>`}</tbody></table></div>
+        ${head('artist','Artist')}${head('title','Title')}${head('bag','Bag')}${head('home','Home spot')}${head('label','Label')}${head('catno','Cat no.')}${head('year','Year')}${head('style','Style')}${head('bpm','BPM')}${head('key','Key')}${head('rating','Rating')}${head('tags','Tags')}<th><span style="display:block;padding:10px 8px">Now</span></th>${head('played','Last played')}${head('lent','Lent to')}</tr></thead>
+      <tbody>${body||`<tr><td colspan="17" style="padding:28px;text-align:center;color:var(--muted)">No records match. Clear the filter to see everything.</td></tr>`}</tbody></table></div>
     <div class="tbl-foot"><span>${rows.length} of ${S.records.length} shown · edited cells have a red edge · your edits never overwrite the Discogs original</span><span>Drag the ⋮⋮ handle onto a spot above to move a record. Tab moves between cells, Enter saves.</span></div></div>`;
 }
 function tCommit(el){
@@ -3630,6 +3747,131 @@ Object.assign(A, {
   'sync-open':()=>openSyncSheet(),
   'dsync-run':()=>syncDiscogs('run'),
   'dsync-full':()=>syncDiscogs('full'),
+});
+
+/* ==== WP-A: lending, reminders, Detail helpers ==== */
+const LEND_FIRST = 14, LEND_EVERY = 7;
+const isoLocal = t => t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+const daysBetween = (a,b) => Math.round((new Date(b+'T12:00:00') - new Date(a+'T12:00:00'))/DAY);
+const addDays = (d,n) => { const t = new Date(d+'T12:00:00'); t.setDate(t.getDate()+n); return isoLocal(t); };
+const lentDays = r => r.lent ? Math.max(0, daysBetween(r.lent.since, todayISO())) : 0;
+const daysLabel = n => n===0 ? 'today' : n===1 ? '1 day' : n+' days';
+const cleanPhone = x => String(x??'').replace(/[^0-9 +\-()]/g,'').trim().slice(0,32);
+const firstName = n => String(n||'').trim().split(/\s+/)[0] || 'there';
+const niceList = a => a.length<2 ? (a[0]||'') : a.slice(0,-1).join(', ')+' and '+a[a.length-1];
+/* state of one lent record's reminder: {due, when} (when = ISO day the next nudge lands, or today if it is due now) */
+function reminderState(r, t){
+  const d = daysBetween(r.lent.since, t);
+  if(d < LEND_FIRST) return {due:false, when:addDays(r.lent.since, LEND_FIRST)};
+  const rem = S.remind?.[r.id];
+  if(rem && daysBetween(rem, t) < LEND_EVERY) return {due:false, when:addDays(rem, LEND_EVERY)};
+  return {due:true, when:t};
+}
+function dueReminders(){
+  if(!S.records.some(r=>r.lent)) return [];
+  const t = todayISO();
+  return S.records.filter(r=>r.lent && r.lent.to && SAFE_DAY.test(r.lent.since) && reminderState(r,t).due);
+}
+function lentGroups(list){
+  const m = new Map();
+  list.forEach(r=>{ const k = r.lent.to.trim().toLowerCase(); if(!m.has(k)) m.set(k, {to:r.lent.to, phone:'', recs:[]}); const g = m.get(k); g.recs.push(r); if(!g.phone && r.lent.phone) g.phone = r.lent.phone; });
+  return [...m.values()];
+}
+function smsHref(g){
+  const num = g.phone.replace(/[^\d+]/g,''); if(!num) return '';
+  const what = niceList(g.recs.map(r=>`${r.title} by ${r.artist}`));
+  const since = g.recs.length===1 ? ` (it's been out since ${fmtDate(g.recs[0].lent.since)})` : '';
+  const body = `Hey ${firstName(g.to)}, hope you're doing well! Quick check-in on the record${g.recs.length>1?'s':''} you borrowed from me: ${what}${since}. No rush, but could you bring ${g.recs.length>1?'them':'it'} back when you get a chance? Thanks!`;
+  return 'sms:'+num+'?body='+encodeURIComponent(body);
+}
+function lentLine(r){
+  if(!r.lent) return '';
+  return `<div class="lentline"><span class="pill lent">Lent out</span><span>Lent to <b>${esc(r.lent.to)}</b> · ${daysLabel(lentDays(r))}</span>${r.lent.note?`<span class="muted">${esc(r.lent.note)}</span>`:''}<button class="btn sm" data-act="lend-return" data-ids="${r.id}">Returned</button></div>`;
+}
+function lendBanner(){
+  const due = dueReminders(); if(!due.length) return '';
+  const gs = lentGroups(due), ids = due.map(r=>r.id).join(',');
+  const text = `${due.length} record${due.length===1?' is':'s are'} still out: ` + gs.map(g=>`${esc(firstName(g.to))} has ${g.recs.map(r=>`${esc(r.title)} (${daysLabel(lentDays(r))})`).join(', ')}`).join('; ');
+  const texts = gs.map(g=>{ const h = smsHref(g); return h ? `<a class="btn" href="${esc(h)}" data-lend-text>Text ${esc(firstName(g.to))}</a>` : ''; }).join('');
+  return `<div class="lendbar" role="status" id="lendbar"><span class="lb-t">${text}</span><span class="lb-a">${texts}${gs.length===1?`<button class="btn" data-act="lend-return" data-ids="${ids}">Mark returned</button>`:''}<button class="btn" data-act="lend-remind" data-ids="${ids}">Remind me next week</button><button class="btn" data-act="lending">Lending</button></span></div>`;
+}
+function lendFields(r){
+  const L = r.lent, st = L ? reminderState(r, todayISO()) : null;
+  const status = L ? `<div class="dt-lendstate"><span class="pill lent">Lent out</span><span>${daysLabel(lentDays(r))}${lentDays(r)?' ago':''} · since ${esc(fmtDate(L.since))}</span><span class="muted">${st.due ? 'Reminder is due now' : 'Next reminder '+esc(fmtDate(st.when))}</span><button type="button" class="btn sm" data-act="dt-returned" data-r="${r.id}">Returned</button></div>` : '';
+  return `${status}<div class="form">
+    <label class="f"><span class="lab"><span>Borrowed by</span></span><input id="er-lent-to" value="${esc(L?.to||'')}" maxlength="80" autocomplete="off" placeholder="Name"></label>
+    <label class="f"><span class="lab"><span>Phone number</span></span><input id="er-lent-phone" type="tel" value="${esc(L?.phone||'')}" maxlength="32" autocomplete="off" placeholder="+1 555 010 0100"></label>
+    <label class="f"><span class="lab"><span>Since</span></span><input id="er-lent-since" type="date" value="${esc(L?.since||'')}"></label>
+    <label class="f"><span class="lab"><span>Note</span></span><input id="er-lent-note" value="${esc(L?.note||'')}" maxlength="500" placeholder="Optional"></label>
+  </div>${(r.lentLog||[]).length ? `<ul class="lend-hist">${r.lentLog.slice(-3).reverse().map(x=>`<li>Was with ${esc(x.to)}${x.since?' from '+esc(fmtDate(x.since)):''}${x.back?', back '+esc(fmtDate(x.back)):''}</li>`).join('')}</ul>` : ''}`;
+}
+document.addEventListener('input', e=>{
+  if(e.target.id==='er-lent-to'){ const sn = $('#er-lent-since'); if(sn && !sn.value && e.target.value.trim()) sn.value = todayISO(); }
+});
+function saveLendFields(r){
+  const to = ($('#er-lent-to')?.value||'').trim().slice(0,80); if($('#er-lent-to')===null) return;
+  if(!to){ r.lent = null; return; }
+  const since = SAFE_DAY.test($('#er-lent-since').value) ? $('#er-lent-since').value : todayISO();
+  const prev = r.lent;
+  r.lent = {to, phone:cleanPhone($('#er-lent-phone').value), since, note:$('#er-lent-note').value.trim().slice(0,500)};
+  if(!prev || prev.to!==to || prev.since!==since) delete S.remind[r.id];
+}
+function lendReturn(ids){
+  const rs = ids.map(rec).filter(r=>r && r.lent); if(!rs.length) return;
+  const snaps = rs.map(r=>[r, JSON.stringify({lent:r.lent, lentLog:r.lentLog||[]})]), rem = JSON.stringify(S.remind||{});
+  lastUndo = () => { snaps.forEach(([r,j])=>Object.assign(r, JSON.parse(j))); S.remind = JSON.parse(rem); };
+  const t = todayISO();
+  rs.forEach(r=>{ r.lentLog = [...(r.lentLog||[]), {to:r.lent.to, phone:r.lent.phone, since:r.lent.since, back:t}].slice(-50); r.lent = null; delete S.remind[r.id]; });
+  render(); toast(rs.length===1 ? `${rs[0].title} marked returned` : `${rs.length} records marked returned`, true);
+}
+function lendRemind(ids){
+  const rs = ids.map(rec).filter(r=>r && r.lent); if(!rs.length) return;
+  const rem = JSON.stringify(S.remind||{}); lastUndo = () => { S.remind = JSON.parse(rem); };
+  const t = todayISO(); rs.forEach(r=>{ S.remind[r.id] = t; });
+  render(); toast('Okay, reminding you again next week', true);
+}
+function lendingDigest(){
+  const lent = S.records.filter(r=>r.lent);
+  if(!lent.length) return 'Nothing is lent out right now.';
+  const t = todayISO();
+  const out = [`Records out (${lent.length}) as of ${fmtDate(t)}`, ''];
+  lentGroups(lent).forEach(g=>{
+    out.push(g.to + (g.phone ? ' · '+g.phone : ''));
+    g.recs.forEach(r=>out.push(`  - ${r.title}, ${r.artist} · since ${fmtDate(r.lent.since)} (${daysLabel(lentDays(r))})${reminderState(r,t).due?' · reminder due':''}${r.lent.note?' · '+r.lent.note:''}`));
+    out.push('');
+  });
+  return out.join('\n').trim();
+}
+function openLending(){
+  const lent = S.records.filter(r=>r.lent), t = todayISO(), gs = lentGroups(lent);
+  const hist = S.records.flatMap(r=>(r.lentLog||[]).map(x=>({...x, title:r.title}))).filter(x=>x.back).sort((a,b)=>b.back.localeCompare(a.back)).slice(0,5);
+  const mailBody = lendingDigest(), mail = 'mailto:?subject='+encodeURIComponent('Records still out')+'&body='+encodeURIComponent(mailBody.length>1500 ? mailBody.slice(0,1500)+'\n…' : mailBody);
+  openSheet(`<div class="sheet-head"><div><div class="kicker">${lent.length} record${lent.length===1?'':'s'} out with ${gs.length} ${gs.length===1?'person':'people'}</div><h2>Lending</h2></div><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
+    ${gs.map(g=>{ const h = smsHref(g), ids = g.recs.map(r=>r.id).join(',');
+      return `<section class="lend-group" aria-label="${esc(g.to)}"><div class="row" style="justify-content:space-between;gap:8px"><div><h3>${esc(g.to)}</h3>${g.phone?`<div class="muted" style="font-size:12.5px">${esc(g.phone)}</div>`:''}</div>
+        <div class="row" style="gap:6px">${h?`<a class="btn sm" href="${esc(h)}">Text ${esc(firstName(g.to))}</a>`:''}<button class="btn sm" data-act="lend-remind" data-ids="${ids}">Remind me next week</button><button class="btn sm" data-act="lend-return" data-ids="${ids}">All returned</button></div></div>
+        ${g.recs.map(r=>{ const st = reminderState(r,t); return `<div class="lend-row">${thumb(r)}<span class="t"><b>${esc(r.title)}</b><span>${esc(r.artist)} · ${daysLabel(lentDays(r))} · since ${esc(fmtDate(r.lent.since))} · ${st.due?'reminder due':'next reminder '+esc(fmtDate(st.when))}</span></span><span class="acts"><button class="btn sm" data-act="detail" data-r="${r.id}">Detail</button><button class="btn sm" data-act="lend-return" data-ids="${r.id}">Returned</button></span></div>`; }).join('')}</section>`; }).join('') || `<div class="empty"><b>Nothing is lent out</b>Open any record's Detail and fill in “Borrowed by” to track it here.</div>`}
+    ${hist.length?`<p class="muted" style="margin:14px 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:.05em">Recently back</p><ul class="lend-hist">${hist.map(x=>`<li>${esc(x.title)} · ${esc(x.to)}, back ${esc(fmtDate(x.back))}</li>`).join('')}</ul>`:''}
+    <div class="row" style="margin-top:16px"><a class="btn" href="${esc(mail)}" data-lend-mail>Email me this list</a>${API.ok?`<button class="btn" data-act="lend-send">Send via server</button>`:''}</div>
+    <p class="muted" id="lend-send-status" role="status" style="font-size:12.5px;margin:8px 0 0"></p>
+    <p class="muted" style="font-size:12.5px;margin:10px 0 0">Reminders start 14 days after the loan date, then every 7 days. They only appear inside Crates; nothing is sent unless you tap one of these.</p>`, 'lending');
+}
+async function lendSend(){
+  const st = $('#lend-send-status'); if(!st) return; st.textContent = 'Sending…';
+  try{
+    const res = await fetch('/api/remind', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({digest:lendingDigest()})});
+    const j = await res.json().catch(()=>({}));
+    st.textContent = res.ok ? 'Sent to your email.' : res.status===503 ? 'The server isn’t set up for email yet. Missing: '+(j.missing||[]).join(', ') : (j.error || 'Couldn’t send that.');
+  }catch(e){ st.textContent = 'Couldn’t reach the server.'; }
+}
+Object.assign(A, {
+  'detail':d=>{ closeNP(); openEditRecord(d.r); },
+  'detail-play':d=>{ const r = rec(d.r); if(!r) return; closeSheet(); setQueue([r], 0, 'Detail'); },
+  'dt-returned':d=>{ const r = rec(d.r); lendReturn([d.r]); const box = $('#dt-lend'); if(box && r) box.innerHTML = lendFields(r); },
+  'lending':()=>openLending(),
+  'lend-return':d=>{ lendReturn(String(d.ids).split(',')); if(sheetKind==='lending') openLending(); },
+  'lend-remind':d=>{ lendRemind(String(d.ids).split(',')); if(sheetKind==='lending') openLending(); },
+  'lend-send':()=>lendSend(),
 });
 
 /* ---------- Claude photo recognition (optional) ---------- */

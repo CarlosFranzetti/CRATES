@@ -1271,11 +1271,13 @@ def r07_bag_default_names(a):
 
 
 def r08_looks_and_cuebar(a):
-    check(a.ev("document.documentElement.dataset.look") == "booth", "default look should be Booth (dark)")
-    bg = a.ev("getComputedStyle(document.body).backgroundColor"); check(bg == "rgb(21, 15, 34)", f"booth background {bg}")
-    a.click("#look-btn"); check(a.ev("document.documentElement.dataset.look") == "shop", "second look should be Shop floor")
-    a.click("#look-btn"); check(a.ev("document.documentElement.dataset.look") is None, "third option should follow the device")
-    a.click("#look-btn"); check(a.ev("S.settings.look") == "booth", "cycle back to Booth")
+    check(a.ev("document.documentElement.dataset.look") == "flat", "default look should be Flat (dark)")
+    bg = a.ev("getComputedStyle(document.body).backgroundColor"); check(bg == "rgb(14, 14, 16)", f"flat background {bg}")
+    check(a.page.locator(".brand .brandsvg").is_visible(), "the logo should be in the header")
+    a.click("#look-btn"); check(a.ev("document.documentElement.dataset.look") == "booth", "second look should be Booth")
+    a.click("#look-btn"); check(a.ev("document.documentElement.dataset.look") == "shop", "third look should be Shop floor")
+    a.click("#look-btn"); check(a.ev("document.documentElement.dataset.look") is None, "fourth option should follow the device")
+    a.click("#look-btn"); check(a.ev("S.settings.look") == "flat", "cycle back to Flat")
     pads = a.page.locator(".cuebar .cue"); check(pads.count() == 10, f"{pads.count()} pads")
     lit = a.page.locator(".cuebar .cue.lit").count(); check(lit == 3, f"{lit} lit pads (A1, A2, Crater)")
     a.click(".cuebar .cue[data-u=K1][data-c='0-1']")

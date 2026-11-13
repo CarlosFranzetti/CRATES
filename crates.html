@@ -891,6 +891,85 @@ button,a,[role=button],label.btn,select{touch-action:manipulation}
 a.pv::before,button.pv::before,.icon-btn::before,.step .round::before,.map-tools button::before{content:"";position:absolute;inset:-6px}
 .icon-btn,.step .round,.map-tools button{position:relative}
 .backlink{min-height:44px;padding-right:8px}
+
+/* ==== LOOK: flat (default) — near-black, hairlines, small type, coral only where it means something ==== */
+:root[data-look="flat"]{--bg:#0E0E10;--surface:#141416;--surface-2:#1B1B1F;--ink:#E9E9EC;--muted:#9A9AA3;--line:#26262B;--accent:#FF7077;--accent-ink:#16090B;--brand:#FF7077;--ok:#3CC47A;--warn:#D9A441;--bad:#FF7077;--shadow:none;--f-display:var(--f-body);--row-h:34px;color-scheme:dark}
+:root[data-look="flat"] body{font-size:13.5px;line-height:1.4}
+:root[data-look="flat"] .top{padding-block:calc(6px + env(safe-area-inset-top,0px)) 6px;border-bottom:1px solid var(--line);background:var(--surface)}
+:root[data-look="flat"] .brand .brandsvg{height:24px}
+:root[data-look="flat"] .tabs{border:0;background:none;padding:0;gap:2px;box-shadow:none}
+:root[data-look="flat"] .tabs button{border-radius:6px;padding:5px 11px;font-size:12.5px}
+:root[data-look="flat"] .tabs button[aria-pressed="true"]{background:var(--surface-2);color:var(--ink);box-shadow:none}
+:root[data-look="flat"] .search input{height:30px;border-radius:6px;font-size:13px;background:var(--bg);padding-left:34px}
+:root[data-look="flat"] .search>svg{width:14px;height:14px;top:8px;left:11px}
+:root[data-look="flat"] .btn{height:30px;border-radius:6px;font-size:12.5px;padding:0 11px;box-shadow:none;background:transparent;border-color:var(--line)}
+:root[data-look="flat"] .btn.primary,:root[data-look="flat"] .round.main{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+:root[data-look="flat"] .btn.sm{height:26px;font-size:12px}
+:root[data-look="flat"] .btn.ink{background:var(--ink);color:var(--bg);border-color:transparent}
+:root[data-look="flat"] .btn.danger{color:var(--bad)}
+:root[data-look="flat"] .map-tools button.txt{width:auto;white-space:nowrap;padding:0 9px}
+:root[data-look="flat"] .add-btn{height:28px;border-radius:6px;background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none;font-size:12.5px}
+:root[data-look="flat"] .top .icon-btn{width:28px;height:28px;border-radius:6px;background:transparent}
+:root[data-look="flat"] .chip{border-radius:6px;padding:3px 9px;font-size:12px;background:transparent;box-shadow:none}
+:root[data-look="flat"] .chip[aria-pressed="true"]{background:var(--surface-2);color:var(--ink);border-color:var(--muted)}
+:root[data-look="flat"] .round{box-shadow:none;background:transparent}
+:root[data-look="flat"] .kicker{font-size:11.5px}
+:root[data-look="flat"] .viewbar{padding:6px 0}
+:root[data-look="flat"] .viewbar h2,:root[data-look="flat"] .sec-head h2,:root[data-look="flat"] .sheet-head h2{font-size:16px;font-weight:600;text-transform:none;letter-spacing:0}
+:root[data-look="flat"] .seg{border-radius:6px;padding:2px;background:transparent}
+:root[data-look="flat"] .seg button{height:24px;border-radius:4px;font-size:12px}
+:root[data-look="flat"] .seg button[aria-pressed="true"]{background:var(--surface-2);box-shadow:none}
+:root[data-look="flat"] .map{border-radius:8px;background-color:var(--bg);background-image:none}
+:root[data-look="flat"] .spot-panel,:root[data-look="flat"] .cols{border-radius:8px;box-shadow:none}
+:root[data-look="flat"] .plate-name .pn{font-size:14px;font-weight:600;text-transform:none;letter-spacing:0}
+:root[data-look="flat"] .plate{gap:6px}
+:root[data-look="flat"] .idtag{font-size:10.5px;padding:1px 5px;border-radius:4px;background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+:root[data-look="flat"] .spot-title .code-big{font-size:17px;font-weight:600;font-family:var(--f-mono);letter-spacing:0}
+:root[data-look="flat"] .spot-title .sub{font-size:13px}
+:root[data-look="flat"] .uhead .uh{font-size:12.5px;font-weight:600;text-transform:none;letter-spacing:0}
+:root[data-look="flat"] .spot-row{height:28px;border-radius:5px;font-size:12.5px}
+:root[data-look="flat"] .spot-row[aria-current="true"]{background:var(--surface-2);box-shadow:none}
+:root[data-look="flat"] .spot-row.lit .led,:root[data-look="flat"] .cue.lit .led{background:var(--warn);box-shadow:none}
+:root[data-look="flat"] .li{padding:5px 4px;grid-template-columns:34px minmax(0,1fr) auto auto}
+:root[data-look="flat"] .li.cur{background:var(--surface-2)}
+:root[data-look="flat"] .thumb{width:34px;height:34px;border-radius:2px}
+:root[data-look="flat"] .t b{font-weight:500}
+:root[data-look="flat"] .t span{font-size:12px}
+:root[data-look="flat"] .rec-x{padding:8px 6px 12px 48px}
+:root[data-look="flat"] .dig-info h3{font-size:16px}
+:root[data-look="flat"] .loc{border-radius:5px;font-size:11.5px;padding:2px 7px 2px 5px}
+:root[data-look="flat"] .cube.lit{box-shadow:inset 0 12px 16px -6px rgba(0,0,0,.45),inset 0 -2px 0 var(--warn)}
+:root[data-look="flat"] .cuebar{gap:4px}
+:root[data-look="flat"] .cue{height:40px;border-radius:6px;box-shadow:none;background:var(--surface);min-width:92px}
+:root[data-look="flat"] .cue[aria-current="true"]{background:var(--surface-2);border-color:var(--muted)}
+:root[data-look="flat"] .player{background:var(--surface);border-top:1px solid var(--line);box-shadow:none}
+:root[data-look="flat"] .mini-vinyl{width:34px;height:34px}
+:root[data-look="flat"] .player-in{grid-template-columns:34px minmax(0,1fr) auto}
+:root[data-look="flat"] .player .round{width:32px;height:32px;border:0}
+:root[data-look="flat"] .player .round.main{width:36px;height:36px}
+:root[data-look="flat"] .tabbar{height:calc(54px + env(safe-area-inset-bottom,0px));font-size:10.5px}
+:root[data-look="flat"] .tabbar button[aria-pressed="true"]{color:var(--ink)}
+:root[data-look="flat"] .tabbar .tb-add{width:42px;height:42px;border-radius:50%;background:transparent;color:var(--accent);border:2px solid var(--accent)}
+:root[data-look="flat"] .sheet{border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.6);border:1px solid var(--line)}
+:root[data-look="flat"] .np-sheet{background:var(--surface)}
+:root[data-look="flat"] .deck{background:var(--bg);border-color:var(--line);box-shadow:none}
+:root[data-look="flat"] .toast{border-radius:6px;box-shadow:0 6px 24px rgba(0,0,0,.5)}
+:root[data-look="flat"] .ctable th{font-size:10.5px}
+:root[data-look="flat"] .ctable td{padding:1px 6px}
+:root[data-look="flat"] .empty{border-radius:8px}
+:root[data-look="flat"] .notice{border-radius:6px}
+:root[data-look="flat"] .map-tools{border-radius:6px;box-shadow:none}
+:root[data-look="flat"] .map-tools button{width:30px;height:30px;border-radius:4px}
+:root[data-look="flat"] .map-tools button.txt{font-size:12px;background:transparent}
+@media (max-width:600px){
+  :root[data-look="flat"] .top{background:var(--bg)}
+  :root[data-look="flat"] .search input{height:34px;font-size:15px}
+  :root[data-look="flat"] .search>svg{top:10px}
+  :root[data-look="flat"] .top .icon-btn{width:34px;height:34px}
+  :root[data-look="flat"] .btn{height:36px}
+  :root[data-look="flat"] .spot-row{height:40px;font-size:14px}
+  :root[data-look="flat"] .li{padding:7px 4px}
+}
 </style>
 
 <div class="top"><div class="wrap">
@@ -1019,7 +1098,7 @@ function seed(){
       {id:'p1',name:'Warm-up',color:PL_COLORS[1],items:['r1','r4','r7','r8']},
       {id:'p2',name:'Acid hour',color:PL_COLORS[0],items:['r3','r5','r8','r6']},
     ],
-    settings:{accent:'red', discogsSync:false, look:'booth', view:'map', density:'regular'},
+    settings:{accent:'red', discogsSync:false, look:'flat', lookV:2, view:'map', density:'regular'},
     recent:[],
     gigs:[
       {id:'g1',name:'Sunday loft session',venue:'Loft session',date:'2026-08-30',bag:'B1',status:'done',items:[{r:'r1',packed:true,played:true,back:true},{r:'r4',packed:true,played:true,back:false},{r:'r7',packed:true,played:true,back:true},{r:'r8',packed:true,played:true,back:true}]},
@@ -1047,7 +1126,7 @@ function migrate(st){
   ['units','records','playlists','gigs','syncQueue','recent'].forEach(k=>{ st[k] = list(st[k]); });
   const s = st.settings;
   if(!['red','brass','cyan'].includes(s.accent)) s.accent = 'red';
-  s.discogsSync = !!s.discogsSync; s.look = ['booth','shop','auto'].includes(s.look) ? s.look : 'booth'; s.view = s.view==='columns' ? 'columns' : 'map'; s.density = s.density==='compact' ? 'compact' : 'regular';
+  s.discogsSync = !!s.discogsSync; if(s.lookV!==2){ s.look = 'flat'; s.lookV = 2; } s.look = ['flat','booth','shop','auto'].includes(s.look) ? s.look : 'flat'; s.view = s.view==='columns' ? 'columns' : 'map'; s.density = s.density==='compact' ? 'compact' : 'regular';
   const remap = (items, p) => { const taken = new Set(), m = new Map();
     items.forEach(x=>{ const old = txt(x.id); let id = old; if(!SAFE_ID.test(id) || taken.has(id)){ let n=1; while(taken.has(p+n)) n++; id = p+n; } taken.add(id); if(!m.has(old)) m.set(old, id); x.id = id; });
     return id => m.get(txt(id)) ?? null; };
@@ -1847,7 +1926,7 @@ function sortPl(pl, how){
 function openSettings(){
   openSheet(`<div class="sheet-head"><h2>Settings</h2><button class="icon-btn" data-act="close" aria-label="Close">✕</button></div>
     <p class="muted" style="margin:0 0 8px;font-size:13px">Look</p>
-    <div class="row" style="margin-bottom:16px">${LOOKS.map(([k,n])=>`<button class="chip" data-act="set-look" data-l="${k}" aria-pressed="${(S.settings.look||'booth')===k}">${n}</button>`).join('')}</div>
+    <div class="row" style="margin-bottom:16px">${LOOKS.map(([k,n])=>`<button class="chip" data-act="set-look" data-l="${k}" aria-pressed="${(S.settings.look||'flat')===k}">${n}</button>`).join('')}</div>
     <p class="muted" style="margin:0 0 8px;font-size:13px">Room layout</p>
     <div class="row" style="margin-bottom:16px"><button class="chip" data-act="set-view" data-v="map" aria-pressed="${S.settings.view!=='columns'}">Map</button><button class="chip" data-act="set-view" data-v="columns" aria-pressed="${S.settings.view==='columns'}">Columns</button></div>
     <p class="muted" style="margin:0 0 8px;font-size:13px">Density</p>
@@ -2666,9 +2745,9 @@ function previewOnPlaying(){
 
 
 /* ---------- looks + cue bar ---------- */
-const LOOKS = [['booth','Booth (dark)'],['shop','Shop floor (light)'],['auto','Match my device']];
+const LOOKS = [['flat','Flat (dark)'],['booth','Booth (purple)'],['shop','Shop floor (light)'],['auto','Match my device']];
 function applyLook(){
-  const look = S.settings.look || 'booth';
+  const look = S.settings.look || 'flat';
   if(look==='auto') delete document.documentElement.dataset.look; else document.documentElement.dataset.look = look;
   const b = document.getElementById('look-btn'); if(b){ const n = LOOKS.find(l=>l[0]===look)?.[1]; b.title = `Look: ${n}. Click to switch.`; b.setAttribute('aria-label', b.title); }
 }
@@ -3106,7 +3185,7 @@ Object.assign(A, {
   'spot-tools':()=>openSpotTools(),
   'play-whole':d=>{ const u = unit(d.u); closeSheet(); setQueue(inCell(u.id,'all'), 0, u.name); },
   'sheet-snap':()=>sheetSet(M.sheet==='full'?'half':'full'),
-  'toggle-look':()=>{ const order = ['booth','shop','auto']; const cur = S.settings.look||'booth'; S.settings.look = order[(order.indexOf(cur)+1)%order.length]; applyLook(); save(); toast(`Look: ${LOOKS.find(l=>l[0]===S.settings.look)[1]}`); fitRoom(); },
+  'toggle-look':()=>{ const order = ['flat','booth','shop','auto']; const cur = S.settings.look||'flat'; S.settings.look = order[(order.indexOf(cur)+1)%order.length]; applyLook(); save(); toast(`Look: ${LOOKS.find(l=>l[0]===S.settings.look)[1]}`); fitRoom(); },
   'go-gigs':()=>{ V.view='gigs'; if(!V.gig) V.gig = S.gigs.slice().sort((a,b)=>a.date.localeCompare(b.date)).find(g=>g.status!=='done')?.id || S.gigs[0]?.id || null; render(); },
   'open-gig':d=>{ V.gig=d.g; render(); document.querySelector('.gig')?.scrollIntoView({behavior:'smooth',block:'start'}); },
   'new-gig':()=>openNewGig(),

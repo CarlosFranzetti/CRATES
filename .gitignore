@@ -4,3 +4,4 @@ tests/shots/
 .env*
 dist/
 /node_modules/
+/.claude/

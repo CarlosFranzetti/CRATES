@@ -1643,6 +1643,178 @@ TESTS += [("X24 Build CSP hashes match", x24_build_csp_hashes)]
 BROWSER_LEVEL |= {x15_phone_reveal, x19_phone_gutters_and_resize, x20_phone_columns_history, x21_sheet_release_velocity} | {x24_build_csp_hashes}
 
 
+# ---------------------------------------------------------------- WP-A: Detail sheet and lending
+def _lend(a, rid, who="Sam Rivera", phone="+1 (555) 010-0123", days=0):
+    a.ev("([rid,who,phone,days])=>{const r=rec(rid); r.lent={to:who,phone,since:addDays(todayISO(),-days),note:''}; render();}", [rid, who, phone, days])
+
+
+def wa01_detail_edit_undo(a):
+    a.click(".dig-info [data-act=detail]"); _settle(a, 120)
+    check(a.page.locator(".sheet .dt").count() == 1 and a.page.locator(".sheet h2").inner_text().strip() == "Detail", "Detail sheet did not open")
+    for sec in ("Discogs metadata", "Lending", "Notes", "Tracklist"):
+        check(a.page.locator(f".dt-sec summary:has-text('{sec}')").count() == 1, f"missing section {sec}")
+    check(a.page.locator(".dt-cover").count() == 1 and a.page.locator("[data-act=detail-play]").count() == 1, "header cover/play missing")
+    orig = a.ev("JSON.stringify(rec('r9').orig)")
+    a.page.fill("#er-label", "Metroplex Ltd"); a.page.fill("#er-country", "US"); a.page.fill("#er-barcode", "123456789012")
+    a.page.fill("#er-genres", "Electronic, Funk"); a.page.fill("#er-formats", "Vinyl / 12\"")
+    a.page.select_option("#er-cm", "VG+"); a.page.fill("#er-notes", "Light scuff on A2")
+    a.click("#er-form button[type=submit]"); _settle(a, 120)
+    check(a.ev("rec('r9').label") == "Metroplex Ltd" and a.ev("rec('r9').country") == "US", "metadata not saved")
+    check(a.ev("rec('r9').genres.join('|')") == "Electronic|Funk" and a.ev("rec('r9').formats.join('|')") == 'Vinyl|12"', "lists not saved")
+    check(a.ev("rec('r9').cm") == "VG+" and a.ev("rec('r9').notes") == "Light scuff on A2", "grade/notes not saved")
+    check(a.ev("JSON.stringify(rec('r9').orig)") == orig, "the Discogs original (orig) was overwritten")
+    a.click(".dig-info [data-act=detail]")
+    check(a.page.locator("label:has(#er-label) .edited").count() >= 1, "edited dot missing in Detail")
+    a.click(".sheet [data-act=close]"); _settle(a, 80)
+    a.undo(); _settle(a, 120)
+    check(a.ev("rec('r9').label") != "Metroplex Ltd" and a.ev("'country' in rec('r9')") is False, "undo did not restore the record")
+    a.ev("A['edit-rec']({r:'r9'})"); _settle(a, 100)
+    check(a.page.locator(".sheet .dt").count() == 1, "edit-rec alias no longer opens Detail")
+    check(not a.js_errors(), a.js_errors())
+
+
+def wa02_lend_indicator_filter(a):
+    a.ev("A.detail({r:'r2'})"); _settle(a, 120)
+    a.page.fill("#er-lent-to", "Sam Rivera")
+    check(a.page.input_value("#er-lent-since") == a.ev("todayISO()"), "Since did not default to today")
+    a.page.fill("#er-lent-phone", "+1 (555) 010-0123"); a.page.fill("#er-lent-note", "for the weekend")
+    check(a.page.get_attribute("#er-lent-phone", "type") == "tel", "phone input should be type=tel")
+    a.click("#er-form button[type=submit]"); _settle(a, 120)
+    check(a.ev("rec('r2').lent.to") == "Sam Rivera" and a.ev("rec('r2').lent.note") == "for the weekend", "lend not saved")
+    check(a.page.locator(".list .li .pill.lent").count() == 1, "row indicator missing")
+    a.ev("V.dig=inCell('K1','0-0').findIndex(r=>r.id==='r2');render()")
+    check("Lent to Sam Rivera" in a.page.locator(".dig-info").inner_text(), "recInfo lent line missing")
+    a.ev("V.view='table';render()"); _settle(a, 100)
+    check(a.page.locator("th button:has-text('Lent to')").count() == 1, "Lent to column missing")
+    n_all = a.page.locator(".ctable tbody tr").count()
+    a.click("[data-act=t-filt][data-f=lent]"); _settle(a, 100)
+    check(a.page.locator(".ctable tbody tr").count() == 1 and n_all > 1, "Lent out filter wrong")
+    check("Sam Rivera" in a.page.locator(".ctable tbody tr").inner_text(), "Lent to cell missing")
+    check(a.ev("rec('r2').loc.u") == "K1", "lent record should keep its spot")
+    check(not a.js_errors(), a.js_errors())
+
+
+def wa03_banner_sms_remind(a):
+    import urllib.parse
+    _lend(a, "r2", days=15)
+    bar = a.page.locator("#lendbar"); check(bar.count() == 1 and bar.is_visible(), "banner missing")
+    t = bar.inner_text()
+    check("1 record is still out" in t and "Sam has Strings Of Life (15 days)" in t, t)
+    href = a.page.locator("#lendbar a[data-lend-text]").get_attribute("href")
+    check(href.startswith("sms:+15550100123?body="), href)
+    body = urllib.parse.unquote(href.split("body=", 1)[1])
+    check("Sam" in body and "Strings Of Life" in body and "Rhythim Is Rhythim" in body, body)
+    check(a.page.locator("#tab-table .lbadge").inner_text() == "1" and a.page.locator("#tab-table .lbadge").is_visible(), "tab badge missing")
+    a.click("#lendbar [data-act=lend-remind]"); _settle(a, 100)
+    check(a.page.locator("#lendbar").count() == 0, "Remind me next week did not hide the banner")
+    check(a.ev("S.remind.r2") == a.ev("todayISO()"), "S.remind not written")
+    check(not a.page.locator("#tab-table .lbadge").is_visible(), "badge should clear")
+    a.ev("rec('r2').lent.since=addDays(todayISO(),-21); render()"); _settle(a, 60)
+    check(a.page.locator("#lendbar").count() == 0, "still inside the snoozed week")
+    a.ev("rec('r2').lent.since=addDays(todayISO(),-22); S.remind.r2=addDays(todayISO(),-7); render()"); _settle(a, 60)
+    check(a.page.locator("#lendbar").count() == 1, "reminder did not return 7 days later")
+    a.ev("rec('r2').lent.phone=''; render()")
+    check(a.page.locator("#lendbar a[data-lend-text]").count() == 0, "Text button should hide without a phone")
+    check(not a.js_errors(), a.js_errors())
+
+
+def wa04_mark_returned(a):
+    _lend(a, "r2", days=16); _settle(a, 60)
+    a.click("#lendbar [data-act=lend-return]"); _settle(a, 100)
+    check(a.ev("rec('r2').lent") is None, "lent not cleared")
+    log = a.ev("rec('r2').lentLog")
+    check(len(log) == 1 and log[0]["to"] == "Sam Rivera" and log[0]["back"] == a.ev("todayISO()") and log[0]["since"] == a.ev("addDays(todayISO(),-16)"), log)
+    check(a.page.locator("#lendbar").count() == 0, "banner should be gone")
+    a.undo(); _settle(a, 100)
+    check(a.ev("rec('r2').lent && rec('r2').lent.to") == "Sam Rivera" and a.ev("rec('r2').lentLog.length") == 0, "undo of Mark returned")
+    a.ev("A.detail({r:'r2'})"); _settle(a, 100)
+    a.click("[data-act=dt-returned]"); _settle(a, 100)
+    check(a.ev("rec('r2').lent") is None and a.ev("rec('r2').lentLog.length") == 1, "Detail Returned")
+    check(a.page.input_value("#er-lent-to") == "", "lending fields should clear")
+
+
+def wa05_migrate_hostile(a):
+    out = a.ev("""(()=>{
+      const st = JSON.parse(JSON.stringify(S));
+      st.records[0].lent = {to:'<img src=x onerror="window.__pwn=1">Sam', phone:'<script>window.__pwn=2</script>+1 (555) 010 0123'+'9'.repeat(40), since:'<b>x</b>', note:'<script>window.__pwn=3</script>'};
+      st.records[1].lent = 'nope'; st.records[2].lent = {to:'   ', phone:'1'};
+      st.records[0].lentLog = [{to:'<i>x</i>', phone:'<>', since:'2020-01-01', back:'bad'}, 'x', null];
+      st.remind = {[st.records[0].id]:'2026-01-02', [st.records[1].id]:'<x>', ghost:'2026-01-01'};
+      const m = migrate(st); const r = m.records[0];
+      return {lent:r.lent, log:r.lentLog, remind:m.remind, r1:m.records[1].lent, r2:m.records[2].lent, id0:r.id};
+    })()""")
+    check(re.fullmatch(r"[0-9 +\-()]{0,32}", out["lent"]["phone"]), out["lent"]["phone"])
+    check(re.fullmatch(r"\d{4}-\d{2}-\d{2}", out["lent"]["since"]), out["lent"]["since"])
+    check(out["r1"] is None and out["r2"] is None, "bad lent values should be dropped")
+    check(len(out["log"]) == 1 and out["log"][0]["back"] == "" and out["log"][0]["phone"] == "", out["log"])
+    check(list(out["remind"].keys()) == [out["id0"]], out["remind"])
+    a.ev("""(()=>{ const st = JSON.parse(JSON.stringify(S)); st.records[0].lent = {to:'<img src=x onerror="window.__pwn=1">Sam', phone:'<script>window.__pwn=2</script>1', since:addDays(todayISO(),-20), note:'<script>window.__pwn=3</script>'}; S = migrate(st); render(); openLending(); })()""")
+    _settle(a, 150)
+    check(a.ev("window.__pwn === undefined"), "hostile markup executed")
+    check(a.page.locator("#layer img[src='x'], #main img[src='x'], #layer script").count() == 0, "hostile markup became elements")
+    check("<img" in a.page.locator(".lend-group h3").first.inner_text(), "name should render as text")
+    check(not a.js_errors(), a.js_errors())
+
+
+def wa06_lending_sheet_digest(a):
+    _lend(a, "r2", "Sam Rivera", "+15550100123", 16); _lend(a, "r3", "Sam Rivera", "", 2); _lend(a, "r4", "Kim", "", 30)
+    a.ev("openLending()"); _settle(a, 120)
+    check(a.page.locator(".lend-group").count() == 2 and a.page.locator(".lend-row").count() == 3, "grouping by person")
+    check(a.page.locator(".sheet a:has-text('Text Sam')").count() == 1, "sheet Text link")
+    d = a.ev("lendingDigest()")
+    check("Records out (3)" in d and "Sam Rivera · +15550100123" in d and "Kim" in d and "Strings Of Life" in d, d)
+    mail = a.page.locator("a[data-lend-mail]").get_attribute("href")
+    check(mail.startswith("mailto:?subject=") and "Strings%20Of%20Life" in mail, mail)
+    check(a.page.locator("[data-act=lend-send]").count() == 0, "Send via server must be hidden when the API is off")
+    a.page.wait_for_function("API.ok!==null", timeout=5000)   # the boot ping finishes first, or it would reset the flag
+    a.ev("API.ok=true; openLending()"); _settle(a, 80)
+    check(a.page.locator("[data-act=lend-send]").count() == 1, "Send via server should show when API.ok")
+    a.page.locator(".lend-group [data-act=lend-return]").first.click(); _settle(a, 120)
+    check(a.page.locator(".lend-row").count() == 3 - 1 or a.page.locator(".lend-row").count() < 3, "sheet should refresh after Returned")
+    check(a.page.locator("[data-act=lend-send]").count() == 1, "sheet should stay open")
+    a.ev("closeSheet(); openSettings()"); _settle(a, 80)
+    check(a.page.locator(".sheet [data-act=lending]").count() == 1, "Settings entry point missing")
+    check(not a.js_errors(), a.js_errors())
+
+
+def wa07_phone_and_looks(browser, url):
+    a = App(browser, url, 390, 844, legacy=False)
+    try:
+        _lend(a, "r2", days=20)
+        check(a.page.locator("#lendbar").count() == 1 and a.page.locator("#tabbar .lbadge").is_visible(), "banner/badge on phone")
+        check(a.ev("document.documentElement.scrollWidth") <= 390, "banner causes sideways scroll")
+        for look in ("flat", "booth", "shop"):
+            a.ev(f"S.settings.look='{look}'; render(); A.detail({{r:'r2'}})"); _settle(a, 150)
+            sh = a.ev("(()=>{const s=document.querySelector('.sheet');return [s.scrollWidth,s.clientWidth,s.getBoundingClientRect().height,innerHeight]})()")
+            check(sh[0] <= sh[1] and abs(sh[2] - sh[3]) < 2, f"{look}: phone Detail not full-height / sideways scroll {sh}")
+            check(a.ev("document.documentElement.scrollWidth") <= 390, f"{look}: page scrolls sideways")
+            check(a.page.locator(".dt-sec").count() >= 5, "collapsible sections")
+            a.page.locator(".dt-sec summary:has-text('Notes')").click(); _settle(a, 40)
+            check(a.ev("[...document.querySelectorAll('.dt-sec')].find(d=>d.textContent.startsWith('Notes')).open") is False, "section did not collapse")
+            a.page.screenshot(path=str(SHOTS / f"wa-detail-phone-{look}.png"))
+            a.ev("closeSheet()")
+        a.page.set_viewport_size({"width": 1440, "height": 900}); a.ev("render()"); _settle(a, 200)
+        for look in ("flat", "booth", "shop"):
+            a.ev(f"S.settings.look='{look}'; render(); A.detail({{r:'r2'}})"); _settle(a, 150)
+            cols = a.ev("getComputedStyle(document.querySelector('.dt')).gridTemplateColumns.split(' ').length")
+            check(cols == 2, f"{look}: desktop Detail should be two columns")
+            inp = a.ev("document.querySelector('#er-title').getBoundingClientRect().height")
+            check(32 <= inp <= 36, f"{look}: input height {inp}")
+            a.page.screenshot(path=str(SHOTS / f"wa-detail-desktop-{look}.png"))
+            a.ev("closeSheet()")
+        check(not a.js_errors(), a.js_errors())
+        return "phone full-height + collapsible, desktop two-column, flat/booth/shop"
+    finally:
+        a.close()
+
+
+TESTS += [("WA01 Detail edit + undo", wa01_detail_edit_undo), ("WA02 Lend: row, recInfo, table filter", wa02_lend_indicator_filter),
+          ("WA03 Banner, sms, remind", wa03_banner_sms_remind), ("WA04 Mark returned", wa04_mark_returned),
+          ("WA05 migrate() hostile lending", wa05_migrate_hostile), ("WA06 Lending sheet + digest", wa06_lending_sheet_digest),
+          ("WA07 Phone + looks", wa07_phone_and_looks)]
+BROWSER_LEVEL |= {wa07_phone_and_looks}
+
+
 def main():
     only = sys.argv[1:]
     build()

@@ -1917,7 +1917,6 @@ function openEditRecord(id){
     </div>`);
   renderKV();
   $('#er-form').onsubmit = e => { e.preventDefault(); saveRecordEdit(); };
-  document.querySelectorAll('.dt-sec summary .btn').forEach(b=>b.addEventListener('click', e=>e.stopPropagation()));
 }
 function renderKV(){
   $('#er-kv').innerHTML = editing.custom.map((x,i)=>`<div class="kv"><input aria-label="Field name" data-kv="${i}" data-p="k" value="${esc(x.k)}" placeholder="e.g. Bought at"><input aria-label="Value" data-kv="${i}" data-p="v" value="${esc(x.v)}" placeholder="e.g. Halcyon, Brooklyn"><button type="button" class="mini-btn" data-act="er-delkv" data-i="${i}" aria-label="Remove field">✕</button></div>`).join('') || `<p class="muted dt-empty">Add anything Discogs doesn't track: where you bought it, cue points, who pressed it.</p>`;

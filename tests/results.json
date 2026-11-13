@@ -1,16 +1,16 @@
 [
   {
-    "test": "N03 Discogs Location sync",
+    "test": "WA02 Lend: row, recInfo, table filter",
     "status": "PASS",
-    "note": "queue after move ['r9=K1\u00b7B3']",
+    "note": "",
     "js_errors": [],
-    "secs": 3.7
+    "secs": 1.8
   },
   {
-    "test": "R12 Discogs sync (mocked API)",
+    "test": "WA06 Lending sheet + digest",
     "status": "PASS",
-    "note": "sync loop, merge, art, label, fallback",
+    "note": "",
     "js_errors": [],
-    "secs": 2.7
+    "secs": 1.9
   }
 ]

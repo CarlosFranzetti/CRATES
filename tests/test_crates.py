@@ -1167,6 +1167,7 @@ def r01_room_fits(browser, url):
 
 
 def r02_zoom(a):
+    a.ev("S.settings.spotMode='list'; render()")   # WP-B: this test is about the list rows
     a.click("[data-act=go-room]"); a.page.wait_for_timeout(100)
     check(a.ev("V.view") == "map", "Room tab should open the map")
     a.click(".map .cube[data-u=K1][data-c='0-1']"); a.page.wait_for_timeout(150)
@@ -1315,6 +1316,7 @@ def r09_backups_import(a):
 def r10_density_and_sheet(browser, url):
     a = App(browser, url, 390, 844, legacy=False)
     try:
+        a.ev("S.settings.spotMode='list'; render()"); _settle(a, 100)   # WP-B: the stack is the default now; this test measures list rows
         h0 = a.page.locator(".spot-panel .list .li").first.bounding_box()["height"]
         a.ev("S.settings.density='compact';render()"); _settle(a, 100)
         h1 = a.page.locator(".spot-panel .list .li").first.bounding_box()["height"]
@@ -1361,6 +1363,7 @@ def r12_discogs_sync(browser, url):
     import base64, json as _json
     a = App(browser, url, 1280, 900, legacy=False)
     try:
+        a.ev("S.settings.spotMode='list'; render()")   # WP-B: keep this test on list thumbs (fewer in-flight image requests while it swaps routes)
         png = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==")
         calls = {"sync": 0}
         cover = "/api/img?u=" + "https%3A%2F%2Fi.discogs.com%2Fabc%2Fcover.jpg"
@@ -1394,7 +1397,7 @@ def r12_discogs_sync(browser, url):
         new = a.ev("S.records.find(r=>r.releaseId===202)")
         check(new and new["loc"]["u"] is None, "new record should be Unplaced")
         check(a.ev("backups()[0].label") == "Before Discogs sync", "no backup before the merge")
-        check(a.page.locator(".spot-panel .thumb img.art-img").count() >= 1, "real cover not rendered in the panel")
+        check(a.page.locator(".spot-panel :is(.thumb, .stk-s) img.art-img").count() >= 1, "real cover not rendered in the panel")
         a.ev("P.queue=[rec('r9').id];P.i=0;openNP()"); _settle(a, 200)
         check(a.page.locator("#np-sheet .lab img.art-img").count() == 1, "label art not on the spinning record")
         a.ev("closeNP()")
@@ -1402,7 +1405,7 @@ def r12_discogs_sync(browser, url):
         a.ev("rec('r9').cover='/api/img?u=https%3A%2F%2Fi.discogs.com%2Fbroken.jpg';render()")
         a.page.unroute("**/api/**"); a.page.route("**/api/img**", lambda r: r.fulfill(status=404, body=""))
         a.ev("render()"); _settle(a, 400)
-        check(a.page.locator(".spot-panel .thumb svg").count() >= 1, "broken image did not fall back")
+        check(a.page.locator(".spot-panel :is(.thumb, .stk-s) svg").count() >= 1, "broken image did not fall back")
         check(not a.js_errors(), a.js_errors())
         return "sync loop, merge, art, label, fallback"
     finally:
@@ -1535,7 +1538,7 @@ def x20_phone_columns_history(browser, url):
     """B-121: on phones without view transitions, Columns pushed no history, so the system Back left the app; stepping spots stacked entries."""
     a = App(browser, url, 390, 844, legacy=False)
     try:
-        a.ev("S.settings.view='columns';V.view='columns';V.col='spots';render()")
+        a.ev("S.settings.spotMode='list'; S.settings.view='columns';V.view='columns';V.col='spots';render()")   # WP-B: row taps need the list
         h0 = a.ev("history.length")
         a.click(".col-spots .spot-row[data-u=K1][data-c='0-1']"); _settle(a, 200)
         a.click(".col-recs [data-act=spot-step][data-d='1']"); _settle(a, 150)
@@ -1594,7 +1597,7 @@ def x22_storage_full(a):
 
 def x23_focus_and_empty_guards(a):
     """B-124/B-125: closing a sheet dropped focus to <body>; Add > Record with no units threw; CSV cells with a bare CR were not quoted."""
-    a.ev("V.view='map';render()")
+    a.ev("S.settings.spotMode='list'; V.view='map';render()")   # WP-B: the .pv hit-slop check needs list rows
     a.page.locator("[data-act=open-settings]").focus(); a.page.keyboard.press("Enter"); _settle(a, 100)
     check(a.ev("sheetKind") == "sheet", "settings did not open from the keyboard")
     a.page.keyboard.press("Escape"); _settle(a, 80)

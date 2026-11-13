@@ -1003,6 +1003,8 @@ a.pv::before,button.pv::before,.icon-btn::before,.step .round::before,.map-tools
   .stk-cap{min-height:0;padding-bottom:4px}
 }
 @media (prefers-reduced-motion:reduce){.stk-s{transition:none}}
+/* the flat look's row padding beat the compact density (R10 failed on main); compact rows are shorter again */
+:root[data-look="flat"][data-density="compact"] .li{padding:4px 4px}
 </style>
 
 <div class="top"><div class="wrap">

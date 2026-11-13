@@ -1363,9 +1363,8 @@ def r12_discogs_sync(browser, url):
     import base64, json as _json
     a = App(browser, url, 1280, 900, legacy=False)
     try:
-        a.ev("S.settings.spotMode='list'; render()")   # WP-B: keep this test on list thumbs (fewer in-flight image requests while it swaps routes)
         png = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==")
-        calls = {"sync": 0}
+        calls = {"sync": 0, "broken": False}
         cover = "/api/img?u=" + "https%3A%2F%2Fi.discogs.com%2Fabc%2Fcover.jpg"
         coll = {"user": "los", "total": 2, "fresh": True, "phase": "done", "records": [
             {"releaseId": 101, "instanceId": 5, "folderId": 1, "dateAdded": "2026-01-01T00:00:00Z", "artist": "Model 500", "title": "No UFO's", "label": "Metroplex", "catno": "M-001", "year": 1985, "style": "Electro",
@@ -1382,7 +1381,9 @@ def r12_discogs_sync(browser, url):
                 calls["sync"] += 1
                 body = {"done": calls["sync"] >= 2, "phase": "enrich" if calls["sync"] < 2 else "done", "page": 1, "pages": 1, "total": 2, "left": 2 - calls["sync"], "log": [f"step {calls['sync']}"]}
                 return route.fulfill(status=200, content_type="application/json", body=_json.dumps(body))
-            if "/api/img" in u: return route.fulfill(status=200, content_type="image/png", body=png)
+            if "/api/img" in u:
+                if calls["broken"]: return route.fulfill(status=404, body="")
+                return route.fulfill(status=200, content_type="image/png", body=png)
             return route.continue_()
         a.page.route("**/api/**", api)
         a.ev("API.ok=true; API.user='los'")
@@ -1402,8 +1403,8 @@ def r12_discogs_sync(browser, url):
         check(a.page.locator("#np-sheet .lab img.art-img").count() == 1, "label art not on the spinning record")
         a.ev("closeNP()")
         # a broken image falls back to the generated sleeve
+        calls["broken"] = True   # a flag in the one route handler instead of swapping routes (swapping raced with in-flight image requests)
         a.ev("rec('r9').cover='/api/img?u=https%3A%2F%2Fi.discogs.com%2Fbroken.jpg';render()")
-        a.page.unroute("**/api/**"); a.page.route("**/api/img**", lambda r: r.fulfill(status=404, body=""))
         a.ev("render()"); _settle(a, 400)
         check(a.page.locator(".spot-panel :is(.thumb, .stk-s) svg").count() >= 1, "broken image did not fall back")
         check(not a.js_errors(), a.js_errors())
